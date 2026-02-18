@@ -1,0 +1,14 @@
+node_modules
+.env
+dist
+package-lock.json
+build
+coverage
+*.log
+.DS_Store
+*.tsbuildinfo
+.vscode
+.idea
+.next
+.nuxt
+.cache
