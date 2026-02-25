@@ -6,6 +6,7 @@ import IProjectScreenshotModel from '../../../interface/project/projectScreensho
 import queryBuilder from '../../../common/queryBuilder';
 import commonRepository from '../../common/common.repository';
 import projectScreenshotModel from './projectScreenshot.model';
+import { Types } from 'mongoose';
 
 const get = (params?: IProjectScreenshotRepoParams): Promise<IProjectScreenshotModel[]> => {
   const query = queryBuilder({ model: projectScreenshotModel, params });
@@ -20,19 +21,31 @@ const getById = (
   return commonRepository.findById(id, query);
 };
 
-const create = (data: IProjectScreenshotModel): Promise<IProjectScreenshotModel> => {
-  return commonRepository.create(data, projectScreenshotModel);
+const create = (
+  data: IProjectScreenshotModel,
+  createdBy: Types.ObjectId,
+): Promise<IProjectScreenshotModel> => {
+  return commonRepository.create({ ...data, createdBy }, projectScreenshotModel);
 };
 
 const update = (
   id: string,
   data: IProjectScreenshotModel,
+  updatedBy: Types.ObjectId,
 ): Promise<IProjectScreenshotModel | null> => {
-  return commonRepository.findAndUpdate(id, data, projectScreenshotModel);
+  return commonRepository.findAndUpdate(id, { ...data, updatedBy }, projectScreenshotModel);
 };
 
-const softDelete = (id: string): Promise<IProjectScreenshotModel | null> => {
-  return commonRepository.findAndUpdate(id, { isDeleted: true }, projectScreenshotModel);
+const softDelete = (
+  id: string,
+  date: Date,
+  deletedBy: Types.ObjectId,
+): Promise<IProjectScreenshotModel | null> => {
+  return commonRepository.findAndUpdate(
+    id,
+    { isDeleted: true, deletedAt: date, deletedBy },
+    projectScreenshotModel,
+  );
 };
 
 const deleteOne = (id: string): Promise<IProjectScreenshotModel | null> => {

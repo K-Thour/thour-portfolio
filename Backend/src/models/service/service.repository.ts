@@ -3,6 +3,7 @@ import IServiceModel from '../../interface/service/service.interface';
 import queryBuilder from '../../common/queryBuilder';
 import serviceModel from './service.model';
 import commonRepository from '../common/common.repository';
+import { Types } from 'mongoose';
 
 const get = (params?: IServiceRepoParams): Promise<IServiceModel[]> => {
   const query = queryBuilder({ model: serviceModel, params });
@@ -14,16 +15,28 @@ const getById = (id: string, params?: IServiceRepoParams): Promise<IServiceModel
   return commonRepository.findById(id, query);
 };
 
-const create = (data: IServiceModel): Promise<IServiceModel> => {
-  return commonRepository.create(data, serviceModel);
+const create = (data: IServiceModel, createdBy: Types.ObjectId): Promise<IServiceModel> => {
+  return commonRepository.create({ ...data, createdBy }, serviceModel);
 };
 
-const update = (id: string, data: IServiceModel): Promise<IServiceModel | null> => {
-  return commonRepository.findAndUpdate(id, data, serviceModel);
+const update = (
+  id: string,
+  data: IServiceModel,
+  updatedBy: Types.ObjectId,
+): Promise<IServiceModel | null> => {
+  return commonRepository.findAndUpdate(id, { ...data, updatedBy }, serviceModel);
 };
 
-const softDelete = (id: string): Promise<IServiceModel | null> => {
-  return commonRepository.findAndUpdate(id, { isDeleted: true }, serviceModel);
+const softDelete = (
+  id: string,
+  date: Date,
+  deletedBy: Types.ObjectId,
+): Promise<IServiceModel | null> => {
+  return commonRepository.findAndUpdate(
+    id,
+    { isDeleted: true, deletedAt: date, deletedBy },
+    serviceModel,
+  );
 };
 
 const deleteOne = (id: string): Promise<IServiceModel | null> => {

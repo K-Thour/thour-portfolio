@@ -1,4 +1,4 @@
-import { ObjectId } from 'mongoose';
+import { ObjectId, Types } from 'mongoose';
 import { ICommonModel, IImageData } from '../../common/common.interface';
 
 export interface IProjectScreenshot {
@@ -8,6 +8,11 @@ export interface IProjectScreenshot {
   isDeleted: boolean;
 }
 
-export interface IProjectScreenshotModel extends IProjectScreenshot, ICommonModel {}
+export interface IProjectScreenshotModel extends IProjectScreenshot, ICommonModel {
+  deletedAt?: Date;
+  createdBy?: Types.ObjectId;
+  deletedBy?: Types.ObjectId;
+  updatedBy?: Types.ObjectId;
+}
 
 export default IProjectScreenshotModel;

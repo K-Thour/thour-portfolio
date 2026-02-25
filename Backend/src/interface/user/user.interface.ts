@@ -1,3 +1,4 @@
+import { Types } from 'mongoose';
 import { ICommonModel } from '../common/common.interface';
 
 export interface IUser {
@@ -15,6 +16,11 @@ export interface IUser {
   isDeleted: boolean;
 }
 
-export interface IUserModel extends IUser, ICommonModel {}
+export interface IUserModel extends IUser, ICommonModel {
+  createdBy?: Types.ObjectId;
+  updatedBy?: Types.ObjectId;
+  deletedBy?: Types.ObjectId;
+  deletedAt?: Date;
+}
 
 export default IUserModel;

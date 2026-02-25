@@ -1,3 +1,4 @@
+import { Types } from 'mongoose';
 import queryBuilder from '../../common/queryBuilder';
 import ITechnologyModel from '../../interface/technology/technology.interface';
 import {
@@ -17,16 +18,28 @@ const getById = (id: string, params?: ITechnologyRepoParams): Promise<ITechnolog
   return commonRepository.findById(id, query);
 };
 
-const create = (data: ITechnologyModel): Promise<ITechnologyModel> => {
-  return commonRepository.create(data, technologyModel);
+const create = (data: ITechnologyModel, createdBy: Types.ObjectId): Promise<ITechnologyModel> => {
+  return commonRepository.create({ ...data, createdBy }, technologyModel);
 };
 
-const update = (id: string, data: ITechnologyModel): Promise<ITechnologyModel | null> => {
-  return commonRepository.findAndUpdate(id, data, technologyModel);
+const update = (
+  id: string,
+  data: ITechnologyModel,
+  updatedBy: Types.ObjectId,
+): Promise<ITechnologyModel | null> => {
+  return commonRepository.findAndUpdate(id, { ...data, updatedBy }, technologyModel);
 };
 
-const softDelete = (id: string): Promise<ITechnologyModel | null> => {
-  return commonRepository.findAndUpdate(id, { isDeleted: true }, technologyModel);
+const softDelete = (
+  id: string,
+  date: Date,
+  deletedBy: Types.ObjectId,
+): Promise<ITechnologyModel | null> => {
+  return commonRepository.findAndUpdate(
+    id,
+    { isDeleted: true, deletedAt: date, deletedBy },
+    technologyModel,
+  );
 };
 
 const deleteOne = (id: string): Promise<ITechnologyModel | null> => {

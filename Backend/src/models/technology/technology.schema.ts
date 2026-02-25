@@ -13,6 +13,7 @@ const technologySchema = new Schema<ITechnologyModel>(
     deletedBy: { type: Schema.Types.ObjectId, ref: 'User' },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
+    isActive: { type: Boolean, default: true },
     deletedAt: { type: Date },
     isDeleted: { type: Boolean, default: false },
   },

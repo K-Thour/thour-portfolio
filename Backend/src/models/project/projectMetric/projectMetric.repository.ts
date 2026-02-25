@@ -1,3 +1,4 @@
+import { Types } from 'mongoose';
 import queryBuilder from '../../../common/queryBuilder';
 import IProjectMetricModel from '../../../interface/project/projectMetric/projectMetric.interface';
 import {
@@ -20,16 +21,31 @@ const getById = (
   return commonRepository.findById(id, query);
 };
 
-const create = (data: IProjectMetricModel): Promise<IProjectMetricModel> => {
-  return commonRepository.create(data, ProjectMetricModel);
+const create = (
+  data: IProjectMetricModel,
+  createdBy: Types.ObjectId,
+): Promise<IProjectMetricModel> => {
+  return commonRepository.create({ ...data, createdBy }, ProjectMetricModel);
 };
 
-const update = (id: string, data: IProjectMetricModel): Promise<IProjectMetricModel | null> => {
-  return commonRepository.findAndUpdate(id, data, ProjectMetricModel);
+const update = (
+  id: string,
+  data: IProjectMetricModel,
+  updatedBy: Types.ObjectId,
+): Promise<IProjectMetricModel | null> => {
+  return commonRepository.findAndUpdate(id, { ...data, updatedBy }, ProjectMetricModel);
 };
 
-const softDelete = (id: string): Promise<IProjectMetricModel | null> => {
-  return commonRepository.findAndUpdate(id, { isDeleted: true }, ProjectMetricModel);
+const softDelete = (
+  id: string,
+  date: Date,
+  deletedBy: Types.ObjectId,
+): Promise<IProjectMetricModel | null> => {
+  return commonRepository.findAndUpdate(
+    id,
+    { isDeleted: true, deletedAt: date, deletedBy },
+    ProjectMetricModel,
+  );
 };
 
 const deleteOne = (id: string): Promise<IProjectMetricModel | null> => {

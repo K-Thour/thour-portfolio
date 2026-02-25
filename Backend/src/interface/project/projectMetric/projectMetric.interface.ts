@@ -1,4 +1,4 @@
-import { ObjectId } from 'mongoose';
+import { ObjectId, Types } from 'mongoose';
 import { ICommonModel } from '../../common/common.interface';
 
 export interface IProjectMetric {
@@ -8,6 +8,11 @@ export interface IProjectMetric {
   isDeleted: boolean;
 }
 
-export interface IProjectMetricModel extends IProjectMetric, ICommonModel {}
+export interface IProjectMetricModel extends IProjectMetric, ICommonModel {
+  deletedAt?: Date;
+  createdBy?: Types.ObjectId;
+  deletedBy?: Types.ObjectId;
+  updatedBy?: Types.ObjectId;
+}
 
 export default IProjectMetricModel;

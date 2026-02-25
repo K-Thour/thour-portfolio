@@ -21,6 +21,21 @@ const projectScreenshotSchema = new Schema<IProjectScreenshotModel>(
       type: Boolean,
       default: false,
     },
+    createdBy: {
+      type: Schema.Types.ObjectId,
+      ref: 'user',
+    },
+    updatedBy: {
+      type: Schema.Types.ObjectId,
+      ref: 'user',
+    },
+    deletedBy: {
+      type: Schema.Types.ObjectId,
+      ref: 'user',
+    },
+    deletedAt: {
+      type: Date,
+    },
   },
   { timestamps: true },
 );

@@ -1,10 +1,10 @@
-import { ObjectId } from 'mongoose';
+import { Types } from 'mongoose';
 import { ICommonModel, IImageData } from '../common/common.interface';
 import { EDeviceType } from '../common/common.enum';
 
 export interface IProject {
   title: string;
-  category: ObjectId;
+  category: Types.ObjectId;
   description: string;
   image: IImageData;
   device: EDeviceType;
@@ -15,18 +15,18 @@ export interface IProject {
   outcome: string;
   workingUrl: string;
   githubUrl: string;
-  screenshots: ObjectId[];
-  projectMetric: ObjectId[];
-  projectTestimonial: ObjectId[];
-  techStack: ObjectId[];
+  screenshots: Types.ObjectId[];
+  projectMetric: Types.ObjectId[];
+  projectTestimonial: Types.ObjectId[];
+  techStack: Types.ObjectId[];
   isDeleted: boolean;
   isActive: boolean;
 }
 
 export interface IProjectModel extends IProject, ICommonModel {
-  deletedBy: ObjectId;
-  createdBy: ObjectId;
-  updatedBy: ObjectId;
+  deletedBy: Types.ObjectId;
+  createdBy: Types.ObjectId;
+  updatedBy: Types.ObjectId;
   deletedAt: Date;
 }
 

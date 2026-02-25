@@ -1,4 +1,4 @@
-import { ObjectId } from 'mongoose';
+import { Types } from 'mongoose';
 import { ICommonModel, IImageData } from '../common/common.interface';
 
 export interface ITechnology {
@@ -6,13 +6,14 @@ export interface ITechnology {
   description: string;
   category: string;
   iconUrl: IImageData;
+  isActive: boolean;
 }
 
 export interface ITechnologyModel extends ITechnology, ICommonModel {
   deletedAt?: Date;
-  createdBy?: ObjectId;
-  deletedBy?: ObjectId;
-  updatedBy?: ObjectId;
+  createdBy?: Types.ObjectId;
+  deletedBy?: Types.ObjectId;
+  updatedBy?: Types.ObjectId;
   isDeleted?: boolean;
 }
 

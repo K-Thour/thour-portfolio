@@ -1,4 +1,4 @@
-import { ObjectId } from 'mongoose';
+import { ObjectId, Types } from 'mongoose';
 import { ICommonModel } from '../../common/common.interface';
 
 export interface IProjectTestimonial {
@@ -9,6 +9,11 @@ export interface IProjectTestimonial {
   isDeleted: boolean;
 }
 
-export interface IProjectTestimonialModel extends IProjectTestimonial, ICommonModel {}
+export interface IProjectTestimonialModel extends IProjectTestimonial, ICommonModel {
+  deletedAt?: Date;
+  createdBy?: Types.ObjectId;
+  deletedBy?: Types.ObjectId;
+  updatedBy?: Types.ObjectId;
+}
 
 export default IProjectTestimonialModel;
