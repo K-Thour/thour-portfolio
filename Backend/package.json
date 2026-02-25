@@ -11,7 +11,8 @@
     "format:check": "prettier --check .",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
-    "deploy": "npm run format && npm run lint:fix && git add . && git commit -m \"chore: update\" && git push"
+    "deploy": "npm run format && npm run lint:fix && git add . && git commit -m",
+    "postdeploy": "git push"
   },
   "keywords": [
     "portfolio"
