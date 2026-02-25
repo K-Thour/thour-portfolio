@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import IUserModel from '../../interface/models/user/user.interface';
-import { languageSchema } from '../common/common.type';
+import { imageDataSchema, languageSchema } from '../common/common.type';
 
 const userSchema = new mongoose.Schema<IUserModel>(
   {
@@ -27,6 +27,10 @@ const userSchema = new mongoose.Schema<IUserModel>(
       type: String,
       unique: true,
       required: true,
+    },
+    image: {
+      type: imageDataSchema,
+      required: false,
     },
     experience: {
       type: Number,
