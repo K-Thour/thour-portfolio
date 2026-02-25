@@ -1,5 +1,5 @@
-export enum device_type {
-  web,
-  mobile,
-  desktop,
+export enum EDeviceType {
+  web = 'web',
+  mobile = 'mobile',
+  desktop = 'desktop',
 }
