@@ -14,10 +14,10 @@ export interface IContact {
 }
 
 export interface IContactModel extends IContact, ICommonModel {
-  deleted_at?: Date;
-  created_by?: Types.ObjectId;
-  updated_by?: Types.ObjectId;
-  deleted_by?: Types.ObjectId;
+  deletedAt?: Date;
+  createdBy?: Types.ObjectId;
+  updatedBy?: Types.ObjectId;
+  deletedBy?: Types.ObjectId;
 }
 
 export default IContactModel;
