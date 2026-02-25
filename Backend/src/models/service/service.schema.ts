@@ -1,13 +1,16 @@
 import { Schema } from 'mongoose';
-import ITechnologyModel from '../../interface/technology/technology.interface';
+import IServiceModel from '../../interface/service/service.interface';
 import imageDataSchema from '../common/common.type';
 
-const technologySchema = new Schema<ITechnologyModel>(
+const serviceSchema = new Schema<IServiceModel>(
   {
     name: { type: String, required: true },
-    description: { type: String, required: true },
-    category: { type: String, required: true },
+    decription: { type: String, required: true },
+    technologies: { type: [Schema.Types.ObjectId], ref: 'Technology' },
     iconUrl: { type: imageDataSchema, required: true },
+    mainImageUrl: { type: imageDataSchema, required: true },
+    imagesUrl: { type: [imageDataSchema], required: true },
+    isActive: { type: Boolean, default: true },
     createdBy: { type: Schema.Types.ObjectId, ref: 'User' },
     updatedBy: { type: Schema.Types.ObjectId, ref: 'User' },
     deletedBy: { type: Schema.Types.ObjectId, ref: 'User' },
@@ -19,4 +22,4 @@ const technologySchema = new Schema<ITechnologyModel>(
   { timestamps: true },
 );
 
-export default technologySchema;
+export default serviceSchema;

@@ -13,3 +13,9 @@ export interface ICommonModel {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface IImageData {
+  publicId: string;
+  url: string;
+  alt?: string;
+}
