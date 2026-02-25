@@ -13,3 +13,10 @@ export enum EDay {
   Friday = 'Friday',
   Saturday = 'Saturday',
 }
+
+export enum ELanguageLevel {
+  beginner = 'beginner',
+  intermediate = 'intermediate',
+  advanced = 'advanced',
+  native = 'native',
+}

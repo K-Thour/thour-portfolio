@@ -1,5 +1,5 @@
 import { Types } from 'mongoose';
-import { ICommonModel } from '../../common/common.interface';
+import { ICommonModel, ILanguage } from '../../common/common.interface';
 
 export interface IUser {
   name: string;
@@ -14,6 +14,8 @@ export interface IUser {
   LinkedInURL?: string;
   GitHubURL?: string;
   isDeleted: boolean;
+  hobbies: string[];
+  languages: ILanguage[];
 }
 
 export interface IUserModel extends IUser, ICommonModel {

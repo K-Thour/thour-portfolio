@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import IUserModel from '../../interface/models/user/user.interface';
+import { languageSchema } from '../common/common.type';
 
 const userSchema = new mongoose.Schema<IUserModel>(
   {
@@ -61,6 +62,14 @@ const userSchema = new mongoose.Schema<IUserModel>(
     isDeleted: {
       type: Boolean,
       default: false,
+    },
+    hobbies: {
+      type: [String],
+      default: [],
+    },
+    languages: {
+      type: [languageSchema],
+      default: [],
     },
   },
   { timestamps: true },

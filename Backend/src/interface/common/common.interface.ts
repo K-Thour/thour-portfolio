@@ -1,4 +1,5 @@
 import { ObjectId } from 'mongoose';
+import { ELanguageLevel } from './common.enum';
 
 export interface ICommonResponse<T> {
   data: T[] | T | null;
@@ -18,4 +19,9 @@ export interface IImageData {
   publicId: string;
   url: string;
   alt?: string;
+}
+
+export interface ILanguage {
+  name: string;
+  level: ELanguageLevel;
 }
