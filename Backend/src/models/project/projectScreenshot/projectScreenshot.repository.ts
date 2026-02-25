@@ -1,8 +1,8 @@
 import {
   IProjectScreenshotRepo,
   IProjectScreenshotRepoParams,
-} from '../../../interface/project/projectScreenshot/projectScreenshotRepo.interface';
-import IProjectScreenshotModel from '../../../interface/project/projectScreenshot/projectScreenshot.interface';
+} from '../../../interface/models/project/projectScreenshot/projectScreenshotRepo.interface';
+import IProjectScreenshotModel from '../../../interface/models/project/projectScreenshot/projectScreenshot.interface';
 import queryBuilder from '../../../common/queryBuilder';
 import commonRepository from '../../common/common.repository';
 import projectScreenshotModel from './projectScreenshot.model';

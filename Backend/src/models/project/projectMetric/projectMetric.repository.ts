@@ -1,10 +1,10 @@
 import { Types } from 'mongoose';
 import queryBuilder from '../../../common/queryBuilder';
-import IProjectMetricModel from '../../../interface/project/projectMetric/projectMetric.interface';
+import IProjectMetricModel from '../../../interface/models/project/projectMetric/projectMetric.interface';
 import {
   IProjectMetricRepo,
   IProjectMetricRepoParams,
-} from '../../../interface/project/projectMetric/projectMetricRepo.interface';
+} from '../../../interface/models/project/projectMetric/projectMetricRepo.interface';
 import commonRepository from '../../common/common.repository';
 import ProjectMetricModel from './projectMetric.model';
 

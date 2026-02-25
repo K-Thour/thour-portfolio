@@ -1,5 +1,5 @@
 import { Schema } from 'mongoose';
-import IProjectMetricModel from '../../../interface/project/projectMetric/projectMetric.interface';
+import IProjectMetricModel from '../../../interface/models/project/projectMetric/projectMetric.interface';
 
 const projectMetricSchema = new Schema<IProjectMetricModel>(
   {

@@ -1,5 +1,5 @@
 import { Schema } from 'mongoose';
-import IServiceModel from '../../interface/service/service.interface';
+import IServiceModel from '../../interface/models/service/service.interface';
 import imageDataSchema from '../common/common.type';
 
 const serviceSchema = new Schema<IServiceModel>(

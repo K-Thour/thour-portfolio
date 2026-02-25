@@ -1,5 +1,5 @@
 import { IBaseRepo, IBaseRepoParams } from '../../common/baseRepo.interface';
-import { ICommonResponse } from '../../common/common.interface';
+import { ICommonResponse } from '../../../common/common.interface';
 import IProjectTestimonialModel from './projectTestimonial.interface';
 
 export type IProjectTestimonialRepo = IBaseRepo<IProjectTestimonialModel>;

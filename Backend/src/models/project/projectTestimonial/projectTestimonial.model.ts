@@ -1,5 +1,5 @@
 import { model } from 'mongoose';
-import IProjectTestimonialModel from '../../../interface/project/projectTestimonial.ts/projectTestimonial.interface';
+import IProjectTestimonialModel from '../../../interface/models/project/projectTestimonial.ts/projectTestimonial.interface';
 import projectTestimonialSchema from './projectTestimonial.schema';
 
 const projectTestimonialModel = model<IProjectTestimonialModel>(

@@ -1,5 +1,5 @@
 import { Types } from 'mongoose';
-import { ICommonModel, IImageData } from '../common/common.interface';
+import { ICommonModel, IImageData } from '../../common/common.interface';
 
 export interface ITechnology {
   name: string;

@@ -1,5 +1,5 @@
 import { Schema } from 'mongoose';
-import ILeadModel from '../../interface/lead/lead.interface';
+import ILeadModel from '../../interface/models/lead/lead.interface';
 
 const leadSchema = new Schema<ILeadModel>(
   {

@@ -1,5 +1,5 @@
 import { IBaseRepo, IBaseRepoParams } from '../common/baseRepo.interface';
-import { ICommonResponse } from '../common/common.interface';
+import { ICommonResponse } from '../../common/common.interface';
 import IProjectModel from './project.interface';
 import { IProjectScreenshotRepo } from './projectScreenshot/projectScreenshotRepo.interface';
 import { IProjectMetricRepo } from './projectMetric/projectMetricRepo.interface';

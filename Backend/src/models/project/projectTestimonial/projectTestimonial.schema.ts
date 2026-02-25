@@ -1,5 +1,5 @@
 import { Schema } from 'mongoose';
-import IProjectTestimonialModel from '../../../interface/project/projectTestimonial.ts/projectTestimonial.interface';
+import IProjectTestimonialModel from '../../../interface/models/project/projectTestimonial.ts/projectTestimonial.interface';
 
 const projectTestimonialSchema = new Schema<IProjectTestimonialModel>(
   {

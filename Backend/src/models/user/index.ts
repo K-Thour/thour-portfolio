@@ -1,4 +1,4 @@
-import IUserModel from '../../interface/user/user.interface';
+import IUserModel from '../../interface/models/user/user.interface';
 import { ICommonModelIndex } from '../common/common.index';
 import userModel from './user.model';
 import userRepository from './user.repository';

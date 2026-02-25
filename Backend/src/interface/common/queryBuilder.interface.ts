@@ -1,5 +1,5 @@
 import { Model, Query } from 'mongoose';
-import { IBaseRepoParams } from './baseRepo.interface';
+import { IBaseRepoParams } from '../models/common/baseRepo.interface';
 
 export interface IqueryBuilderParams<T> {
   model: Model<T>;

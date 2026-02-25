@@ -1,7 +1,7 @@
 import { Types } from 'mongoose';
 import queryBuilder from '../../common/queryBuilder';
-import IUserModel from '../../interface/user/user.interface';
-import { IUserRepo, IUserRepoParams } from '../../interface/user/userRepo.interface';
+import IUserModel from '../../interface/models/user/user.interface';
+import { IUserRepo, IUserRepoParams } from '../../interface/models/user/userRepo.interface';
 import commonRepository from '../common/common.repository';
 import userModel from './user.model';
 

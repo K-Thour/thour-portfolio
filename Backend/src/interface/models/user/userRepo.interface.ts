@@ -1,5 +1,5 @@
 import { IBaseRepo, IBaseRepoParams } from '../common/baseRepo.interface';
-import { ICommonResponse } from '../common/common.interface';
+import { ICommonResponse } from '../../common/common.interface';
 import IUserModel from './user.interface';
 
 export type IUserRepo = IBaseRepo<IUserModel>;

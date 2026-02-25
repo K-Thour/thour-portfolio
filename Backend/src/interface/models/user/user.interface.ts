@@ -1,5 +1,5 @@
 import { Types } from 'mongoose';
-import { ICommonModel } from '../common/common.interface';
+import { ICommonModel } from '../../common/common.interface';
 
 export interface IUser {
   name: string;

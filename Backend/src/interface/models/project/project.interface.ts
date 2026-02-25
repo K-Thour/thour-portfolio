@@ -1,6 +1,6 @@
 import { Types } from 'mongoose';
-import { ICommonModel, IImageData } from '../common/common.interface';
-import { EDeviceType } from '../common/common.enum';
+import { ICommonModel, IImageData } from '../../common/common.interface';
+import { EDeviceType } from '../../common/common.enum';
 
 export interface IProject {
   title: string;

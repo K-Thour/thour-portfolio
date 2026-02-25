@@ -1,5 +1,8 @@
-import { IProjectRepo, IProjectRepoParams } from '../../interface/project/projectRepo.interface';
-import { IProjectModel } from '../../interface/project/project.interface';
+import {
+  IProjectRepo,
+  IProjectRepoParams,
+} from '../../interface/models/project/projectRepo.interface';
+import { IProjectModel } from '../../interface/models/project/project.interface';
 import projectModel from './project.model';
 import commonRepository from '../common/common.repository';
 import queryBuilder from '../../common/queryBuilder';

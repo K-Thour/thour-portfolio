@@ -1,9 +1,9 @@
 import queryBuilder from '../../common/queryBuilder';
-import { ILeadRepo, ILeadRepoParams } from '../../interface/lead/leadRepo.interface';
+import { ILeadRepo, ILeadRepoParams } from '../../interface/models/lead/leadRepo.interface';
 import commonRepository from '../common/common.repository';
 import leadModel from './lead.model';
 import { Types } from 'mongoose';
-import ILeadModel from '../../interface/lead/lead.interface';
+import ILeadModel from '../../interface/models/lead/lead.interface';
 
 const get = (params?: ILeadRepoParams): Promise<ILeadModel[]> => {
   const query = queryBuilder({ model: leadModel, params });

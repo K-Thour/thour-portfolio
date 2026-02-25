@@ -1,11 +1,11 @@
 import {
   IProjectTestimonialRepo,
   IProjectTestimonialRepoParams,
-} from '../../../interface/project/projectTestimonial.ts/projectTestimonialRepo.interface';
+} from '../../../interface/models/project/projectTestimonial.ts/projectTestimonialRepo.interface';
 import commonRepository from '../../common/common.repository';
 import queryBuilder from '../../../common/queryBuilder';
 import projectTestimonialModel from './projectTestimonial.model';
-import IProjectTestimonialModel from '../../../interface/project/projectTestimonial.ts/projectTestimonial.interface';
+import IProjectTestimonialModel from '../../../interface/models/project/projectTestimonial.ts/projectTestimonial.interface';
 import { Types } from 'mongoose';
 
 const get = (params?: IProjectTestimonialRepoParams): Promise<IProjectTestimonialModel[]> => {

@@ -1,5 +1,5 @@
 import { ICommonModelIndex } from '../common/common.index';
-import IServiceModel from '../../interface/service/service.interface';
+import IServiceModel from '../../interface/models/service/service.interface';
 import serviceModel from './service.model';
 import serviceRepository from './service.repository';
 import serviceSchema from './service.schema';

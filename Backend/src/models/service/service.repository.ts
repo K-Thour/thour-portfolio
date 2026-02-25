@@ -1,5 +1,8 @@
-import { IServiceRepo, IServiceRepoParams } from '../../interface/service/serviceRepo.interface';
-import IServiceModel from '../../interface/service/service.interface';
+import {
+  IServiceRepo,
+  IServiceRepoParams,
+} from '../../interface/models/service/serviceRepo.interface';
+import IServiceModel from '../../interface/models/service/service.interface';
 import queryBuilder from '../../common/queryBuilder';
 import serviceModel from './service.model';
 import commonRepository from '../common/common.repository';

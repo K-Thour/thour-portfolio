@@ -1,5 +1,5 @@
 import { ICommonModelIndex } from '../../common/common.index';
-import IProjectTestimonialModel from '../../../interface/project/projectTestimonial.ts/projectTestimonial.interface';
+import IProjectTestimonialModel from '../../../interface/models/project/projectTestimonial.ts/projectTestimonial.interface';
 import projectTestimonialModel from './projectTestimonial.model';
 import projectTestimonialSchema from './projectTestimonial.schema';
 import projectTestimonialRepo from './projectTestimonial.repo';

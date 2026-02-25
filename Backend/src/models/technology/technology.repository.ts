@@ -1,10 +1,10 @@
 import { Types } from 'mongoose';
 import queryBuilder from '../../common/queryBuilder';
-import ITechnologyModel from '../../interface/technology/technology.interface';
+import ITechnologyModel from '../../interface/models/technology/technology.interface';
 import {
   ITechnologyRepo,
   ITechnologyRepoParams,
-} from '../../interface/technology/technologyRepo.interface';
+} from '../../interface/models/technology/technologyRepo.interface';
 import commonRepository from '../common/common.repository';
 import technologyModel from './technology.model';
 
