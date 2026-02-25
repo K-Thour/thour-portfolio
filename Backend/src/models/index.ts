@@ -1,5 +1,13 @@
+import lead from './lead';
+import project from './project';
+import service from './service';
+import technology from './technology';
 import user from './user';
 
 export default {
   user,
+  technology,
+  service,
+  project,
+  lead,
 };
