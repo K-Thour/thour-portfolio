@@ -9,7 +9,6 @@ const leadSchema = new Schema<ILeadModel>(
     mobileNumber: { type: String, required: true },
     service: { type: Schema.Types.ObjectId, ref: 'Service' },
     description: { type: String, required: true },
-    createdBy: { type: Schema.Types.ObjectId, ref: 'User' },
     updatedBy: { type: Schema.Types.ObjectId, ref: 'User' },
     deletedBy: { type: Schema.Types.ObjectId, ref: 'User' },
     createdAt: { type: Date, default: Date.now },

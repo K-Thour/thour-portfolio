@@ -15,8 +15,8 @@ const getById = (id: string, params?: ILeadRepoParams): Promise<ILeadModel | nul
   return commonRepository.findById(id, query);
 };
 
-const create = (data: ILeadModel, createdBy: Types.ObjectId): Promise<ILeadModel> => {
-  return commonRepository.create({ ...data, createdBy }, leadModel);
+const create = (data: ILeadModel): Promise<ILeadModel> => {
+  return commonRepository.create({ ...data }, leadModel);
 };
 
 const update = (

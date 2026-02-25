@@ -12,7 +12,6 @@ export interface ILead {
 
 export interface ILeadModel extends ILead, ICommonModel {
   deletedAt?: Date;
-  createdBy?: Types.ObjectId;
   deletedBy?: Types.ObjectId;
   updatedBy?: Types.ObjectId;
   isDeleted?: boolean;
