@@ -1,3 +1,5 @@
+import { ICommonModel } from '../common/common.interface';
+
 export interface IUser {
   name: string;
   email: string;
@@ -13,10 +15,6 @@ export interface IUser {
   isDeleted: boolean;
 }
 
-interface IUserModel extends IUser {
-  _id: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
+export interface IUserModel extends IUser, ICommonModel {}
 
 export default IUserModel;
