@@ -10,7 +10,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint . --ext .ts",
-    "lint:fix": "eslint . --ext .ts --fix"
+    "lint:fix": "eslint . --ext .ts --fix",
+    "deploy": "npm run format && npm run lint:fix && git add . && git commit -m \"chore: update\" && git push"
   },
   "keywords": [
     "portfolio"
