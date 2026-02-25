@@ -1,5 +1,6 @@
 import contact from './contact';
 import lead from './lead';
+import portfolio from './portfolio';
 import project from './project';
 import service from './service';
 import technology from './technology';
@@ -12,4 +13,5 @@ export default {
   project,
   lead,
   contact,
+  portfolio,
 };
