@@ -1,6 +1,6 @@
 import { Schema } from 'mongoose';
 import IProjectScreenshotModel from '../../../interface/models/project/projectScreenshot/projectScreenshot.interface';
-import imageDataSchema from '../../common/common.type';
+import { imageDataSchema } from '../../common/common.type';
 
 const projectScreenshotSchema = new Schema<IProjectScreenshotModel>(
   {

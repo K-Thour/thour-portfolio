@@ -1,6 +1,6 @@
 import { Schema } from 'mongoose';
 import ITechnologyModel from '../../interface/models/technology/technology.interface';
-import imageDataSchema from '../common/common.type';
+import { imageDataSchema } from '../common/common.type';
 
 const technologySchema = new Schema<ITechnologyModel>(
   {

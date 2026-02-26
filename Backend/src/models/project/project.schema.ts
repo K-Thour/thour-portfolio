@@ -1,6 +1,6 @@
 import { Schema, Types } from 'mongoose';
 import IProjectModel from '../../interface/models/project/project.interface';
-import imageDataSchema from '../common/common.type';
+import { imageDataSchema } from '../common/common.type';
 import { EDeviceType } from '../../interface/common/common.enum';
 
 const projectSchema = new Schema<IProjectModel>(
