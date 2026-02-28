@@ -1,0 +1,82 @@
+import mongoose from 'mongoose';
+import IUserModel from '../../interface/models/user/user.interface';
+import { imageDataSchema, languageSchema } from '../common/common.type';
+
+const userSchema = new mongoose.Schema<IUserModel>(
+  {
+    _id: {
+      type: String,
+      default: 'Single_User',
+      unique: true,
+    },
+    name: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    passwordHash: {
+      type: String,
+      required: true,
+      select: false,
+    },
+    phoneNumber: {
+      type: String,
+      unique: true,
+      required: true,
+    },
+    image: {
+      type: imageDataSchema,
+      required: false,
+    },
+    experience: {
+      type: Number,
+      required: true,
+    },
+    completedProjects: {
+      type: Number,
+      required: true,
+    },
+    solvedProblems: {
+      type: Number,
+      required: true,
+    },
+    happyClients: {
+      type: Number,
+      required: true,
+    },
+    InstagramURL: {
+      type: String,
+      unique: true,
+      required: false,
+    },
+    LinkedInURL: {
+      type: String,
+      unique: true,
+      required: false,
+    },
+    GitHubURL: {
+      type: String,
+      unique: true,
+      required: false,
+    },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
+    hobbies: {
+      type: [String],
+      default: [],
+    },
+    languages: {
+      type: [languageSchema],
+      default: [],
+    },
+  },
+  { timestamps: true },
+);
+
+export default userSchema;

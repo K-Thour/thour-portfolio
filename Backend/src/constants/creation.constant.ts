@@ -1,0 +1,6 @@
+const CREATION_CONSTANT = {
+  SINGLE_CREATION: 1,
+  NO_CREATION: 0,
+} as const;
+
+export default CREATION_CONSTANT;

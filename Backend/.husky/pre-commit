@@ -1,2 +1,4 @@
 cd Backend
+npm run format
 npm run lint
+git add .
