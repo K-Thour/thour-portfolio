@@ -1,4 +1,5 @@
 import contact from './contact';
+import education from './education';
 import lead from './lead';
 import portfolio from './portfolio';
 import project from './project';
@@ -9,6 +10,7 @@ import user from './user';
 
 export default {
   user,
+  education,
   technology,
   service,
   project,

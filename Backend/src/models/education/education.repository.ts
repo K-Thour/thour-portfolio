@@ -1,0 +1,58 @@
+import { Types } from 'mongoose';
+import queryBuilder from '../../common/queryBuilder';
+import IEducationModel from '../../interface/models/education/education.interface';
+import {
+  IEducationRepo,
+  IEducationRepoParams,
+} from '../../interface/models/education/educationRepo.interface';
+import commonRepository from '../common/common.repository';
+import educationModel from './education.model';
+
+const get = (params?: IEducationRepoParams): Promise<IEducationModel[]> => {
+  const query = queryBuilder({ model: educationModel, params });
+  return commonRepository.find(query);
+};
+
+const getById = (id: string, params?: IEducationRepoParams): Promise<IEducationModel | null> => {
+  const query = queryBuilder({ model: educationModel, params });
+  return commonRepository.findById(id, query);
+};
+
+const create = (data: IEducationModel, createdBy: Types.ObjectId): Promise<IEducationModel> => {
+  return commonRepository.create({ ...data, createdBy }, educationModel);
+};
+
+const update = (
+  id: string,
+  data: IEducationModel,
+  updatedBy: Types.ObjectId,
+): Promise<IEducationModel | null> => {
+  return commonRepository.findAndUpdate(id, { ...data, updatedBy }, educationModel);
+};
+
+const softDelete = (
+  id: string,
+  date: Date,
+  deletedBy: Types.ObjectId,
+): Promise<IEducationModel | null> => {
+  return commonRepository.findAndUpdate(
+    id,
+    { isDeleted: true, deletedAt: date, deletedBy },
+    educationModel,
+  );
+};
+
+const deleteOne = (id: string): Promise<IEducationModel | null> => {
+  return commonRepository.findByIdAndDelete(id, educationModel);
+};
+
+const educationRepository: IEducationRepo = {
+  get,
+  getById,
+  create,
+  update,
+  softDelete,
+  deleteOne,
+};
+
+export default educationRepository;
