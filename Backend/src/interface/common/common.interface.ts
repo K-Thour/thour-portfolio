@@ -1,4 +1,4 @@
-import { ObjectId } from 'mongoose';
+import { Types } from 'mongoose';
 import { ELanguageLevel } from './common.enum';
 
 export interface ICommonResponse<T> {
@@ -10,7 +10,7 @@ export interface ICommonResponse<T> {
 }
 
 export interface ICommonModel {
-  _id: ObjectId;
+  _id: Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
 }

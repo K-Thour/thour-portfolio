@@ -7,4 +7,6 @@ const ENTITIES = {
   },
 } as const;
 
-export default ENTITIES;
+const apiPrefix = '/api';
+
+export { ENTITIES, apiPrefix };

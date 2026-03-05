@@ -5,7 +5,7 @@ import { imageDataSchema, languageSchema } from '../common/common.type';
 const userSchema = new mongoose.Schema<IUserModel>(
   {
     _id: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
       default: 'Single_User',
       unique: true,
     },

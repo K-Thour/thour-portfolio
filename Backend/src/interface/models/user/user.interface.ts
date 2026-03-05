@@ -26,4 +26,9 @@ export interface IUserModel extends IUser, ICommonModel {
   deletedAt?: Date;
 }
 
+export interface ILogin {
+  email: string;
+  passwordHash: string;
+}
+
 export default IUserModel;

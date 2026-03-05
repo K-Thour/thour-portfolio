@@ -4,6 +4,8 @@ const MESSAGES_COMMON = {
     createdSuccessfully: 'Created successfully',
     updatedSuccessfully: 'Updated successfully',
     deletedSuccessfully: 'Deleted successfully',
+    loggedInSuccessfully: 'Logged in successfully',
+    registeredSuccessfully: 'Registered successfully',
   },
   error: {
     notFound: 'Not found',
@@ -12,6 +14,8 @@ const MESSAGES_COMMON = {
     failedToUpdate: 'Failed to update',
     failedToDelete: 'Failed to delete',
     internalServerError: 'Internal server error',
+    invalidCredentials: 'Invalid credentials',
+    alreadyExist: 'Already exist',
   },
 } as const;
 
