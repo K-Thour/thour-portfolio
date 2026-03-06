@@ -1,7 +1,7 @@
 import {
   IExperienceRepo,
   IExperienceRepoParams,
-} from '../../interface/models/experience/experienceRepo.interfence';
+} from '../../interface/models/experience/experienceRepo.interface';
 import {
   createExperienceInput,
   IExperienceModel,
