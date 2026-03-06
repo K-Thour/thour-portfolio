@@ -13,12 +13,9 @@ const get = (params?: IProjectScreenshotRepoParams): Promise<IProjectScreenshotM
   return commonRepository.find(query);
 };
 
-const getById = (
-  id: string,
-  params?: IProjectScreenshotRepoParams,
-): Promise<IProjectScreenshotModel | null> => {
+const getOne = (params?: IProjectScreenshotRepoParams): Promise<IProjectScreenshotModel | null> => {
   const query = queryBuilder({ model: projectScreenshotModel, params });
-  return commonRepository.findById(id, query);
+  return commonRepository.findOne(query);
 };
 
 const create = (
@@ -54,7 +51,7 @@ const deleteOne = (id: string): Promise<IProjectScreenshotModel | null> => {
 
 const projectScreenshotRepo: IProjectScreenshotRepo = {
   get,
-  getById,
+  getOne,
   create,
   update,
   softDelete,

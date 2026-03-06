@@ -13,9 +13,9 @@ const get = (params?: IEducationRepoParams): Promise<IEducationModel[]> => {
   return commonRepository.find(query);
 };
 
-const getById = (id: string, params?: IEducationRepoParams): Promise<IEducationModel | null> => {
+const getOne = (params?: IEducationRepoParams): Promise<IEducationModel | null> => {
   const query = queryBuilder({ model: educationModel, params });
-  return commonRepository.findById(id, query);
+  return commonRepository.findOne(query);
 };
 
 const create = (data: IEducationModel, createdBy: Types.ObjectId): Promise<IEducationModel> => {
@@ -48,7 +48,7 @@ const deleteOne = (id: string): Promise<IEducationModel | null> => {
 
 const educationRepository: IEducationRepo = {
   get,
-  getById,
+  getOne,
   create,
   update,
   softDelete,

@@ -13,9 +13,9 @@ const get = (params?: IServiceRepoParams): Promise<IServiceModel[]> => {
   return commonRepository.find(query);
 };
 
-const getById = (id: string, params?: IServiceRepoParams): Promise<IServiceModel | null> => {
+const getOne = (params?: IServiceRepoParams): Promise<IServiceModel | null> => {
   const query = queryBuilder({ model: serviceModel, params });
-  return commonRepository.findById(id, query);
+  return commonRepository.findOne(query);
 };
 
 const create = (data: IServiceModel, createdBy: Types.ObjectId): Promise<IServiceModel> => {
@@ -48,7 +48,7 @@ const deleteOne = (id: string): Promise<IServiceModel | null> => {
 
 const serviceRepository: IServiceRepo = {
   get,
-  getById,
+  getOne,
   create,
   update,
   softDelete,

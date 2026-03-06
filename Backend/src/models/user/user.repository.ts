@@ -10,9 +10,9 @@ const get = (params?: IUserRepoParams): Promise<IUserModel[]> => {
   return commonRepository.find(query);
 };
 
-const getById = (id: string, params?: IUserRepoParams): Promise<IUserModel | null> => {
+const getOne = (params?: IUserRepoParams): Promise<IUserModel | null> => {
   const query = queryBuilder({ model: userModel, params });
-  return commonRepository.findById(id, query);
+  return commonRepository.findOne(query);
 };
 
 const create = (data: IUserModel, createdBy?: Types.ObjectId): Promise<IUserModel> => {
@@ -45,7 +45,7 @@ const deleteOne = (id: string): Promise<IUserModel | null> => {
 
 const userRepository: IUserRepo = {
   get,
-  getById,
+  getOne,
   create,
   update,
   softDelete,

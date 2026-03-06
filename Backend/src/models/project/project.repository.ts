@@ -16,9 +16,9 @@ const get = (params?: IProjectRepoParams): Promise<IProjectModel[]> => {
   return commonRepository.find(query);
 };
 
-const getById = (id: string, params?: IProjectRepoParams): Promise<IProjectModel | null> => {
+const getOne = (params?: IProjectRepoParams): Promise<IProjectModel | null> => {
   const query = queryBuilder({ model: projectModel, params });
-  return commonRepository.findById(id, query);
+  return commonRepository.findOne(query);
 };
 
 const create = (data: IProjectModel, createdBy: Types.ObjectId): Promise<IProjectModel> => {
@@ -51,7 +51,7 @@ const deleteOne = (id: string): Promise<IProjectModel | null> => {
 
 const projectRepository: IProjectRepo = {
   get,
-  getById,
+  getOne,
   create,
   update,
   softDelete,

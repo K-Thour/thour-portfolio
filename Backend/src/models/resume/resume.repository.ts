@@ -10,9 +10,9 @@ const get = (params?: IResumeRepoParams): Promise<IResumeModel[]> => {
   return commonRepository.find(query);
 };
 
-const getById = (id: string, params?: IResumeRepoParams): Promise<IResumeModel | null> => {
+const getOne = (params?: IResumeRepoParams): Promise<IResumeModel | null> => {
   const query = queryBuilder({ model: resumeModel, params });
-  return commonRepository.findById(id, query);
+  return commonRepository.findOne(query);
 };
 
 const create = (data: IResumeModel, createdBy: Types.ObjectId): Promise<IResumeModel> => {
@@ -45,7 +45,7 @@ const deleteOne = (id: string): Promise<IResumeModel | null> => {
 
 const resumeRepository: IResumeRepo = {
   get,
-  getById,
+  getOne,
   create,
   update,
   softDelete,

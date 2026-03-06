@@ -13,9 +13,9 @@ const get = (params?: IPortfolioRepoParams): Promise<IPortfolioModel[]> => {
   return commonRepository.find(query);
 };
 
-const getById = (id: string, params?: IPortfolioRepoParams): Promise<IPortfolioModel | null> => {
+const getOne = (params?: IPortfolioRepoParams): Promise<IPortfolioModel | null> => {
   const query = queryBuilder({ model: portfolioModel, params });
-  return commonRepository.findById(id, query);
+  return commonRepository.findOne(query);
 };
 
 const create = (data: IPortfolioModel, createdBy: Types.ObjectId): Promise<IPortfolioModel> => {
@@ -48,7 +48,7 @@ const deleteOne = (id: string): Promise<IPortfolioModel | null> => {
 
 const portfolioRepository: IPortfolioRepo = {
   get,
-  getById,
+  getOne,
   create,
   update,
   softDelete,

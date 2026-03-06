@@ -10,9 +10,9 @@ const get = (params?: ILeadRepoParams): Promise<ILeadModel[]> => {
   return commonRepository.find(query);
 };
 
-const getById = (id: string, params?: ILeadRepoParams): Promise<ILeadModel | null> => {
+const getOne = (params?: ILeadRepoParams): Promise<ILeadModel | null> => {
   const query = queryBuilder({ model: leadModel, params });
-  return commonRepository.findById(id, query);
+  return commonRepository.findOne(query);
 };
 
 const create = (data: ILeadModel): Promise<ILeadModel> => {
@@ -45,7 +45,7 @@ const deleteOne = (id: string): Promise<ILeadModel | null> => {
 
 const leadRespository: ILeadRepo = {
   get,
-  getById,
+  getOne,
   create,
   update,
   softDelete,

@@ -13,9 +13,9 @@ const get = (params?: IContactRepoParams): Promise<IContactModel[]> => {
   return commonRepository.find(query);
 };
 
-const getById = (id: string, params?: IContactRepoParams): Promise<IContactModel | null> => {
+const getOne = (params?: IContactRepoParams): Promise<IContactModel | null> => {
   const query = queryBuilder({ model: contactModel, params });
-  return commonRepository.findById(id, query);
+  return commonRepository.findOne(query);
 };
 
 const create = (data: IContactModel): Promise<IContactModel> => {
@@ -48,7 +48,7 @@ const deleteOne = (id: string): Promise<IContactModel | null> => {
 
 const contactRepository: IContactRepo = {
   get,
-  getById,
+  getOne,
   create,
   update,
   softDelete,

@@ -12,12 +12,12 @@ const findByIdAndDelete = async <T>(id: string, model: Model<T>): Promise<T | nu
   return model.findByIdAndDelete(id).lean() as T | null;
 };
 
-const findById = async <T>(id: string, query: Query<T[], T>): Promise<T | null> => {
-  return query.findById(id).lean() as T | null;
-};
-
 const find = async <T>(query: Query<T[], T>): Promise<T[]> => {
   return query.find().lean() as unknown as T[];
+};
+
+const findOne = async <T>(query: Query<T[], T>): Promise<T | null> => {
+  return query.findOne().lean() as T | null;
 };
 
 const create = async <T>(data: T, model: Model<T>): Promise<T> => {
@@ -27,8 +27,8 @@ const create = async <T>(data: T, model: Model<T>): Promise<T> => {
 const commonRepository = {
   findAndUpdate,
   findByIdAndDelete,
-  findById,
   find,
+  findOne,
   create,
 };
 

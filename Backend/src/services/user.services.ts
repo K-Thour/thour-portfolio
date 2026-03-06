@@ -23,7 +23,10 @@ const getAll = (params: IUserRepoParams) => {
 
 const getById = (id: string, params: IUserRepoParams) => {
   return asyncCommonWrapper(async () => {
-    const result = await models.user.repo.getById(id, params);
+    const result = await models.user.repo.getOne({
+      ...params,
+      filter: [{ _id: new Types.ObjectId(id) }],
+    });
     return commonResponse.success(
       result,
       MESSAGES_COMMON_UTIL.fetchedSuccessfully('User'),

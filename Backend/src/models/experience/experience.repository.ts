@@ -13,9 +13,9 @@ const get = (params?: IExperienceRepoParams): Promise<IExperienceModel[]> => {
   return commonRepository.find(query);
 };
 
-const getById = (id: string, params?: IExperienceRepoParams): Promise<IExperienceModel | null> => {
+const getOne = (params?: IExperienceRepoParams): Promise<IExperienceModel | null> => {
   const query = queryBuilder({ model: experienceModel, params });
-  return commonRepository.findById(id, query);
+  return commonRepository.findOne(query);
 };
 
 const create = (data: IExperienceModel, createdBy: Types.ObjectId): Promise<IExperienceModel> => {
@@ -48,7 +48,7 @@ const deleteOne = (id: string): Promise<IExperienceModel | null> => {
 
 const experienceRepository: IExperienceRepo = {
   get,
-  getById,
+  getOne,
   create,
   update,
   softDelete,

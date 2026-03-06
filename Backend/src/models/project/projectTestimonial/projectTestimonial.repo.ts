@@ -13,12 +13,11 @@ const get = (params?: IProjectTestimonialRepoParams): Promise<IProjectTestimonia
   return commonRepository.find(query);
 };
 
-const getById = (
-  id: string,
+const getOne = (
   params?: IProjectTestimonialRepoParams,
 ): Promise<IProjectTestimonialModel | null> => {
   const query = queryBuilder({ model: projectTestimonialModel, params });
-  return commonRepository.findById(id, query);
+  return commonRepository.findOne(query);
 };
 
 const create = (
@@ -54,7 +53,7 @@ const deleteOne = (id: string): Promise<IProjectTestimonialModel | null> => {
 
 const projectTestimonialRepo: IProjectTestimonialRepo = {
   get,
-  getById,
+  getOne,
   create,
   update,
   softDelete,

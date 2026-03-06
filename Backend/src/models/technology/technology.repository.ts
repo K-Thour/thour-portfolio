@@ -13,9 +13,9 @@ const get = (params?: ITechnologyRepoParams): Promise<ITechnologyModel[]> => {
   return commonRepository.find(query);
 };
 
-const getById = (id: string, params?: ITechnologyRepoParams): Promise<ITechnologyModel | null> => {
+const getOne = (params?: ITechnologyRepoParams): Promise<ITechnologyModel | null> => {
   const query = queryBuilder({ model: technologyModel, params });
-  return commonRepository.findById(id, query);
+  return commonRepository.findOne(query);
 };
 
 const create = (data: ITechnologyModel, createdBy: Types.ObjectId): Promise<ITechnologyModel> => {
@@ -48,7 +48,7 @@ const deleteOne = (id: string): Promise<ITechnologyModel | null> => {
 
 const technologyRepository: ITechnologyRepo = {
   get,
-  getById,
+  getOne,
   create,
   update,
   softDelete,

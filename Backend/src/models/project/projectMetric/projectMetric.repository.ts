@@ -13,12 +13,9 @@ const get = (params?: IProjectMetricRepoParams): Promise<IProjectMetricModel[]> 
   return commonRepository.find(query);
 };
 
-const getById = (
-  id: string,
-  params?: IProjectMetricRepoParams,
-): Promise<IProjectMetricModel | null> => {
+const getOne = (params?: IProjectMetricRepoParams): Promise<IProjectMetricModel | null> => {
   const query = queryBuilder({ model: ProjectMetricModel, params });
-  return commonRepository.findById(id, query);
+  return commonRepository.findOne(query);
 };
 
 const create = (
@@ -54,7 +51,7 @@ const deleteOne = (id: string): Promise<IProjectMetricModel | null> => {
 
 const projectMetricRepo: IProjectMetricRepo = {
   get,
-  getById,
+  getOne,
   create,
   update,
   softDelete,
