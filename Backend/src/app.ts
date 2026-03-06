@@ -16,5 +16,6 @@ app.use(globalErrorHandler);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use(returnApiPrefix('user'), routes.userRoutes);
+app.use(returnApiPrefix('technology'), routes.technologyRoutes);
 
 export default app;

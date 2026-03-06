@@ -19,7 +19,7 @@ const createService = (data: ITechnologyModel, createdBy: Types.ObjectId) => {
   });
 };
 
-const updateService = (id: string, data: ITechnologyModel, updatedBy: Types.ObjectId) => {
+const updateService = (id: string, data: Partial<ITechnologyModel>, updatedBy: Types.ObjectId) => {
   return asyncCommonWrapper(async () => {
     const result = await models.technology.repo.update(id, data, updatedBy);
     return commonResponse.success(

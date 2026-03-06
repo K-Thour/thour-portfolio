@@ -8,19 +8,19 @@ import {
 import controllers from '../controllers';
 import authMiddleware from '../middlewares/auth.middleware';
 
-const router = express.Router();
+const userRoutes = express.Router();
 
-router.post('/register', validate(userCreateSchema), controllers.userControllers.register);
+userRoutes.post('/register', validate(userCreateSchema), controllers.userControllers.register);
 
-router.post('/login', validate(userLoginSchema), controllers.userControllers.login);
+userRoutes.post('/login', validate(userLoginSchema), controllers.userControllers.login);
 
-router.get('/me', authMiddleware, controllers.userControllers.getCurrentUser);
+userRoutes.get('/me', authMiddleware, controllers.userControllers.getCurrentUser);
 
-router.patch(
+userRoutes.patch(
   '/update',
   authMiddleware,
   validate(userUpdateSchema),
   controllers.userControllers.updateCurrentUser,
 );
 
-export default router;
+export default userRoutes;
