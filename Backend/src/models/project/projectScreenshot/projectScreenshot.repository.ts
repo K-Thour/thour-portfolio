@@ -27,7 +27,7 @@ const create = (
 
 const update = (
   id: string,
-  data: IProjectScreenshotModel,
+  data: Partial<IProjectScreenshotModel>,
   updatedBy: Types.ObjectId,
 ): Promise<IProjectScreenshotModel | null> => {
   return commonRepository.findAndUpdate(id, { ...data, updatedBy }, projectScreenshotModel);

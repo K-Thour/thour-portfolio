@@ -24,7 +24,7 @@ const create = (data: IServiceModel, createdBy: Types.ObjectId): Promise<IServic
 
 const update = (
   id: string,
-  data: IServiceModel,
+  data: Partial<IServiceModel>,
   updatedBy: Types.ObjectId,
 ): Promise<IServiceModel | null> => {
   return commonRepository.findAndUpdate(id, { ...data, updatedBy }, serviceModel);

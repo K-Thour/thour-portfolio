@@ -24,7 +24,7 @@ const create = (data: ITechnologyModel, createdBy: Types.ObjectId): Promise<ITec
 
 const update = (
   id: string,
-  data: ITechnologyModel,
+  data: Partial<ITechnologyModel>,
   updatedBy: Types.ObjectId,
 ): Promise<ITechnologyModel | null> => {
   return commonRepository.findAndUpdate(id, { ...data, updatedBy }, technologyModel);

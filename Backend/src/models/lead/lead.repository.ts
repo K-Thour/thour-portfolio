@@ -21,7 +21,7 @@ const create = (data: ILeadModel): Promise<ILeadModel> => {
 
 const update = (
   id: string,
-  data: ILeadModel,
+  data: Partial<ILeadModel>,
   updatedBy: Types.ObjectId,
 ): Promise<ILeadModel | null> => {
   return commonRepository.findAndUpdate(id, { ...data, updatedBy }, leadModel);

@@ -21,7 +21,7 @@ const create = (data: IResumeModel, createdBy: Types.ObjectId): Promise<IResumeM
 
 const update = (
   id: string,
-  data: IResumeModel,
+  data: Partial<IResumeModel>,
   updatedBy: Types.ObjectId,
 ): Promise<IResumeModel | null> => {
   return commonRepository.findAndUpdate(id, { ...data, updatedBy }, resumeModel);

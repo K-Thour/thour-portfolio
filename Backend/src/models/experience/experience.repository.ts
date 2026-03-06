@@ -24,7 +24,7 @@ const create = (data: IExperienceModel, createdBy: Types.ObjectId): Promise<IExp
 
 const update = (
   id: string,
-  data: IExperienceModel,
+  data: Partial<IExperienceModel>,
   updatedBy: Types.ObjectId,
 ): Promise<IExperienceModel | null> => {
   return commonRepository.findAndUpdate(id, { ...data, updatedBy }, experienceModel);

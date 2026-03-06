@@ -24,7 +24,7 @@ const create = (data: IPortfolioModel, createdBy: Types.ObjectId): Promise<IPort
 
 const update = (
   id: string,
-  data: IPortfolioModel,
+  data: Partial<IPortfolioModel>,
   updatedBy: Types.ObjectId,
 ): Promise<IPortfolioModel | null> => {
   return commonRepository.findAndUpdate(id, { ...data, updatedBy }, portfolioModel);

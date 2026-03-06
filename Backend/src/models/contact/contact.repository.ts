@@ -24,7 +24,7 @@ const create = (data: IContactModel): Promise<IContactModel> => {
 
 const update = (
   id: string,
-  data: IContactModel,
+  data: Partial<IContactModel>,
   updatedBy: Types.ObjectId,
 ): Promise<IContactModel | null> => {
   return commonRepository.findAndUpdate(id, { ...data, updatedBy }, contactModel);

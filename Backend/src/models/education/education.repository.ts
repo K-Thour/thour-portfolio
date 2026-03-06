@@ -24,7 +24,7 @@ const create = (data: IEducationModel, createdBy: Types.ObjectId): Promise<IEduc
 
 const update = (
   id: string,
-  data: IEducationModel,
+  data: Partial<IEducationModel>,
   updatedBy: Types.ObjectId,
 ): Promise<IEducationModel | null> => {
   return commonRepository.findAndUpdate(id, { ...data, updatedBy }, educationModel);

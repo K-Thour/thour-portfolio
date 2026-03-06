@@ -21,7 +21,7 @@ const create = (data: IUserModel, createdBy?: Types.ObjectId): Promise<IUserMode
 
 const update = (
   id: string,
-  data: IUserModel,
+  data: Partial<IUserModel>,
   updatedBy: Types.ObjectId,
 ): Promise<IUserModel | null> => {
   return commonRepository.findAndUpdate(id, { ...data, updatedBy }, userModel);
