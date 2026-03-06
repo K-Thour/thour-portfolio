@@ -20,4 +20,15 @@ export interface IExperienceModel extends IExperience, ICommonModel {
   deletedAt: Date;
 }
 
+export interface createExperienceInput {
+  companyName: string;
+  position: string;
+  field: string;
+  projectsCompleted: Types.ObjectId[];
+  description: string;
+  dateOfJoining: Date;
+  dateOfLeaving: Date;
+  stillWorking: boolean;
+}
+
 export default IExperienceModel;

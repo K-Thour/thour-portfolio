@@ -3,6 +3,7 @@ import { verifyToken } from '../utils/jwt.utils';
 import models from '../models';
 import { STATUS_CODE } from '../constants/statusCode.constant';
 import commonResponse from '../common/commonResponses';
+import { Types } from 'mongoose';
 
 async function authMiddleware(req: Request, res: Response, next: NextFunction) {
   const authHeader = req.headers.authorization;
@@ -15,7 +16,9 @@ async function authMiddleware(req: Request, res: Response, next: NextFunction) {
 
   try {
     const decoded = verifyToken(token);
-    const user = await models.user.repo.getById(decoded.id);
+    const user = await models.user.repo.getOne({
+      filter: [{ _id: new Types.ObjectId(decoded.id as string) }],
+    });
 
     if (!user) {
       return res.status(401).json({ message: 'User not found' });

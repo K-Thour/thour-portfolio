@@ -1,11 +1,14 @@
 import { Request, Response } from 'express';
-import ITechnologyModel, { ITechnology } from '../interface/models/technology/technology.interface';
+import {
+  createTechnologyInput,
+  ITechnology,
+} from '../interface/models/technology/technology.interface';
 import services from '../services';
 import { Types } from 'mongoose';
 
 const create = async (req: Request, res: Response) => {
   const userId = new Types.ObjectId(req.userId);
-  const technoogyDetails: ITechnologyModel = req.body;
+  const technoogyDetails: createTechnologyInput = req.body;
   const result = await services.technologyServices.createService(technoogyDetails, userId);
   res.status(result.statusCode).json(result);
 };

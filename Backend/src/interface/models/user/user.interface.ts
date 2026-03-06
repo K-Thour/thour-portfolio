@@ -31,4 +31,21 @@ export interface ILogin {
   passwordHash: string;
 }
 
+export interface createUserInput {
+  name: string;
+  email: string;
+  passwordHash: string;
+  phoneNumber: string;
+  image?: IImageData;
+  experience: number;
+  completedProjects: number;
+  solvedProblems: number;
+  happyClients: number;
+  InstagramURL?: string;
+  LinkedInURL?: string;
+  GitHubURL?: string;
+  hobbies: string[];
+  languages: ILanguage[];
+}
+
 export default IUserModel;

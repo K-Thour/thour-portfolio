@@ -20,8 +20,8 @@ const findOne = async <T>(query: Query<T[], T>): Promise<T | null> => {
   return query.findOne().lean() as T | null;
 };
 
-const create = async <T>(data: T, model: Model<T>): Promise<T> => {
-  return model.create(data);
+const create = async <T>(data: Partial<T>, model: Model<T>): Promise<T> => {
+  return model.create(data) as unknown as T;
 };
 
 const commonRepository = {

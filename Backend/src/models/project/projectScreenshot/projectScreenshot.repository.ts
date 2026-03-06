@@ -2,7 +2,9 @@ import {
   IProjectScreenshotRepo,
   IProjectScreenshotRepoParams,
 } from '../../../interface/models/project/projectScreenshot/projectScreenshotRepo.interface';
-import IProjectScreenshotModel from '../../../interface/models/project/projectScreenshot/projectScreenshot.interface';
+import IProjectScreenshotModel, {
+  createProjectScreenshotInput,
+} from '../../../interface/models/project/projectScreenshot/projectScreenshot.interface';
 import queryBuilder from '../../../common/queryBuilder';
 import commonRepository from '../../common/common.repository';
 import projectScreenshotModel from './projectScreenshot.model';
@@ -19,7 +21,7 @@ const getOne = (params?: IProjectScreenshotRepoParams): Promise<IProjectScreensh
 };
 
 const create = (
-  data: IProjectScreenshotModel,
+  data: createProjectScreenshotInput,
   createdBy: Types.ObjectId,
 ): Promise<IProjectScreenshotModel> => {
   return commonRepository.create({ ...data, createdBy }, projectScreenshotModel);

@@ -2,7 +2,10 @@ import {
   IProjectRepo,
   IProjectRepoParams,
 } from '../../interface/models/project/projectRepo.interface';
-import { IProjectModel } from '../../interface/models/project/project.interface';
+import {
+  createProjectInput,
+  IProjectModel,
+} from '../../interface/models/project/project.interface';
 import projectModel from './project.model';
 import commonRepository from '../common/common.repository';
 import queryBuilder from '../../common/queryBuilder';
@@ -21,7 +24,7 @@ const getOne = (params?: IProjectRepoParams): Promise<IProjectModel | null> => {
   return commonRepository.findOne(query);
 };
 
-const create = (data: IProjectModel, createdBy: Types.ObjectId): Promise<IProjectModel> => {
+const create = (data: createProjectInput, createdBy: Types.ObjectId): Promise<IProjectModel> => {
   return commonRepository.create({ ...data, createdBy }, projectModel);
 };
 

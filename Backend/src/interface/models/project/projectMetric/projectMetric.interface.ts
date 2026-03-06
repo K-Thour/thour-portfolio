@@ -15,4 +15,10 @@ export interface IProjectMetricModel extends IProjectMetric, ICommonModel {
   updatedBy?: Types.ObjectId;
 }
 
+export interface createProjectMetricInput {
+  project_id: ObjectId;
+  value: string;
+  label: string;
+}
+
 export default IProjectMetricModel;

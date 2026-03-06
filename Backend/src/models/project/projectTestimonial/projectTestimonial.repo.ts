@@ -5,7 +5,9 @@ import {
 import commonRepository from '../../common/common.repository';
 import queryBuilder from '../../../common/queryBuilder';
 import projectTestimonialModel from './projectTestimonial.model';
-import IProjectTestimonialModel from '../../../interface/models/project/projectTestimonial.ts/projectTestimonial.interface';
+import IProjectTestimonialModel, {
+  createProjectTestimonialInput,
+} from '../../../interface/models/project/projectTestimonial.ts/projectTestimonial.interface';
 import { Types } from 'mongoose';
 
 const get = (params?: IProjectTestimonialRepoParams): Promise<IProjectTestimonialModel[]> => {
@@ -21,7 +23,7 @@ const getOne = (
 };
 
 const create = (
-  data: IProjectTestimonialModel,
+  data: createProjectTestimonialInput,
   createdBy: Types.ObjectId,
 ): Promise<IProjectTestimonialModel> => {
   return commonRepository.create({ ...data, createdBy }, projectTestimonialModel);

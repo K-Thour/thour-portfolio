@@ -20,4 +20,13 @@ export interface IContactModel extends IContact, ICommonModel {
   deletedBy?: Types.ObjectId;
 }
 
+export interface createContactInput {
+  Address1: string;
+  Address2?: string;
+  startWorkingDay: EDay;
+  endWorkingDay: EDay;
+  startWorkingHour: string;
+  endWorkingHour: string;
+}
+
 export default IContactModel;

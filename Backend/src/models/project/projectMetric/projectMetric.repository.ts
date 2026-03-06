@@ -1,6 +1,8 @@
 import { Types } from 'mongoose';
 import queryBuilder from '../../../common/queryBuilder';
-import IProjectMetricModel from '../../../interface/models/project/projectMetric/projectMetric.interface';
+import IProjectMetricModel, {
+  createProjectMetricInput,
+} from '../../../interface/models/project/projectMetric/projectMetric.interface';
 import {
   IProjectMetricRepo,
   IProjectMetricRepoParams,
@@ -19,7 +21,7 @@ const getOne = (params?: IProjectMetricRepoParams): Promise<IProjectMetricModel 
 };
 
 const create = (
-  data: IProjectMetricModel,
+  data: createProjectMetricInput,
   createdBy: Types.ObjectId,
 ): Promise<IProjectMetricModel> => {
   return commonRepository.create({ ...data, createdBy }, ProjectMetricModel);

@@ -23,4 +23,17 @@ export interface IResumeModel extends IResume, ICommonModel {
   deletedAt: Date;
 }
 
+export interface createResumeInput {
+  name: string;
+  projectCount: number;
+  serviceCount: number;
+  technologyCount: number;
+  projectsUsed: Types.ObjectId[];
+  servicesUsed: Types.ObjectId[];
+  technologiesUsed: Types.ObjectId[];
+  resumeUrl: string;
+  resumeFormatUrl?: string;
+  jobUrl?: string;
+}
+
 export default IResumeModel;

@@ -5,7 +5,9 @@ import {
 import commonRepository from '../common/common.repository';
 import contactModel from './contact.model';
 import { Types } from 'mongoose';
-import IContactModel from '../../interface/models/contact/contact.interface';
+import IContactModel, {
+  createContactInput,
+} from '../../interface/models/contact/contact.interface';
 import queryBuilder from '../../common/queryBuilder';
 
 const get = (params?: IContactRepoParams): Promise<IContactModel[]> => {
@@ -18,8 +20,8 @@ const getOne = (params?: IContactRepoParams): Promise<IContactModel | null> => {
   return commonRepository.findOne(query);
 };
 
-const create = (data: IContactModel): Promise<IContactModel> => {
-  return commonRepository.create({ ...data }, contactModel);
+const create = (data: createContactInput): Promise<IContactModel> => {
+  return commonRepository.create({ ...data, isDeleted: false, isActive: true }, contactModel);
 };
 
 const update = (

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import IUserModel, { ILogin } from '../interface/models/user/user.interface';
+import { createUserInput, ILogin } from '../interface/models/user/user.interface';
 import services from '../services';
 import { verifyToken } from '../utils/jwt.utils';
 import { Types } from 'mongoose';
@@ -11,7 +11,7 @@ const login = async (req: Request, res: Response) => {
 };
 
 const register = async (req: Request, res: Response) => {
-  const userDetails: IUserModel = req.body;
+  const userDetails: createUserInput = req.body;
   const result = await services.userServices.register(userDetails);
   res.status(result.statusCode).json(result);
 };

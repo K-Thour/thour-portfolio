@@ -3,11 +3,13 @@ import commonResponse from '../common/commonResponses';
 import MESSAGES_COMMON_UTIL from '../common/messages.common';
 import { STATUS_CODE } from '../constants/statusCode.constant';
 import models from '../models';
-import ITechnologyModel from '../interface/models/technology/technology.interface';
+import ITechnologyModel, {
+  createTechnologyInput,
+} from '../interface/models/technology/technology.interface';
 import { Types } from 'mongoose';
 import { ITechnologyRepoParams } from '../interface/models/technology/technologyRepo.interface';
 
-const createService = (data: ITechnologyModel, createdBy: Types.ObjectId) => {
+const createService = (data: createTechnologyInput, createdBy: Types.ObjectId) => {
   return asyncCommonWrapper(async () => {
     const result = await models.technology.repo.create(data, createdBy);
     return commonResponse.success(

@@ -2,7 +2,10 @@ import {
   IExperienceRepo,
   IExperienceRepoParams,
 } from '../../interface/models/experience/experienceRepo.interfence';
-import { IExperienceModel } from '../../interface/models/experience/experience.interface';
+import {
+  createExperienceInput,
+  IExperienceModel,
+} from '../../interface/models/experience/experience.interface';
 import { Types } from 'mongoose';
 import queryBuilder from '../../common/queryBuilder';
 import commonRepository from '../common/common.repository';
@@ -18,7 +21,10 @@ const getOne = (params?: IExperienceRepoParams): Promise<IExperienceModel | null
   return commonRepository.findOne(query);
 };
 
-const create = (data: IExperienceModel, createdBy: Types.ObjectId): Promise<IExperienceModel> => {
+const create = (
+  data: createExperienceInput,
+  createdBy: Types.ObjectId,
+): Promise<IExperienceModel> => {
   return commonRepository.create({ ...data, createdBy }, experienceModel);
 };
 

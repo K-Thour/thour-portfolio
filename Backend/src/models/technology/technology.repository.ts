@@ -1,6 +1,8 @@
 import { Types } from 'mongoose';
 import queryBuilder from '../../common/queryBuilder';
-import ITechnologyModel from '../../interface/models/technology/technology.interface';
+import ITechnologyModel, {
+  createTechnologyInput,
+} from '../../interface/models/technology/technology.interface';
 import {
   ITechnologyRepo,
   ITechnologyRepoParams,
@@ -18,7 +20,10 @@ const getOne = (params?: ITechnologyRepoParams): Promise<ITechnologyModel | null
   return commonRepository.findOne(query);
 };
 
-const create = (data: ITechnologyModel, createdBy: Types.ObjectId): Promise<ITechnologyModel> => {
+const create = (
+  data: createTechnologyInput,
+  createdBy: Types.ObjectId,
+): Promise<ITechnologyModel> => {
   return commonRepository.create({ ...data, createdBy }, technologyModel);
 };
 

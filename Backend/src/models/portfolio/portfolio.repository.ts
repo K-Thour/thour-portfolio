@@ -1,5 +1,8 @@
 import queryBuilder from '../../common/queryBuilder';
-import { IPortfolioModel } from '../../interface/models/portfolio/portfolio.interface';
+import {
+  createPortfolioInput,
+  IPortfolioModel,
+} from '../../interface/models/portfolio/portfolio.interface';
 import {
   IPortfolioRepo,
   IPortfolioRepoParams,
@@ -18,7 +21,10 @@ const getOne = (params?: IPortfolioRepoParams): Promise<IPortfolioModel | null> 
   return commonRepository.findOne(query);
 };
 
-const create = (data: IPortfolioModel, createdBy: Types.ObjectId): Promise<IPortfolioModel> => {
+const create = (
+  data: createPortfolioInput,
+  createdBy: Types.ObjectId,
+): Promise<IPortfolioModel> => {
   return commonRepository.create({ ...data, createdBy }, portfolioModel);
 };
 

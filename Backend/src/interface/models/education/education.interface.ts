@@ -25,4 +25,19 @@ interface IEducationModel extends IEducation, ICommonModel {
   updatedBy: Types.ObjectId;
 }
 
+export interface createEducationInput {
+  level: EEducationType;
+  degree?: string;
+  field_of_study?: string;
+  stream?: EStream;
+  institution: string;
+  board?: ESchoolBoard;
+  startYear: Date;
+  endYear: Date | 'pursuing';
+  isPursuing: boolean;
+  gradeType: EGradeType;
+  grade?: string;
+  description: string;
+}
+
 export default IEducationModel;

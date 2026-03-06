@@ -30,4 +30,23 @@ export interface IProjectModel extends IProject, ICommonModel {
   deletedAt: Date;
 }
 
+export interface createProjectInput {
+  title: string;
+  category: Types.ObjectId;
+  description: string;
+  image: IImageData;
+  device: EDeviceType;
+  year: number;
+  client: string;
+  fullDescription: string;
+  role: string;
+  outcome: string;
+  workingUrl: string;
+  githubUrl: string;
+  screenshots: Types.ObjectId[];
+  projectMetric: Types.ObjectId[];
+  projectTestimonial: Types.ObjectId[];
+  techStack: Types.ObjectId[];
+}
+
 export default IProjectModel;

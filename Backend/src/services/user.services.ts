@@ -5,7 +5,7 @@ import { IUserRepoParams } from '../interface/models/user/userRepo.interface';
 import models from '../models';
 import { STATUS_CODE } from '../constants/statusCode.constant';
 import { Types } from 'mongoose';
-import IUserModel from '../interface/models/user/user.interface';
+import IUserModel, { createUserInput } from '../interface/models/user/user.interface';
 import { comparePassword, hashPassword } from '../utils/bcrypt.utils';
 import { generateToken } from '../utils/jwt.utils';
 
@@ -36,7 +36,7 @@ const getById = (id: string, params: IUserRepoParams) => {
   });
 };
 
-const register = (data: IUserModel) => {
+const register = (data: createUserInput) => {
   return asyncCommonWrapper(async () => {
     const isUserExist = await models.user.repo.get({
       filter: [{ email: data.email }],

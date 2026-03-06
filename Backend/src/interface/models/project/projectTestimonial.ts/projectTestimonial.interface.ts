@@ -16,4 +16,11 @@ export interface IProjectTestimonialModel extends IProjectTestimonial, ICommonMo
   updatedBy?: Types.ObjectId;
 }
 
+export interface createProjectTestimonialInput {
+  project_id: ObjectId;
+  quote: string;
+  author: string;
+  author_role: string;
+}
+
 export default IProjectTestimonialModel;

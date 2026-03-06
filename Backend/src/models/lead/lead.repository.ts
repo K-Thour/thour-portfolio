@@ -3,7 +3,7 @@ import { ILeadRepo, ILeadRepoParams } from '../../interface/models/lead/leadRepo
 import commonRepository from '../common/common.repository';
 import leadModel from './lead.model';
 import { Types } from 'mongoose';
-import ILeadModel from '../../interface/models/lead/lead.interface';
+import ILeadModel, { createLeadInput } from '../../interface/models/lead/lead.interface';
 
 const get = (params?: ILeadRepoParams): Promise<ILeadModel[]> => {
   const query = queryBuilder({ model: leadModel, params });
@@ -15,7 +15,7 @@ const getOne = (params?: ILeadRepoParams): Promise<ILeadModel | null> => {
   return commonRepository.findOne(query);
 };
 
-const create = (data: ILeadModel): Promise<ILeadModel> => {
+const create = (data: createLeadInput): Promise<ILeadModel> => {
   return commonRepository.create({ ...data }, leadModel);
 };
 

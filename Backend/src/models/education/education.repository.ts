@@ -1,6 +1,8 @@
 import { Types } from 'mongoose';
 import queryBuilder from '../../common/queryBuilder';
-import IEducationModel from '../../interface/models/education/education.interface';
+import IEducationModel, {
+  createEducationInput,
+} from '../../interface/models/education/education.interface';
 import {
   IEducationRepo,
   IEducationRepoParams,
@@ -18,7 +20,10 @@ const getOne = (params?: IEducationRepoParams): Promise<IEducationModel | null> 
   return commonRepository.findOne(query);
 };
 
-const create = (data: IEducationModel, createdBy: Types.ObjectId): Promise<IEducationModel> => {
+const create = (
+  data: createEducationInput,
+  createdBy: Types.ObjectId,
+): Promise<IEducationModel> => {
   return commonRepository.create({ ...data, createdBy }, educationModel);
 };
 
