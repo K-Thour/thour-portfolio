@@ -1,6 +1,6 @@
 import { Types } from 'mongoose';
 import queryBuilder from '../../common/queryBuilder';
-import IResumeModel from '../../interface/models/resume/resume.interface';
+import IResumeModel, { createResumeInput } from '../../interface/models/resume/resume.interface';
 import { IResumeRepo, IResumeRepoParams } from '../../interface/models/resume/resumeRepo.interface';
 import commonRepository from '../common/common.repository';
 import resumeModel from './resume.model';
@@ -10,18 +10,18 @@ const get = (params?: IResumeRepoParams): Promise<IResumeModel[]> => {
   return commonRepository.find(query);
 };
 
-const getById = (id: string, params?: IResumeRepoParams): Promise<IResumeModel | null> => {
+const getOne = (params?: IResumeRepoParams): Promise<IResumeModel | null> => {
   const query = queryBuilder({ model: resumeModel, params });
-  return commonRepository.findById(id, query);
+  return commonRepository.findOne(query);
 };
 
-const create = (data: IResumeModel, createdBy: Types.ObjectId): Promise<IResumeModel> => {
+const create = (data: createResumeInput, createdBy: Types.ObjectId): Promise<IResumeModel> => {
   return commonRepository.create({ ...data, createdBy }, resumeModel);
 };
 
 const update = (
   id: string,
-  data: IResumeModel,
+  data: Partial<IResumeModel>,
   updatedBy: Types.ObjectId,
 ): Promise<IResumeModel | null> => {
   return commonRepository.findAndUpdate(id, { ...data, updatedBy }, resumeModel);
@@ -45,7 +45,7 @@ const deleteOne = (id: string): Promise<IResumeModel | null> => {
 
 const resumeRepository: IResumeRepo = {
   get,
-  getById,
+  getOne,
   create,
   update,
   softDelete,

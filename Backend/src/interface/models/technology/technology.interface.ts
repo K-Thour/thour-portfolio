@@ -17,4 +17,11 @@ export interface ITechnologyModel extends ITechnology, ICommonModel {
   isDeleted?: boolean;
 }
 
+export interface createTechnologyInput {
+  name: string;
+  description: string;
+  category: string;
+  iconUrl: IImageData;
+}
+
 export default ITechnologyModel;

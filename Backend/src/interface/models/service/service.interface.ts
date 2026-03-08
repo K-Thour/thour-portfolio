@@ -19,4 +19,13 @@ export interface IServiceModel extends IService, ICommonModel {
   isDeleted?: boolean;
 }
 
+export interface createServiceInput {
+  name: string;
+  decription: string;
+  technologies: Types.ObjectId[];
+  iconUrl: IImageData;
+  mainImageUrl: IImageData;
+  imagesUrl: IImageData[];
+}
+
 export default IServiceModel;

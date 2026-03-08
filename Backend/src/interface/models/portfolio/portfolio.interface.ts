@@ -13,3 +13,10 @@ export interface IPortfolioModel extends IPortfolio, ICommonModel {
   updatedBy: Types.ObjectId;
   deletedAt: Date;
 }
+
+export interface createPortfolioInput {
+  name: string;
+  project: Types.ObjectId[];
+}
+
+export default IPortfolioModel;

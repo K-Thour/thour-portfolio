@@ -1,5 +1,8 @@
 import queryBuilder from '../../common/queryBuilder';
-import { IPortfolioModel } from '../../interface/models/portfolio/portfolio.interface';
+import {
+  createPortfolioInput,
+  IPortfolioModel,
+} from '../../interface/models/portfolio/portfolio.interface';
 import {
   IPortfolioRepo,
   IPortfolioRepoParams,
@@ -13,18 +16,21 @@ const get = (params?: IPortfolioRepoParams): Promise<IPortfolioModel[]> => {
   return commonRepository.find(query);
 };
 
-const getById = (id: string, params?: IPortfolioRepoParams): Promise<IPortfolioModel | null> => {
+const getOne = (params?: IPortfolioRepoParams): Promise<IPortfolioModel | null> => {
   const query = queryBuilder({ model: portfolioModel, params });
-  return commonRepository.findById(id, query);
+  return commonRepository.findOne(query);
 };
 
-const create = (data: IPortfolioModel, createdBy: Types.ObjectId): Promise<IPortfolioModel> => {
+const create = (
+  data: createPortfolioInput,
+  createdBy: Types.ObjectId,
+): Promise<IPortfolioModel> => {
   return commonRepository.create({ ...data, createdBy }, portfolioModel);
 };
 
 const update = (
   id: string,
-  data: IPortfolioModel,
+  data: Partial<IPortfolioModel>,
   updatedBy: Types.ObjectId,
 ): Promise<IPortfolioModel | null> => {
   return commonRepository.findAndUpdate(id, { ...data, updatedBy }, portfolioModel);
@@ -48,7 +54,7 @@ const deleteOne = (id: string): Promise<IPortfolioModel | null> => {
 
 const portfolioRepository: IPortfolioRepo = {
   get,
-  getById,
+  getOne,
   create,
   update,
   softDelete,

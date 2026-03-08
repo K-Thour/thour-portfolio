@@ -15,4 +15,10 @@ export interface IProjectScreenshotModel extends IProjectScreenshot, ICommonMode
   updatedBy?: Types.ObjectId;
 }
 
+export interface createProjectScreenshotInput {
+  project_id: ObjectId;
+  image: IImageData;
+  display_order: number;
+}
+
 export default IProjectScreenshotModel;

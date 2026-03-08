@@ -17,4 +17,13 @@ export interface ILeadModel extends ILead, ICommonModel {
   isDeleted?: boolean;
 }
 
+export interface createLeadInput {
+  name: string;
+  email: string;
+  companyName: string;
+  mobileNumber: string;
+  service: Types.ObjectId;
+  description: string;
+}
+
 export default ILeadModel;

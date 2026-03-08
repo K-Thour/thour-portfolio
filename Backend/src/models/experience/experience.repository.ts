@@ -1,8 +1,11 @@
 import {
   IExperienceRepo,
   IExperienceRepoParams,
-} from '../../interface/models/experience/experienceRepo.interfence';
-import { IExperienceModel } from '../../interface/models/experience/experience.interface';
+} from '../../interface/models/experience/experienceRepo.interface';
+import {
+  createExperienceInput,
+  IExperienceModel,
+} from '../../interface/models/experience/experience.interface';
 import { Types } from 'mongoose';
 import queryBuilder from '../../common/queryBuilder';
 import commonRepository from '../common/common.repository';
@@ -13,18 +16,21 @@ const get = (params?: IExperienceRepoParams): Promise<IExperienceModel[]> => {
   return commonRepository.find(query);
 };
 
-const getById = (id: string, params?: IExperienceRepoParams): Promise<IExperienceModel | null> => {
+const getOne = (params?: IExperienceRepoParams): Promise<IExperienceModel | null> => {
   const query = queryBuilder({ model: experienceModel, params });
-  return commonRepository.findById(id, query);
+  return commonRepository.findOne(query);
 };
 
-const create = (data: IExperienceModel, createdBy: Types.ObjectId): Promise<IExperienceModel> => {
+const create = (
+  data: createExperienceInput,
+  createdBy: Types.ObjectId,
+): Promise<IExperienceModel> => {
   return commonRepository.create({ ...data, createdBy }, experienceModel);
 };
 
 const update = (
   id: string,
-  data: IExperienceModel,
+  data: Partial<IExperienceModel>,
   updatedBy: Types.ObjectId,
 ): Promise<IExperienceModel | null> => {
   return commonRepository.findAndUpdate(id, { ...data, updatedBy }, experienceModel);
@@ -48,7 +54,7 @@ const deleteOne = (id: string): Promise<IExperienceModel | null> => {
 
 const experienceRepository: IExperienceRepo = {
   get,
-  getById,
+  getOne,
   create,
   update,
   softDelete,

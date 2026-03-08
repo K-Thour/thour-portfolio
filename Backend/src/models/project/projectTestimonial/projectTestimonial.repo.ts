@@ -5,7 +5,9 @@ import {
 import commonRepository from '../../common/common.repository';
 import queryBuilder from '../../../common/queryBuilder';
 import projectTestimonialModel from './projectTestimonial.model';
-import IProjectTestimonialModel from '../../../interface/models/project/projectTestimonial.ts/projectTestimonial.interface';
+import IProjectTestimonialModel, {
+  createProjectTestimonialInput,
+} from '../../../interface/models/project/projectTestimonial.ts/projectTestimonial.interface';
 import { Types } from 'mongoose';
 
 const get = (params?: IProjectTestimonialRepoParams): Promise<IProjectTestimonialModel[]> => {
@@ -13,16 +15,15 @@ const get = (params?: IProjectTestimonialRepoParams): Promise<IProjectTestimonia
   return commonRepository.find(query);
 };
 
-const getById = (
-  id: string,
+const getOne = (
   params?: IProjectTestimonialRepoParams,
 ): Promise<IProjectTestimonialModel | null> => {
   const query = queryBuilder({ model: projectTestimonialModel, params });
-  return commonRepository.findById(id, query);
+  return commonRepository.findOne(query);
 };
 
 const create = (
-  data: IProjectTestimonialModel,
+  data: createProjectTestimonialInput,
   createdBy: Types.ObjectId,
 ): Promise<IProjectTestimonialModel> => {
   return commonRepository.create({ ...data, createdBy }, projectTestimonialModel);
@@ -30,7 +31,7 @@ const create = (
 
 const update = (
   id: string,
-  data: IProjectTestimonialModel,
+  data: Partial<IProjectTestimonialModel>,
   updatedBy: Types.ObjectId,
 ): Promise<IProjectTestimonialModel | null> => {
   return commonRepository.findAndUpdate(id, { ...data, updatedBy }, projectTestimonialModel);
@@ -54,7 +55,7 @@ const deleteOne = (id: string): Promise<IProjectTestimonialModel | null> => {
 
 const projectTestimonialRepo: IProjectTestimonialRepo = {
   get,
-  getById,
+  getOne,
   create,
   update,
   softDelete,

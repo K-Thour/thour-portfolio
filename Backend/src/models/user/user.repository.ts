@@ -1,6 +1,6 @@
 import { Types } from 'mongoose';
 import queryBuilder from '../../common/queryBuilder';
-import IUserModel from '../../interface/models/user/user.interface';
+import IUserModel, { createUserInput } from '../../interface/models/user/user.interface';
 import { IUserRepo, IUserRepoParams } from '../../interface/models/user/userRepo.interface';
 import commonRepository from '../common/common.repository';
 import userModel from './user.model';
@@ -10,18 +10,18 @@ const get = (params?: IUserRepoParams): Promise<IUserModel[]> => {
   return commonRepository.find(query);
 };
 
-const getById = (id: string, params?: IUserRepoParams): Promise<IUserModel | null> => {
+const getOne = (params?: IUserRepoParams): Promise<IUserModel | null> => {
   const query = queryBuilder({ model: userModel, params });
-  return commonRepository.findById(id, query);
+  return commonRepository.findOne(query);
 };
 
-const create = (data: IUserModel, createdBy?: Types.ObjectId): Promise<IUserModel> => {
+const create = (data: createUserInput, createdBy?: Types.ObjectId): Promise<IUserModel> => {
   return commonRepository.create({ ...data, createdBy }, userModel);
 };
 
 const update = (
   id: string,
-  data: IUserModel,
+  data: Partial<IUserModel>,
   updatedBy: Types.ObjectId,
 ): Promise<IUserModel | null> => {
   return commonRepository.findAndUpdate(id, { ...data, updatedBy }, userModel);
@@ -45,7 +45,7 @@ const deleteOne = (id: string): Promise<IUserModel | null> => {
 
 const userRepository: IUserRepo = {
   get,
-  getById,
+  getOne,
   create,
   update,
   softDelete,

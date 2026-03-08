@@ -3,25 +3,25 @@ import { ILeadRepo, ILeadRepoParams } from '../../interface/models/lead/leadRepo
 import commonRepository from '../common/common.repository';
 import leadModel from './lead.model';
 import { Types } from 'mongoose';
-import ILeadModel from '../../interface/models/lead/lead.interface';
+import ILeadModel, { createLeadInput } from '../../interface/models/lead/lead.interface';
 
 const get = (params?: ILeadRepoParams): Promise<ILeadModel[]> => {
   const query = queryBuilder({ model: leadModel, params });
   return commonRepository.find(query);
 };
 
-const getById = (id: string, params?: ILeadRepoParams): Promise<ILeadModel | null> => {
+const getOne = (params?: ILeadRepoParams): Promise<ILeadModel | null> => {
   const query = queryBuilder({ model: leadModel, params });
-  return commonRepository.findById(id, query);
+  return commonRepository.findOne(query);
 };
 
-const create = (data: ILeadModel): Promise<ILeadModel> => {
+const create = (data: createLeadInput): Promise<ILeadModel> => {
   return commonRepository.create({ ...data }, leadModel);
 };
 
 const update = (
   id: string,
-  data: ILeadModel,
+  data: Partial<ILeadModel>,
   updatedBy: Types.ObjectId,
 ): Promise<ILeadModel | null> => {
   return commonRepository.findAndUpdate(id, { ...data, updatedBy }, leadModel);
@@ -45,7 +45,7 @@ const deleteOne = (id: string): Promise<ILeadModel | null> => {
 
 const leadRespository: ILeadRepo = {
   get,
-  getById,
+  getOne,
   create,
   update,
   softDelete,

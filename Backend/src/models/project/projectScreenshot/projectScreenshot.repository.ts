@@ -2,7 +2,9 @@ import {
   IProjectScreenshotRepo,
   IProjectScreenshotRepoParams,
 } from '../../../interface/models/project/projectScreenshot/projectScreenshotRepo.interface';
-import IProjectScreenshotModel from '../../../interface/models/project/projectScreenshot/projectScreenshot.interface';
+import IProjectScreenshotModel, {
+  createProjectScreenshotInput,
+} from '../../../interface/models/project/projectScreenshot/projectScreenshot.interface';
 import queryBuilder from '../../../common/queryBuilder';
 import commonRepository from '../../common/common.repository';
 import projectScreenshotModel from './projectScreenshot.model';
@@ -13,16 +15,13 @@ const get = (params?: IProjectScreenshotRepoParams): Promise<IProjectScreenshotM
   return commonRepository.find(query);
 };
 
-const getById = (
-  id: string,
-  params?: IProjectScreenshotRepoParams,
-): Promise<IProjectScreenshotModel | null> => {
+const getOne = (params?: IProjectScreenshotRepoParams): Promise<IProjectScreenshotModel | null> => {
   const query = queryBuilder({ model: projectScreenshotModel, params });
-  return commonRepository.findById(id, query);
+  return commonRepository.findOne(query);
 };
 
 const create = (
-  data: IProjectScreenshotModel,
+  data: createProjectScreenshotInput,
   createdBy: Types.ObjectId,
 ): Promise<IProjectScreenshotModel> => {
   return commonRepository.create({ ...data, createdBy }, projectScreenshotModel);
@@ -30,7 +29,7 @@ const create = (
 
 const update = (
   id: string,
-  data: IProjectScreenshotModel,
+  data: Partial<IProjectScreenshotModel>,
   updatedBy: Types.ObjectId,
 ): Promise<IProjectScreenshotModel | null> => {
   return commonRepository.findAndUpdate(id, { ...data, updatedBy }, projectScreenshotModel);
@@ -54,7 +53,7 @@ const deleteOne = (id: string): Promise<IProjectScreenshotModel | null> => {
 
 const projectScreenshotRepo: IProjectScreenshotRepo = {
   get,
-  getById,
+  getOne,
   create,
   update,
   softDelete,

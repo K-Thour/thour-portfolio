@@ -2,7 +2,9 @@ import {
   IServiceRepo,
   IServiceRepoParams,
 } from '../../interface/models/service/serviceRepo.interface';
-import IServiceModel from '../../interface/models/service/service.interface';
+import IServiceModel, {
+  createServiceInput,
+} from '../../interface/models/service/service.interface';
 import queryBuilder from '../../common/queryBuilder';
 import serviceModel from './service.model';
 import commonRepository from '../common/common.repository';
@@ -13,18 +15,18 @@ const get = (params?: IServiceRepoParams): Promise<IServiceModel[]> => {
   return commonRepository.find(query);
 };
 
-const getById = (id: string, params?: IServiceRepoParams): Promise<IServiceModel | null> => {
+const getOne = (params?: IServiceRepoParams): Promise<IServiceModel | null> => {
   const query = queryBuilder({ model: serviceModel, params });
-  return commonRepository.findById(id, query);
+  return commonRepository.findOne(query);
 };
 
-const create = (data: IServiceModel, createdBy: Types.ObjectId): Promise<IServiceModel> => {
+const create = (data: createServiceInput, createdBy: Types.ObjectId): Promise<IServiceModel> => {
   return commonRepository.create({ ...data, createdBy }, serviceModel);
 };
 
 const update = (
   id: string,
-  data: IServiceModel,
+  data: Partial<IServiceModel>,
   updatedBy: Types.ObjectId,
 ): Promise<IServiceModel | null> => {
   return commonRepository.findAndUpdate(id, { ...data, updatedBy }, serviceModel);
@@ -48,7 +50,7 @@ const deleteOne = (id: string): Promise<IServiceModel | null> => {
 
 const serviceRepository: IServiceRepo = {
   get,
-  getById,
+  getOne,
   create,
   update,
   softDelete,

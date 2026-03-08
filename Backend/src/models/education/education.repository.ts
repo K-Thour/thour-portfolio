@@ -1,6 +1,8 @@
 import { Types } from 'mongoose';
 import queryBuilder from '../../common/queryBuilder';
-import IEducationModel from '../../interface/models/education/education.interface';
+import IEducationModel, {
+  createEducationInput,
+} from '../../interface/models/education/education.interface';
 import {
   IEducationRepo,
   IEducationRepoParams,
@@ -13,18 +15,21 @@ const get = (params?: IEducationRepoParams): Promise<IEducationModel[]> => {
   return commonRepository.find(query);
 };
 
-const getById = (id: string, params?: IEducationRepoParams): Promise<IEducationModel | null> => {
+const getOne = (params?: IEducationRepoParams): Promise<IEducationModel | null> => {
   const query = queryBuilder({ model: educationModel, params });
-  return commonRepository.findById(id, query);
+  return commonRepository.findOne(query);
 };
 
-const create = (data: IEducationModel, createdBy: Types.ObjectId): Promise<IEducationModel> => {
+const create = (
+  data: createEducationInput,
+  createdBy: Types.ObjectId,
+): Promise<IEducationModel> => {
   return commonRepository.create({ ...data, createdBy }, educationModel);
 };
 
 const update = (
   id: string,
-  data: IEducationModel,
+  data: Partial<IEducationModel>,
   updatedBy: Types.ObjectId,
 ): Promise<IEducationModel | null> => {
   return commonRepository.findAndUpdate(id, { ...data, updatedBy }, educationModel);
@@ -48,7 +53,7 @@ const deleteOne = (id: string): Promise<IEducationModel | null> => {
 
 const educationRepository: IEducationRepo = {
   get,
-  getById,
+  getOne,
   create,
   update,
   softDelete,
