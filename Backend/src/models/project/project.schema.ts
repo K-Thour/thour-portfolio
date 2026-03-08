@@ -2,6 +2,7 @@ import { Schema, Types } from 'mongoose';
 import IProjectModel from '../../interface/models/project/project.interface';
 import { imageDataSchema } from '../common/common.type';
 import { EDeviceType } from '../../interface/common/common.enum';
+import timeZone from '../../utils/date.utils';
 
 const projectSchema = new Schema<IProjectModel>(
   {
@@ -99,7 +100,7 @@ const projectSchema = new Schema<IProjectModel>(
       type: Date,
     },
   },
-  { timestamps: true },
+  { timestamps: { currentTime: () => new Date(timeZone.utc.dateTime() + 'Z') } },
 );
 
 export default projectSchema;

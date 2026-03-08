@@ -6,6 +6,7 @@ import {
   ESchoolBoard,
   EStream,
 } from '../../interface/common/common.enum';
+import timeZone from '../../utils/date.utils';
 
 const educationShema = new Schema<IEducationModel>(
   {
@@ -83,7 +84,7 @@ const educationShema = new Schema<IEducationModel>(
       type: Date,
     },
   },
-  { timestamps: true },
+  { timestamps: { currentTime: () => new Date(timeZone.utc.dateTime() + 'Z') } },
 );
 
 export default educationShema;

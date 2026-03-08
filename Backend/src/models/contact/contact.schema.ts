@@ -1,6 +1,7 @@
 import { Schema } from 'mongoose';
 import IContactModel from '../../interface/models/contact/contact.interface';
 import { EDay } from '../../interface/common/common.enum';
+import timeZone from '../../utils/date.utils';
 
 const contactSchema = new Schema<IContactModel>(
   {
@@ -44,7 +45,7 @@ const contactSchema = new Schema<IContactModel>(
       ref: 'User',
     },
   },
-  { timestamps: true },
+  { timestamps: { currentTime: () => new Date(timeZone.utc.dateTime() + 'Z') } },
 );
 
 export default contactSchema;

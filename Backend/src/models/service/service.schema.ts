@@ -1,6 +1,7 @@
 import { Schema } from 'mongoose';
 import IServiceModel from '../../interface/models/service/service.interface';
 import { imageDataSchema } from '../common/common.type';
+import timeZone from '../../utils/date.utils';
 
 const serviceSchema = new Schema<IServiceModel>(
   {
@@ -14,12 +15,12 @@ const serviceSchema = new Schema<IServiceModel>(
     createdBy: { type: Schema.Types.ObjectId, ref: 'User' },
     updatedBy: { type: Schema.Types.ObjectId, ref: 'User' },
     deletedBy: { type: Schema.Types.ObjectId, ref: 'User' },
-    createdAt: { type: Date, default: Date.now },
-    updatedAt: { type: Date, default: Date.now },
+    createdAt: { type: Date, default: () => new Date(timeZone.utc.dateTime() + 'Z') },
+    updatedAt: { type: Date, default: () => new Date(timeZone.utc.dateTime() + 'Z') },
     deletedAt: { type: Date },
     isDeleted: { type: Boolean, default: false },
   },
-  { timestamps: true },
+  { timestamps: { currentTime: () => new Date(timeZone.utc.dateTime() + 'Z') } },
 );
 
 export default serviceSchema;

@@ -1,5 +1,6 @@
 import { Schema } from 'mongoose';
 import IProjectMetricModel from '../../../interface/models/project/projectMetric/projectMetric.interface';
+import timeZone from '../../../utils/date.utils';
 
 const projectMetricSchema = new Schema<IProjectMetricModel>(
   {
@@ -36,7 +37,7 @@ const projectMetricSchema = new Schema<IProjectMetricModel>(
       ref: 'User',
     },
   },
-  { timestamps: true },
+  { timestamps: { currentTime: () => new Date(timeZone.utc.dateTime() + 'Z') } },
 );
 
 export default projectMetricSchema;

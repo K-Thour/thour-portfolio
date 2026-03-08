@@ -1,5 +1,6 @@
 import { Schema } from 'mongoose';
 import { IPortfolioModel } from '../../interface/models/portfolio/portfolio.interface';
+import timeZone from '../../utils/date.utils';
 
 const portfolioSchema = new Schema<IPortfolioModel>(
   {
@@ -34,7 +35,7 @@ const portfolioSchema = new Schema<IPortfolioModel>(
       type: Date,
     },
   },
-  { timestamps: true },
+  { timestamps: { currentTime: () => new Date(timeZone.utc.dateTime() + 'Z') } },
 );
 
 export default portfolioSchema;

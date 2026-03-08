@@ -1,6 +1,7 @@
 import { Schema } from 'mongoose';
 import IProjectScreenshotModel from '../../../interface/models/project/projectScreenshot/projectScreenshot.interface';
 import { imageDataSchema } from '../../common/common.type';
+import timeZone from '../../../utils/date.utils';
 
 const projectScreenshotSchema = new Schema<IProjectScreenshotModel>(
   {
@@ -37,7 +38,7 @@ const projectScreenshotSchema = new Schema<IProjectScreenshotModel>(
       type: Date,
     },
   },
-  { timestamps: true },
+  { timestamps: { currentTime: () => new Date(timeZone.utc.dateTime() + 'Z') } },
 );
 
 export default projectScreenshotSchema;

@@ -5,6 +5,7 @@ import {
 } from '../interface/models/portfolio/portfolio.interface';
 import services from '../services';
 import { Types } from 'mongoose';
+import timeZone from '../utils/date.utils';
 
 const create = async (req: Request, res: Response) => {
   const userId = new Types.ObjectId(req.userId);
@@ -22,7 +23,11 @@ const update = async (req: Request, res: Response) => {
 const softDelete = async (req: Request, res: Response) => {
   const userId = new Types.ObjectId(req.userId);
   const id: string = req.params.id as string;
-  const result = await services.portfolioServices.softDeleteService(id, new Date(), userId);
+  const result = await services.portfolioServices.softDeleteService(
+    id,
+    new Date(timeZone.utc.dateTime() + 'Z'),
+    userId,
+  );
   res.status(result.statusCode).json(result);
 };
 const deleteOne = async (req: Request, res: Response) => {

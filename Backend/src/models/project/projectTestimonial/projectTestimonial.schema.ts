@@ -1,5 +1,6 @@
 import { Schema } from 'mongoose';
 import IProjectTestimonialModel from '../../../interface/models/project/projectTestimonial.ts/projectTestimonial.interface';
+import timeZone from '../../../utils/date.utils';
 
 const projectTestimonialSchema = new Schema<IProjectTestimonialModel>(
   {
@@ -40,7 +41,7 @@ const projectTestimonialSchema = new Schema<IProjectTestimonialModel>(
       type: Date,
     },
   },
-  { timestamps: true },
+  { timestamps: { currentTime: () => new Date(timeZone.utc.dateTime() + 'Z') } },
 );
 
 export default projectTestimonialSchema;

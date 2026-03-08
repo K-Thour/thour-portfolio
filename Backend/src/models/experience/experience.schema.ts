@@ -1,5 +1,6 @@
 import { Schema } from 'mongoose';
 import IExperienceModel from '../../interface/models/experience/experience.interface';
+import timeZone from '../../utils/date.utils';
 
 const experienceSchema = new Schema<IExperienceModel>(
   {
@@ -58,7 +59,7 @@ const experienceSchema = new Schema<IExperienceModel>(
       type: Date,
     },
   },
-  { timestamps: true },
+  { timestamps: { currentTime: () => new Date(timeZone.utc.dateTime() + 'Z') } },
 );
 
 export default experienceSchema;
