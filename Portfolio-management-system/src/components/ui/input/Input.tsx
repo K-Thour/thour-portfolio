@@ -1,0 +1,25 @@
+import * as React from "react";
+import utils from "../../../utils";
+const { cn } = utils.tailwindUtils;
+
+export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  id: string;
+}
+
+const Input = React.forwardRef<HTMLInputElement, InputProps>(
+  ({ className, type = "text", id, ...props }, ref) => (
+    <input
+      type={type}
+      id={id}
+      ref={ref}
+      className={cn(
+        "mt-1 flex h-10 w-full rounded-md border border-input bg-background/60 px-3 py-2 text-sm text-foreground shadow-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50",
+        className,
+      )}
+      {...props}
+    />
+  ),
+);
+Input.displayName = "Input";
+
+export default Input;
