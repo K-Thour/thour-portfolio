@@ -6,7 +6,7 @@ import {
   isValidElement,
 } from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
-import utils from "../../utils";
+import utils from "../../../utils";
 const { cn } = utils.tailwindUtils;
 
 import {
@@ -14,7 +14,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "../ui/dropdown-menu/Index";
+} from "../../ui/dropdown-menu/Index";
 
 interface NavGroupProps {
   icon: ReactNode;
@@ -66,10 +66,11 @@ function NavGroup({ icon, label, isOpen, children }: NavGroupProps) {
                       className?: string;
                     }>,
                     {
-                    isOpen: true, // Force open to show label
-                    menu: () => setOpenMenu(false), // Pass close handler
-                    className: "w-full rounded-none px-4", // Override styles for menu
-                  })}
+                      isOpen: true, // Force open to show label
+                      menu: () => setOpenMenu(false), // Pass close handler
+                      className: "w-full rounded-none px-4", // Override styles for menu
+                    },
+                  )}
                 </DropdownMenuItem>
               );
             }

@@ -1,5 +1,5 @@
 import { NavLink, useLocation } from "react-router-dom";
-import utils from "../../utils";
+import utils from "../../../utils";
 const { cn } = utils.tailwindUtils;
 
 interface NavitemProps {
