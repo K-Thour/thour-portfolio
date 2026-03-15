@@ -1,4 +1,5 @@
 import { DateTime } from 'luxon';
+import constants from '../constants';
 
 interface DateFormats {
   time: () => string;
@@ -18,43 +19,139 @@ export const formatDateByTimeZone = (timezone: string, format: string) => {
 
 export default <TimeZone>{
   utc: {
-    time: () => formatDateByTimeZone('UTC', 'HH:mm:ss'),
-    date: () => formatDateByTimeZone('UTC', 'yyyy-MM-dd'),
-    dateTime: () => formatDateByTimeZone('UTC', 'yyyy-MM-dd HH:mm:ss'),
+    time: () =>
+      formatDateByTimeZone(
+        constants.dateConstraints.timezones.utc,
+        constants.dateConstraints.formats.time,
+      ),
+    date: () =>
+      formatDateByTimeZone(
+        constants.dateConstraints.timezones.utc,
+        constants.dateConstraints.formats.date,
+      ),
+    dateTime: () =>
+      formatDateByTimeZone(
+        constants.dateConstraints.timezones.utc,
+        constants.dateConstraints.formats.dateTime,
+      ),
   },
   ist: {
-    time: () => formatDateByTimeZone('Asia/Kolkata', 'HH:mm:ss'),
-    date: () => formatDateByTimeZone('Asia/Kolkata', 'yyyy-MM-dd'),
-    dateTime: () => formatDateByTimeZone('Asia/Kolkata', 'yyyy-MM-dd HH:mm:ss'),
+    time: () =>
+      formatDateByTimeZone(
+        constants.dateConstraints.timezones.ist,
+        constants.dateConstraints.formats.time,
+      ),
+    date: () =>
+      formatDateByTimeZone(
+        constants.dateConstraints.timezones.ist,
+        constants.dateConstraints.formats.date,
+      ),
+    dateTime: () =>
+      formatDateByTimeZone(
+        constants.dateConstraints.timezones.ist,
+        constants.dateConstraints.formats.dateTime,
+      ),
   },
   gmt: {
-    time: () => formatDateByTimeZone('GMT', 'HH:mm:ss'),
-    date: () => formatDateByTimeZone('GMT', 'yyyy-MM-dd'),
-    dateTime: () => formatDateByTimeZone('GMT', 'yyyy-MM-dd HH:mm:ss'),
+    time: () =>
+      formatDateByTimeZone(
+        constants.dateConstraints.timezones.gmt,
+        constants.dateConstraints.formats.time,
+      ),
+    date: () =>
+      formatDateByTimeZone(
+        constants.dateConstraints.timezones.gmt,
+        constants.dateConstraints.formats.date,
+      ),
+    dateTime: () =>
+      formatDateByTimeZone(
+        constants.dateConstraints.timezones.gmt,
+        constants.dateConstraints.formats.dateTime,
+      ),
   },
   cst: {
-    time: () => formatDateByTimeZone('America/Chicago', 'HH:mm:ss'),
-    date: () => formatDateByTimeZone('America/Chicago', 'yyyy-MM-dd'),
-    dateTime: () => formatDateByTimeZone('America/Chicago', 'yyyy-MM-dd HH:mm:ss'),
+    time: () =>
+      formatDateByTimeZone(
+        constants.dateConstraints.timezones.cst,
+        constants.dateConstraints.formats.time,
+      ),
+    date: () =>
+      formatDateByTimeZone(
+        constants.dateConstraints.timezones.cst,
+        constants.dateConstraints.formats.date,
+      ),
+    dateTime: () =>
+      formatDateByTimeZone(
+        constants.dateConstraints.timezones.cst,
+        constants.dateConstraints.formats.dateTime,
+      ),
   },
   jst: {
-    time: () => formatDateByTimeZone('Asia/Tokyo', 'HH:mm:ss'),
-    date: () => formatDateByTimeZone('Asia/Tokyo', 'yyyy-MM-dd'),
-    dateTime: () => formatDateByTimeZone('Asia/Tokyo', 'yyyy-MM-dd HH:mm:ss'),
+    time: () =>
+      formatDateByTimeZone(
+        constants.dateConstraints.timezones.jst,
+        constants.dateConstraints.formats.time,
+      ),
+    date: () =>
+      formatDateByTimeZone(
+        constants.dateConstraints.timezones.jst,
+        constants.dateConstraints.formats.date,
+      ),
+    dateTime: () =>
+      formatDateByTimeZone(
+        constants.dateConstraints.timezones.jst,
+        constants.dateConstraints.formats.dateTime,
+      ),
   },
   est: {
-    time: () => formatDateByTimeZone('America/New_York', 'HH:mm:ss'),
-    date: () => formatDateByTimeZone('America/New_York', 'yyyy-MM-dd'),
-    dateTime: () => formatDateByTimeZone('America/New_York', 'yyyy-MM-dd HH:mm:ss'),
+    time: () =>
+      formatDateByTimeZone(
+        constants.dateConstraints.timezones.est,
+        constants.dateConstraints.formats.time,
+      ),
+    date: () =>
+      formatDateByTimeZone(
+        constants.dateConstraints.timezones.est,
+        constants.dateConstraints.formats.date,
+      ),
+    dateTime: () =>
+      formatDateByTimeZone(
+        constants.dateConstraints.timezones.est,
+        constants.dateConstraints.formats.dateTime,
+      ),
   },
   pst: {
-    time: () => formatDateByTimeZone('America/Los_Angeles', 'HH:mm:ss'),
-    date: () => formatDateByTimeZone('America/Los_Angeles', 'yyyy-MM-dd'),
-    dateTime: () => formatDateByTimeZone('America/Los_Angeles', 'yyyy-MM-dd HH:mm:ss'),
+    time: () =>
+      formatDateByTimeZone(
+        constants.dateConstraints.timezones.pst,
+        constants.dateConstraints.formats.time,
+      ),
+    date: () =>
+      formatDateByTimeZone(
+        constants.dateConstraints.timezones.pst,
+        constants.dateConstraints.formats.date,
+      ),
+    dateTime: () =>
+      formatDateByTimeZone(
+        constants.dateConstraints.timezones.pst,
+        constants.dateConstraints.formats.dateTime,
+      ),
   },
   cet: {
-    time: () => formatDateByTimeZone('Europe/Paris', 'HH:mm:ss'),
-    date: () => formatDateByTimeZone('Europe/Paris', 'yyyy-MM-dd'),
-    dateTime: () => formatDateByTimeZone('Europe/Paris', 'yyyy-MM-dd HH:mm:ss'),
+    time: () =>
+      formatDateByTimeZone(
+        constants.dateConstraints.timezones.cet,
+        constants.dateConstraints.formats.time,
+      ),
+    date: () =>
+      formatDateByTimeZone(
+        constants.dateConstraints.timezones.cet,
+        constants.dateConstraints.formats.date,
+      ),
+    dateTime: () =>
+      formatDateByTimeZone(
+        constants.dateConstraints.timezones.cet,
+        constants.dateConstraints.formats.dateTime,
+      ),
   },
 };
