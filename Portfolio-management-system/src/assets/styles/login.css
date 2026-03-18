@@ -43,18 +43,12 @@
   cursor: not-allowed;
 }
 
-/* Fix browser autofill background matching dark/light themes */
+/* Fix browser autofill background and text color matching dark/light themes */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
-  transition: background-color 9999s ease-in-out 0s;
-}
-
-.autofill-text-dark:-webkit-autofill {
-  -webkit-text-fill-color: #e2e8f0 !important;
-}
-
-.autofill-text-light:-webkit-autofill {
-  -webkit-text-fill-color: #1e293b !important;
+  transition: background-color 9999s ease-in-out 0s, color 9999s ease-in-out 0s !important;
+  -webkit-text-fill-color: inherit !important;
+  caret-color: inherit !important;
 }
