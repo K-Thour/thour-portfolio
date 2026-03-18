@@ -1,48 +1,31 @@
 import { useForm } from "@tanstack/react-form";
-import { yupValidator } from "@tanstack/yup-form-adapter";
-import * as yup from "yup";
-
-import { Input } from "../../ui/input";
-import Button from "../../ui/button/Button";
-import InputContainer from "../../ui/inputContainer/InputContainer";
-
-import type { DeepKeys } from "@tanstack/react-form";
-
-export interface FormFieldConfig<TData> {
-  name: DeepKeys<TData>;
-  label: string;
-  type?: "text" | "email" | "password" | "number" | "date" | "tel";
-  placeholder?: string;
-  validators?: {
-    onChange?: yup.AnySchema;
-    onChangeAsync?: yup.AnySchema;
-    onBlur?: yup.AnySchema;
-    onBlurAsync?: yup.AnySchema;
-    onSubmit?: yup.AnySchema;
-    onSubmitAsync?: yup.AnySchema;
-  };
-}
-
-interface CommonFormProps<TData> {
-  defaultValues: TData;
-  fields: FormFieldConfig<TData>[];
-  onSubmit: (values: { value: TData }) => void | Promise<void>;
-  submitText?: string;
-  className?: string;
-}
+import type { CommonFormProps } from "./interface/interfaces";
+import { FieldRenderer } from "./components/FieldRenderer";
+import { FormSubmitButton } from "./components/FormSubmitButton";
 
 export function CommonForm<TData>({
   defaultValues,
-  fields,
+  fields = [],
   onSubmit,
+  children,
+  customFooter,
   submitText = "Submit",
   className = "",
+  buttonClassName = "",
+  schema,
+  showSubmitButton = true,
+  isDark = false,
 }: CommonFormProps<TData>) {
   const form = useForm({
     defaultValues,
     onSubmit,
-    validatorAdapter: yupValidator(),
-  } as unknown as Parameters<typeof useForm>[0]);
+    asyncDebounceMs: 500,
+    validators: schema
+      ? {
+          onChangeAsync: schema,
+        }
+      : undefined,
+  });
 
   return (
     <form
@@ -53,66 +36,40 @@ export function CommonForm<TData>({
         form.handleSubmit();
       }}
     >
-      <div className="space-y-4">
-        {fields.map((fieldConfig) => (
-          <form.Field
-            key={fieldConfig.name}
-            name={fieldConfig.name}
-            validators={fieldConfig.validators}
-          >
-            {(field) => {
-              // Extract standard input props
-              const { name } = field;
-              const value = field.state.value;
-              const onBlur = field.handleBlur;
-              const onChange = field.handleChange;
+      {/* 1. Render auto-generated fields if provided */}
+      {fields.length > 0 && (
+        <div className="space-y-4">
+          {fields.map((fieldConfig) => (
+            <form.Field
+              key={fieldConfig.name as string}
+              name={fieldConfig.name}
+              validators={fieldConfig.validators}
+            >
+              {(field) => (
+                <FieldRenderer
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  field={field as any}
+                  fieldConfig={fieldConfig}
+                  isDark={isDark}
+                />
+              )}
+            </form.Field>
+          ))}
+        </div>
+      )}
 
-              const errorMessage = field.state.meta.errors.join(", ");
-              const error =
-                field.state.meta.isTouched && errorMessage
-                  ? { message: errorMessage }
-                  : undefined;
+      {/* 2. Render custom children if provided */}
+      {typeof children === "function" ? children(form) : children}
+      {customFooter && customFooter(form)}
 
-              return (
-                <InputContainer
-                  type={fieldConfig.label || fieldConfig.name}
-                  error={error}
-                >
-                  <Input
-                    id={fieldConfig.name}
-                    name={name}
-                    type={fieldConfig.type || "text"}
-                    value={value as string | number}
-                    onBlur={onBlur}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                      const val =
-                        fieldConfig.type === "number"
-                          ? Number(e.target.value)
-                          : e.target.value;
-                      onChange(val as unknown as typeof value);
-                    }}
-                    placeholder={fieldConfig.placeholder}
-                  />
-                </InputContainer>
-              );
-            }}
-          </form.Field>
-        ))}
-      </div>
-
-      <form.Subscribe
-        selector={(state) => [state.canSubmit, state.isSubmitting]}
-      >
-        {([canSubmit, isSubmitting]) => (
-          <Button
-            type="submit"
-            disabled={!canSubmit || isSubmitting}
-            className="w-full"
-          >
-            {isSubmitting ? "Submitting..." : submitText}
-          </Button>
-        )}
-      </form.Subscribe>
+      {/* 3. Render default submit button if enabled */}
+      {showSubmitButton && (
+        <FormSubmitButton
+          form={form}
+          submitText={submitText}
+          buttonClassName={buttonClassName}
+        />
+      )}
     </form>
   );
 }

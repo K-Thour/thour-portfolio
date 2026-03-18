@@ -12,7 +12,9 @@
     "format-check": "prettier --check .",
     "lint-check": "eslint . --check",
     "lint-fix": "eslint . --fix",
-    "prepare": "husky"
+    "prepare": "husky",
+    "deploy": "npm run format && npm run lint:fix && git add . && git commit -m",
+    "postdeploy": "git push"
   },
   "dependencies": {
     "@base-ui/react": "^1.2.0",
@@ -26,6 +28,7 @@
     "clsx": "^2.1.1",
     "lucide-react": "^0.577.0",
     "luxon": "^3.7.2",
+    "motion": "^12.38.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-redux": "^9.2.0",
