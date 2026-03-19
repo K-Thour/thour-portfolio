@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Moon, Sun } from "lucide-react";
 import Button from "../../components/ui/button/Button";
 import { AvengerBackground } from "./components/AvengerBackground";
@@ -6,21 +6,38 @@ import { LightBackground } from "./components/LightBackground";
 import { LoginForm } from "./components/form/LoginForm";
 import { ForgotPasswordFlow } from "./components/form/ForgotPasswordFlow";
 import { AnimatePresence } from "motion/react";
+import { useState } from "react";
 
-// Import our common CSS file for the login component
+// Redux
+import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
+import { toggleTheme } from "../../store/slices/theme.slice";
+
+// Toast
+import { useToast } from "../../hooks/useToast";
+
+// Styles
 import "../../assets/styles/login.css";
 
 export const Login: React.FC = () => {
-  const [theme, setTheme] = useState<"dark" | "light">("dark");
+  const dispatch = useAppDispatch();
+  const theme = useAppSelector((state) => state.theme.theme);
+  const { toast } = useToast();
+
   const [currentView, setCurrentView] = useState<"login" | "forgot-password">(
     "login",
   );
 
-  const toggleTheme = () => {
-    setTheme((prev) => (prev === "dark" ? "light" : "dark"));
-  };
-
   const isDark = theme === "dark";
+
+  const handleToggleTheme = () => {
+    dispatch(toggleTheme());
+    toast({
+      title: "Theme Switched",
+      description: `Switched to ${isDark ? "Ragnarok" : "Avenger"} theme`,
+      variant: "warning",
+      duration: 5000,
+    });
+  };
 
   return (
     <div
@@ -34,7 +51,7 @@ export const Login: React.FC = () => {
         <Button
           variant="outline"
           size="icon"
-          onClick={toggleTheme}
+          onClick={handleToggleTheme}
           className={`rounded-full shadow-lg transition-colors ${isDark ? "bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700 hover:text-white" : "bg-white text-slate-600 border-slate-200 hover:bg-slate-100 hover:text-slate-900"}`}
         >
           {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
