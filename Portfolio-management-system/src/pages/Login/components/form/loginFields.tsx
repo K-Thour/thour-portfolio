@@ -8,6 +8,7 @@ export const getLoginFields = (
   isDark: boolean,
   showPassword: boolean,
   setShowPassword: React.Dispatch<React.SetStateAction<boolean>>,
+  onForgotPassword?: () => void,
 ): FormFieldConfig<LoginData>[] => [
   {
     name: "email",
@@ -43,6 +44,12 @@ export const getLoginFields = (
     name: "rememberMe",
     label: "Remember me",
     type: "checkbox",
-    bottomRightLink: { text: "Forgot password?", href: "#" },
+    bottomRightLink: {
+      text: "Forgot password?",
+      onClick: (e) => {
+        e.preventDefault();
+        onForgotPassword?.();
+      },
+    },
   },
 ];

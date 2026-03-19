@@ -4,12 +4,17 @@ import Button from "../../components/ui/button/Button";
 import { AvengerBackground } from "./components/AvengerBackground";
 import { LightBackground } from "./components/LightBackground";
 import { LoginForm } from "./components/form/LoginForm";
+import { ForgotPasswordFlow } from "./components/form/ForgotPasswordFlow";
+import { AnimatePresence } from "motion/react";
 
 // Import our common CSS file for the login component
 import "../../assets/styles/login.css";
 
 export const Login: React.FC = () => {
   const [theme, setTheme] = useState<"dark" | "light">("dark");
+  const [currentView, setCurrentView] = useState<"login" | "forgot-password">(
+    "login",
+  );
 
   const toggleTheme = () => {
     setTheme((prev) => (prev === "dark" ? "light" : "dark"));
@@ -36,8 +41,22 @@ export const Login: React.FC = () => {
         </Button>
       </div>
 
-      {/* Shared Unified Form Component */}
-      <LoginForm theme={theme} />
+      {/* Shared Unified Form Component or Forgot Password Flow */}
+      <AnimatePresence mode="wait">
+        {currentView === "login" ? (
+          <LoginForm
+            key="login"
+            theme={theme}
+            onForgotPassword={() => setCurrentView("forgot-password")}
+          />
+        ) : (
+          <ForgotPasswordFlow
+            key="forgot-password"
+            theme={theme}
+            onBackToLogin={() => setCurrentView("login")}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 };

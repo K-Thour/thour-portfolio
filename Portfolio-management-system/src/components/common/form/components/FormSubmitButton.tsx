@@ -13,10 +13,10 @@ export const FormSubmitButton: React.FC<FormSubmitButtonProps> = ({
   buttonClassName = "",
   submitText = "Submit",
 }) => {
+  type FormStateType = typeof form.state;
   return (
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     <form.Subscribe
-      selector={(state: any) => [state.canSubmit, state.isSubmitting]}
+      selector={(state: FormStateType) => [state.canSubmit, state.isSubmitting]}
     >
       {([canSubmit, isSubmitting]: [boolean, boolean]) => (
         <Button

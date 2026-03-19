@@ -9,7 +9,11 @@ export interface FormFieldConfig<TData> {
   placeholder?: string;
   icon?: ReactNode;
   rightElement?: ReactNode;
-  bottomRightLink?: { text: string; href: string };
+  bottomRightLink?: {
+    text: string;
+    href?: string;
+    onClick?: (e: React.MouseEvent) => void;
+  };
   validators?: {
     onChange?: yup.AnySchema;
     onChangeAsync?: yup.AnySchema;

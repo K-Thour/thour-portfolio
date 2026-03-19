@@ -7,11 +7,19 @@ import { getLoginFields } from "./loginFields";
 import { LoginCardHeader } from "../LoginCardHeader";
 import { CommonForm } from "../../../../components/common/form/CommonForm";
 
-export const LoginForm: React.FC<theme> = ({ theme }) => {
+export const LoginForm: React.FC<theme & { onForgotPassword?: () => void }> = ({
+  theme,
+  onForgotPassword,
+}) => {
   const isDark = theme === "dark";
   const [showPassword, setShowPassword] = useState(false);
 
-  const formFields = getLoginFields(isDark, showPassword, setShowPassword);
+  const formFields = getLoginFields(
+    isDark,
+    showPassword,
+    setShowPassword,
+    onForgotPassword,
+  );
 
   return (
     <motion.div
