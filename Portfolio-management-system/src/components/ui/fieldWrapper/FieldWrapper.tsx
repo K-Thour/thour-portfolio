@@ -15,7 +15,7 @@ const FieldWrapper: React.FC<FieldWrapperProps> = ({
 }) => (
   <div className="space-y-1.5">
     <label
-      className={`block text-sm font-semibold ${isDark ? "text-slate-300" : "text-slate-800"}`}
+      className={`block text-sm font-semibold ${isDark ? "text-slate-300" : "text-black"}`}
     >
       {label}
     </label>

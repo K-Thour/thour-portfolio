@@ -54,3 +54,17 @@ input:-webkit-autofill:active {
   -webkit-text-fill-color: inherit !important;
   caret-color: inherit !important;
 }
+
+.autofill-text-light:-webkit-autofill,
+.autofill-text-light:-webkit-autofill:hover,
+.autofill-text-light:-webkit-autofill:focus,
+.autofill-text-light:-webkit-autofill:active {
+  -webkit-text-fill-color: #000 !important;
+}
+
+.autofill-text-dark:-webkit-autofill,
+.autofill-text-dark:-webkit-autofill:hover,
+.autofill-text-dark:-webkit-autofill:focus,
+.autofill-text-dark:-webkit-autofill:active {
+  -webkit-text-fill-color: #e2e8f0 !important;
+}

@@ -29,7 +29,7 @@ export const CheckboxFieldRenderer: React.FC<CheckboxFieldRendererProps> = ({
           className={`w-4 h-4 rounded cursor-pointer ${isDark ? "accent-red-500" : "accent-blue-600"}`}
         />
         <span
-          className={`text-sm ${isDark ? "text-slate-400 group-hover:text-slate-300" : "text-slate-600 group-hover:text-slate-800"}`}
+          className={`text-sm ${isDark ? "text-slate-400 group-hover:text-slate-300" : "text-black group-hover:text-slate-800"}`}
         >
           {fieldConfig.label || (fieldConfig.name as string)}
         </span>

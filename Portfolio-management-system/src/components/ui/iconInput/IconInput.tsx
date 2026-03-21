@@ -60,7 +60,7 @@ const IconInput: React.FC<IconInputProps> = ({
         ${
           isDark
             ? "text-slate-200 placeholder:text-slate-600 autofill-text-dark"
-            : "text-slate-800 placeholder:text-slate-400 autofill-text-light"
+            : "text-black placeholder:text-slate-500 autofill-text-light"
         }
       `}
     />

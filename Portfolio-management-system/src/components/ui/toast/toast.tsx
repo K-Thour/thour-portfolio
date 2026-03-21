@@ -71,6 +71,7 @@ function genId() {
 }
 
 /** Imperative API — call from anywhere */
+// eslint-disable-next-line react-refresh/only-export-components
 export function toast({
   duration = 4000,
   ...props
@@ -88,6 +89,7 @@ export function toast({
   return id;
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function subscribeToast(listener: Listener) {
   listeners.push(listener);
   return () => {
@@ -96,6 +98,7 @@ export function subscribeToast(listener: Listener) {
   };
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function getToastSnapshot() {
   return memoryState;
 }
