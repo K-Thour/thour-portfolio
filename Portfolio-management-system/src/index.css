@@ -3,6 +3,21 @@
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/geist";
 
+@keyframes spin-switch {
+  0% {
+    transform: perspective(120px) rotateY(-90deg) scale(0.7);
+    opacity: 0;
+  }
+  60% {
+    transform: perspective(120px) rotateY(15deg) scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: perspective(120px) rotateY(0deg) scale(1);
+    opacity: 1;
+  }
+}
+
 @custom-variant dark (&:is(.dark *));
 
 :root {

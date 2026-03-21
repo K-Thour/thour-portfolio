@@ -5,6 +5,7 @@ import Header from "../components/common/header/Header";
 import Footer from "../components/common/footer/Footer";
 import { useLocation } from "react-router-dom";
 import { getNavItems } from "../components/common/navbar/config";
+import { AppBackground } from "../components/common/background/AppBackground";
 
 const { cn } = utils.tailwindUtils;
 
@@ -21,7 +22,8 @@ function Mainlayout({ children }: MainlayoutProps) {
   const navItems = getNavItems();
 
   return (
-    <div className="flex min-h-screen bg-background text-foreground">
+    <div className="flex min-h-screen text-foreground">
+      <AppBackground />
       {!shouldHideSidebar && (
         <DynamicNavbar isOpen={isOpen} setIsOpen={setIsOpen} items={navItems} />
       )}
@@ -31,9 +33,18 @@ function Mainlayout({ children }: MainlayoutProps) {
           !shouldHideSidebar ? (isOpen ? "md:ml-64" : "md:ml-20") : "",
         )}
       >
-        <Header />
+        <Header
+          className={cn(
+            "fixed top-0 right-0 py-2 transition-all duration-300 z-40 pl-5 w-[calc(100%-80px)]",
+            !shouldHideSidebar
+              ? isOpen
+                ? "md:w-[calc(100%-256px)]"
+                : "md:w-[calc(100%-80px)]"
+              : "",
+          )}
+        />
         <main className="flex-1 p-5 overflow-y-auto flex flex-col">
-          <div className="flex-1">{children}</div>
+          <div className="flex-1 mt-16 mb-16">{children}</div>
           {!shouldHideSidebar && (
             <Footer
               className={cn(

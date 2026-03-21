@@ -13,7 +13,7 @@ const Footer = React.forwardRef<HTMLElement, FooterProps>(
       <footer
         ref={ref}
         className={cn(
-          "bg-white dark:bg-gray-900 border-t text-left text-sm text-gray-500 dark:text-gray-300",
+          "bg-background border-t border-border text-left text-sm text-muted-foreground fixed bottom-0 w-full",
           className,
         )}
         {...props}

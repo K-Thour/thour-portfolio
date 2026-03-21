@@ -59,7 +59,7 @@ function DynamicNavbar({ isOpen, setIsOpen, items }: DynamicNavbarProps) {
     <div className="flex top-0 overflow-hidden max-md:fixed max-md:right-0 bottom-0 md:fixed z-50 border-2">
       <div
         className={cn(
-          "h-screen bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100 border-r border-gray-200 dark:border-gray-800 p-5 transition-all duration-300 flex flex-col justify-between shadow-lg",
+          "h-screen bg-background/60 backdrop-blur-md text-foreground border-r border-border p-5 transition-all duration-300 flex flex-col justify-between shadow-lg",
           isOpen
             ? "w-64"
             : "w-20 max-md:bg-white/80 dark:max-md:bg-gray-900/80",
