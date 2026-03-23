@@ -1,8 +1,8 @@
 import React from "react";
 import { Moon, Sun } from "lucide-react";
 import Button from "../../components/ui/button/Button";
-import { AvengerBackground } from "./components/AvengerBackground";
-import { LightBackground } from "./components/LightBackground";
+import { AvengerBackground } from "../../components/common/background/AvengerBackground";
+import { LightBackground } from "../../components/common/background/LightBackground";
 import { LoginForm } from "./components/form/LoginForm";
 import { ForgotPasswordFlow } from "./components/form/ForgotPasswordFlow";
 import { AnimatePresence } from "motion/react";

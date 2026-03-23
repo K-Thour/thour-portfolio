@@ -1,5 +1,5 @@
-import { AvengerBackground } from "../../../pages/Login/components/AvengerBackground";
-import { LightBackground } from "../../../pages/Login/components/LightBackground";
+import { AvengerBackground } from "./AvengerBackground";
+import { LightBackground } from "./LightBackground";
 import { useAppSelector } from "../../../hooks/useRedux";
 
 /**

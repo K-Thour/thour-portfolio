@@ -1,7 +1,7 @@
 import React from "react";
-import { AvengerCodeRain } from "./background/AvengerCodeRain";
-import { AvengerParticles } from "./background/AvengerParticles";
-import { AvengerOrbs } from "./background/AvengerOrbs";
+import { AvengerCodeRain } from "./components/AvengerCodeRain";
+import { AvengerParticles } from "./components/AvengerParticles";
+import { AvengerOrbs } from "./components/AvengerOrbs";
 
 export const AvengerBackground: React.FC = () => {
   return (
