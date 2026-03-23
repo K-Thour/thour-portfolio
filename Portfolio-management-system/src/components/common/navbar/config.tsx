@@ -8,6 +8,7 @@ import {
   Shield,
   Key,
   Calendar,
+  Briefcase,
 } from "lucide-react";
 import { type NavigationItem } from "./navbar";
 
@@ -17,6 +18,11 @@ export const getNavItems = (): NavigationItem[] => {
       title: "Dashboard",
       icon: <Home size={24} />,
       path: "/dashboard",
+    },
+    {
+      title: "Experience",
+      icon: <Briefcase size={24} />,
+      path: "/experience",
     },
     {
       title: "Personal",

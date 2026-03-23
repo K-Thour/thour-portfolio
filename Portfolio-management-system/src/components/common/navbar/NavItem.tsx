@@ -1,4 +1,5 @@
 import { NavLink, useLocation } from "react-router-dom";
+import { useAppSelector } from "../../../hooks/useRedux";
 import utils from "../../../utils";
 const { cn } = utils.tailwindUtils;
 
@@ -20,24 +21,34 @@ function Navitem({
   className,
 }: NavitemProps) {
   const location = useLocation();
+  const theme = useAppSelector((state) => state.theme.theme);
+  const isDark = theme === "dark";
 
   return (
     <NavLink
       to={linkTo || location.pathname}
       className={({ isActive }: { isActive: boolean }) =>
         cn(
-          `flex items-center gap-4 p-3 rounded-lg cursor-pointer overflow-hidden transition-colors ${
-            isActive
-              ? "bg-primary/10 text-black dark:text-primary font-medium"
-              : "text-gray-500 dark:text-gray-400 hover:bg-primary/10 hover:text-black dark:hover:text-primary"
-          }`,
+          "flex items-center gap-3 p-2 rounded-xl cursor-pointer overflow-hidden transition-all duration-200",
+          isActive
+            ? isDark
+              ? "bg-linear-to-br from-orange-500 to-red-500 text-white shadow-lg shadow-orange-500/30"
+              : "bg-blue-500 text-white shadow-lg shadow-blue-500/30"
+            : isDark
+              ? "text-slate-400 hover:bg-slate-800 hover:text-slate-200"
+              : "text-slate-500 hover:bg-slate-100 hover:text-slate-700",
+          isOpen ? "justify-start" : "justify-center",
           className,
         )
       }
       onClick={menu || undefined}
     >
-      {icon}
-      {isOpen && <span>{label}</span>}
+      <span
+        className={cn("flex items-center justify-center", !isOpen && "w-8 h-8")}
+      >
+        {icon}
+      </span>
+      {isOpen && <span className="font-medium text-sm">{label}</span>}
     </NavLink>
   );
 }
