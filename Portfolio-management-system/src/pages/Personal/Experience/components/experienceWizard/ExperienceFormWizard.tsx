@@ -168,11 +168,6 @@ export const ExperienceFormWizard: React.FC<ExperienceFormWizardProps> = ({
     handleClose(onClose);
   }, [form, handleClose, onClose]);
 
-  const handleBackdropClick = useCallback(() => {
-    form.reset();
-    handleClose(onClose);
-  }, [form, handleClose, onClose]);
-
   useEffect(() => {
     if (!isOpen) return;
 
@@ -206,7 +201,6 @@ export const ExperienceFormWizard: React.FC<ExperienceFormWizardProps> = ({
           "absolute inset-0 backdrop-blur-sm",
           isDark ? "bg-black/60" : "bg-black/40",
         )}
-        onClick={handleBackdropClick}
       />
       <motion.div
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
