@@ -20,7 +20,6 @@ export const ExperiencePage: React.FC = () => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
-  const [isDeleting, setIsDeleting] = useState(false);
   const { cn } = utils.tailwindUtils;
 
   const handleAddExperience = () => {
@@ -93,7 +92,6 @@ export const ExperiencePage: React.FC = () => {
 
   const handleConfirmDelete = async () => {
     if (!deletingId) return;
-    setIsDeleting(true);
     await new Promise((resolve) => setTimeout(resolve, 500));
     const expToDelete = experiences.find((e) => e.id === deletingId);
     setExperiences((prev) => prev.filter((exp) => exp.id !== deletingId));
@@ -105,7 +103,6 @@ export const ExperiencePage: React.FC = () => {
       variant: "warning",
       duration: 3000,
     });
-    setIsDeleting(false);
     setDeleteModalOpen(false);
     setDeletingId(null);
   };
@@ -142,7 +139,6 @@ export const ExperiencePage: React.FC = () => {
       <ExperienceModals
         isWizardOpen={isWizardOpen}
         deleteModalOpen={deleteModalOpen}
-        isDeleting={isDeleting}
         isDark={isDark}
         editingId={editingId}
         editingExperience={editingExperience || null}

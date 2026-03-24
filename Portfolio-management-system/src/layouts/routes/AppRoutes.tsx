@@ -4,6 +4,7 @@ import Dashboard from "../../pages/Dashboard/index";
 import ExperiencePage from "../../pages/Personal/Experience/index";
 import { commonBundler } from "./commonBundler";
 import NotFoundPage from "../../pages/NotFound";
+import { Technologies } from "../../pages/Products/Technology/Index";
 
 function AppRoutes() {
   return (
@@ -17,6 +18,10 @@ function AppRoutes() {
       <Route
         path="/experience"
         element={commonBundler({ component: <ExperiencePage /> })}
+      />
+      <Route
+        path="/technologies"
+        element={commonBundler({ component: <Technologies /> })}
       />
       <Route
         path="/*"

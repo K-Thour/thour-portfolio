@@ -7,7 +7,6 @@ import type { Experience } from "./experienceCard/ExperienceCard";
 interface ExperienceModalsProps {
   isWizardOpen: boolean;
   deleteModalOpen: boolean;
-  isDeleting: boolean;
   isDark: boolean;
   editingId: string | null;
   editingExperience: Experience | null;
@@ -20,7 +19,6 @@ interface ExperienceModalsProps {
 export const ExperienceModals: React.FC<ExperienceModalsProps> = ({
   isWizardOpen,
   deleteModalOpen,
-  isDeleting,
   isDark,
   editingId,
   editingExperience,
@@ -41,16 +39,13 @@ export const ExperienceModals: React.FC<ExperienceModalsProps> = ({
       />
 
       <ConfirmModal
-        open={deleteModalOpen}
-        onClose={onCancelDelete}
+        isOpen={deleteModalOpen}
+        onCancel={onCancelDelete}
         onConfirm={onConfirmDelete}
         title="Delete Experience"
         message="Are you sure you want to delete this experience? This action cannot be undone."
         confirmText="Delete"
         cancelText="Cancel"
-        confirmColor="error"
-        loading={isDeleting}
-        isDark={isDark}
       />
     </>
   );
