@@ -1,5 +1,5 @@
 import React from "react";
-import utils from "../../../../../utils/index";
+import utils from "../../../../../../utils/index";
 import type { LucideIcon } from "lucide-react";
 
 const { cn } = utils.tailwindUtils;

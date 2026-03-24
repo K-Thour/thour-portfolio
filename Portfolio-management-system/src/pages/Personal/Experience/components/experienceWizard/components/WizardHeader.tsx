@@ -1,4 +1,4 @@
-import utils from "../../../../../utils/index";
+import utils from "../../../../../../utils/index";
 
 const { cn } = utils.tailwindUtils;
 

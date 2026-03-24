@@ -1,4 +1,4 @@
-import type { ExperienceFormData } from "../../../interfaces/experience/experienceForm.interface";
+import type { ExperienceFormData } from "../../../../interfaces/experience/experienceForm.interface";
 
 export type FieldType = {
   state: {

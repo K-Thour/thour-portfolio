@@ -1,7 +1,7 @@
 import React from "react";
 import { ExperienceFormWizard } from "./experienceWizard/ExperienceFormWizard";
-import ConfirmModal from "../../../components/common/confirmModel/confirmModel";
-import type { ExperienceFormData } from "../../../validations/experienceSchema";
+import ConfirmModal from "../../../../components/common/confirmModel/confirmModel";
+import type { ExperienceFormData } from "../../../../validations/experienceSchema";
 import type { Experience } from "./experienceCard/ExperienceCard";
 
 interface ExperienceModalsProps {

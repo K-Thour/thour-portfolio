@@ -1,5 +1,5 @@
-import Button from "../../../../../components/ui/button/Button";
-import utils from "../../../../../utils/index";
+import Button from "../../../../../../components/ui/button/Button";
+import utils from "../../../../../../utils/index";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const { cn } = utils.tailwindUtils;

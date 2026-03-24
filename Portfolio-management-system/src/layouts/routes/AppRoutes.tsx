@@ -1,7 +1,7 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import { Login } from "../../pages/Login";
 import Dashboard from "../../pages/Dashboard/index";
-import ExperiencePage from "../../pages/Experience/index";
+import ExperiencePage from "../../pages/Personal/Experience/index";
 import { commonBundler } from "./commonBundler";
 import NotFoundPage from "../../pages/NotFound";
 

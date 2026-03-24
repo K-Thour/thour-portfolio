@@ -1,14 +1,14 @@
 import React, { useState } from "react";
-import { useAppSelector } from "../../hooks/useRedux";
-import { useToast } from "../../hooks/useToast";
+import { useAppSelector } from "../../../hooks/useRedux";
+import { useToast } from "../../../hooks/useToast";
 import type { Experience } from "./components/experienceCard/ExperienceCard";
 import { ExperienceModals } from "./components/ExperienceModals";
 import { ExperienceHeader } from "./components/ExperienceHeader";
 import { ExperienceTimeline } from "./components/ExperienceTimeline";
 import { EmptyExperienceState } from "./components/EmptyExperienceState";
 import { sampleExperiences } from "./data/experienceData";
-import type { ExperienceFormData } from "../../validations/experienceSchema";
-import utils from "../../utils/index";
+import type { ExperienceFormData } from "../../../validations/experienceSchema";
+import utils from "../../../utils/index";
 
 export const ExperiencePage: React.FC = () => {
   const theme = useAppSelector((state) => state.theme.theme);

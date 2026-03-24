@@ -1,5 +1,5 @@
 import type { Experience } from "../components/experienceCard/ExperienceCard";
-import type { ExperienceFormData } from "../../../validations/experienceSchema";
+import type { ExperienceFormData } from "../../../../validations/experienceSchema";
 
 // Sample data - in real app, this would come from API/Redux store
 export const sampleExperiences: Experience[] = [

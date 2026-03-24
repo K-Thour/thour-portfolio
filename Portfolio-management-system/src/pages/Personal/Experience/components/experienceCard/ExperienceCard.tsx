@@ -1,7 +1,7 @@
 import React from "react";
 import { Briefcase, Calendar, MapPin, Pencil, Trash2 } from "lucide-react";
 import { motion } from "motion/react";
-import utils from "../../../../utils";
+import utils from "../../../../../utils";
 
 const { cn } = utils.tailwindUtils;
 

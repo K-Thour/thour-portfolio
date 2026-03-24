@@ -2,14 +2,14 @@ import React, { useCallback, useEffect } from "react";
 import { motion } from "motion/react";
 import { useForm } from "@tanstack/react-form";
 import { Briefcase, FileText, Code, Link2 } from "lucide-react";
-import utils from "../../../../utils";
-import type { ExperienceFormData } from "../../../../interfaces/experience/experienceForm.interface";
+import utils from "../../../../../utils";
+import type { ExperienceFormData } from "../../../../../interfaces/experience/experienceForm.interface";
 import {
   experienceBasicInfoSchema,
   experienceDescriptionSchema,
   experienceLinksSchema,
-} from "../../../../validations/experience";
-import { STORAGE_KEY } from "../../../../constraints/experience/expeirinceForm.constraints";
+} from "../../../../../validations/experience";
+import { STORAGE_KEY } from "../../../../../constraints/experience/expeirinceForm.constraints";
 import { useWizard } from "../../hooks/useWizard";
 import {
   WizardHeader,

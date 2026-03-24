@@ -1,7 +1,7 @@
 import React from "react";
 import { Plus } from "lucide-react";
-import Button from "../../../components/ui/button/Button";
-import utils from "../../../utils";
+import Button from "../../../../components/ui/button/Button";
+import utils from "../../../../utils";
 
 const { cn } = utils.tailwindUtils;
 
