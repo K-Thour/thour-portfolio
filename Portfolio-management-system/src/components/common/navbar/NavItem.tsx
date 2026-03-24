@@ -29,7 +29,7 @@ function Navitem({
       to={linkTo || location.pathname}
       className={({ isActive }: { isActive: boolean }) =>
         cn(
-          "flex items-center gap-3 p-2 rounded-xl cursor-pointer overflow-hidden transition-all duration-200",
+          "flex items-center rounded-lg cursor-pointer overflow-hidden transition-all duration-200",
           isActive
             ? isDark
               ? "bg-linear-to-br from-orange-500 to-red-500 text-white shadow-lg shadow-orange-500/30"
@@ -37,7 +37,9 @@ function Navitem({
             : isDark
               ? "text-slate-400 hover:bg-slate-800 hover:text-slate-200"
               : "text-slate-500 hover:bg-slate-100 hover:text-slate-700",
-          isOpen ? "justify-start" : "justify-center",
+          isOpen
+            ? "justify-start w-full gap-3 p-2"
+            : "justify-center w-10 h-10 mx-auto pb-1", // Perfect 40x40 square with no padding that pushes icon off-center
           className,
         )
       }

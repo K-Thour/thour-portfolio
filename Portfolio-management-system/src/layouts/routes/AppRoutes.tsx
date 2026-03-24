@@ -9,8 +9,14 @@ function AppRoutes() {
     <Routes>
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/dashboard" element={commonBundler(<Dashboard />)} />
-      <Route path="/experience" element={commonBundler(<ExperiencePage />)} />
+      <Route
+        path="/dashboard"
+        element={commonBundler({ component: <Dashboard /> })}
+      />
+      <Route
+        path="/experience"
+        element={commonBundler({ component: <ExperiencePage /> })}
+      />
     </Routes>
   );
 }

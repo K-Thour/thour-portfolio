@@ -41,7 +41,7 @@ function NavGroup({ icon, label, isOpen, children }: NavGroupProps) {
     return (
       <DropdownMenu open={openMenu} onOpenChange={setOpenMenu}>
         <DropdownMenuTrigger
-          className="flex w-full items-center gap-4 p-3 rounded-lg text-gray-500 dark:text-gray-400 justify-center cursor-pointer hover:bg-primary/10 hover:text-black dark:hover:text-primary transition-colors focus:outline-none"
+          className="flex w-10 h-10 mx-auto items-center justify-center rounded-lg text-gray-500 dark:text-gray-400 cursor-pointer hover:bg-primary/10 hover:text-black dark:hover:text-primary transition-colors focus:outline-none"
           title={label}
         >
           {icon}
