@@ -5,9 +5,6 @@ import {
   ClipboardList,
   UserCog,
   Code,
-  Shield,
-  Key,
-  Calendar,
   Briefcase,
 } from "lucide-react";
 import { type NavigationItem } from "./navbar";
