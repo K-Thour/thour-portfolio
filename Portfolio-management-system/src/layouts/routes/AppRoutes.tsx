@@ -3,6 +3,7 @@ import { Login } from "../../pages/Login";
 import Dashboard from "../../pages/Dashboard/index";
 import ExperiencePage from "../../pages/Experience/index";
 import { commonBundler } from "./commonBundler";
+import NotFoundPage from "../../pages/NotFound";
 
 function AppRoutes() {
   return (
@@ -16,6 +17,13 @@ function AppRoutes() {
       <Route
         path="/experience"
         element={commonBundler({ component: <ExperiencePage /> })}
+      />
+      <Route
+        path="/*"
+        element={commonBundler({
+          component: <NotFoundPage />,
+          isLayoutRequired: false,
+        })}
       />
     </Routes>
   );
