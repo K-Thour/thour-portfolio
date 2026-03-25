@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { serviceData } from "./Data/serviceData";
-import type { Service } from "../../types";
+import { serviceData } from "../components/serviceForm/hooks/Data/serviceData";
+import type { Service } from "../components/types";
 
 export function useServices() {
   const [services, setServices] = useState<Service[]>(serviceData);

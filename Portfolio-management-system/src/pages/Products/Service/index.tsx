@@ -1,6 +1,6 @@
 import { useAppSelector } from "../../../hooks/useRedux";
 import type { RootState } from "../../../store/store";
-import { useServices } from "./components/serviceForm/hooks/useServices";
+import { useServices } from "./hooks/useServices";
 import { ServiceHeader } from "./components/ServiceHeader";
 import { ServiceList } from "./components/ServiceList";
 import { ServiceModal } from "./components/ServiceModal";
