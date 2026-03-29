@@ -2,7 +2,9 @@ import { useState } from "react";
 import type { EducationFormData, Education } from "../types";
 
 export function useEducationForm(initialData?: Education | null) {
-  const parsePeriod = (period?: string): { startDate: string; endDate: string; current: boolean } => {
+  const parsePeriod = (
+    period?: string,
+  ): { startDate: string; endDate: string; current: boolean } => {
     if (!period) return { startDate: "", endDate: "", current: false };
     const parts = period.split(" - ");
     const startDate = parts[0] || "";
@@ -26,7 +28,8 @@ export function useEducationForm(initialData?: Education | null) {
     current,
     grade: initialData?.grade || "",
     description: initialData?.description || "",
-    achievements: (initialData as Partial<EducationFormData>)?.achievements || [],
+    achievements:
+      (initialData as Partial<EducationFormData>)?.achievements || [],
   });
 
   const validateStep = (step: number) => {

@@ -34,11 +34,11 @@ function ConfirmModal({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onCancel}
-            className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[60]"
+            className="fixed inset-0 bg-black/70 backdrop-blur-sm z-60"
           />
 
           {/* Dialog */}
-          <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-60 flex items-center justify-center p-4">
             <motion.div
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -103,7 +103,7 @@ function ConfirmModal({
                   </button>
                   <button
                     onClick={onConfirm}
-                    className="flex-1 px-4 py-3 rounded-xl font-medium transition-all hover:scale-105 bg-gradient-to-r from-red-600 to-red-500 text-white hover:shadow-lg hover:shadow-red-500/50"
+                    className="flex-1 px-4 py-3 rounded-xl font-medium transition-all hover:scale-105 bg-linear-to-r from-red-600 to-red-500 text-white hover:shadow-lg hover:shadow-red-500/50"
                   >
                     {confirmText}
                   </button>

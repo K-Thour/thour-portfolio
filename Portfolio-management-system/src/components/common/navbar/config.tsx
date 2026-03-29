@@ -1,12 +1,14 @@
 import {
   Home,
   User,
-  UserSearch,
   ClipboardList,
   UserCog,
   Code,
   Briefcase,
   GraduationCap,
+  Handshake,
+  BookUser,
+  Target,
 } from "lucide-react";
 import { type NavigationItem } from "./navbar";
 
@@ -60,17 +62,17 @@ export const getNavItems = (): NavigationItem[] => {
       ],
     },
     {
-      title: "Contact & Leads",
-      icon: <UserSearch size={24} />,
+      title: "Engagement",
+      icon: <Handshake size={24} />,
       children: [
         {
           title: "Contacts",
-          icon: <UserSearch size={20} />,
+          icon: <BookUser size={20} />,
           path: "/contacts",
         },
         {
           title: "Leads",
-          icon: <UserSearch size={20} />,
+          icon: <Target size={20} />,
           path: "/leads",
         },
       ],

@@ -2,7 +2,6 @@ import { useState } from "react";
 import { User, LogOut, Settings, ChevronDown } from "lucide-react";
 import { ThemeToggle } from "../../ui/themeToggle/ThemeToggle";
 
-import ConfirmModal from "../confirmModel/ConfirmModel";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -14,6 +13,7 @@ import {
 } from "../../ui/dropdown-menu/Index";
 import { useNavigate } from "react-router-dom";
 import utils from "../../../utils";
+import ConfirmModal from "../confirmModel/confirmModel";
 
 const { cn } = utils.tailwindUtils;
 
@@ -42,7 +42,7 @@ function Header({ className }: { className?: string }) {
     <>
       <header
         className={cn(
-          "h-16 border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 flex items-center justify-between px-6 sticky top-0 z-30",
+          "h-16 border-b border-border/40 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 flex items-center justify-between px-6 sticky top-0 z-30",
           className,
         )}
       >
@@ -50,7 +50,7 @@ function Header({ className }: { className?: string }) {
           className="flex items-center gap-2 cursor-pointer"
           onClick={() => navigate("/")}
         >
-          <h1 className="text-xl font-bold tracking-tight bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+          <h1 className="text-xl font-bold tracking-tight bg-linear-to-r from-primary to-primary/60 bg-clip-text text-transparent">
             Management System
           </h1>
         </div>
@@ -77,7 +77,7 @@ function Header({ className }: { className?: string }) {
                   <User size={18} />
                 )}
               </div>
-              <div className="flex flex-col items-start hidden sm:flex">
+              <div className="flex flex-col items-start sm:flex">
                 <span className="text-sm font-medium leading-none">
                   {user?.name || "User"}
                 </span>
@@ -130,13 +130,12 @@ function Header({ className }: { className?: string }) {
       </header>
 
       <ConfirmModal
-        open={showLogoutConfirm}
-        onClose={() => setShowLogoutConfirm(false)}
+        isOpen={showLogoutConfirm}
+        onCancel={() => setShowLogoutConfirm(false)}
         onConfirm={handleLogoutConfirm}
         title="Confirm Logout"
         message="Are you sure you want to log out?"
         confirmText="Logout"
-        confirmColor="error"
       />
     </>
   );
