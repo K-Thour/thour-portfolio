@@ -6,6 +6,7 @@ import {
   UserCog,
   Code,
   Briefcase,
+  GraduationCap,
 } from "lucide-react";
 import { type NavigationItem } from "./navbar";
 
@@ -24,6 +25,11 @@ export const getNavItems = (): NavigationItem[] => {
           title: "Experience",
           icon: <Briefcase size={24} />,
           path: "/experience",
+        },
+        {
+          title: "Education",
+          icon: <GraduationCap size={24} />,
+          path: "/education",
         },
       ],
     },

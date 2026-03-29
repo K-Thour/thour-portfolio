@@ -7,6 +7,7 @@ import NotFoundPage from "../../pages/NotFound";
 import { Technologies } from "../../pages/Products/Technology/Index";
 import ServicePage from "../../pages/Products/Service";
 import ProjectPage from "../../pages/Products/Project";
+import EducationPage from "../../pages/Personal/Education";
 
 function AppRoutes() {
   return (
@@ -20,6 +21,10 @@ function AppRoutes() {
       <Route
         path="/experience"
         element={commonBundler({ component: <ExperiencePage /> })}
+      />
+      <Route
+        path="/education"
+        element={commonBundler({ component: <EducationPage /> })}
       />
       <Route
         path="/technologies"
