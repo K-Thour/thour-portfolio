@@ -6,14 +6,12 @@ import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
 } from "../../ui/dropdown-menu/Index";
 import { useNavigate } from "react-router-dom";
 import utils from "../../../utils";
 import ConfirmModal from "../confirmModel/confirmModel";
+import constraints from "../../../constraints";
 
 const { cn } = utils.tailwindUtils;
 
@@ -35,6 +33,7 @@ function Header({ className }: { className?: string }) {
 
   const handleLogoutConfirm = () => {
     navigate("/login");
+    localStorage.removeItem(constraints.globalConstraints.TOKEN_KEY);
     setShowLogoutConfirm(false);
   };
 
@@ -89,34 +88,29 @@ function Header({ className }: { className?: string }) {
             </DropdownMenuTrigger>
 
             <DropdownMenuContent className="w-56" align="end">
-              <DropdownMenuLabel className="font-normal">
-                <div className="flex flex-col space-y-1">
-                  <p className="text-sm font-medium leading-none">
-                    {user?.name}
-                  </p>
-                  <p className="text-xs leading-none text-muted-foreground">
-                    {user?.email}
-                  </p>
-                </div>
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuGroup>
-                <DropdownMenuItem
-                  onClick={() => navigate("/profile")}
-                  className="cursor-pointer"
-                >
-                  <User className="mr-2 h-4 w-4" />
-                  <span>My Profile</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => navigate("/settings")}
-                  className="cursor-pointer"
-                >
-                  <Settings className="mr-2 h-4 w-4" />
-                  <span>Settings</span>
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-              <DropdownMenuSeparator />
+              {/* User info header */}
+              <div className="px-3 py-2 text-sm">
+                <p className="font-medium leading-none">{user?.name}</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {user?.email}
+                </p>
+              </div>
+              <div className="h-px bg-border my-1" />
+              <DropdownMenuItem
+                onClick={() => navigate("/profile")}
+                className="cursor-pointer"
+              >
+                <User className="mr-2 h-4 w-4" />
+                <span>My Profile</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => navigate("/settings")}
+                className="cursor-pointer"
+              >
+                <Settings className="mr-2 h-4 w-4" />
+                <span>Settings</span>
+              </DropdownMenuItem>
+              <div className="h-px bg-border my-1" />
               <DropdownMenuItem
                 onClick={handleLogoutClick}
                 className="cursor-pointer text-red-500 focus:text-red-600 focus:bg-red-50 dark:focus:bg-red-950/30"
