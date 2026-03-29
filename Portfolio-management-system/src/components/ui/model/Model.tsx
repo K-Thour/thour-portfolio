@@ -1,15 +1,9 @@
 import { motion, AnimatePresence } from "motion/react";
 import { X } from "lucide-react";
 import { useAppSelector } from "../../../hooks/useRedux";
-import type { ReactNode } from "react";
-
-interface ModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  title: string;
-  children: ReactNode;
-  size?: "sm" | "md" | "lg" | "xl";
-}
+import { useEffect } from "react";
+import { sizeClasses } from "./constraints/constraints";
+import type { ModalProps } from "./types";
 
 export function Modal({
   isOpen,
@@ -21,12 +15,26 @@ export function Modal({
   const { theme } = useAppSelector((state) => state.theme);
   const isDark = theme === "dark";
 
-  const sizeClasses = {
-    sm: "max-w-md",
-    md: "max-w-2xl",
-    lg: "max-w-4xl",
-    xl: "max-w-6xl",
-  };
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const scrollY = window.scrollY;
+
+    // Lock scroll
+    document.body.style.position = "fixed";
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.left = "0";
+    document.body.style.right = "0";
+
+    return () => {
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.left = "";
+      document.body.style.right = "";
+
+      window.scrollTo(0, scrollY);
+    };
+  }, [isOpen]);
 
   return (
     <AnimatePresence>
@@ -38,7 +46,7 @@ export function Modal({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 min-h-screen flex items-center justify-center "
           />
 
           {/* Modal */}
