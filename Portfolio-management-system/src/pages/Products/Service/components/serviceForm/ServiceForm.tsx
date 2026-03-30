@@ -5,7 +5,7 @@ import { useServiceForm } from "./hooks/useServiceForm";
 import { useFileHandlers } from "./hooks/useFileHandlers";
 import { useArrayHandlers } from "./hooks/useArrayHandlers";
 import { STEPS, CATEGORIES, EMOJI_OPTIONS } from "./constants";
-import type { ServiceFormProps } from "../types";
+import type { ServiceFormProps, ServiceFormData } from "../types";
 
 export function ServiceForm({
   onSubmit,
@@ -25,11 +25,14 @@ export function ServiceForm({
     handlePrevious,
   } = useServiceForm(initialData);
 
-  const { handlePhotoFileChange, handleIconFileChange } =
-    useFileHandlers(setFormData);
+  const { handlePhotoFileChange, handleIconFileChange } = useFileHandlers(
+    (data: Partial<ServiceFormData>) =>
+      setFormData((prev) => ({ ...prev, ...data })),
+  );
   const { addArrayItem, removeArrayItem } = useArrayHandlers(
     formData,
-    setFormData,
+    (data: Partial<ServiceFormData>) =>
+      setFormData((prev) => ({ ...prev, ...data })),
   );
 
   return (
@@ -44,7 +47,9 @@ export function ServiceForm({
         iconType={iconType}
         categories={CATEGORIES}
         emojiOptions={EMOJI_OPTIONS}
-        onFormDataChange={setFormData}
+        onFormDataChange={(data) =>
+          setFormData((prev) => ({ ...prev, ...data }))
+        }
         onPhotoTypeChange={setPhotoType}
         onIconTypeChange={setIconType}
         onPhotoFileChange={handlePhotoFileChange}

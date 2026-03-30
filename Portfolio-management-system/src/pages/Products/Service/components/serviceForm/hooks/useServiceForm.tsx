@@ -1,6 +1,5 @@
 import { useState } from "react";
 import type { ServiceFormData, Service } from "../../types";
-import { getFormData } from "./Data/formData";
 
 export function useServiceForm(initialData?: Service) {
   const [currentStep, setCurrentStep] = useState(1);
@@ -14,9 +13,30 @@ export function useServiceForm(initialData?: Service) {
     initialData?.iconType || "emoji",
   );
 
-  const [formData, setFormData] = useState<ServiceFormData>(
-    getFormData(initialData),
-  );
+  const [formData, setFormData] = useState<ServiceFormData>({
+    title: initialData?.title || "",
+    subtitle: initialData?.subtitle || "",
+    category: initialData?.category || "",
+    description: initialData?.description || "",
+    longDescription: initialData?.longDescription || "",
+
+    // Photo
+    photoType: initialData?.photoType || "url",
+    photoUrl: initialData?.photoUrl || "",
+    photoFile: initialData?.photoFile || undefined,
+
+    // Icon
+    iconType: initialData?.iconType || "emoji",
+    icon: initialData?.icon || "⚡",
+    iconUrl: initialData?.iconUrl || "",
+    iconFile: initialData?.iconFile || undefined,
+
+    features: initialData?.features || [],
+    benefits: initialData?.benefits || [],
+    pricing: initialData?.pricing || "",
+    duration: initialData?.duration || "",
+    deliverables: initialData?.deliverables || [],
+  });
 
   const validateStep = (step: number) => {
     const newErrors: Record<string, string> = {};
@@ -85,17 +105,13 @@ export function useServiceForm(initialData?: Service) {
     }
   };
 
-  const updateFormData = (data: Partial<ServiceFormData>) => {
-    setFormData((prev) => ({ ...prev, ...data }));
-  };
-
   return {
     currentStep,
     errors,
     formData,
     photoType,
     iconType,
-    setFormData: updateFormData,
+    setFormData,
     setPhotoType,
     setIconType,
     handleNext,
