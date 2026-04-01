@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from "motion/react";
 import { AlertTriangle } from "lucide-react";
 import { useAppSelector } from "../../../hooks/useRedux";
+import { useEffect } from "react";
 
 interface ConfirmDialogProps {
   isOpen: boolean;
@@ -24,6 +25,27 @@ function ConfirmModal({
   const { theme } = useAppSelector((state) => state.theme);
   const isDark = theme === "dark";
 
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const scrollY = window.scrollY;
+
+    // Lock scroll
+    document.body.style.position = "fixed";
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.left = "0";
+    document.body.style.right = "0";
+
+    return () => {
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.left = "";
+      document.body.style.right = "";
+
+      window.scrollTo(0, scrollY);
+    };
+  }, [isOpen]);
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -34,7 +56,7 @@ function ConfirmModal({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onCancel}
-            className="fixed inset-0 bg-black/70 backdrop-blur-sm z-60"
+            className="fixed inset-0 bg-black/70 backdrop-blur-sm z-60 w-full h-full"
           />
 
           {/* Dialog */}

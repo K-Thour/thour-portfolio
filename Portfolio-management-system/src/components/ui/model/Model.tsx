@@ -11,6 +11,7 @@ export function Modal({
   title,
   children,
   size = "md",
+  className,
 }: ModalProps) {
   const { theme } = useAppSelector((state) => state.theme);
   const isDark = theme === "dark";
@@ -46,7 +47,7 @@ export function Modal({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 min-h-screen flex items-center justify-center "
+            className={`${className} fixed inset-0 bg-black/60 backdrop-blur-sm z-50 min-h-screen flex items-center justify-center `}
           />
 
           {/* Modal */}

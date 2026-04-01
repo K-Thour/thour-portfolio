@@ -9,6 +9,7 @@ import ServicePage from "../../pages/Products/Service";
 import ProjectPage from "../../pages/Products/Project";
 import EducationPage from "../../pages/Personal/Education";
 import LeadPage from "../../pages/Engagement/Lead";
+import ContactPage from "../../pages/Engagement/Contact";
 
 function AppRoutes() {
   return (
@@ -42,6 +43,10 @@ function AppRoutes() {
       <Route
         path="/projects"
         element={commonBundler({ component: <ProjectPage /> })}
+      />
+      <Route
+        path="/contacts"
+        element={commonBundler({ component: <ContactPage /> })}
       />
       <Route
         path="/*"

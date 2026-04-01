@@ -6,4 +6,5 @@ export interface ModalProps {
   title: string;
   children: ReactNode;
   size?: "sm" | "md" | "lg" | "xl";
+  className?: string;
 }
