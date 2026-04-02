@@ -19,7 +19,8 @@ const Footer = React.forwardRef<HTMLElement, FooterProps>(
         {...props}
       >
         <p>
-          Copyright &copy; {currentYear} DevRonins Pvt Ltd. All Rights Reserved.
+          Copyright &copy; {currentYear} Karanveer Thour Pvt Ltd. All Rights
+          Reserved.
         </p>
       </footer>
     );

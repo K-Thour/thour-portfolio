@@ -1,11 +1,10 @@
 import { motion } from "motion/react";
 import { Check } from "lucide-react";
 import { useAppSelector } from "../../../../../hooks/useRedux";
-import type { RootState } from "../../../../../store/store";
-import type { FormStepperProps } from "../types";
+import type { FormStepperProps } from "../../types";
 
 export function FormStepper({ steps, currentStep }: FormStepperProps) {
-  const { theme } = useAppSelector((state: RootState) => state.theme);
+  const { theme } = useAppSelector((state) => state.theme);
   const isDark = theme === "dark";
 
   return (
@@ -14,6 +13,7 @@ export function FormStepper({ steps, currentStep }: FormStepperProps) {
         {steps.map((step, index) => (
           <div key={step.id} className="flex items-center flex-1">
             <div className="flex flex-col items-center flex-1">
+              {/* Step Circle */}
               <motion.div
                 initial={{ scale: 0.8 }}
                 animate={{ scale: 1 }}
@@ -48,6 +48,7 @@ export function FormStepper({ steps, currentStep }: FormStepperProps) {
                 )}
               </motion.div>
 
+              {/* Step Label */}
               <div className="mt-2 text-center">
                 <p
                   className={`text-sm font-medium ${
@@ -70,6 +71,7 @@ export function FormStepper({ steps, currentStep }: FormStepperProps) {
               </div>
             </div>
 
+            {/* Connector Line */}
             {index < steps.length - 1 && (
               <div
                 className={`h-0.5 flex-1 mx-2 mb-12 ${

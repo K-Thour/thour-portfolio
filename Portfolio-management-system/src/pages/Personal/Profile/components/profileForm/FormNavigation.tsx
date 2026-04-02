@@ -1,16 +1,23 @@
-import { useAppSelector } from "../../../../../hooks/useRedux";
-import type { RootState } from "../../../../../store/store";
-import type { FormNavigationProps } from "../types";
+import type { ProfileFormProps } from "./types";
+
+interface FormNavigationProps extends Pick<
+  ProfileFormProps,
+  "onCancel" | "initialData"
+> {
+  currentStep: number;
+  onPrevious: () => void;
+  onNext: () => void;
+  isDark: boolean;
+}
 
 export function FormNavigation({
   currentStep,
+  onCancel,
   onPrevious,
   onNext,
-  onCancel,
+  initialData,
+  isDark,
 }: FormNavigationProps) {
-  const { theme } = useAppSelector((state: RootState) => state.theme);
-  const isDark = theme === "dark";
-
   return (
     <div className="flex items-center justify-between mt-8 pt-6 border-t border-inherit">
       <button
@@ -33,7 +40,11 @@ export function FormNavigation({
             : "bg-linear-to-r from-blue-600 to-blue-500 text-white hover:shadow-lg hover:shadow-blue-500/50"
         }`}
       >
-        {currentStep === 4 ? "Submit" : "Next"}
+        {currentStep === 4
+          ? initialData
+            ? "Update Profile"
+            : "Save Profile"
+          : "Next"}
       </button>
     </div>
   );

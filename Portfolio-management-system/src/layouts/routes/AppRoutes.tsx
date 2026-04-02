@@ -10,12 +10,14 @@ import ProjectPage from "../../pages/Products/Project";
 import EducationPage from "../../pages/Personal/Education";
 import LeadPage from "../../pages/Engagement/Lead";
 import ContactPage from "../../pages/Engagement/Contact";
+import { Profile } from "../../pages/Personal/Profile";
 
 function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/profile" element={<Profile />} />
       <Route
         path="/dashboard"
         element={commonBundler({ component: <Dashboard /> })}
