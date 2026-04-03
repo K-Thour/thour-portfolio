@@ -1,7 +1,7 @@
 import { Menu, X } from "lucide-react";
 import NavItem from "./NavItem";
 import NavGroup from "./NavGroup";
-import utils from "../../../utils";
+import utils from "../../utils";
 const { cn } = utils.tailwindUtils;
 
 export interface NavigationItem {

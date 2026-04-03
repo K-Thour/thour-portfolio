@@ -1,11 +1,11 @@
 import utils from "../utils/index";
-import { useState } from "react";
-import DynamicNavbar from "../components/common/navbar/navbar";
-import Header from "../components/common/header/Header";
-import Footer from "../components/common/footer/Footer";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { getNavItems } from "../components/common/navbar/config";
 import { AppBackground } from "../components/common/background/AppBackground";
+import { getNavItems } from "./navbar/config";
+import DynamicNavbar from "./navbar/navbar";
+import Header from "./header/Header";
+import Footer from "./footer/Footer";
 
 const { cn } = utils.tailwindUtils;
 
@@ -20,6 +20,10 @@ function Mainlayout({ children }: MainlayoutProps) {
   const shouldHideSidebar = hideSidebarRoutes.includes(location.pathname);
 
   const navItems = getNavItems();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
 
   return (
     <div className="flex min-h-screen text-foreground">

@@ -1,17 +1,17 @@
 import { useState } from "react";
 import { User, LogOut, Settings, ChevronDown } from "lucide-react";
-import { ThemeToggle } from "../../ui/themeToggle/ThemeToggle";
+import { ThemeToggle } from "../../components/ui/themeToggle/ThemeToggle";
 
 import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
-} from "../../ui/dropdown-menu/Index";
+} from "../../components/ui/dropdown-menu/Index";
 import { useNavigate } from "react-router-dom";
-import utils from "../../../utils";
-import ConfirmModal from "../confirmModel/confirmModel";
-import constraints from "../../../constraints";
+import utils from "../../utils";
+import constraints from "../../constraints";
+import ConfirmModal from "../../components/common/confirmModel/confirmModel";
 
 const { cn } = utils.tailwindUtils;
 

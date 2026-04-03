@@ -1,5 +1,5 @@
 import * as React from "react";
-import utils from "../../../utils/index";
+import utils from "../../utils";
 
 const { cn } = utils.tailwindUtils;
 

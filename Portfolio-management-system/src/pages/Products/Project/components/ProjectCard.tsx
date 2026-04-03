@@ -23,7 +23,7 @@ export function ProjectCard({
       className={`p-6 rounded-2xl border group ${
         isDark
           ? "bg-slate-800/50 border-red-500/20 hover:border-red-500/50"
-          : "bg-gradient-to-br from-white to-blue-50 border-blue-300/40 hover:border-blue-500/60 shadow-md hover:shadow-lg hover:shadow-blue-500/20"
+          : "bg-linear-to-br from-white to-blue-50 border-blue-300/40 hover:border-blue-500/60 shadow-md hover:shadow-lg hover:shadow-blue-500/20"
       }`}
     >
       <div className="flex items-center gap-6">
@@ -32,7 +32,7 @@ export function ProjectCard({
           alt={project.title}
           className="w-24 h-24 rounded-xl object-cover"
         />
-        <div className="flex-1">
+        <div className="flex-1 flex flex-col min-h-24">
           <div className="flex items-start justify-between mb-2">
             <div>
               <h3
@@ -86,7 +86,7 @@ export function ProjectCard({
               </button>
             </div>
           </div>
-          <div className="flex items-center gap-4 mt-3">
+          <div className="flex items-center gap-4 mt-auto pt-3">
             <div
               className={`flex items-center gap-2 text-sm ${isDark ? "text-gray-400" : "text-gray-600"}`}
             >

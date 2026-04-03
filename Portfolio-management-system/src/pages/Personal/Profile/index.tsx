@@ -6,7 +6,7 @@ import { HobbiesCard } from "./components/HobbiesCard";
 import { LanguagesCard } from "./components/LanguagesCard";
 import { ProfileModal } from "./components/ProfileModal";
 import { AppBackground } from "../../../components/common/background/AppBackground";
-import Footer from "../../../components/common/footer/Footer";
+import Footer from "../../../layouts/footer/Footer";
 
 export function Profile() {
   const { profileData, isModalOpen, handlers } = useProfile();

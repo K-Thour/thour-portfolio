@@ -1,6 +1,6 @@
 import { NavLink, useLocation } from "react-router-dom";
-import { useAppSelector } from "../../../hooks/useRedux";
-import utils from "../../../utils";
+import utils from "../../utils";
+import { useAppSelector } from "../../hooks/useRedux";
 const { cn } = utils.tailwindUtils;
 
 interface NavitemProps {

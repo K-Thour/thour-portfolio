@@ -6,7 +6,6 @@ import {
   isValidElement,
 } from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
-import utils from "../../../utils";
 const { cn } = utils.tailwindUtils;
 
 import {
@@ -14,7 +13,8 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "../../ui/dropdown-menu/Index";
+} from "../../components/ui/dropdown-menu/Index";
+import utils from "../../utils";
 
 interface NavGroupProps {
   icon: ReactNode;
