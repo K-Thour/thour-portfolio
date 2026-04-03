@@ -19,8 +19,11 @@ function PublicLayout({ children }: PublicLayoutProps) {
             "fixed top-0 right-0 py-2 transition-all duration-300 z-40 pl-5 w-[calc(100%-80px)] min-w-screen",
           )}
         />
-        <main className="flex-1 overflow-y-auto flex flex-col">
-          <div className="flex-1 mb-16 mt-30">{children}</div>
+        <main
+          id="scrollable-main"
+          className="flex-1 overflow-y-auto flex flex-col"
+        >
+          <div className="flex-1 mb-16 mt-23">{children}</div>
           <Footer
             className={cn(
               "fixed bottom-0 right-0 py-2 transition-all duration-300 z-40 pl-5",

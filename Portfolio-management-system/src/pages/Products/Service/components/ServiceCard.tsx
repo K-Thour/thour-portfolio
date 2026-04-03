@@ -23,15 +23,15 @@ export function ServiceCard({
       className={`p-6 rounded-2xl border group ${
         isDark
           ? "bg-slate-800/50 border-red-500/20 hover:border-red-500/50"
-          : "bg-gradient-to-br from-white to-blue-50 border-blue-300/40 hover:border-blue-500/60 shadow-md hover:shadow-lg hover:shadow-blue-500/20"
+          : "bg-linear-to-br from-white to-blue-50 border-blue-300/40 hover:border-blue-500/60 shadow-md hover:shadow-lg hover:shadow-blue-500/20"
       }`}
     >
       <div className="flex items-start justify-between mb-4">
         <div
           className={`w-14 h-14 rounded-xl flex items-center justify-center text-3xl ${
             isDark
-              ? "bg-gradient-to-br from-red-600 to-yellow-500"
-              : "bg-gradient-to-br from-blue-600 to-blue-400 shadow-lg shadow-blue-500/30"
+              ? "bg-linear-to-br from-red-600 to-yellow-500"
+              : "bg-linear-to-br from-blue-600 to-blue-400 shadow-lg shadow-blue-500/30"
           }`}
         >
           {service.iconType === "emoji" && service.icon}

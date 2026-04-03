@@ -2,17 +2,14 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { useAppSelector } from "../../../hooks/useRedux";
 import type { RootState } from "../../../store/store";
-import {
-  LoadingState,
-  NotFoundState,
-  PortfolioHeader,
-  ProjectsGrid,
-} from "./components";
+import { NotFoundState, PortfolioHeader, ProjectsGrid } from "./components";
 import { allProjects } from "./data/allProjects";
 import type { PortfolioData, Project, SharedPortfolio } from "./types";
+import { LoadingState } from "../../../components/common/loadingState/LoadingState";
 
-function PublicPortfolioPage() {
-  const { token } = useParams();
+function PublicPortfolioOverviewPage() {
+  const params = useParams();
+  const { token } = params;
   const { theme } = useAppSelector((state: RootState) => state.theme);
   const isDark = theme === "dark";
 
@@ -73,4 +70,4 @@ function PublicPortfolioPage() {
   );
 }
 
-export default PublicPortfolioPage;
+export default PublicPortfolioOverviewPage;

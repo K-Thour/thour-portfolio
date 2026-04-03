@@ -11,7 +11,8 @@ import EducationPage from "../../pages/Personal/Education";
 import LeadPage from "../../pages/Engagement/Lead";
 import ContactPage from "../../pages/Engagement/Contact";
 import { Profile } from "../../pages/Personal/Profile";
-import PublicPortfolioPage from "../../pages/PublicPortfolio/OverviewPage";
+import ProjectDetailPage from "../../pages/PublicPortfolio/DetailPage";
+import PublicPortfolioOverviewPage from "../../pages/PublicPortfolio/OverviewPage";
 
 function AppRoutes() {
   return (
@@ -54,7 +55,15 @@ function AppRoutes() {
       <Route
         path="/publicPortfolio/overviewPage/:token"
         element={commonBundler({
-          component: <PublicPortfolioPage />,
+          component: <PublicPortfolioOverviewPage />,
+          isPublic: true,
+          isLayoutRequired: true,
+        })}
+      />
+      <Route
+        path="/publicPortfolio/detailPage/:projectId"
+        element={commonBundler({
+          component: <ProjectDetailPage />,
           isPublic: true,
           isLayoutRequired: true,
         })}

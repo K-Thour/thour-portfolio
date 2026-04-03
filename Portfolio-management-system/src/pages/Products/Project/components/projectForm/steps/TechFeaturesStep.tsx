@@ -55,8 +55,8 @@ export function TechFeaturesStep({
             }}
             className={`px-4 py-3 rounded-xl font-medium transition-all ${
               isDark
-                ? "bg-gradient-to-r from-red-600 to-yellow-500 text-white hover:shadow-lg"
-                : "bg-gradient-to-r from-blue-600 to-blue-500 text-white hover:shadow-lg"
+                ? "bg-linear-to-r from-red-600 to-yellow-500 text-white hover:shadow-lg"
+                : "bg-linear-to-r from-blue-600 to-blue-500 text-white hover:shadow-lg"
             }`}
           >
             <Plus className="w-5 h-5" />
@@ -122,8 +122,8 @@ export function TechFeaturesStep({
             }}
             className={`px-4 py-3 rounded-xl font-medium transition-all ${
               isDark
-                ? "bg-gradient-to-r from-red-600 to-yellow-500 text-white hover:shadow-lg"
-                : "bg-gradient-to-r from-blue-600 to-blue-500 text-white hover:shadow-lg"
+                ? "bg-linear-to-r from-red-600 to-yellow-500 text-white hover:shadow-lg"
+                : "bg-linear-to-r from-blue-600 to-blue-500 text-white hover:shadow-lg"
             }`}
           >
             <Plus className="w-5 h-5" />

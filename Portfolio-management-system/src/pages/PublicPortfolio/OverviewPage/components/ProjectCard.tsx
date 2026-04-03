@@ -1,14 +1,20 @@
 import { motion } from "motion/react";
 import { Github, Globe, Calendar, Tag } from "lucide-react";
 import type { ProjectCardProps } from "../types";
+import { useNavigate } from "react-router-dom";
 
 export function ProjectCard({ project, index, isDark }: ProjectCardProps) {
+  const navigate = useNavigate();
+  const redirectToDetailPage = (id: number) => {
+    navigate(`/publicPortfolio/detailPage/${id}`);
+  };
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.1 }}
-      className={`rounded-2xl overflow-hidden border transition-all hover:scale-105 flex flex-col h-full ${
+      onClick={() => redirectToDetailPage(project.id)}
+      className={`rounded-2xl overflow-hidden cursor-pointer border transition-all hover:scale-105 flex flex-col h-full ${
         isDark
           ? "bg-slate-800/50 border-red-500/20 hover:border-red-500/50 hover:shadow-lg hover:shadow-red-500/20"
           : "bg-white border-blue-300/40 hover:border-blue-500/60 hover:shadow-xl hover:shadow-blue-500/20"
