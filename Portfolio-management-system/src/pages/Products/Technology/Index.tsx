@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Modal } from "../../../components/ui/model/Model";
 import { TechnologyForm } from "./components/form/TechnologyForm";
-import { TechnologyHeader } from "./components/TechnologyHeader";
-import { TechnologyList } from "./components/TechnologyList";
+import { TechnologyHeader } from "./components/header";
+import { TechnologyList } from "./components/list";
 import { technologiesData } from "./Data/Technologies";
 import ConfirmModal from "../../../components/common/confirmModel/confirmModel";
 import type { Technology } from "./types";

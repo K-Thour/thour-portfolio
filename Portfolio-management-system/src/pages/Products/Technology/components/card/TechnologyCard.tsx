@@ -1,7 +1,8 @@
 import { motion } from "motion/react";
 import { Edit2, Trash2 } from "lucide-react";
-import { useAppSelector } from "../../../../hooks/useRedux";
-import type { Technology } from "../types";
+import type { Technology } from "../../types";
+import { useAppSelector } from "../../../../../hooks/useRedux";
+import type { RootState } from "../../../../../store/store";
 
 interface TechnologyCardProps {
   tech: Technology;
@@ -16,7 +17,7 @@ export function TechnologyCard({
   onEdit,
   onDelete,
 }: TechnologyCardProps) {
-  const { theme } = useAppSelector((state) => state.theme);
+  const { theme } = useAppSelector((state: RootState) => state.theme);
   const isDark = theme === "dark";
 
   return (

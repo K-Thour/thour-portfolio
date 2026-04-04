@@ -1,7 +1,8 @@
-import { useAppSelector } from "../../../../hooks/useRedux";
-import { categories } from "../Data/Technologies";
-import { TechnologyCard } from "./TechnologyCard";
-import type { Technology } from "../types";
+import { categories } from "../../Data/Technologies";
+import { TechnologyCard } from "../card/TechnologyCard";
+import type { Technology } from "../../types";
+import { useAppSelector } from "../../../../../hooks/useRedux";
+import type { RootState } from "../../../../../store/store";
 
 interface TechnologyListProps {
   technologies: Technology[];
@@ -14,7 +15,7 @@ export function TechnologyList({
   onEdit,
   onDelete,
 }: TechnologyListProps) {
-  const { theme } = useAppSelector((state) => state.theme);
+  const { theme } = useAppSelector((state: RootState) => state.theme);
   const isDark = theme === "dark";
 
   return (
@@ -27,8 +28,8 @@ export function TechnologyList({
             className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
               category === "All"
                 ? isDark
-                  ? "bg-gradient-to-r from-red-600 to-yellow-500 text-white"
-                  : "bg-gradient-to-r from-blue-600 to-blue-500 text-white"
+                  ? "bg-linear-to-r from-red-600 to-yellow-500 text-white"
+                  : "bg-linear-to-r from-blue-600 to-blue-500 text-white"
                 : isDark
                   ? "bg-slate-800/50 border border-red-500/20 text-gray-300 hover:border-red-500/50"
                   : "bg-white border border-blue-300/40 text-gray-700 hover:border-blue-500/60"

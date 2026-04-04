@@ -57,7 +57,7 @@ export const getNavItems = (): NavigationItem[] => {
         {
           title: "Portfolio Links",
           icon: <ClipboardList size={20} />,
-          path: "/portfolio-collections",
+          path: "/shared-portfolio",
         },
       ],
     },

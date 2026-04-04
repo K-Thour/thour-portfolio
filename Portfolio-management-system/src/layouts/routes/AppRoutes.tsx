@@ -13,6 +13,7 @@ import ContactPage from "../../pages/Engagement/Contact";
 import { Profile } from "../../pages/Personal/Profile";
 import ProjectDetailPage from "../../pages/PublicPortfolio/DetailPage";
 import PublicPortfolioOverviewPage from "../../pages/PublicPortfolio/OverviewPage";
+import ShareProjectsPortfolio from "../../pages/Products/sharedPortfolio";
 
 function AppRoutes() {
   return (
@@ -47,6 +48,10 @@ function AppRoutes() {
       <Route
         path="/projects"
         element={commonBundler({ component: <ProjectPage /> })}
+      />
+      <Route
+        path="/shared-portfolio"
+        element={commonBundler({ component: <ShareProjectsPortfolio /> })}
       />
       <Route
         path="/contacts"
