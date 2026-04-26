@@ -1,18 +1,33 @@
 import { configureStore } from "@reduxjs/toolkit";
 import themeReducer from "./slices/theme.slice";
+import pageEnableReducer from "./slices/pageEnable.slice";
+import resumeReducer from "./slices/resume.slice";
+import settingsReducer from "./slices/settings.slice";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
-const persistConfig = {
+const themePersistConfig = {
   key: "theme",
   storage,
 };
 
-const persistedReducer = persistReducer(persistConfig, themeReducer);
+const settingsPersistConfig = {
+  key: "settings",
+  storage,
+};
+
+const persistedThemeReducer = persistReducer(themePersistConfig, themeReducer);
+const persistedSettingsReducer = persistReducer(
+  settingsPersistConfig,
+  settingsReducer,
+);
 
 export const store = configureStore({
   reducer: {
-    theme: persistedReducer,
+    theme: persistedThemeReducer,
+    pageEnable: pageEnableReducer,
+    resume: resumeReducer,
+    settings: persistedSettingsReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

@@ -10,6 +10,7 @@ export interface ResumeCardProps {
 export interface ResumeHeaderProps {
   isDark: boolean;
   onAddResume: () => void;
+  resumeLimit: number;
 }
 
 export interface EmptyResumeStateProps {

@@ -15,13 +15,20 @@ import ProjectDetailPage from "../../pages/PublicPortfolio/DetailPage";
 import PublicPortfolioOverviewPage from "../../pages/PublicPortfolio/OverviewPage";
 import ShareProjectsPortfolio from "../../pages/Products/sharedPortfolio";
 import ResumePage from "../../pages/Personal/Resume";
+import Settings from "../../pages/Personal/Settings";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../store/store";
 
 function AppRoutes() {
+  const resumePageEnable = useSelector(
+    (state: RootState) => state.pageEnable.resumePageEnable,
+  );
   return (
     <Routes>
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
       <Route path="/login" element={<Login />} />
       <Route path="/profile" element={<Profile />} />
+      <Route path="/settings" element={<Settings />} />
       <Route
         path="/dashboard"
         element={commonBundler({ component: <Dashboard /> })}
@@ -34,10 +41,12 @@ function AppRoutes() {
         path="/education"
         element={commonBundler({ component: <EducationPage /> })}
       />
-      <Route
-        path="/resume"
-        element={commonBundler({ component: <ResumePage /> })}
-      />
+      {resumePageEnable && (
+        <Route
+          path="/resume"
+          element={commonBundler({ component: <ResumePage /> })}
+        />
+      )}
       <Route
         path="/technologies"
         element={commonBundler({ component: <Technologies /> })}

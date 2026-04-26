@@ -1,6 +1,8 @@
 import utils from "../utils/index";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
+import type { RootState } from "../store/store";
 import { AppBackground } from "../components/common/background/AppBackground";
 import { getNavItems } from "./navbar/config";
 import DynamicNavbar from "./navbar/navbar";
@@ -16,10 +18,13 @@ interface MainlayoutProps {
 function Mainlayout({ children }: MainlayoutProps) {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const resumePageEnable = useSelector(
+    (state: RootState) => state.pageEnable.resumePageEnable,
+  );
   const hideSidebarRoutes = ["/profile", "/settings"];
   const shouldHideSidebar = hideSidebarRoutes.includes(location.pathname);
 
-  const navItems = getNavItems();
+  const navItems = getNavItems(resumePageEnable);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });

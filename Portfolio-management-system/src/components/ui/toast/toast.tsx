@@ -199,7 +199,7 @@ export function ToastProvider({
 export function ToastViewport({ children }: { children?: ReactNode }) {
   return (
     <div
-      className="fixed top-4 left-1/2 -translate-x-1/2 z-[9999] flex flex-col gap-2 w-[380px] max-w-[calc(100vw-2rem)]"
+      className="fixed top-4 left-1/2 -translate-x-1/2 z-9999 flex flex-col gap-2 w-95 max-w-[calc(100vw-2rem)]"
       role="region"
       aria-label="Notifications"
       aria-live="polite"
@@ -265,7 +265,7 @@ export function Toast({
     >
       {/* Coloured left accent bar */}
       <div
-        className={`absolute left-0 top-0 bottom-0 w-[3px] bg-gradient-to-b ${palette.accent}`}
+        className={`absolute left-0 top-0 bottom-0 w-0.75 bg-linear-to-b ${palette.accent}`}
       />
       {children}
     </div>

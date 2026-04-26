@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { type NavigationItem } from "./navbar";
 
-export const getNavItems = (): NavigationItem[] => {
+export const getNavItems = (resumePageEnable: boolean): NavigationItem[] => {
   const navConfig: NavigationItem[] = [
     {
       title: "Dashboard",
@@ -34,11 +34,15 @@ export const getNavItems = (): NavigationItem[] => {
           icon: <GraduationCap size={24} />,
           path: "/education",
         },
-        {
-          title: "Resume",
-          icon: <FileText size={24} />,
-          path: "/resume",
-        },
+        ...(resumePageEnable
+          ? [
+              {
+                title: "Resume",
+                icon: <FileText size={24} />,
+                path: "/resume",
+              },
+            ]
+          : []),
       ],
     },
     {
