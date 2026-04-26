@@ -9,6 +9,7 @@ import {
   Handshake,
   BookUser,
   Target,
+  FileText,
 } from "lucide-react";
 import { type NavigationItem } from "./navbar";
 
@@ -32,6 +33,11 @@ export const getNavItems = (): NavigationItem[] => {
           title: "Education",
           icon: <GraduationCap size={24} />,
           path: "/education",
+        },
+        {
+          title: "Resume",
+          icon: <FileText size={24} />,
+          path: "/resume",
         },
       ],
     },

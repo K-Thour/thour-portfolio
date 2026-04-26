@@ -14,6 +14,7 @@ import { Profile } from "../../pages/Personal/Profile";
 import ProjectDetailPage from "../../pages/PublicPortfolio/DetailPage";
 import PublicPortfolioOverviewPage from "../../pages/PublicPortfolio/OverviewPage";
 import ShareProjectsPortfolio from "../../pages/Products/sharedPortfolio";
+import ResumePage from "../../pages/Personal/Resume";
 
 function AppRoutes() {
   return (
@@ -32,6 +33,10 @@ function AppRoutes() {
       <Route
         path="/education"
         element={commonBundler({ component: <EducationPage /> })}
+      />
+      <Route
+        path="/resume"
+        element={commonBundler({ component: <ResumePage /> })}
       />
       <Route
         path="/technologies"

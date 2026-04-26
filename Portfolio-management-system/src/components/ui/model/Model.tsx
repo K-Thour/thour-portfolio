@@ -1,9 +1,11 @@
 import { motion, AnimatePresence } from "motion/react";
 import { X } from "lucide-react";
 import { useAppSelector } from "../../../hooks/useRedux";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { sizeClasses } from "./constraints/constraints";
 import type { ModalProps } from "./types";
+
+let openModalCount = 0;
 
 export function Modal({
   isOpen,
@@ -15,25 +17,31 @@ export function Modal({
 }: ModalProps) {
   const { theme } = useAppSelector((state) => state.theme);
   const isDark = theme === "dark";
+  const scrollYRef = useRef(0);
 
   useEffect(() => {
     if (!isOpen) return;
 
-    const scrollY = window.scrollY;
-
-    // Lock scroll
-    document.body.style.position = "fixed";
-    document.body.style.top = `-${scrollY}px`;
-    document.body.style.left = "0";
-    document.body.style.right = "0";
+    openModalCount++;
+    if (openModalCount === 1) {
+      scrollYRef.current = window.scrollY;
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${scrollYRef.current}px`;
+      document.body.style.left = "0";
+      document.body.style.right = "0";
+      document.body.style.overflow = "hidden";
+    }
 
     return () => {
-      document.body.style.position = "";
-      document.body.style.top = "";
-      document.body.style.left = "";
-      document.body.style.right = "";
-
-      window.scrollTo(0, scrollY);
+      openModalCount--;
+      if (openModalCount === 0) {
+        document.body.style.position = "";
+        document.body.style.top = "";
+        document.body.style.left = "";
+        document.body.style.right = "";
+        document.body.style.overflow = "";
+        window.scrollTo(0, scrollYRef.current);
+      }
     };
   }, [isOpen]);
 
