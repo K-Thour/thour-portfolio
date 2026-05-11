@@ -2,6 +2,7 @@ import { motion } from 'motion/react';
 import { Send } from 'lucide-react';
 import { useState } from 'react';
 import { useTheme } from '../../context/ThemeContext';
+import { submitContactForm } from '../../../services/api';
 
 interface ContactFormProps {
   isInView: boolean;
@@ -16,8 +17,24 @@ export function ContactForm({ isInView }: ContactFormProps) {
     message: '',
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setStatus('loading');
+    try {
+      await submitContactForm({
+        Address1: formData.email, // backend expects Address1, message, etc based on schema
+        Subject: formData.name, // or mapped differently
+        ContactNum: '0000000000', // Mock if not in form
+        Message: formData.message,
+      });
+      setStatus('success');
+      setFormData({ name: '', email: '', message: '' });
+    } catch (error) {
+      console.error(error);
+      setStatus('error');
+    }
   };
 
   const handleChange = (
@@ -131,15 +148,22 @@ export function ContactForm({ isInView }: ContactFormProps) {
 
         <button
           type="submit"
+          disabled={status === 'loading'}
           className={`w-full px-8 py-4 rounded-xl font-medium transition-all duration-300 flex items-center justify-center gap-2 group ${
             isDark
               ? 'bg-gradient-to-r from-red-600 to-yellow-500 text-white hover:shadow-lg hover:shadow-red-500/50'
               : 'bg-gradient-to-r from-blue-600 to-blue-500 text-white hover:shadow-lg hover:shadow-blue-500/50'
-          }`}
+          } ${status === 'loading' ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
-          {isDark ? 'Launch Mission' : 'Send to Valhalla'}
+          {status === 'loading' ? 'Sending...' : isDark ? 'Launch Mission' : 'Send to Valhalla'}
           <Send className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
         </button>
+        {status === 'success' && (
+          <p className="text-green-500 text-center mt-2">Message sent successfully!</p>
+        )}
+        {status === 'error' && (
+          <p className="text-red-500 text-center mt-2">Failed to send message. Please try again.</p>
+        )}
       </form>
     </motion.div>
   );

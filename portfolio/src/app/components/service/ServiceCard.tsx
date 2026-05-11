@@ -4,7 +4,7 @@ import { ArrowRight, type LucideIcon } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 
 export interface ServiceItem {
-  icon: LucideIcon;
+  icon: LucideIcon | string;
   title: string;
   description: string;
   features: string[];
@@ -42,7 +42,11 @@ export function ServiceCard({ service, index, isInView }: ServiceCardProps) {
             !isDark && 'shadow-blue-500/30'
           }`}
         >
-          <Icon className="w-7 h-7 text-white" />
+          {typeof Icon === 'string' ? (
+            <img src={Icon} alt={service.title} className="w-7 h-7 object-contain" />
+          ) : (
+            <Icon className="w-7 h-7 text-white" />
+          )}
         </div>
 
         <h3

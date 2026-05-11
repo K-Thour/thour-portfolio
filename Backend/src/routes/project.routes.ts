@@ -1,4 +1,6 @@
 import express from 'express';
+import validate from '../middlewares/validate.middleware';
+import { projectCreateSchema, projectUpdateSchema } from '../validations/project.validations';
 import controllers from '../controllers';
 import authMiddleware from '../middlewares/auth.middleware';
 const projectRoutes = express.Router();
@@ -156,8 +158,8 @@ const projectRoutes = express.Router();
  *         description: Not found
  */
 
-projectRoutes.post('/create', authMiddleware, controllers.projectControllers.create);
-projectRoutes.patch('/update/:id', authMiddleware, controllers.projectControllers.update);
+projectRoutes.post('/create', authMiddleware, validate(projectCreateSchema), controllers.projectControllers.create);
+projectRoutes.patch('/update/:id', authMiddleware, validate(projectUpdateSchema), controllers.projectControllers.update);
 projectRoutes.delete('/soft-delete/:id', authMiddleware, controllers.projectControllers.softDelete);
 projectRoutes.delete('/delete/:id', authMiddleware, controllers.projectControllers.deleteOne);
 projectRoutes.get('/get', controllers.projectControllers.get);

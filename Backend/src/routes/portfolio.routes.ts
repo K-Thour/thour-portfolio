@@ -1,4 +1,6 @@
 import express from 'express';
+import validate from '../middlewares/validate.middleware';
+import { portfolioCreateSchema, portfolioUpdateSchema } from '../validations/portfolio.validations';
 import controllers from '../controllers';
 import authMiddleware from '../middlewares/auth.middleware';
 const portfolioRoutes = express.Router();
@@ -156,8 +158,8 @@ const portfolioRoutes = express.Router();
  *         description: Not found
  */
 
-portfolioRoutes.post('/create', authMiddleware, controllers.portfolioControllers.create);
-portfolioRoutes.patch('/update/:id', authMiddleware, controllers.portfolioControllers.update);
+portfolioRoutes.post('/create', authMiddleware, validate(portfolioCreateSchema), controllers.portfolioControllers.create);
+portfolioRoutes.patch('/update/:id', authMiddleware, validate(portfolioUpdateSchema), controllers.portfolioControllers.update);
 portfolioRoutes.delete(
   '/soft-delete/:id',
   authMiddleware,

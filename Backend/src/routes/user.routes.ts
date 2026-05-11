@@ -118,6 +118,7 @@ userRoutes.post('/register', validate(userCreateSchema), controllers.userControl
 userRoutes.post('/login', validate(userLoginSchema), controllers.userControllers.login);
 
 userRoutes.get('/me', authMiddleware, controllers.userControllers.getCurrentUser);
+userRoutes.get('/public', controllers.userControllers.getPublicUser);
 
 userRoutes.patch(
   '/update',

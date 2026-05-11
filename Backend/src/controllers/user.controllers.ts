@@ -23,6 +23,17 @@ const getCurrentUser = async (req: Request, res: Response) => {
   res.status(result.statusCode).json(result);
 };
 
+const getPublicUser = async (req: Request, res: Response) => {
+  const result = await services.userServices.getAll({});
+  // Only return the first user for the portfolio
+  if (result.data && Array.isArray(result.data) && result.data.length > 0) {
+    // Strip sensitive info like passwordHash
+    const { passwordHash, ...safeUser } = result.data[0];
+    result.data = safeUser;
+  }
+  res.status(result.statusCode).json(result);
+};
+
 const updateCurrentUser = async (req: Request, res: Response) => {
   const userId = new Types.ObjectId(req.userId);
   const result = await services.userServices.update(userId.toString(), req.body, userId);
@@ -33,6 +44,7 @@ const userControllers = {
   login,
   register,
   getCurrentUser,
+  getPublicUser,
   updateCurrentUser,
 };
 

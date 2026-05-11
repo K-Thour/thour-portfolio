@@ -8,7 +8,8 @@ import { ProjectHeader } from '../components/project/ProjectHeader';
 import { ProjectFeatures } from '../components/project/ProjectFeatures';
 import { ProjectResults } from '../components/project/ProjectResults';
 
-import { projectsData } from '../../data/projects';
+import { useEffect, useState } from 'react';
+import { fetchProjectById } from '../../services/api';
 
 export function ProjectDetail() {
   const { projectId } = useParams();
@@ -17,7 +18,48 @@ export function ProjectDetail() {
   const { theme } = useTheme();
   const isDark = theme === 'avengers';
 
-  const project = projectsData[projectId as keyof typeof projectsData];
+  const [project, setProject] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadProject = async () => {
+      if (!projectId) return;
+      try {
+        const data = await fetchProjectById(projectId);
+        if (data) {
+          setProject({
+            title: data.title,
+            subtitle: data.device || 'Project',
+            category: data.category || 'Category',
+            description: data.description,
+            image: data.image?.url || 'https://via.placeholder.com/1080',
+            status: data.isActive ? 'Active' : 'Completed',
+            date: new Date(data.year, 0, 1).getFullYear().toString() || '2024',
+            team: data.role || 'Solo Developer',
+            technologies: data.techStack || [],
+            link: data.workingUrl || '#',
+            github: data.githubUrl || '#',
+            challenges: data.projectMetric || [],
+            features: [data.fullDescription],
+            results: data.projectTestimonial || [],
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching project:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadProject();
+  }, [projectId]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   if (!project) {
     return (

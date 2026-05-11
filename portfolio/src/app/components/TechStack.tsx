@@ -3,26 +3,37 @@ import { useInView } from 'motion/react';
 import { useRef } from 'react';
 import { useTheme } from '../context/ThemeContext';
 
+import { useEffect, useState } from 'react';
+import { fetchTechnologies } from '../../services/api';
+
 export function TechStack() {
+  const [technologies, setTechnologies] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.3 });
   const { theme } = useTheme();
   const isDark = theme === 'avengers';
 
-  const technologies = [
-    { name: 'React', category: 'Frontend' },
-    { name: 'Next.js', category: 'Framework' },
-    { name: 'TypeScript', category: 'Language' },
-    { name: 'Node.js', category: 'Backend' },
-    { name: 'Python', category: 'Language' },
-    { name: 'PostgreSQL', category: 'Database' },
-    { name: 'MongoDB', category: 'Database' },
-    { name: 'Docker', category: 'DevOps' },
-    { name: 'AWS', category: 'Cloud' },
-    { name: 'GraphQL', category: 'API' },
-    { name: 'TensorFlow', category: 'AI/ML' },
-    { name: 'Redis', category: 'Cache' },
-  ];
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const data = await fetchTechnologies();
+        // Assume backend technology has name and category fields (or map them)
+        const mappedData = data.map((t: any) => ({
+          name: t.name || t.technology,
+          category: t.category || 'Tool',
+        }));
+        setTechnologies(mappedData);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadData();
+  }, []);
+
+  if (loading || technologies.length === 0) return null;
 
   return (
     <section

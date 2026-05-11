@@ -1,4 +1,6 @@
 import express from 'express';
+import validate from '../middlewares/validate.middleware';
+import { serviceCreateSchema, serviceUpdateSchema } from '../validations/service.validations';
 import controllers from '../controllers';
 import authMiddleware from '../middlewares/auth.middleware';
 const serviceRoutes = express.Router();
@@ -156,8 +158,8 @@ const serviceRoutes = express.Router();
  *         description: Not found
  */
 
-serviceRoutes.post('/create', authMiddleware, controllers.serviceControllers.create);
-serviceRoutes.patch('/update/:id', authMiddleware, controllers.serviceControllers.update);
+serviceRoutes.post('/create', authMiddleware, validate(serviceCreateSchema), controllers.serviceControllers.create);
+serviceRoutes.patch('/update/:id', authMiddleware, validate(serviceUpdateSchema), controllers.serviceControllers.update);
 serviceRoutes.delete('/soft-delete/:id', authMiddleware, controllers.serviceControllers.softDelete);
 serviceRoutes.delete('/delete/:id', authMiddleware, controllers.serviceControllers.deleteOne);
 serviceRoutes.get('/get', controllers.serviceControllers.get);

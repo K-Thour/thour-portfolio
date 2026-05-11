@@ -1,58 +1,87 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { Project, ProjectFormData } from "../components/types";
-import { projectData } from "../components/data/projectData";
+import { fetchProjects, createProject, updateProject, deleteProject } from "../../../../../services/api";
 
 export function useProjects() {
-  const [projects, setProjects] = useState<Project[]>(projectData);
+  const [projects, setProjects] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingProject, setEditingProject] = useState<Project | null>(null);
+  const [editingProject, setEditingProject] = useState<any | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  useEffect(() => {
+    loadProjects();
+  }, []);
+
+  const loadProjects = async () => {
+    setIsLoading(true);
+    try {
+      const data = await fetchProjects();
+      const mappedData = data.map((p: any) => ({
+        ...p,
+        id: p._id,
+        liveUrl: p.workingUrl,
+        githubUrl: p.githubUrl,
+      }));
+      setProjects(mappedData);
+    } catch (error) {
+      console.error("Failed to load projects", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleAdd = () => {
     setEditingProject(null);
     setIsModalOpen(true);
   };
 
-  const handleEdit = (project: Project) => {
+  const handleEdit = (project: any) => {
     setEditingProject(project);
     setIsModalOpen(true);
   };
 
-  const handleSubmit = (data: ProjectFormData) => {
-    if (editingProject) {
-      setProjects(
-        projects.map((p) =>
-          p.id === editingProject.id
-            ? { ...data, id: editingProject.id, views: editingProject.views }
-            : p,
-        ),
-      );
-    } else {
-      setProjects([...projects, { ...data, id: Date.now(), views: 0 }]);
+  const handleSubmit = async (data: any) => {
+    try {
+      if (editingProject) {
+        await updateProject(editingProject.id, data);
+      } else {
+        await createProject(data);
+      }
+      await loadProjects(); // Refresh data
+      setIsModalOpen(false);
+      setEditingProject(null);
+    } catch (error) {
+      console.error("Failed to save project", error);
+      alert("Error saving project. Check console.");
     }
-    setIsModalOpen(false);
-    setEditingProject(null);
   };
 
-  const handleDeleteClick = (id: number) => {
+  const handleDeleteClick = (id: string) => {
     setDeletingId(id);
     setIsDeleteDialogOpen(true);
   };
 
-  const handleDeleteConfirm = () => {
+  const handleDeleteConfirm = async () => {
     if (deletingId) {
-      setProjects(projects.filter((s) => s.id !== deletingId));
-      setIsDeleteDialogOpen(false);
-      setDeletingId(null);
+      try {
+        await deleteProject(deletingId);
+        await loadProjects();
+      } catch (error) {
+        console.error("Failed to delete project", error);
+      } finally {
+        setIsDeleteDialogOpen(false);
+        setDeletingId(null);
+      }
     }
   };
 
-  const handleDelete = (id: number) => {
+  const handleDelete = (id: string) => {
     handleDeleteClick(id);
   };
 
-  const handleView = (project: Project) => {
+  const handleView = (project: any) => {
     window.open(project.liveUrl, "_blank");
   };
 
@@ -68,6 +97,7 @@ export function useProjects() {
 
   return {
     projects,
+    isLoading,
     isModalOpen,
     editingProject,
     isDeleteDialogOpen,

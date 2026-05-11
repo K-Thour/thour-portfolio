@@ -1,4 +1,6 @@
 import express from 'express';
+import validate from '../middlewares/validate.middleware';
+import { resumeCreateSchema, resumeUpdateSchema } from '../validations/resume.validations';
 import controllers from '../controllers';
 import authMiddleware from '../middlewares/auth.middleware';
 const resumeRoutes = express.Router();
@@ -156,8 +158,8 @@ const resumeRoutes = express.Router();
  *         description: Not found
  */
 
-resumeRoutes.post('/create', authMiddleware, controllers.resumeControllers.create);
-resumeRoutes.patch('/update/:id', authMiddleware, controllers.resumeControllers.update);
+resumeRoutes.post('/create', authMiddleware, validate(resumeCreateSchema), controllers.resumeControllers.create);
+resumeRoutes.patch('/update/:id', authMiddleware, validate(resumeUpdateSchema), controllers.resumeControllers.update);
 resumeRoutes.delete('/soft-delete/:id', authMiddleware, controllers.resumeControllers.softDelete);
 resumeRoutes.delete('/delete/:id', authMiddleware, controllers.resumeControllers.deleteOne);
 resumeRoutes.get('/get', controllers.resumeControllers.get);

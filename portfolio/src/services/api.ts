@@ -1,0 +1,69 @@
+import axios from 'axios';
+
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1';
+
+const apiClient = axios.create({
+  baseURL: API_BASE_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+// Global response interceptor for error handling
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    console.error('API Error:', error.response?.data?.message || error.message);
+    return Promise.reject(error);
+  }
+);
+
+export const fetchProjects = async () => {
+  const response = await apiClient.get('/project/get');
+  return response.data.data;
+};
+
+export const fetchPublicUser = async () => {
+  const response = await apiClient.get('/user/public');
+  return response.data.data;
+};
+
+export const fetchProjectById = async (id: string) => {
+  const response = await apiClient.get(`/project/get/${id}`);
+  return response.data.data;
+};
+
+export const fetchServices = async () => {
+  const response = await apiClient.get('/service/get');
+  return response.data.data;
+};
+
+export const fetchServiceById = async (id: string) => {
+  const response = await apiClient.get(`/service/get/${id}`);
+  return response.data.data;
+};
+
+export const fetchTechnologies = async () => {
+  const response = await apiClient.get('/technology/get');
+  return response.data.data;
+};
+
+export const fetchEducation = async () => {
+  const response = await apiClient.get('/education/get');
+  return response.data.data;
+};
+
+export const fetchExperience = async () => {
+  const response = await apiClient.get('/experience/get');
+  return response.data.data;
+};
+
+export const submitContactForm = async (data: any) => {
+  const response = await apiClient.post('/contact/create', data);
+  return response.data;
+};
+
+export const submitLead = async (data: any) => {
+  const response = await apiClient.post('/lead/create', data);
+  return response.data;
+};

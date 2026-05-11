@@ -5,7 +5,8 @@ import { Link, useParams } from 'react-router';
 import { ArrowLeft } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
-import { servicesData } from '../../data/services';
+import { useEffect, useState } from 'react';
+import { fetchServiceById } from '../../services/api';
 import { ServiceHeader } from '../components/service/ServiceHeader';
 import { ServiceFeatures } from '../components/service/ServiceFeatures';
 import { ServiceProcess } from '../components/service/ServiceProcess';
@@ -17,7 +18,36 @@ export function ServiceDetail() {
   const { theme } = useTheme();
   const isDark = theme === 'avengers';
 
-  const service = servicesData[serviceId as keyof typeof servicesData];
+  const [service, setService] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (serviceId) {
+      fetchServiceById(serviceId)
+        .then((data) => {
+          setService({
+            ...data,
+            title: data.name,
+            description: data.decription || data.description,
+            // Map other required fields if needed
+            features: data.features || [],
+            capabilities: data.capabilities || [],
+            technologies: data.technologies || [],
+            process: data.process || []
+          });
+        })
+        .catch(console.error)
+        .finally(() => setLoading(false));
+    }
+  }, [serviceId]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center pt-16">
+        <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   if (!service) {
     return (

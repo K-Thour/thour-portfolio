@@ -14,11 +14,19 @@ import { CodeRain } from '../../components/CodeRain';
 import { CodeSnippet } from '../../components/CodeSnippet';
 import { useTheme } from '../../context/ThemeContext';
 
+import { useEffect, useState } from 'react';
+import { fetchPublicUser } from '../../services/api';
+
 interface HomeHeroProps {
   profileImage?: string;
 }
 
 export function HomeHero({ profileImage }: HomeHeroProps) {
+  const [userData, setUserData] = useState<any>(null);
+
+  useEffect(() => {
+    fetchPublicUser().then((data) => setUserData(data)).catch(console.error);
+  }, []);
   const { theme } = useTheme();
   const isDark = theme === 'avengers';
 
@@ -184,9 +192,11 @@ export function HomeHero({ profileImage }: HomeHeroProps) {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.7 }}
               >
-                {isDark
-                  ? 'Full Stack Developer | AI Enthusiast | Tech Innovator'
-                  : 'Full Stack Developer | Code Warrior | Digital Craftsman'}
+                {userData?.hobbies?.length > 0
+                  ? userData.hobbies.join(' | ')
+                  : (isDark
+                    ? 'Full Stack Developer | AI Enthusiast | Tech Innovator'
+                    : 'Full Stack Developer | Code Warrior | Digital Craftsman')}
               </motion.p>
 
               <motion.p

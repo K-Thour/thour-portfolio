@@ -1,4 +1,6 @@
 import express from 'express';
+import validate from '../middlewares/validate.middleware';
+import { experienceCreateSchema, experienceUpdateSchema } from '../validations/experience.validations';
 import controllers from '../controllers';
 import authMiddleware from '../middlewares/auth.middleware';
 const experienceRoutes = express.Router();
@@ -156,8 +158,8 @@ const experienceRoutes = express.Router();
  *         description: Not found
  */
 
-experienceRoutes.post('/create', authMiddleware, controllers.experienceControllers.create);
-experienceRoutes.patch('/update/:id', authMiddleware, controllers.experienceControllers.update);
+experienceRoutes.post('/create', authMiddleware, validate(experienceCreateSchema), controllers.experienceControllers.create);
+experienceRoutes.patch('/update/:id', authMiddleware, validate(experienceUpdateSchema), controllers.experienceControllers.update);
 experienceRoutes.delete(
   '/soft-delete/:id',
   authMiddleware,

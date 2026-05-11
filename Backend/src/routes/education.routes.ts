@@ -1,4 +1,6 @@
 import express from 'express';
+import validate from '../middlewares/validate.middleware';
+import { educationCreateSchema, educationUpdateSchema } from '../validations/education.validations';
 import controllers from '../controllers';
 import authMiddleware from '../middlewares/auth.middleware';
 const educationRoutes = express.Router();
@@ -156,8 +158,8 @@ const educationRoutes = express.Router();
  *         description: Not found
  */
 
-educationRoutes.post('/create', authMiddleware, controllers.educationControllers.create);
-educationRoutes.patch('/update/:id', authMiddleware, controllers.educationControllers.update);
+educationRoutes.post('/create', authMiddleware, validate(educationCreateSchema), controllers.educationControllers.create);
+educationRoutes.patch('/update/:id', authMiddleware, validate(educationUpdateSchema), controllers.educationControllers.update);
 educationRoutes.delete(
   '/soft-delete/:id',
   authMiddleware,

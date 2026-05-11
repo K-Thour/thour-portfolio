@@ -1,4 +1,6 @@
 import express from 'express';
+import validate from '../middlewares/validate.middleware';
+import { contactCreateSchema, contactUpdateSchema } from '../validations/contact.validations';
 import controllers from '../controllers';
 import authMiddleware from '../middlewares/auth.middleware';
 const contactRoutes = express.Router();
@@ -156,11 +158,11 @@ const contactRoutes = express.Router();
  *         description: Not found
  */
 
-contactRoutes.post('/create', authMiddleware, controllers.contactControllers.create);
-contactRoutes.patch('/update/:id', authMiddleware, controllers.contactControllers.update);
+contactRoutes.post('/create', validate(contactCreateSchema), controllers.contactControllers.create);
+contactRoutes.patch('/update/:id', authMiddleware, validate(contactUpdateSchema), controllers.contactControllers.update);
 contactRoutes.delete('/soft-delete/:id', authMiddleware, controllers.contactControllers.softDelete);
 contactRoutes.delete('/delete/:id', authMiddleware, controllers.contactControllers.deleteOne);
-contactRoutes.get('/get', controllers.contactControllers.get);
-contactRoutes.get('/get/:id', controllers.contactControllers.getOne);
+contactRoutes.get('/get', authMiddleware, controllers.contactControllers.get);
+contactRoutes.get('/get/:id', authMiddleware, controllers.contactControllers.getOne);
 
 export default contactRoutes;
