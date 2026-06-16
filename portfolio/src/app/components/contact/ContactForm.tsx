@@ -24,10 +24,9 @@ export function ContactForm({ isInView }: ContactFormProps) {
     setStatus('loading');
     try {
       await submitContactForm({
-        Address1: formData.email, // backend expects Address1, message, etc based on schema
-        Subject: formData.name, // or mapped differently
-        ContactNum: '0000000000', // Mock if not in form
-        Message: formData.message,
+        name: formData.name,
+        email: formData.email,
+        description: formData.message,
       });
       setStatus('success');
       setFormData({ name: '', email: '', message: '' });

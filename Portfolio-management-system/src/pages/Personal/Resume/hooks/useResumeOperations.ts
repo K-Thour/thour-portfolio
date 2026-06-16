@@ -1,26 +1,58 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import type { Resume, ResumeFormData } from "../types";
-import { sampleResumes } from "../data/initialData";
+import { fetchResumes, deleteResume as deleteResumeApi, generateResumeAI } from "../../../../services/api";
 
 export function useResumeOperations() {
-  const [resumes, setResumes] = useState<Resume[]>(sampleResumes);
-  const [, setIsSubmitting] = useState(false);
+  const [resumes, setResumes] = useState<Resume[]>([]);
+  const [loading, setLoading] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  const loadResumes = useCallback(async () => {
+    setLoading(true);
+    try {
+      const list = await fetchResumes();
+      const mappedList = list.map((r: any) => ({
+        id: r._id,
+        name: r.name,
+        description: r.description || '',
+        jobLink: r.jobUrl || '',
+        designType: r.designType || 'latex',
+        latexCode: r.latexCode || '',
+        status: r.isActive ? 'completed' : 'pending',
+        createdAt: r.createdAt,
+        updatedAt: r.updatedAt,
+        generatedFileUrl: r.resumeUrl,
+      }));
+      setResumes(mappedList);
+    } catch (err) {
+      console.error("Failed to load resumes:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadResumes();
+  }, [loadResumes]);
 
   const createResume = useCallback(
     async (formData: ResumeFormData): Promise<Resume> => {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      const newResume: Resume = {
-        id: Date.now().toString(),
+      const response = await generateResumeAI({
         name: formData.name,
         description: formData.description,
         jobLink: formData.jobLink,
-        designType: formData.designType,
-        designUrl: formData.designUrl,
-        latexCode: formData.latexCode,
-        status: "pending",
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+      });
+      const newResume: Resume = {
+        id: response._id,
+        name: response.name,
+        description: response.description || '',
+        jobLink: response.jobUrl || '',
+        designType: response.designType || 'latex',
+        latexCode: response.latexCode || '',
+        status: 'completed',
+        createdAt: response.createdAt,
+        updatedAt: response.updatedAt,
+        generatedFileUrl: response.resumeUrl,
       };
       setResumes((prev) => [newResume, ...prev]);
       return newResume;
@@ -28,9 +60,15 @@ export function useResumeOperations() {
     [],
   );
 
-  const deleteResume = useCallback((id: string) => {
-    setResumes((prev) => prev.filter((r) => r.id !== id));
+  const deleteResume = useCallback(async (id: string) => {
+    try {
+      await deleteResumeApi(id);
+      setResumes((prev) => prev.filter((r) => r.id !== id));
+    } catch (err) {
+      console.error("Failed to delete resume:", err);
+    }
   }, []);
+
   const downloadResume = useCallback((resume: Resume) => {
     if (resume.generatedFileUrl) window.open(resume.generatedFileUrl, "_blank");
   }, []);
@@ -44,7 +82,7 @@ export function useResumeOperations() {
 
   return {
     resumes,
-    setIsSubmitting,
+    loading,
     deletingId,
     toggleResumeDeleting,
     setDeletingId,

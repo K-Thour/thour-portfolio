@@ -1,14 +1,40 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import type { Lead, LeadStatus } from "../types";
-import { sampleLeads } from "../data/leadsData";
 import { useFilters } from "./useFilters";
+import { fetchLeads, updateLead } from "../../../../services/api";
 
 export function useLeads() {
-  const [leads, setLeads] = useState<Lead[]>(sampleLeads);
+  const [leads, setLeads] = useState<Lead[]>([]);
+  const [loading, setLoading] = useState(false);
   const [viewingLead, setViewingLead] = useState<Lead | null>(null);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [statusChangeLead, setStatusChangeLead] = useState<Lead | null>(null);
   const [isChangeStatusModalOpen, setIsChangeStatusModalOpen] = useState(false);
+
+  const loadLeads = useCallback(async () => {
+    setLoading(true);
+    try {
+      const list = await fetchLeads();
+      const mappedList = list.map((l: any) => ({
+        id: l._id,
+        name: l.name || "",
+        email: l.email || "",
+        phone: l.mobileNumber || "",
+        date: l.createdAt ? new Date(l.createdAt).toISOString().split("T")[0] : "",
+        status: l.status || "New",
+        description: l.description || "",
+      }));
+      setLeads(mappedList);
+    } catch (err) {
+      console.error("Failed to load leads:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadLeads();
+  }, [loadLeads]);
 
   const {
     searchQuery,
@@ -44,23 +70,26 @@ export function useLeads() {
     setStatusChangeLead(null);
   };
 
-  const handleStatusChange = (
-    leadId: number,
+  const handleStatusChange = async (
+    leadId: string | number,
     newStatus: LeadStatus,
     reason?: string,
   ) => {
-    setLeads((prev) =>
-      prev.map((lead) =>
-        lead.id === leadId ? { ...lead, status: newStatus } : lead,
-      ),
-    );
-    setViewingLead((prev) =>
-      prev && prev.id === leadId ? { ...prev, status: newStatus } : prev,
-    );
-    console.log(
-      `Status changed for lead ${leadId} to ${newStatus}`,
-      reason ? `Reason: ${reason}` : "",
-    );
+    try {
+      await updateLead(leadId.toString(), { status: newStatus });
+      await loadLeads();
+      
+      // Update local viewing lead if it matches
+      setViewingLead((prev) =>
+        prev && prev.id === leadId ? { ...prev, status: newStatus } : prev,
+      );
+      console.log(
+        `Status changed for lead ${leadId} to ${newStatus}`,
+        reason ? `Reason: ${reason}` : "",
+      );
+    } catch (err) {
+      console.error("Failed to update lead status:", err);
+    }
   };
 
   const getStatusColor = (status: LeadStatus, isDark: boolean): string => {
@@ -89,6 +118,7 @@ export function useLeads() {
   return {
     leads: filteredLeads,
     allLeads: leads,
+    loading,
     searchQuery,
     setSearchQuery,
     statusFilter,

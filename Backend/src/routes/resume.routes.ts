@@ -159,6 +159,7 @@ const resumeRoutes = express.Router();
  */
 
 resumeRoutes.post('/create', authMiddleware, validate(resumeCreateSchema), controllers.resumeControllers.create);
+resumeRoutes.post('/generate', authMiddleware, controllers.resumeControllers.generate);
 resumeRoutes.patch('/update/:id', authMiddleware, validate(resumeUpdateSchema), controllers.resumeControllers.update);
 resumeRoutes.delete('/soft-delete/:id', authMiddleware, controllers.resumeControllers.softDelete);
 resumeRoutes.delete('/delete/:id', authMiddleware, controllers.resumeControllers.deleteOne);

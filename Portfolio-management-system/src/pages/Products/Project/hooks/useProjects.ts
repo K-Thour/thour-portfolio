@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import type { Project, ProjectFormData } from "../components/types";
-import { fetchProjects, createProject, updateProject, deleteProject } from "../../../../../services/api";
+import { fetchProjects, createProject, updateProject, deleteProject } from "../../../../services/api";
 
 export function useProjects() {
   const [projects, setProjects] = useState<any[]>([]);
@@ -8,7 +7,7 @@ export function useProjects() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<any | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | number | null>(null);
 
   useEffect(() => {
     loadProjects();
@@ -58,7 +57,7 @@ export function useProjects() {
     }
   };
 
-  const handleDeleteClick = (id: string) => {
+  const handleDeleteClick = (id: string | number) => {
     setDeletingId(id);
     setIsDeleteDialogOpen(true);
   };
@@ -66,7 +65,7 @@ export function useProjects() {
   const handleDeleteConfirm = async () => {
     if (deletingId) {
       try {
-        await deleteProject(deletingId);
+        await deleteProject(deletingId.toString());
         await loadProjects();
       } catch (error) {
         console.error("Failed to delete project", error);
@@ -77,7 +76,7 @@ export function useProjects() {
     }
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = (id: string | number) => {
     handleDeleteClick(id);
   };
 

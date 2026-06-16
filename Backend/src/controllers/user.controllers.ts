@@ -5,21 +5,22 @@ import { verifyToken } from '../utils/jwt.utils';
 import { Types } from 'mongoose';
 
 const login = async (req: Request, res: Response) => {
-  const loginDetails: ILogin = req.body;
-  const result = await services.userServices.login(loginDetails.email, loginDetails.passwordHash);
+  const { email, password } = req.body;
+  const result = await services.userServices.login(email, password);
   res.status(result.statusCode).json(result);
 };
 
 const register = async (req: Request, res: Response) => {
-  const userDetails: createUserInput = req.body;
-  const result = await services.userServices.register(userDetails);
+  const { password, ...otherDetails } = req.body;
+  const result = await services.userServices.register({
+    ...otherDetails,
+    passwordHash: password,
+  } as any);
   res.status(result.statusCode).json(result);
 };
 
 const getCurrentUser = async (req: Request, res: Response) => {
-  const token = req.headers.token as string;
-  const userId = verifyToken(token);
-  const result = await services.userServices.getById(userId.id, {});
+  const result = await services.userServices.getById(req.userId!.toString(), {});
   res.status(result.statusCode).json(result);
 };
 
@@ -27,9 +28,23 @@ const getPublicUser = async (req: Request, res: Response) => {
   const result = await services.userServices.getAll({});
   // Only return the first user for the portfolio
   if (result.data && Array.isArray(result.data) && result.data.length > 0) {
-    // Strip sensitive info like passwordHash
-    const { passwordHash, ...safeUser } = result.data[0];
-    result.data = safeUser;
+    const user = result.data[0];
+    const safeUser = {
+      name: user.name,
+      email: user.email,
+      phoneNumber: user.phoneNumber,
+      image: user.image,
+      experience: user.experience,
+      completedProjects: user.completedProjects,
+      solvedProblems: user.solvedProblems,
+      happyClients: user.happyClients,
+      InstagramURL: user.InstagramURL,
+      LinkedInURL: user.LinkedInURL,
+      GitHubURL: user.GitHubURL,
+      hobbies: user.hobbies || [],
+      languages: user.languages || [],
+    };
+    (result as any).data = safeUser;
   }
   res.status(result.statusCode).json(result);
 };

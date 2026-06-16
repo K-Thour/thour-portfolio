@@ -1,16 +1,50 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import type { Education, EducationFormData } from "../types";
-import { sampleEducation } from "../data/educationData";
+import { fetchEducation, createEducation, updateEducation, deleteEducation } from "../../../../services/api";
 
 export function useEducation() {
-  const [educationList, setEducationList] =
-    useState<Education[]>(sampleEducation);
+  const [educationList, setEducationList] = useState<Education[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingEducation, setEditingEducation] = useState<Education | null>(
-    null,
-  );
+  const [editingEducation, setEditingEducation] = useState<Education | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [deletingId, setDeletingId] = useState<string | number | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const loadEducation = useCallback(async () => {
+    setLoading(true);
+    try {
+      const list = await fetchEducation();
+      const mappedList = list.map((e: any) => {
+        const start = e.startYear ? new Date(e.startYear).getFullYear().toString() : "";
+        const end = e.isPursuing ? "Present" : (e.endYear ? new Date(e.endYear).getFullYear().toString() : "");
+        const period = start && end ? `${start} - ${end}` : (start || end || "");
+        return {
+          id: e._id,
+          degree: e.degree || "",
+          institution: e.institution || "",
+          period,
+          description: e.description || "",
+          grade: e.grade || "",
+          // Store raw properties for form initial values
+          level: e.level,
+          field_of_study: e.field_of_study,
+          startYear: e.startYear,
+          endYear: e.endYear,
+          isPursuing: e.isPursuing,
+          gradeType: e.gradeType,
+        };
+      });
+      setEducationList(mappedList);
+    } catch (err) {
+      console.error("Failed to load education:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadEducation();
+  }, [loadEducation]);
 
   const handleAdd = () => {
     setEditingEducation(null);
@@ -22,40 +56,50 @@ export function useEducation() {
     setIsModalOpen(true);
   };
 
-  const handleSubmit = (data: EducationFormData) => {
-    const period = data.current
-      ? `${data.startDate} - Present`
-      : `${data.startDate} - ${data.endDate}`;
-    const formattedData = { ...data, period };
+  const handleSubmit = async (data: EducationFormData) => {
+    // Map frontend fields to backend validation schema
+    const payload = {
+      level: (data as any).level || "undergraduate",
+      degree: data.degree,
+      field_of_study: (data as any).field_of_study || data.degree,
+      institution: data.institution,
+      startYear: new Date(data.startDate).toISOString(),
+      endYear: data.current ? "pursuing" : new Date(data.endDate).toISOString(),
+      isPursuing: data.current,
+      gradeType: (data as any).gradeType || "cgpa",
+      grade: data.grade,
+      description: data.description || "Education details",
+    };
 
-    if (editingEducation) {
-      setEducationList(
-        educationList.map((e) =>
-          e.id === editingEducation.id
-            ? { ...formattedData, id: editingEducation.id }
-            : e,
-        ),
-      );
-    } else {
-      setEducationList([
-        ...educationList,
-        { ...formattedData, id: Date.now() },
-      ]);
+    try {
+      if (editingEducation) {
+        await updateEducation(editingEducation.id.toString(), payload);
+      } else {
+        await createEducation(payload);
+      }
+      await loadEducation();
+      setIsModalOpen(false);
+      setEditingEducation(null);
+    } catch (err) {
+      console.error("Failed to save education:", err);
     }
-    setIsModalOpen(false);
-    setEditingEducation(null);
   };
 
-  const handleDeleteClick = (id: number) => {
+  const handleDeleteClick = (id: string | number) => {
     setDeletingId(id);
     setIsDeleteDialogOpen(true);
   };
 
-  const handleDeleteConfirm = () => {
+  const handleDeleteConfirm = async () => {
     if (deletingId) {
-      setEducationList(educationList.filter((e) => e.id !== deletingId));
-      setIsDeleteDialogOpen(false);
-      setDeletingId(null);
+      try {
+        await deleteEducation(deletingId.toString());
+        setEducationList(educationList.filter((e) => e.id !== deletingId));
+        setIsDeleteDialogOpen(false);
+        setDeletingId(null);
+      } catch (err) {
+        console.error("Failed to delete education:", err);
+      }
     }
   };
 
@@ -75,6 +119,7 @@ export function useEducation() {
     editingEducation,
     isDeleteDialogOpen,
     deletingId,
+    loading,
     handlers: {
       handleAdd,
       handleEdit,

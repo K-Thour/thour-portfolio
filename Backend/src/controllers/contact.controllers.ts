@@ -44,6 +44,11 @@ const getOne = async (req: Request, res: Response) => {
   res.status(result.statusCode).json(result);
 };
 
+const getActive = async (req: Request, res: Response) => {
+  const result = await services.contactServices.getActiveService();
+  res.status(result.statusCode).json(result);
+};
+
 const contactControllers = {
   create,
   update,
@@ -51,6 +56,7 @@ const contactControllers = {
   deleteOne,
   get,
   getOne,
+  getActive,
 };
 
 export default contactControllers;

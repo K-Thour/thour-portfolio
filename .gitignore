@@ -27,3 +27,14 @@ dist-ssr
 *.sw?
 
 package-lock.json
+
+# BMAD Files
+_bmad
+_bmad-output
+.agent
+.agents
+.claude
+.github
+.windsurf
+.antigravity
+.codex

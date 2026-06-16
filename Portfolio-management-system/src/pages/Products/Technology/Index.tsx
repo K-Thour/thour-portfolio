@@ -1,21 +1,43 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Modal } from "../../../components/ui/model/Model";
 import { TechnologyForm } from "./components/form/TechnologyForm";
 import { TechnologyHeader } from "./components/header";
 import { TechnologyList } from "./components/list";
-import { technologiesData } from "./Data/Technologies";
 import ConfirmModal from "../../../components/common/confirmModel/confirmModel";
 import type { Technology } from "./types";
+import { fetchTechnologies, createTechnology, updateTechnology, deleteTechnology } from "../../../services/api";
 
 export function Technologies() {
-  const [technologies, setTechnologies] =
-    useState<Technology[]>(technologiesData);
-
+  const [technologies, setTechnologies] = useState<Technology[]>([]);
+  const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingTech, setEditingTech] = useState<Technology | undefined>(
-    undefined,
-  );
-  const [deleteId, setDeleteId] = useState<number | undefined>(undefined);
+  const [editingTech, setEditingTech] = useState<Technology | undefined>(undefined);
+  const [deleteId, setDeleteId] = useState<string | number | undefined>(undefined);
+
+  const loadTechnologies = useCallback(async () => {
+    setLoading(true);
+    try {
+      const list = await fetchTechnologies();
+      const mappedList = list.map((e: any) => ({
+        id: e._id,
+        name: e.name || "",
+        category: e.category || "",
+        icon: e.iconUrl?.url || "",
+        iconType: "url",
+        iconUrl: e.iconUrl?.url || "",
+        proficiency: 80,
+      }));
+      setTechnologies(mappedList);
+    } catch (err) {
+      console.error("Failed to load technologies:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadTechnologies();
+  }, [loadTechnologies]);
 
   const handleAdd = () => {
     setEditingTech(undefined);
@@ -27,29 +49,41 @@ export function Technologies() {
     setIsModalOpen(true);
   };
 
-  const handleSubmit = (data: Omit<Technology, "id">) => {
-    if (editingTech) {
-      // Update existing
-      setTechnologies(
-        technologies.map((t) =>
-          t.id === editingTech.id ? { ...data, id: editingTech.id } : t,
-        ),
-      );
-    } else {
-      // Add new
-      setTechnologies([...technologies, { ...data, id: Date.now() }]);
+  const handleSubmit = async (data: Omit<Technology, "id">) => {
+    const payload = {
+      name: data.name,
+      description: data.name, // description is required in backend validations
+      category: data.category,
+      iconUrl: { publicId: "tech", url: data.iconUrl || data.icon || "https://placehold.co/100" },
+      isActive: true,
+    };
+
+    try {
+      if (editingTech) {
+        await updateTechnology(editingTech.id.toString(), payload);
+      } else {
+        await createTechnology(payload);
+      }
+      await loadTechnologies();
+      setIsModalOpen(false);
+      setEditingTech(undefined);
+    } catch (err) {
+      console.error("Failed to save technology:", err);
     }
-    setIsModalOpen(false);
-    setEditingTech(undefined);
   };
 
-  const handleDelete = (id: number) => {
+  const handleDelete = (id: string | number) => {
     setDeleteId(id);
   };
 
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = async () => {
     if (deleteId) {
-      setTechnologies(technologies.filter((t) => t.id !== deleteId));
+      try {
+        await deleteTechnology(deleteId.toString());
+        await loadTechnologies();
+      } catch (err) {
+        console.error("Failed to delete technology:", err);
+      }
     }
     setDeleteId(undefined);
   };
@@ -57,11 +91,15 @@ export function Technologies() {
   return (
     <div className="space-y-6">
       <TechnologyHeader onAdd={handleAdd} />
-      <TechnologyList
-        technologies={technologies}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-      />
+      {loading ? (
+        <div className="text-center p-12 text-slate-500">Loading technologies...</div>
+      ) : (
+        <TechnologyList
+          technologies={technologies}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+        />
+      )}
 
       {/* Modal */}
       <Modal

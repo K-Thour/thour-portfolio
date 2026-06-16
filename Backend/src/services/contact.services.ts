@@ -79,6 +79,20 @@ const getOneService = (params?: IContactRepoParams) => {
   });
 };
 
+const getActiveService = () => {
+  return asyncCommonWrapper(async () => {
+    const result = await models.contact.repo.getOne({
+      filter: [{ isActive: true, isDeleted: false }],
+    });
+    return commonResponse.success(
+      result,
+      MESSAGES_COMMON_UTIL.fetchedSuccessfully('Contact'),
+      STATUS_CODE.OK,
+      result ? 1 : 0,
+    );
+  });
+};
+
 const contactServices = {
   createService,
   updateService,
@@ -86,6 +100,7 @@ const contactServices = {
   deleteOneService,
   getService,
   getOneService,
+  getActiveService,
 };
 
 export default contactServices;

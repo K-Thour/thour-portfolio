@@ -12,6 +12,7 @@ export interface IResume {
   resumeUrl: string;
   resumeFormatUrl?: string;
   jobUrl?: string;
+  latexCode?: string;
   isDeleted: boolean;
   isActive: boolean;
 }

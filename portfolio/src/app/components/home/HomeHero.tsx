@@ -15,7 +15,7 @@ import { CodeSnippet } from '../../components/CodeSnippet';
 import { useTheme } from '../../context/ThemeContext';
 
 import { useEffect, useState } from 'react';
-import { fetchPublicUser } from '../../services/api';
+import { fetchPublicUser } from '../../../services/api';
 
 interface HomeHeroProps {
   profileImage?: string;

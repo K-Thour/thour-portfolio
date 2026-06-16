@@ -7,9 +7,9 @@ import ILeadModel, { createLeadInput } from '../interface/models/lead/lead.inter
 import { Types } from 'mongoose';
 import { ILeadRepoParams } from '../interface/models/lead/leadRepo.interface';
 
-const createService = (data: createLeadInput, createdBy: Types.ObjectId) => {
+const createService = (data: createLeadInput) => {
   return asyncCommonWrapper(async () => {
-    const result = await models.lead.repo.create(data, createdBy);
+    const result = await models.lead.repo.create(data);
     return commonResponse.success(
       result,
       MESSAGES_COMMON_UTIL.createdSuccessfully('Lead'),

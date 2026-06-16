@@ -7,6 +7,8 @@ import { getLoginFields } from "./loginFields";
 import { LoginCardHeader } from "../LoginCardHeader";
 import { CommonForm } from "../../../../components/common/form/CommonForm";
 
+import { loginUser } from "../../../../services/api";
+
 export const LoginForm: React.FC<theme & { onForgotPassword?: () => void }> = ({
   theme,
   onForgotPassword,
@@ -56,7 +58,18 @@ export const LoginForm: React.FC<theme & { onForgotPassword?: () => void }> = ({
             schema={loginSchema}
             fields={formFields}
             onSubmit={async ({ value }) => {
-              console.log("Login attempt:", value);
+              try {
+                const response = await loginUser(value);
+                if (response && response.success && response.data?.token) {
+                  localStorage.setItem("token", response.data.token);
+                  window.location.href = "/";
+                } else {
+                  alert(response?.message || "Login failed");
+                }
+              } catch (error: any) {
+                console.error("Login error:", error);
+                alert(error.response?.data?.message || "Login failed");
+              }
             }}
             isDark={isDark}
             showSubmitButton={true}

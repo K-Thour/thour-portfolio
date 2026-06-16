@@ -1,6 +1,8 @@
 import { motion } from 'motion/react';
 import { Mail, MapPin, Phone } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
+import { useState, useEffect } from 'react';
+import { fetchPublicUser, fetchActiveContact } from '../../../services/api';
 
 interface ContactInfoProps {
   isInView: boolean;
@@ -10,26 +12,45 @@ export function ContactInfo({ isInView }: ContactInfoProps) {
   const { theme } = useTheme();
   const isDark = theme === 'avengers';
 
+  const [userData, setUserData] = useState<any>(null);
+  const [activeContact, setActiveContact] = useState<any>(null);
+
+  useEffect(() => {
+    fetchPublicUser().then(setUserData).catch(console.error);
+    fetchActiveContact().then(setActiveContact).catch(console.error);
+  }, []);
+
+  const emailVal = userData?.email || (isDark ? 'hero@avengers.com' : 'warrior@valhalla.com');
+  const phoneVal = userData?.phoneNumber || (isDark ? '+1 (555) AVG-HERO' : '+1 (555) NOR-DWAR');
+  
+  let locationVal = isDark ? 'Avengers Tower, NYC' : 'Midgard Realm';
+  if (activeContact) {
+    locationVal = activeContact.Address1;
+    if (activeContact.Address2) {
+      locationVal += `, ${activeContact.Address2}`;
+    }
+  }
+
   const contactInfo = [
     {
       id: 'email',
       icon: Mail,
       title: 'Email',
-      value: isDark ? 'hero@avengers.com' : 'warrior@valhalla.com',
-      link: isDark ? 'mailto:hero@avengers.com' : 'mailto:warrior@valhalla.com',
+      value: emailVal,
+      link: `mailto:${emailVal}`,
     },
     {
       id: 'phone',
       icon: Phone,
       title: isDark ? 'Phone' : 'Raven Call',
-      value: isDark ? '+1 (555) AVG-HERO' : '+1 (555) NOR-DWAR',
-      link: 'tel:+15552844376',
+      value: phoneVal,
+      link: `tel:${phoneVal.replace(/\s+/g, '')}`,
     },
     {
       id: 'location',
       icon: MapPin,
       title: 'Location',
-      value: isDark ? 'Avengers Tower, NYC' : 'Midgard Realm',
+      value: locationVal,
       link: '#',
     },
   ];
@@ -109,7 +130,9 @@ export function ContactInfo({ isInView }: ContactInfoProps) {
           {isDark ? 'Availability' : 'When to Call'}
         </h4>
         <p className={`mb-2 ${isDark ? 'text-gray-400' : 'text-gray-700'}`}>
-          {isDark
+          {activeContact ? (
+            `${activeContact.startWorkingDay} - ${activeContact.endWorkingDay}: ${activeContact.startWorkingHour} - ${activeContact.endWorkingHour}`
+          ) : isDark
             ? 'Monday - Friday: 9:00 AM - 6:00 PM EST'
             : 'Sunrise to Sunset: All Days'}
         </p>

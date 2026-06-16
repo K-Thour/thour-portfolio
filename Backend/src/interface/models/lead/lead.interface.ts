@@ -4,10 +4,11 @@ import { ICommonModel } from '../../common/common.interface';
 export interface ILead {
   name: string;
   email: string;
-  companyName: string;
-  mobileNumber: string;
-  service: Types.ObjectId;
+  companyName?: string;
+  mobileNumber?: string;
+  service?: Types.ObjectId;
   description: string;
+  status?: string;
 }
 
 export interface ILeadModel extends ILead, ICommonModel {
@@ -20,10 +21,11 @@ export interface ILeadModel extends ILead, ICommonModel {
 export interface createLeadInput {
   name: string;
   email: string;
-  companyName: string;
-  mobileNumber: string;
-  service: Types.ObjectId;
+  companyName?: string;
+  mobileNumber?: string;
+  service?: Types.ObjectId;
   description: string;
+  status?: string;
 }
 
 export default ILeadModel;

@@ -1,5 +1,5 @@
 export interface Project {
-  id: number;
+  id: string | number;
   title: string;
   subtitle: string;
   category: string;
@@ -38,7 +38,7 @@ export interface ProjectCardProps {
   project: Project;
   index: number;
   onEdit: (project: Project) => void;
-  onDelete: (id: number) => void;
+  onDelete: (id: string | number) => void;
   onView: (project: Project) => void;
 }
 
@@ -49,7 +49,7 @@ export interface ProjectHeaderProps {
 export interface ProjectListProps {
   projects: Project[];
   onEdit: (project: Project) => void;
-  onDelete: (id: number) => void;
+  onDelete: (id: string | number) => void;
   onView: (project: Project) => void;
 }
 

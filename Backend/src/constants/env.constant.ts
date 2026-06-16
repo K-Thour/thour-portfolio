@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { SignOptions } from 'jsonwebtoken';
 
 export default {
@@ -7,4 +8,6 @@ export default {
   SALT_ROUNDS: Number(process.env.SALT_ROUNDS || 10),
   JWT_SECRET: process.env.JWT_SECRET || 'thour',
   TOKEN_EXPIRY: (process.env.TOKEN_EXPIRY as SignOptions['expiresIn']) ?? '1d',
+  GEMINI_API_KEY: process.env.GEMINI_API_KEY || '',
 };
+

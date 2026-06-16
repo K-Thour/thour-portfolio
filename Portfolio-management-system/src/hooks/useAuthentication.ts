@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { fetchCurrentUser } from "../services/api";
 
 export interface User {
   id?: string;
@@ -31,13 +32,13 @@ export const useAuthentication = () => {
           return;
         }
 
-        // TODO: Replace with actual API call to fetch current user when the backend is ready
-        // Currently bypassing actual fetch and providing the mock user that was previously used in layouts/headers
+        const me = await fetchCurrentUser();
         setUser({
-          name: "Admin User",
-          email: "admin@management.system",
+          name: me.name,
+          email: me.email,
           role: { name: "Admin" },
-          avatarUrl: "",
+          avatarUrl: me.image?.url || "",
+          ...me
         });
 
         setIsAuthenticated(true);

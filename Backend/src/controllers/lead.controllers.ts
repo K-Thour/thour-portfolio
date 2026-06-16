@@ -5,9 +5,8 @@ import { Types } from 'mongoose';
 import timeZone from '../utils/date.utils';
 
 const create = async (req: Request, res: Response) => {
-  const userId = new Types.ObjectId(req.userId);
   const leadDetails: createLeadInput = req.body;
-  const result = await services.leadServices.createService(leadDetails, userId);
+  const result = await services.leadServices.createService(leadDetails);
   res.status(result.statusCode).json(result);
 };
 const update = async (req: Request, res: Response) => {

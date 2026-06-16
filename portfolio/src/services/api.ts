@@ -59,11 +59,16 @@ export const fetchExperience = async () => {
 };
 
 export const submitContactForm = async (data: any) => {
-  const response = await apiClient.post('/contact/create', data);
+  const response = await apiClient.post('/lead/create', data);
   return response.data;
 };
 
 export const submitLead = async (data: any) => {
   const response = await apiClient.post('/lead/create', data);
   return response.data;
+};
+
+export const fetchActiveContact = async () => {
+  const response = await apiClient.get('/contact/active');
+  return response.data.data;
 };

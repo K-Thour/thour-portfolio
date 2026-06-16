@@ -9,7 +9,8 @@ async function authMiddleware(req: Request, res: Response, next: NextFunction) {
   const authHeader = req.headers.authorization;
 
   if (!authHeader) {
-    return res.status(401).json({ message: 'Token missing' });
+    const error = commonResponse.error(null, 'Token missing', STATUS_CODE.UNAUTHORIZED, 0);
+    return res.status(error.statusCode).json(error);
   }
 
   const token = authHeader.split(' ')[1];
@@ -21,7 +22,8 @@ async function authMiddleware(req: Request, res: Response, next: NextFunction) {
     });
 
     if (!user) {
-      return res.status(401).json({ message: 'User not found' });
+      const error = commonResponse.error(null, 'User not found', STATUS_CODE.UNAUTHORIZED, 0);
+      return res.status(error.statusCode).json(error);
     }
 
     req.userId = user._id;

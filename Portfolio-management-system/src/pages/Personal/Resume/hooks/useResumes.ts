@@ -7,7 +7,6 @@ export function useResumes() {
   const { formData, validateForm, resetForm } = useResumeForm();
   const {
     resumes,
-    setIsSubmitting,
     createResume,
     deleteResume,
     downloadResume,
@@ -24,11 +23,9 @@ export function useResumes() {
 
   const submit = useCallback(async () => {
     if (!validateForm()) return;
-    setIsSubmitting(true);
     await createResume(formData);
-    setIsSubmitting(false);
     close();
-  }, [formData, validateForm, setIsSubmitting, createResume, close]);
+  }, [formData, validateForm, createResume, close]);
 
   return {
     resumes,

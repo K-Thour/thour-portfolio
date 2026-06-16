@@ -46,6 +46,10 @@ const resumeSchema = new Schema<IResumeModel>(
       type: String,
       required: false,
     },
+    latexCode: {
+      type: String,
+      required: false,
+    },
     isDeleted: {
       type: Boolean,
       default: false,

@@ -44,6 +44,13 @@ const getOne = async (req: Request, res: Response) => {
   res.status(result.statusCode).json(result);
 };
 
+const generate = async (req: Request, res: Response) => {
+  const userId = new Types.ObjectId(req.userId);
+  const { name, description, jobLink } = req.body;
+  const result = await services.resumeServices.generateService(name, description, jobLink, userId);
+  res.status(result.statusCode).json(result);
+};
+
 const resumeControllers = {
   create,
   update,
@@ -51,6 +58,7 @@ const resumeControllers = {
   deleteOne,
   get,
   getOne,
+  generate,
 };
 
 export default resumeControllers;
