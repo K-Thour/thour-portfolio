@@ -8,6 +8,7 @@ import { LoginCardHeader } from "../LoginCardHeader";
 import { CommonForm } from "../../../../components/common/form/CommonForm";
 
 import { loginUser } from "../../../../services/api";
+import { toast } from "../../../../components/ui/toast/toast";
 
 export const LoginForm: React.FC<theme & { onForgotPassword?: () => void }> = ({
   theme,
@@ -64,11 +65,19 @@ export const LoginForm: React.FC<theme & { onForgotPassword?: () => void }> = ({
                   localStorage.setItem("token", response.data.token);
                   window.location.href = "/";
                 } else {
-                  alert(response?.message || "Login failed");
+                  toast({
+                    title: "Login Failed",
+                    description: response?.message || "Login failed",
+                    variant: "destructive",
+                  });
                 }
               } catch (error: any) {
                 console.error("Login error:", error);
-                alert(error.response?.data?.message || "Login failed");
+                toast({
+                  title: "Login Error",
+                  description: error.response?.data?.message || "Login failed",
+                  variant: "destructive",
+                });
               }
             }}
             isDark={isDark}

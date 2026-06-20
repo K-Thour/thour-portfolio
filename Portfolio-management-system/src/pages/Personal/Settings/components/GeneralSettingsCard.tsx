@@ -65,7 +65,11 @@ export function GeneralSettingsCard({
     if (newValue) {
       // Requesting to enable notifications
       if (!("Notification" in window)) {
-        alert("This browser does not support notifications");
+        toast({
+          title: "Not Supported",
+          description: "This browser does not support notifications",
+          variant: "destructive",
+        });
         return;
       }
 

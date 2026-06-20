@@ -4,10 +4,12 @@ import { useShareProjects, allProjects } from "./hooks/useShareProjects";
 import { copyToClipboard } from "./utils/clipboard";
 import { PortfolioHeader, PortfolioList, PortfolioModal } from "./components";
 import ConfirmModal from "../../../components/common/confirmModel/confirmModel";
+import { useToast } from "../../../hooks/useToast";
 
 function ShareProjectsPortfolio() {
   const { theme } = useAppSelector((state: RootState) => state.theme);
   const isDark = theme === "dark";
+  const { toast } = useToast();
   const {
     portfolios,
     isModalOpen,
@@ -35,7 +37,12 @@ function ShareProjectsPortfolio() {
         setCopied(id);
         setTimeout(() => setCopied(null), 2000);
       },
-      () => alert(`Copy this link: ${url}`),
+      () =>
+        toast({
+          title: "Copy Link",
+          description: `Copy this link: ${url}`,
+          variant: "warning",
+        }),
     );
   };
 

@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { fetchProjects, createProject, updateProject, deleteProject } from "../../../../services/api";
+import { useToast } from "../../../../hooks/useToast";
 
 export function useProjects() {
+  const { toast } = useToast();
   const [projects, setProjects] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -53,7 +55,11 @@ export function useProjects() {
       setEditingProject(null);
     } catch (error) {
       console.error("Failed to save project", error);
-      alert("Error saving project. Check console.");
+      toast({
+        title: "Save Failed",
+        description: "Error saving project. Check console.",
+        variant: "destructive",
+      });
     }
   };
 

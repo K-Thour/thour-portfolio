@@ -3,10 +3,12 @@ import { allProjects } from "../data/sharedProjectsData";
 import { usePortfolioState } from "./usePortfolioState";
 import { usePortfolioModal } from "./usePortfolioModal";
 import { useClipboard } from "./useClipboard";
+import { useToast } from "../../../../hooks/useToast";
 
 export { allProjects };
 
 export function useShareProjects() {
+  const { toast } = useToast();
   const {
     portfolios,
     addPortfolio,
@@ -31,8 +33,14 @@ export function useShareProjects() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name.trim() || formData.projectIds.length === 0)
-      return alert("Please enter name and select projects");
+    if (!formData.name.trim() || formData.projectIds.length === 0) {
+      toast({
+        title: "Validation Error",
+        description: "Please enter name and select projects",
+        variant: "destructive",
+      });
+      return;
+    }
 
     if (editing) {
       updatePortfolio(editing.id, {
