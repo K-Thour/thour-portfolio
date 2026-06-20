@@ -11,3 +11,4 @@ app.listen(envConstants.PORT, async () => {
   await seedAdminUser();
   console.log(`Server is running on port ${envConstants.PORT}`);
 });
+// Trigger reload

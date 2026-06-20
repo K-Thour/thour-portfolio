@@ -22,8 +22,9 @@ export const seedAdminUser = async (): Promise<void> => {
     console.log(`Seeding admin user with email: ${email}`);
     const passwordHash = await hashPassword(password);
 
-    await models.user.model.create({
-      _id: 'Single_User' as unknown as mongoose.Types.ObjectId,
+    await models.user.model.collection.insertOne({
+      // @ts-ignore
+      _id: 'Single_User',
       name: 'Admin User',
       email: email,
       passwordHash: passwordHash,
@@ -35,6 +36,8 @@ export const seedAdminUser = async (): Promise<void> => {
       hobbies: ['Coding'],
       languages: [{ name: 'English', level: 'native' }],
       isDeleted: false,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     });
 
     console.log('Admin user seeded successfully!');
