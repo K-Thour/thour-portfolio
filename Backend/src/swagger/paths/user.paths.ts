@@ -5,10 +5,28 @@ export const userPaths = {
       tags: ['User'],
       requestBody: {
         required: true,
-        content: { 'application/json': { schema: { type: 'object' } } },
+        content: {
+          'application/json': {
+            schema: { $ref: '#/components/schemas/UserRegisterInput' },
+          },
+        },
       },
       responses: {
-        '201': { description: 'Registered successfully' },
+        '201': {
+          description: 'Registered successfully',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  success: { type: 'boolean' },
+                  message: { type: 'string' },
+                  data: { $ref: '#/components/schemas/User' },
+                },
+              },
+            },
+          },
+        },
         '400': { description: 'Validation error or user exists' },
       },
     },
@@ -19,10 +37,34 @@ export const userPaths = {
       tags: ['User'],
       requestBody: {
         required: true,
-        content: { 'application/json': { schema: { type: 'object' } } },
+        content: {
+          'application/json': {
+            schema: { $ref: '#/components/schemas/UserLoginInput' },
+          },
+        },
       },
       responses: {
-        '200': { description: 'Logged in successfully' },
+        '200': {
+          description: 'Logged in successfully',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  success: { type: 'boolean' },
+                  message: { type: 'string' },
+                  data: {
+                    type: 'object',
+                    properties: {
+                      user: { $ref: '#/components/schemas/User' },
+                      token: { type: 'string' },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
         '404': { description: 'User not found or invalid credentials' },
       },
     },
@@ -33,7 +75,21 @@ export const userPaths = {
       tags: ['User'],
       security: [{ BearerAuth: [] }],
       responses: {
-        '200': { description: 'Fetched successfully' },
+        '200': {
+          description: 'Fetched successfully',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  success: { type: 'boolean' },
+                  message: { type: 'string' },
+                  data: { $ref: '#/components/schemas/User' },
+                },
+              },
+            },
+          },
+        },
         '401': { description: 'Unauthorized' },
       },
     },
@@ -45,10 +101,28 @@ export const userPaths = {
       security: [{ BearerAuth: [] }],
       requestBody: {
         required: true,
-        content: { 'application/json': { schema: { type: 'object' } } },
+        content: {
+          'application/json': {
+            schema: { $ref: '#/components/schemas/UserUpdateInput' },
+          },
+        },
       },
       responses: {
-        '200': { description: 'Updated successfully' },
+        '200': {
+          description: 'Updated successfully',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  success: { type: 'boolean' },
+                  message: { type: 'string' },
+                  data: { $ref: '#/components/schemas/User' },
+                },
+              },
+            },
+          },
+        },
         '401': { description: 'Unauthorized' },
       },
     },
