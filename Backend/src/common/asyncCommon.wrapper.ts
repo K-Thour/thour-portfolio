@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import CREATION_CONSTANT from '../constants/creation.constant';
 import { STATUS_CODE } from '../constants/statusCode.constant';
 import { ICommonResponse } from '../interface/common/common.interface';
@@ -29,7 +29,13 @@ export const asyncCommonWrapper = async <T>(
   }
 };
 
-export const globalErrorHandler = (error: unknown, _req: Request, res: Response) => {
+export const globalErrorHandler = (
+  error: unknown,
+  _req: Request,
+  res: Response,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _next: NextFunction,
+) => {
   if (error instanceof Error) {
     return res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({
       success: false,

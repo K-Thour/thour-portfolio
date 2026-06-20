@@ -11,7 +11,6 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors());
-app.use(globalErrorHandler);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
@@ -25,5 +24,7 @@ app.use(returnApiPrefix('lead'), routes.leadRoutes);
 app.use(returnApiPrefix('portfolio'), routes.portfolioRoutes);
 app.use(returnApiPrefix('project'), routes.projectRoutes);
 app.use(returnApiPrefix('resume'), routes.resumeRoutes);
+
+app.use(globalErrorHandler);
 
 export default app;
