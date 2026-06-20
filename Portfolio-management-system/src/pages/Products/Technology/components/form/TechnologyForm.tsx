@@ -62,10 +62,18 @@ export function TechnologyForm({
     if (!formData.category) newErrors.category = "Category is required";
 
     // Validate icon based on type
-    if (iconType === "url" && !formData.iconUrl.trim()) {
-      newErrors.icon = "Icon URL is required";
-    } else if (iconType === "image" && !formData.iconImage.trim()) {
-      newErrors.icon = "Icon image URL is required";
+    if (iconType === "url") {
+      if (!formData.iconUrl.trim()) {
+        newErrors.icon = "Icon URL is required";
+      } else if (!/^https?:\/\/.+/.test(formData.iconUrl.trim())) {
+        newErrors.icon = "Please enter a valid URL";
+      }
+    } else if (iconType === "image") {
+      if (!formData.iconImage.trim()) {
+        newErrors.icon = "Icon image URL is required";
+      } else if (!/^https?:\/\/.+/.test(formData.iconImage.trim())) {
+        newErrors.icon = "Please enter a valid URL";
+      }
     }
 
     setErrors(newErrors);

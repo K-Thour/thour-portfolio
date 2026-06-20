@@ -30,6 +30,9 @@ export interface ProfileFormErrors {
   completedProjects?: string;
   solvedProblems?: string;
   happyClients?: string;
+  InstagramURL?: string;
+  LinkedInURL?: string;
+  GitHubURL?: string;
 }
 
 export interface ProfileFormProps {
@@ -63,6 +66,11 @@ export interface AdditionalInfoStepProps {
     GitHubURL: string;
     hobbies: string[];
     languages: Language[];
+  };
+  errors: {
+    InstagramURL?: string;
+    LinkedInURL?: string;
+    GitHubURL?: string;
   };
   isDark: boolean;
   onSocialChange: (field: string, value: string) => void;
@@ -146,5 +154,5 @@ export type LanguagesInputProps = Pick<
 
 export type SocialInputsProps = Pick<
   AdditionalInfoStepProps,
-  "formData" | "isDark" | "onSocialChange"
+  "formData" | "errors" | "isDark" | "onSocialChange"
 >;

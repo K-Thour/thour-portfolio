@@ -53,15 +53,23 @@ export function useServiceForm(initialData?: Service) {
         break;
       case 2:
         // Photo validation
-        if (photoType === "url" && !formData.photoUrl.trim()) {
-          newErrors.photo = "Photo URL is required";
+        if (photoType === "url") {
+          if (!formData.photoUrl.trim()) {
+            newErrors.photo = "Photo URL is required";
+          } else if (!/^https?:\/\/.+/.test(formData.photoUrl.trim())) {
+            newErrors.photo = "Please enter a valid URL";
+          }
         } else if (photoType === "upload" && !formData.photoFile) {
           newErrors.photo = "Please upload a photo";
         }
 
         // Icon validation
-        if (iconType === "url" && !formData.iconUrl.trim()) {
-          newErrors.icon = "Icon URL is required";
+        if (iconType === "url") {
+          if (!formData.iconUrl.trim()) {
+            newErrors.icon = "Icon URL is required";
+          } else if (!/^https?:\/\/.+/.test(formData.iconUrl.trim())) {
+            newErrors.icon = "Please enter a valid URL";
+          }
         } else if (iconType === "upload" && !formData.iconFile) {
           newErrors.icon = "Please upload an icon";
         }

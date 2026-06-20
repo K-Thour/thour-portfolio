@@ -2,7 +2,7 @@ export const userSchemas = {
   User: {
     type: 'object',
     properties: {
-      _id: { type: 'string', default: 'Single_User' },
+      _id: { type: 'string', default: '60d5ec4934d47d2b2c8b4567' },
       name: { type: 'string' },
       email: { type: 'string', format: 'email' },
       phoneNumber: { type: 'string' },

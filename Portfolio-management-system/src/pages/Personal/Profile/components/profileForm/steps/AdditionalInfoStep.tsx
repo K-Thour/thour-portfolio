@@ -6,6 +6,7 @@ import { LanguagesInput } from "./LanguagesInput";
 
 export function AdditionalInfoStep({
   formData,
+  errors,
   isDark,
   onSocialChange,
   onAddHobby,
@@ -21,6 +22,7 @@ export function AdditionalInfoStep({
     >
       <SocialInputs
         formData={formData}
+        errors={errors}
         isDark={isDark}
         onSocialChange={onSocialChange}
       />

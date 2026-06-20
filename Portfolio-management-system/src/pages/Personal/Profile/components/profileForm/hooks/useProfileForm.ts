@@ -80,6 +80,15 @@ export function useProfileForm(initialData?: Partial<ProfileFormData>) {
           newErrors.happyClients = "Clients cannot be negative";
         break;
       case 4:
+        if (formData.InstagramURL && formData.InstagramURL.trim() && !/^https?:\/\/.+/.test(formData.InstagramURL)) {
+          newErrors.InstagramURL = "Please enter a valid URL";
+        }
+        if (formData.LinkedInURL && formData.LinkedInURL.trim() && !/^https?:\/\/.+/.test(formData.LinkedInURL)) {
+          newErrors.LinkedInURL = "Please enter a valid URL";
+        }
+        if (formData.GitHubURL && formData.GitHubURL.trim() && !/^https?:\/\/.+/.test(formData.GitHubURL)) {
+          newErrors.GitHubURL = "Please enter a valid URL";
+        }
         break;
     }
 

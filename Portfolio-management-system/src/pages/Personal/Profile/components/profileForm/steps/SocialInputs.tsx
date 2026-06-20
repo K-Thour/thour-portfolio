@@ -3,6 +3,7 @@ import type { SocialInputsProps } from "../types";
 
 export function SocialInputs({
   formData,
+  errors,
   isDark,
   onSocialChange,
 }: SocialInputsProps) {
@@ -33,23 +34,28 @@ export function SocialInputs({
       </h3>
       <div className="space-y-3">
         {socialInputs.map(({ icon: Icon, field, placeholder }) => (
-          <div key={field} className="relative">
-            <Icon
-              className={`absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 ${
-                isDark ? "text-gray-500" : "text-gray-400"
-              }`}
-            />
-            <input
-              type="url"
-              value={formData[field]}
-              onChange={(e) => onSocialChange(field, e.target.value)}
-              className={`w-full pl-11 pr-4 py-3 rounded-xl border focus:outline-none focus:ring-2 ${
-                isDark
-                  ? "bg-slate-900/50 border-red-500/20 text-white focus:ring-red-500"
-                  : "bg-white border-blue-300/50 text-gray-900 focus:ring-blue-500"
-              }`}
-              placeholder={placeholder}
-            />
+          <div key={field} className="space-y-1">
+            <div className="relative">
+              <Icon
+                className={`absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 ${
+                  isDark ? "text-gray-500" : "text-gray-400"
+                }`}
+              />
+              <input
+                type="url"
+                value={formData[field]}
+                onChange={(e) => onSocialChange(field, e.target.value)}
+                className={`w-full pl-11 pr-4 py-3 rounded-xl border focus:outline-none focus:ring-2 ${
+                  isDark
+                    ? "bg-slate-900/50 border-red-500/20 text-white focus:ring-red-500"
+                    : "bg-white border-blue-300/50 text-gray-900 focus:ring-blue-500"
+                } ${errors[field] ? "border-red-500" : ""}`}
+                placeholder={placeholder}
+              />
+            </div>
+            {errors[field] && (
+              <p className="text-red-500 text-sm mt-1">{errors[field]}</p>
+            )}
           </div>
         ))}
       </div>

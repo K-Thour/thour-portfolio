@@ -99,6 +99,11 @@ export function FormSteps({
             hobbies: formData.hobbies,
             languages: formData.languages,
           }}
+          errors={{
+            InstagramURL: errors.InstagramURL,
+            LinkedInURL: errors.LinkedInURL,
+            GitHubURL: errors.GitHubURL,
+          }}
           isDark={isDark}
           onSocialChange={handleSocialChange}
           onAddHobby={addHobby}

@@ -41,17 +41,30 @@ export function TechnologyList({
       </div>
 
       {/* Technologies Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {technologies.map((tech, index) => (
-          <TechnologyCard
-            key={tech.id}
-            tech={tech}
-            index={index}
-            onEdit={onEdit}
-            onDelete={onDelete}
-          />
-        ))}
-      </div>
+      {technologies.length === 0 ? (
+        <div
+          className={`flex flex-col items-center justify-center py-16 rounded-2xl border-2 border-dashed ${
+            isDark
+              ? "border-slate-700 text-slate-500 bg-slate-800/10"
+              : "border-slate-300 text-slate-400 bg-white shadow-lg shadow-blue-500/5"
+          }`}
+        >
+          <p className="text-lg font-medium mb-2">No technologies yet</p>
+          <p className="text-sm">Start by adding your first technology</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {technologies.map((tech, index) => (
+            <TechnologyCard
+              key={tech.id}
+              tech={tech}
+              index={index}
+              onEdit={onEdit}
+              onDelete={onDelete}
+            />
+          ))}
+        </div>
+      )}
     </>
   );
 }

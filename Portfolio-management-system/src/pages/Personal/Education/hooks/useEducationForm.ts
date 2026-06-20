@@ -44,11 +44,19 @@ export function useEducationForm(initialData?: Education | null) {
           newErrors.location = "Location is required";
         break;
       case 2:
-        if (!formData.startDate) newErrors.startDate = "Start date is required";
-        if (!formData.current && !formData.endDate)
-          newErrors.endDate = "End date is required";
-        if (!formData.description.trim())
+        if (!formData.startDate) {
+          newErrors.startDate = "Start date is required";
+        }
+        if (!formData.current) {
+          if (!formData.endDate) {
+            newErrors.endDate = "End date is required";
+          } else if (formData.startDate && new Date(formData.endDate) < new Date(formData.startDate)) {
+            newErrors.endDate = "End date cannot be before start date";
+          }
+        }
+        if (!formData.description.trim()) {
           newErrors.description = "Description is required";
+        }
         break;
     }
 

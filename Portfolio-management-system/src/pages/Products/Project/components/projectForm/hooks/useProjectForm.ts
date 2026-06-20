@@ -33,10 +33,16 @@ export function useProjectForm(initialData?: Project) {
           newErrors.features = "Add at least one feature";
         break;
       case 4:
-        if (!formData.github.trim())
+        if (!formData.github.trim()) {
           newErrors.github = "GitHub URL is required";
-        if (!formData.liveUrl.trim())
+        } else if (!/^https?:\/\/(www\.)?github\.com\/.+/.test(formData.github.trim())) {
+          newErrors.github = "Please enter a valid GitHub repository URL";
+        }
+        if (!formData.liveUrl.trim()) {
           newErrors.liveUrl = "Live URL is required";
+        } else if (!/^https?:\/\/.+/.test(formData.liveUrl.trim())) {
+          newErrors.liveUrl = "Please enter a valid URL";
+        }
         break;
     }
 
