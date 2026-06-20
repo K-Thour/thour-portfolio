@@ -9,5 +9,6 @@ export default {
   JWT_SECRET: process.env.JWT_SECRET || 'thour',
   TOKEN_EXPIRY: (process.env.TOKEN_EXPIRY as SignOptions['expiresIn']) ?? '1d',
   GEMINI_API_KEY: process.env.GEMINI_API_KEY || '',
+  SEED_EMAIL: process.env.SEED_EMAIL || 'admin@portfolio.com',
+  SEED_PASSWORD: process.env.SEED_PASSWORD || 'Password123!',
 };
-
