@@ -5,6 +5,7 @@ import { SettingsHeader } from "./components/SettingsHeader";
 import { AISettingsCard } from "./components/AISettingsCard";
 import { ResumeSettingsCard } from "./components/ResumeSettingsCard";
 import { GeneralSettingsCard } from "./components/GeneralSettingsCard";
+import { SecuritySettingsCard } from "./components/SecuritySettingsCard";
 import { AppBackground } from "../../../components/common/background/AppBackground";
 import Footer from "../../../layouts/footer/Footer";
 
@@ -46,6 +47,9 @@ export function Settings() {
             settings={settings.general}
             onUpdate={handlers.handleUpdateGeneral}
           />
+        </div>
+        <div className="lg:col-span-2">
+          <SecuritySettingsCard />
         </div>
       </motion.div>
 

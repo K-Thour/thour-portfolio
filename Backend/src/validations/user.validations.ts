@@ -41,9 +41,9 @@ export const userCreateSchema = z.object({
   completedProjects: z.number({ message: 'Completed projects must be a number' }).min(0),
   solvedProblems: z.number({ message: 'Solved problems must be a number' }).min(0),
   happyClients: z.number({ message: 'Happy clients must be a number' }).min(0),
-  InstagramURL: z.string().url('Instagram URL must be a valid URL').optional(),
-  LinkedInURL: z.string().url('LinkedIn URL must be a valid URL').optional(),
-  GitHubURL: z.string().url('GitHub URL must be a valid URL').optional(),
+  InstagramURL: z.string().url('Instagram URL must be a valid URL').or(z.literal('')).nullable().optional(),
+  LinkedInURL: z.string().url('LinkedIn URL must be a valid URL').or(z.literal('')).nullable().optional(),
+  GitHubURL: z.string().url('GitHub URL must be a valid URL').or(z.literal('')).nullable().optional(),
   hobbies: z.array(z.string().min(1)).default([]),
   languages: z.array(languageSchema).default([]),
 });
@@ -58,6 +58,7 @@ export const userUpdateSchema = z
       .min(3, 'Name must be at least 3 characters long')
       .max(30, 'Name must be at most 30 characters long')
       .optional(),
+    email: z.string().email('Invalid email address').optional(),
     phoneNumber: z
       .string()
       .regex(/^\+?[0-9]{7,15}$/, 'Phone number must be a valid number (7–15 digits)')
@@ -70,9 +71,9 @@ export const userUpdateSchema = z
       .optional(),
     solvedProblems: z.number({ message: 'Solved problems must be a number' }).min(0).optional(),
     happyClients: z.number({ message: 'Happy clients must be a number' }).min(0).optional(),
-    InstagramURL: z.string().url('Instagram URL must be a valid URL').optional(),
-    LinkedInURL: z.string().url('LinkedIn URL must be a valid URL').optional(),
-    GitHubURL: z.string().url('GitHub URL must be a valid URL').optional(),
+    InstagramURL: z.string().url('Instagram URL must be a valid URL').or(z.literal('')).nullable().optional(),
+    LinkedInURL: z.string().url('LinkedIn URL must be a valid URL').or(z.literal('')).nullable().optional(),
+    GitHubURL: z.string().url('GitHub URL must be a valid URL').or(z.literal('')).nullable().optional(),
     hobbies: z.array(z.string().min(1)).optional(),
     languages: z.array(languageSchema).optional(),
   })
@@ -87,8 +88,16 @@ export const userLoginSchema = z.object({
   password: passwordSchema,
 });
 
+// ─── Change Password ───────────────────────────────────────────────────────────
+
+export const changePasswordSchema = z.object({
+  currentPassword: z.string().min(1, 'Current password is required'),
+  newPassword: passwordSchema,
+});
+
 // ─── Types (inferred) ──────────────────────────────────────────────────────────
 
 export type UserCreateInput = z.infer<typeof userCreateSchema>;
 export type UserUpdateInput = z.infer<typeof userUpdateSchema>;
 export type UserLoginInput = z.infer<typeof userLoginSchema>;
+export type ChangePasswordInput = z.infer<typeof changePasswordSchema>;

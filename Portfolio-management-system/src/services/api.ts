@@ -55,6 +55,11 @@ export const updateCurrentUser = async (data: any) => {
   return unwrap(response);
 };
 
+export const changePassword = async (data: any) => {
+  const response = await apiClient.patch('/user/change-password', data);
+  return unwrap(response);
+};
+
 // ─── PROJECT API ──────────────────────────────────────────────────────────────
 export const fetchProjects = async () => {
   const response = await apiClient.get('/project/get');
@@ -246,5 +251,17 @@ export const updatePortfolio = async (id: string, data: any) => {
 
 export const deletePortfolio = async (id: string) => {
   const response = await apiClient.delete(`/portfolio/delete/${id}`);
+  return unwrap(response);
+};
+
+// ─── DASHBOARD API ────────────────────────────────────────────────────────────
+export const fetchDashboard = async () => {
+  const response = await apiClient.get('/dashboard/get');
+  return unwrap(response);
+};
+
+// ─── IMAGE UPLOAD API ─────────────────────────────────────────────────────────
+export const uploadImage = async (base64Image: string) => {
+  const response = await apiClient.post('/image/upload', { image: base64Image });
   return unwrap(response);
 };

@@ -1,7 +1,5 @@
 import { Request, Response } from 'express';
-import { createUserInput, ILogin } from '../interface/models/user/user.interface';
 import services from '../services';
-import { verifyToken } from '../utils/jwt.utils';
 import { Types } from 'mongoose';
 
 const login = async (req: Request, res: Response) => {
@@ -15,6 +13,7 @@ const register = async (req: Request, res: Response) => {
   const result = await services.userServices.register({
     ...otherDetails,
     passwordHash: password,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as any);
   res.status(result.statusCode).json(result);
 };
@@ -44,6 +43,7 @@ const getPublicUser = async (req: Request, res: Response) => {
       hobbies: user.hobbies || [],
       languages: user.languages || [],
     };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (result as any).data = safeUser;
   }
   res.status(result.statusCode).json(result);
@@ -55,12 +55,24 @@ const updateCurrentUser = async (req: Request, res: Response) => {
   res.status(result.statusCode).json(result);
 };
 
+const changePassword = async (req: Request, res: Response) => {
+  const userId = new Types.ObjectId(req.userId);
+  const { currentPassword, newPassword } = req.body;
+  const result = await services.userServices.changePassword(
+    userId.toString(),
+    currentPassword,
+    newPassword,
+  );
+  res.status(result.statusCode).json(result);
+};
+
 const userControllers = {
   login,
   register,
   getCurrentUser,
   getPublicUser,
   updateCurrentUser,
+  changePassword,
 };
 
 export default userControllers;

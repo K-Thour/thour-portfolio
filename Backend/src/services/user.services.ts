@@ -8,6 +8,7 @@ import { Types } from 'mongoose';
 import IUserModel, { createUserInput } from '../interface/models/user/user.interface';
 import { comparePassword, hashPassword } from '../utils/bcrypt.utils';
 import { generateToken } from '../utils/jwt.utils';
+import { uploadBase64ImagesInObject, deleteFromCloudinary } from '../utils/cloudinary.utils';
 
 const getAll = (params: IUserRepoParams) => {
   return asyncCommonWrapper(async () => {
@@ -50,6 +51,7 @@ const register = (data: createUserInput) => {
         0,
       );
     }
+    await uploadBase64ImagesInObject(data, 'profiles');
     const password = await hashPassword(data.passwordHash);
     const result = await models.user.repo.create({ ...data, passwordHash: password });
     const token = generateToken({ id: result._id.toString() });
@@ -64,6 +66,32 @@ const register = (data: createUserInput) => {
 
 const update = (id: string, data: Partial<IUserModel>, updatedBy: Types.ObjectId) => {
   return asyncCommonWrapper(async () => {
+    const currentUser = await models.user.repo.getOne({
+      filter: [{ _id: new Types.ObjectId(id) }],
+    });
+
+    if (data.email) {
+      const isEmailExist = await models.user.repo.getOne({
+        filter: [{ email: data.email, _id: { $ne: new Types.ObjectId(id) } as any }],
+      });
+      if (isEmailExist) {
+        return commonResponse.error(
+          null,
+          MESSAGES_COMMON_UTIL.alreadyExist('User email'),
+          STATUS_CODE.BAD_REQUEST,
+          0,
+        );
+      }
+    }
+
+    await uploadBase64ImagesInObject(data, 'profiles');
+
+    if (currentUser && currentUser.image && currentUser.image.publicId && data.image && data.image.url) {
+      if (currentUser.image.url !== data.image.url) {
+        await deleteFromCloudinary(currentUser.image.publicId);
+      }
+    }
+
     const result = await models.user.repo.update(id, data, updatedBy);
     return commonResponse.success(
       result,
@@ -132,6 +160,44 @@ const login = (email: string, password: string) => {
   });
 };
 
+const changePassword = (id: string, currentPassword: string, newPassword: string) => {
+  return asyncCommonWrapper(async () => {
+    const user = await models.user.repo.getOne({
+      filter: [{ _id: new Types.ObjectId(id) }],
+      select: ['passwordHash'],
+    });
+
+    if (!user) {
+      return commonResponse.error(
+        null,
+        MESSAGES_COMMON_UTIL.notFound('User'),
+        STATUS_CODE.NOT_FOUND,
+        0,
+      );
+    }
+
+    const isPasswordValid = await comparePassword(currentPassword, user.passwordHash);
+    if (!isPasswordValid) {
+      return commonResponse.error(
+        null,
+        MESSAGES_COMMON_UTIL.invalidCredentials('User'),
+        STATUS_CODE.BAD_REQUEST,
+        0,
+      );
+    }
+
+    const newHashedPassword = await hashPassword(newPassword);
+    const result = await models.user.repo.update(id, { passwordHash: newHashedPassword }, new Types.ObjectId(id));
+
+    return commonResponse.success(
+      result,
+      MESSAGES_COMMON_UTIL.updatedSuccessfully('Password'),
+      STATUS_CODE.OK,
+      result ? 1 : 0,
+    );
+  });
+};
+
 const userServices = {
   getAll,
   getById,
@@ -140,6 +206,7 @@ const userServices = {
   softDelete,
   deleteOne,
   login,
+  changePassword,
 };
 
 export default userServices;

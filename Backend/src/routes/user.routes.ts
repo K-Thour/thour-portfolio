@@ -4,6 +4,7 @@ import {
   userCreateSchema,
   userLoginSchema,
   userUpdateSchema,
+  changePasswordSchema,
 } from '../validations/user.validations';
 import controllers from '../controllers';
 import authMiddleware from '../middlewares/auth.middleware';
@@ -125,6 +126,13 @@ userRoutes.patch(
   authMiddleware,
   validate(userUpdateSchema),
   controllers.userControllers.updateCurrentUser,
+);
+
+userRoutes.patch(
+  '/change-password',
+  authMiddleware,
+  validate(changePasswordSchema),
+  controllers.userControllers.changePassword,
 );
 
 export default userRoutes;
