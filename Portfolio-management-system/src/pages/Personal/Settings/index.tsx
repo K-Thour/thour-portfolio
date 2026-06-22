@@ -7,7 +7,6 @@ import { ResumeSettingsCard } from "./components/ResumeSettingsCard";
 import { GeneralSettingsCard } from "./components/GeneralSettingsCard";
 import { SecuritySettingsCard } from "./components/SecuritySettingsCard";
 import { AppBackground } from "../../../components/common/background/AppBackground";
-import Footer from "../../../layouts/footer/Footer";
 
 export function Settings() {
   const navigate = useNavigate();
@@ -42,18 +41,12 @@ export function Settings() {
           settings={settings.resume}
           onUpdate={handlers.handleUpdateResume}
         />
-        <div className="lg:col-span-2">
-          <GeneralSettingsCard
-            settings={settings.general}
-            onUpdate={handlers.handleUpdateGeneral}
-          />
-        </div>
-        <div className="lg:col-span-2">
-          <SecuritySettingsCard />
-        </div>
+        <GeneralSettingsCard
+          settings={settings.general}
+          onUpdate={handlers.handleUpdateGeneral}
+        />
+        <SecuritySettingsCard />
       </motion.div>
-
-      <Footer />
     </div>
   );
 }
