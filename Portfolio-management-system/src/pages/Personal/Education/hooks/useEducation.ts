@@ -1,11 +1,18 @@
 import { useState, useEffect, useCallback } from "react";
 import type { Education, EducationFormData } from "../types";
-import { fetchEducation, createEducation, updateEducation, deleteEducation } from "../../../../services/api";
+import {
+  fetchEducation,
+  createEducation,
+  updateEducation,
+  deleteEducation,
+} from "../../../../services/api";
 
 export function useEducation() {
   const [educationList, setEducationList] = useState<Education[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingEducation, setEditingEducation] = useState<Education | null>(null);
+  const [editingEducation, setEditingEducation] = useState<Education | null>(
+    null,
+  );
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [deletingId, setDeletingId] = useState<string | number | null>(null);
   const [loading, setLoading] = useState(false);
@@ -15,9 +22,15 @@ export function useEducation() {
     try {
       const list = await fetchEducation();
       const mappedList = list.map((e: any) => {
-        const start = e.startYear ? new Date(e.startYear).getFullYear().toString() : "";
-        const end = e.isPursuing ? "Present" : (e.endYear ? new Date(e.endYear).getFullYear().toString() : "");
-        const period = start && end ? `${start} - ${end}` : (start || end || "");
+        const start = e.startYear
+          ? new Date(e.startYear).getFullYear().toString()
+          : "";
+        const end = e.isPursuing
+          ? "Present"
+          : e.endYear
+            ? new Date(e.endYear).getFullYear().toString()
+            : "";
+        const period = start && end ? `${start} - ${end}` : start || end || "";
         return {
           id: e._id,
           degree: e.degree || "",

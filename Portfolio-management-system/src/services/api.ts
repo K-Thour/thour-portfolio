@@ -1,19 +1,19 @@
-import axios from 'axios';
-import env from '../constraints/env.constraints';
+import axios from "axios";
+import env from "../constraints/env.constraints";
 
 const API_BASE_URL = env.API_BASE_URL;
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 });
 
 // Request interceptor to automatically add auth token
 apiClient.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -21,16 +21,16 @@ apiClient.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 // Global response interceptor for error handling
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
-    console.error('API Error:', error.response?.data?.message || error.message);
+    console.error("API Error:", error.response?.data?.message || error.message);
     return Promise.reject(error);
-  }
+  },
 );
 
 // Helper to extract data from ICommonResponse envelope
@@ -38,7 +38,7 @@ const unwrap = (response: any) => response.data.data;
 
 // ─── AUTH & USER (PROFILE) API ───────────────────────────────────────────────
 export const loginUser = async (data: any) => {
-  const response = await apiClient.post('/user/login', {
+  const response = await apiClient.post("/user/login", {
     email: data.email,
     password: data.password, // Frontend login form uses password
   });
@@ -46,28 +46,28 @@ export const loginUser = async (data: any) => {
 };
 
 export const fetchCurrentUser = async () => {
-  const response = await apiClient.get('/user/me');
+  const response = await apiClient.get("/user/me");
   return unwrap(response);
 };
 
 export const updateCurrentUser = async (data: any) => {
-  const response = await apiClient.patch('/user/update', data);
+  const response = await apiClient.patch("/user/update", data);
   return unwrap(response);
 };
 
 export const changePassword = async (data: any) => {
-  const response = await apiClient.patch('/user/change-password', data);
+  const response = await apiClient.patch("/user/change-password", data);
   return unwrap(response);
 };
 
 // ─── PROJECT API ──────────────────────────────────────────────────────────────
 export const fetchProjects = async () => {
-  const response = await apiClient.get('/project/get');
+  const response = await apiClient.get("/project/get");
   return unwrap(response);
 };
 
 export const createProject = async (data: any) => {
-  const response = await apiClient.post('/project/create', data);
+  const response = await apiClient.post("/project/create", data);
   return unwrap(response);
 };
 
@@ -83,12 +83,12 @@ export const deleteProject = async (id: string) => {
 
 // ─── SERVICE API ──────────────────────────────────────────────────────────────
 export const fetchServices = async () => {
-  const response = await apiClient.get('/service/get');
+  const response = await apiClient.get("/service/get");
   return unwrap(response);
 };
 
 export const createService = async (data: any) => {
-  const response = await apiClient.post('/service/create', data);
+  const response = await apiClient.post("/service/create", data);
   return unwrap(response);
 };
 
@@ -104,12 +104,12 @@ export const deleteService = async (id: string) => {
 
 // ─── TECHNOLOGY API ───────────────────────────────────────────────────────────
 export const fetchTechnologies = async () => {
-  const response = await apiClient.get('/technology/get');
+  const response = await apiClient.get("/technology/get");
   return unwrap(response);
 };
 
 export const createTechnology = async (data: any) => {
-  const response = await apiClient.post('/technology/create', data);
+  const response = await apiClient.post("/technology/create", data);
   return unwrap(response);
 };
 
@@ -125,12 +125,12 @@ export const deleteTechnology = async (id: string) => {
 
 // ─── EDUCATION API ────────────────────────────────────────────────────────────
 export const fetchEducation = async () => {
-  const response = await apiClient.get('/education/get');
+  const response = await apiClient.get("/education/get");
   return unwrap(response);
 };
 
 export const createEducation = async (data: any) => {
-  const response = await apiClient.post('/education/create', data);
+  const response = await apiClient.post("/education/create", data);
   return unwrap(response);
 };
 
@@ -146,12 +146,12 @@ export const deleteEducation = async (id: string) => {
 
 // ─── EXPERIENCE API ───────────────────────────────────────────────────────────
 export const fetchExperiences = async () => {
-  const response = await apiClient.get('/experience/get');
+  const response = await apiClient.get("/experience/get");
   return unwrap(response);
 };
 
 export const createExperience = async (data: any) => {
-  const response = await apiClient.post('/experience/create', data);
+  const response = await apiClient.post("/experience/create", data);
   return unwrap(response);
 };
 
@@ -167,12 +167,12 @@ export const deleteExperience = async (id: string) => {
 
 // ─── CONTACT API ──────────────────────────────────────────────────────────────
 export const fetchContacts = async () => {
-  const response = await apiClient.get('/contact/get');
+  const response = await apiClient.get("/contact/get");
   return unwrap(response);
 };
 
 export const createContact = async (data: any) => {
-  const response = await apiClient.post('/contact/create', data);
+  const response = await apiClient.post("/contact/create", data);
   return unwrap(response);
 };
 
@@ -187,13 +187,13 @@ export const deleteContact = async (id: string) => {
 };
 
 export const fetchActiveContact = async () => {
-  const response = await apiClient.get('/contact/active');
+  const response = await apiClient.get("/contact/active");
   return unwrap(response);
 };
 
 // ─── LEAD API ─────────────────────────────────────────────────────────────────
 export const fetchLeads = async () => {
-  const response = await apiClient.get('/lead/get');
+  const response = await apiClient.get("/lead/get");
   return unwrap(response);
 };
 
@@ -209,12 +209,12 @@ export const updateLead = async (id: string, data: any) => {
 
 // ─── RESUME API ───────────────────────────────────────────────────────────────
 export const fetchResumes = async () => {
-  const response = await apiClient.get('/resume/get');
+  const response = await apiClient.get("/resume/get");
   return unwrap(response);
 };
 
 export const createResume = async (data: any) => {
-  const response = await apiClient.post('/resume/create', data);
+  const response = await apiClient.post("/resume/create", data);
   return unwrap(response);
 };
 
@@ -228,19 +228,23 @@ export const deleteResume = async (id: string) => {
   return unwrap(response);
 };
 
-export const generateResumeAI = async (data: { name: string; description: string; jobLink?: string }) => {
-  const response = await apiClient.post('/resume/generate', data);
+export const generateResumeAI = async (data: {
+  name: string;
+  description: string;
+  jobLink?: string;
+}) => {
+  const response = await apiClient.post("/resume/generate", data);
   return unwrap(response);
 };
 
 // ─── PORTFOLIO API ────────────────────────────────────────────────────────────
 export const fetchPortfolios = async () => {
-  const response = await apiClient.get('/portfolio/get');
+  const response = await apiClient.get("/portfolio/get");
   return unwrap(response);
 };
 
 export const createPortfolio = async (data: any) => {
-  const response = await apiClient.post('/portfolio/create', data);
+  const response = await apiClient.post("/portfolio/create", data);
   return unwrap(response);
 };
 
@@ -256,12 +260,14 @@ export const deletePortfolio = async (id: string) => {
 
 // ─── DASHBOARD API ────────────────────────────────────────────────────────────
 export const fetchDashboard = async () => {
-  const response = await apiClient.get('/dashboard/get');
+  const response = await apiClient.get("/dashboard/get");
   return unwrap(response);
 };
 
 // ─── IMAGE UPLOAD API ─────────────────────────────────────────────────────────
 export const uploadImage = async (base64Image: string) => {
-  const response = await apiClient.post('/image/upload', { image: base64Image });
+  const response = await apiClient.post("/image/upload", {
+    image: base64Image,
+  });
   return unwrap(response);
 };

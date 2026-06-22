@@ -2,6 +2,7 @@ import { Outlet, useLocation } from 'react-router';
 import { useEffect } from 'react';
 import { Navigation } from './components/Navigation';
 import { ThemeProvider } from './context/ThemeContext';
+import { UserProvider } from './context/UserContext';
 
 export function Root() {
   const { pathname } = useLocation();
@@ -12,10 +13,12 @@ export function Root() {
 
   return (
     <ThemeProvider>
-      <div className="min-h-screen">
-        <Navigation />
-        <Outlet />
-      </div>
+      <UserProvider>
+        <div className="min-h-screen">
+          <Navigation />
+          <Outlet />
+        </div>
+      </UserProvider>
     </ThemeProvider>
   );
 }

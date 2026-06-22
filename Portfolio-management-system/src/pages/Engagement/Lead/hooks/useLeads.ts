@@ -20,7 +20,9 @@ export function useLeads() {
         name: l.name || "",
         email: l.email || "",
         phone: l.mobileNumber || "",
-        date: l.createdAt ? new Date(l.createdAt).toISOString().split("T")[0] : "",
+        date: l.createdAt
+          ? new Date(l.createdAt).toISOString().split("T")[0]
+          : "",
         status: l.status || "New",
         description: l.description || "",
       }));
@@ -78,7 +80,7 @@ export function useLeads() {
     try {
       await updateLead(leadId.toString(), { status: newStatus });
       await loadLeads();
-      
+
       // Update local viewing lead if it matches
       setViewingLead((prev) =>
         prev && prev.id === leadId ? { ...prev, status: newStatus } : prev,

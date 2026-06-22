@@ -8,6 +8,8 @@ import portfolioControllers from './portfolio.controllers';
 import projectControllers from './project.controllers';
 import resumeControllers from './resume.controllers';
 import serviceControllers from './service.controllers';
+import dashboardControllers from './dashboard.controllers';
+import imageControllers from './image.controllers';
 
 export default {
   userControllers,
@@ -20,4 +22,6 @@ export default {
   projectControllers,
   resumeControllers,
   serviceControllers,
+  dashboardControllers,
+  imageControllers,
 };

@@ -6,16 +6,23 @@ const { cn } = utils.tailwindUtils;
 
 interface KpiCardsProps {
   isDark: boolean;
+  kpis: {
+    projects: number;
+    services: number;
+    commits: number;
+    messages: number;
+    unreadMessages: number;
+  } | null;
 }
 
 const formatNumber = (num: number) => num.toLocaleString();
 
-export const KpiCards = ({ isDark }: KpiCardsProps) => {
+export const KpiCards = ({ isDark, kpis }: KpiCardsProps) => {
   const cards = [
     {
       id: "projects",
       title: "Total Projects",
-      value: 12,
+      value: kpis ? kpis.projects : 0,
       subtitle: "+2 this month",
       icon: <Folder className="w-5 h-5 text-white" />,
       iconBg: "bg-red-500", // Red icon bg for projects based on screenshot
@@ -25,7 +32,7 @@ export const KpiCards = ({ isDark }: KpiCardsProps) => {
     {
       id: "services",
       title: "Active Services",
-      value: 6,
+      value: kpis ? kpis.services : 0,
       subtitle: "All operational",
       icon: <Briefcase className="w-5 h-5 text-white" />,
       iconBg: "bg-blue-500", // Blue icon bg for services
@@ -35,7 +42,7 @@ export const KpiCards = ({ isDark }: KpiCardsProps) => {
     {
       id: "commits",
       title: "Git Commits", // Replaced Total Leads with Git Commits
-      value: 1248,
+      value: kpis ? kpis.commits : 0,
       subtitle: "+42 this week",
       icon: <GitBranch className="w-5 h-5 text-white" />,
       iconBg: "bg-purple-500", // Purple icon bg for leads/commits
@@ -45,8 +52,8 @@ export const KpiCards = ({ isDark }: KpiCardsProps) => {
     {
       id: "messages",
       title: "New Messages",
-      value: 23,
-      subtitle: "5 unread",
+      value: kpis ? kpis.messages : 0,
+      subtitle: kpis ? `${kpis.unreadMessages} unread` : "0 unread",
       icon: <Mail className="w-5 h-5 text-white" />,
       iconBg: "bg-amber-500", // Yellow icon bg for messages
       trendIcon: <ArrowUpRight className="w-4 h-4 text-emerald-500" />,

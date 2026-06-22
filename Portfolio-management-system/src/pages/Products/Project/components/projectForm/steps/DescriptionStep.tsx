@@ -1,69 +1,123 @@
-import { motion } from "motion/react";
-import { useAppSelector } from "../../../../../../hooks/useRedux";
-import type { RootState } from "../../../../../../store/store";
-import type { DescriptionStepProps } from "../../types";
+import React from "react";
 
-export function DescriptionStep({
-  formData,
-  errors,
-  onFormDataChange,
-}: DescriptionStepProps) {
-  const { theme } = useAppSelector((state: RootState) => state.theme);
-  const isDark = theme === "dark";
+import utils from "../../../../../../utils";
+import { projectDescriptionSchema } from "../../../../../../validations/project";
 
-  return (
-    <motion.div
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      className="space-y-4"
-    >
-      <div>
-        <label
-          className={`block text-sm font-medium mb-2 ${isDark ? "text-gray-300" : "text-gray-800"}`}
-        >
-          Short Description *
-        </label>
-        <textarea
-          value={formData.description}
-          onChange={(e) =>
-            onFormDataChange({ ...formData, description: e.target.value })
-          }
-          rows={3}
-          className={`w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 ${
-            isDark
-              ? "bg-slate-900/50 border-red-500/20 text-white focus:ring-red-500"
-              : "bg-white border-blue-300/50 text-gray-900 focus:ring-blue-500"
-          } ${errors.description ? "border-red-500" : ""}`}
-          placeholder="A brief overview of the project..."
-        />
-        {errors.description && (
-          <p className="text-red-500 text-sm mt-1">{errors.description}</p>
-        )}
-      </div>
+const { cn } = utils.tailwindUtils;
 
-      <div>
-        <label
-          className={`block text-sm font-medium mb-2 ${isDark ? "text-gray-300" : "text-gray-800"}`}
-        >
-          Long Description *
-        </label>
-        <textarea
-          value={formData.longDescription}
-          onChange={(e) =>
-            onFormDataChange({ ...formData, longDescription: e.target.value })
-          }
-          rows={6}
-          className={`w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 ${
-            isDark
-              ? "bg-slate-900/50 border-red-500/20 text-white focus:ring-red-500"
-              : "bg-white border-blue-300/50 text-gray-900 focus:ring-blue-500"
-          } ${errors.longDescription ? "border-red-500" : ""}`}
-          placeholder="Detailed description of the project, its goals, challenges, and solutions..."
-        />
-        {errors.longDescription && (
-          <p className="text-red-500 text-sm mt-1">{errors.longDescription}</p>
-        )}
-      </div>
-    </motion.div>
-  );
+interface DescriptionStepProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  form: any;
+  isDark: boolean;
 }
+
+export const DescriptionStep: React.FC<DescriptionStepProps> = ({
+  form,
+  isDark,
+}) => {
+  return (
+    <div className="space-y-4">
+      <form.Field
+        name="description"
+        validators={{
+          onChange: ({ value }: { value: string }) => {
+            try {
+              projectDescriptionSchema.validateSyncAt("description", {
+                description: value,
+              });
+              return undefined;
+            } catch (err: any) {
+              return err.message;
+            }
+          },
+        }}
+      >
+        {(field: any) => (
+          <div>
+            <label
+              className={cn(
+                "block text-sm font-medium mb-2",
+                isDark ? "text-gray-300" : "text-gray-800",
+              )}
+            >
+              Short Description <span className="text-red-500">*</span>
+            </label>
+            <textarea
+              value={field.state.value}
+              onChange={(e) => field.handleChange(e.target.value)}
+              rows={3}
+              className={cn(
+                "w-full px-4 py-3 rounded-xl border bg-transparent focus:outline-none focus:ring-2 focus:ring-red-500 transition-all",
+                isDark
+                  ? "bg-slate-900/50 border-red-500/20 text-white placeholder:text-gray-500 focus:border-red-500"
+                  : "bg-white border-blue-300/50 text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:ring-blue-500",
+                field.state.meta.isTouched && field.state.meta.errors.length > 0
+                  ? "border-red-500"
+                  : "",
+              )}
+              placeholder="A brief overview of the project..."
+            />
+            {field.state.meta.isTouched &&
+              field.state.meta.errors.length > 0 && (
+                <p className="text-red-500 text-sm mt-1">
+                  {field.state.meta.errors.join(", ")}
+                </p>
+              )}
+          </div>
+        )}
+      </form.Field>
+
+      <form.Field
+        name="longDescription"
+        validators={{
+          onChange: ({ value }: { value: string }) => {
+            try {
+              projectDescriptionSchema.validateSyncAt("longDescription", {
+                longDescription: value,
+              });
+              return undefined;
+            } catch (err: any) {
+              return err.message;
+            }
+          },
+        }}
+      >
+        {(field: any) => (
+          <div>
+            <label
+              className={cn(
+                "block text-sm font-medium mb-2",
+                isDark ? "text-gray-300" : "text-gray-800",
+              )}
+            >
+              Long Description <span className="text-red-500">*</span>
+            </label>
+            <textarea
+              value={field.state.value}
+              onChange={(e) => field.handleChange(e.target.value)}
+              rows={6}
+              className={cn(
+                "w-full px-4 py-3 rounded-xl border bg-transparent focus:outline-none focus:ring-2 focus:ring-red-500 transition-all",
+                isDark
+                  ? "bg-slate-900/50 border-red-500/20 text-white placeholder:text-gray-500 focus:border-red-500"
+                  : "bg-white border-blue-300/50 text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:ring-blue-500",
+                field.state.meta.isTouched && field.state.meta.errors.length > 0
+                  ? "border-red-500"
+                  : "",
+              )}
+              placeholder="Detailed description of the project, its goals, challenges, and solutions..."
+            />
+            {field.state.meta.isTouched &&
+              field.state.meta.errors.length > 0 && (
+                <p className="text-red-500 text-sm mt-1">
+                  {field.state.meta.errors.join(", ")}
+                </p>
+              )}
+          </div>
+        )}
+      </form.Field>
+    </div>
+  );
+};
+
+export default DescriptionStep;

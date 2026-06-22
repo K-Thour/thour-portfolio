@@ -6,7 +6,9 @@ import { hashPassword } from '../utils/bcrypt.utils';
 export const seedAdminUser = async (): Promise<void> => {
   try {
     // Delete existing invalid user ID if present to trigger clean seeding
-    await models.user.model.collection.deleteOne({ _id: 'Single_User' as unknown as mongoose.Types.ObjectId });
+    await models.user.model.collection.deleteOne({
+      _id: 'Single_User' as unknown as mongoose.Types.ObjectId,
+    });
 
     const userCount = await models.user.model.countDocuments();
     if (userCount > 0) {

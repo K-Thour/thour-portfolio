@@ -5,12 +5,8 @@ import { useResumeOperations } from "./useResumeOperations";
 export function useResumes() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { formData, validateForm, resetForm } = useResumeForm();
-  const {
-    resumes,
-    createResume,
-    deleteResume,
-    downloadResume,
-  } = useResumeOperations();
+  const { resumes, createResume, deleteResume, downloadResume } =
+    useResumeOperations();
 
   const open = useCallback(() => {
     resetForm();

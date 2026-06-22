@@ -1,6 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
 import type { Service } from "../components/types";
-import { fetchServices, createService, updateService, deleteService } from "../../../../services/api";
+import {
+  fetchServices,
+  createService,
+  updateService,
+  deleteService,
+} from "../../../../services/api";
 
 export function useServices() {
   const [services, setServices] = useState<Service[]>([]);
@@ -59,8 +64,14 @@ export function useServices() {
       name: data.title,
       decription: data.description, // Mongoose schema has decription typo
       technologies: [],
-      iconUrl: { publicId: "icon", url: data.iconUrl || data.icon || "https://placehold.co/100" },
-      mainImageUrl: { publicId: "photo", url: data.photoUrl || "https://placehold.co/600" },
+      iconUrl: {
+        publicId: "icon",
+        url: data.iconUrl || data.icon || "https://placehold.co/100",
+      },
+      mainImageUrl: {
+        publicId: "photo",
+        url: data.photoUrl || "https://placehold.co/600",
+      },
       imagesUrl: [],
     };
 

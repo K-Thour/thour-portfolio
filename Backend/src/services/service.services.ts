@@ -6,9 +6,11 @@ import models from '../models';
 import IServiceModel, { createServiceInput } from '../interface/models/service/service.interface';
 import { Types } from 'mongoose';
 import { IServiceRepoParams } from '../interface/models/service/serviceRepo.interface';
+import { uploadBase64ImagesInObject, deleteFromCloudinary } from '../utils/cloudinary.utils';
 
 const createService = (data: createServiceInput, createdBy: Types.ObjectId) => {
   return asyncCommonWrapper(async () => {
+    await uploadBase64ImagesInObject(data, 'services');
     const result = await models.service.repo.create(data, createdBy);
     return commonResponse.success(
       result,
@@ -21,6 +23,44 @@ const createService = (data: createServiceInput, createdBy: Types.ObjectId) => {
 
 const updateService = (id: string, data: Partial<IServiceModel>, updatedBy: Types.ObjectId) => {
   return asyncCommonWrapper(async () => {
+    const currentService = await models.service.repo.getOne({
+      filter: [{ _id: new Types.ObjectId(id) }],
+    });
+
+    await uploadBase64ImagesInObject(data, 'services');
+
+    if (currentService) {
+      if (
+        currentService.iconUrl &&
+        currentService.iconUrl.publicId &&
+        data.iconUrl &&
+        data.iconUrl.url
+      ) {
+        if (currentService.iconUrl.url !== data.iconUrl.url) {
+          await deleteFromCloudinary(currentService.iconUrl.publicId);
+        }
+      }
+      if (
+        currentService.mainImageUrl &&
+        currentService.mainImageUrl.publicId &&
+        data.mainImageUrl &&
+        data.mainImageUrl.url
+      ) {
+        if (currentService.mainImageUrl.url !== data.mainImageUrl.url) {
+          await deleteFromCloudinary(currentService.mainImageUrl.publicId);
+        }
+      }
+      if (currentService.imagesUrl && data.imagesUrl) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const newUrls = new Set(data.imagesUrl.map((img: any) => img.url));
+        for (const oldImg of currentService.imagesUrl) {
+          if (oldImg.publicId && !newUrls.has(oldImg.url)) {
+            await deleteFromCloudinary(oldImg.publicId);
+          }
+        }
+      }
+    }
+
     const result = await models.service.repo.update(id, data, updatedBy);
     return commonResponse.success(
       result,

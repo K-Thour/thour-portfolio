@@ -4,11 +4,7 @@ import { Stats } from '../components/Stats';
 import { useTheme } from '../context/ThemeContext';
 import { HomeHero } from '../components/home/HomeHero';
 
-interface HomeProps {
-  profileImage?: string;
-}
-
-export function Home({ profileImage }: HomeProps) {
+export function Home() {
   const { theme } = useTheme();
   const isDark = theme === 'avengers';
 
@@ -19,7 +15,7 @@ export function Home({ profileImage }: HomeProps) {
       }
     >
       {/* Hero Section */}
-      <HomeHero profileImage={profileImage} />
+      <HomeHero />
 
       {/* Stats Section */}
       <Stats />

@@ -23,7 +23,10 @@ describe('userServices.changePassword', () => {
     (models.user.repo.getOne as jest.Mock).mockResolvedValue(mockUser);
     (comparePassword as jest.Mock).mockResolvedValue(true);
     (hashPassword as jest.Mock).mockResolvedValue('hashed_new_password');
-    (models.user.repo.update as jest.Mock).mockResolvedValue({ ...mockUser, passwordHash: 'hashed_new_password' });
+    (models.user.repo.update as jest.Mock).mockResolvedValue({
+      ...mockUser,
+      passwordHash: 'hashed_new_password',
+    });
 
     const response = await userServices.changePassword(userId, currentPassword, newPassword);
 
@@ -35,7 +38,11 @@ describe('userServices.changePassword', () => {
     });
     expect(comparePassword).toHaveBeenCalledWith(currentPassword, 'hashed_current_password');
     expect(hashPassword).toHaveBeenCalledWith(newPassword);
-    expect(models.user.repo.update).toHaveBeenCalledWith(userId, { passwordHash: 'hashed_new_password' }, new Types.ObjectId(userId));
+    expect(models.user.repo.update).toHaveBeenCalledWith(
+      userId,
+      { passwordHash: 'hashed_new_password' },
+      new Types.ObjectId(userId),
+    );
   });
 
   it('should return 400 when current password is invalid', async () => {

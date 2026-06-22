@@ -16,6 +16,8 @@ export const educationCreateSchema = z.object({
   description: z.string().min(1, 'Description is required'),
 });
 
-export const educationUpdateSchema = educationCreateSchema.partial().refine((data) => Object.keys(data).length > 0, {
-  message: 'At least one field must be provided for update',
-});
+export const educationUpdateSchema = educationCreateSchema
+  .partial()
+  .refine((data) => Object.keys(data).length > 0, {
+    message: 'At least one field must be provided for update',
+  });

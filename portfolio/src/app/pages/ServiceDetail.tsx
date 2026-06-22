@@ -1,15 +1,14 @@
 import { motion } from 'motion/react';
 import { useInView } from 'motion/react';
-import { useRef } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Code2 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
-
-import { useEffect, useState } from 'react';
-import { fetchServiceById } from '../../services/api';
 import { ServiceHeader } from '../components/service/ServiceHeader';
 import { ServiceFeatures } from '../components/service/ServiceFeatures';
 import { ServiceProcess } from '../components/service/ServiceProcess';
+import { servicesData } from '../../data/services';
+import { fetchServiceById } from '../../services/api';
 
 export function ServiceDetail() {
   const { serviceId } = useParams();
@@ -25,15 +24,34 @@ export function ServiceDetail() {
     if (serviceId) {
       fetchServiceById(serviceId)
         .then((data) => {
+          // Normalize name to lookup static fallback
+          const nameNormalized = (data.name || '')
+            .toLowerCase()
+            .replace(/[^a-z]/g, '');
+          const fallback =
+            Object.values(servicesData).find(
+              (item) =>
+                item.title.toLowerCase().replace(/[^a-z]/g, '') ===
+                nameNormalized,
+            ) ||
+            Object.values(servicesData).find(
+              (item) =>
+                nameNormalized.includes(item.title.toLowerCase()) ||
+                item.title.toLowerCase().includes(nameNormalized),
+            );
+
           setService({
             ...data,
-            title: data.name,
-            description: data.decription || data.description,
-            // Map other required fields if needed
-            features: data.features || [],
-            capabilities: data.capabilities || [],
-            technologies: data.technologies || [],
-            process: data.process || []
+            title: data.name || (fallback ? fallback.title : ''),
+            subtitle: fallback ? fallback.subtitle : '',
+            description:
+              data.decription || (fallback ? fallback.description : ''),
+            image: data.mainImageUrl?.url || (fallback ? fallback.image : ''),
+            icon: data.iconUrl?.url || (fallback ? fallback.icon : Code2),
+            features: fallback ? fallback.features : [],
+            capabilities: fallback ? fallback.features : [],
+            technologies: fallback ? fallback.technologies : [],
+            process: fallback ? fallback.process : [],
           });
         })
         .catch(console.error)

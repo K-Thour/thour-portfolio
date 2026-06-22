@@ -1,6 +1,7 @@
-import { Modal } from "../../../../components/ui/model/Model";
-import { ServiceForm } from "./serviceForm/ServiceForm";
 import type { ServiceModalProps } from "./types";
+import { ServiceFormWizard } from "./ServiceFormWizard";
+import { useAppSelector } from "../../../../hooks/useRedux";
+import type { RootState } from "../../../../store/store";
 
 export function ServiceModal({
   isOpen,
@@ -8,18 +9,21 @@ export function ServiceModal({
   editingService,
   onSubmit,
 }: ServiceModalProps) {
+  const { theme } = useAppSelector((state: RootState) => state.theme);
+  const isDark = theme === "dark";
+
+  if (!isOpen) return null;
+
   return (
-    <Modal
+    <ServiceFormWizard
       isOpen={isOpen}
       onClose={onClose}
-      title={editingService ? "Edit Service" : "Add New Service"}
-      size="lg"
-    >
-      <ServiceForm
-        onSubmit={onSubmit}
-        onCancel={onClose}
-        initialData={editingService || undefined}
-      />
-    </Modal>
+      onSubmit={onSubmit}
+      initialData={editingService || undefined}
+      isDark={isDark}
+      isEditing={!!editingService}
+    />
   );
 }
+
+export default ServiceModal;

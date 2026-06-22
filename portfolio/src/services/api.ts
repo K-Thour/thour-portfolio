@@ -16,7 +16,7 @@ apiClient.interceptors.response.use(
   (error: any) => {
     console.error('API Error:', error.response?.data?.message || error.message);
     return Promise.reject(error);
-  }
+  },
 );
 
 export const fetchProjects = async () => {
@@ -34,8 +34,8 @@ export const fetchProjectById = async (id: string) => {
   return response.data.data;
 };
 
-export const fetchServices = async () => {
-  const response = await apiClient.get('/service/get');
+export const fetchServices = async (params?: any) => {
+  const response = await apiClient.get('/service/get', { params });
   return response.data.data;
 };
 

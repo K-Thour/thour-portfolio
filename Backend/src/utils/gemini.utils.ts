@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import envConstant from '../constants/env.constant';
 
@@ -58,19 +59,19 @@ Developer's Basic Profile:
 - Languages: ${JSON.stringify(params.developerProfile.languages)}
 
 Available Work Experience Records:
-${JSON.stringify(params.experience.map(e => ({ id: e._id, companyName: e.companyName, position: e.position, field: e.field, description: e.description, dateOfJoining: e.dateOfJoining, dateOfLeaving: e.dateOfLeaving, stillWorking: e.stillWorking })))}
+${JSON.stringify(params.experience.map((e) => ({ id: e._id, companyName: e.companyName, position: e.position, field: e.field, description: e.description, dateOfJoining: e.dateOfJoining, dateOfLeaving: e.dateOfLeaving, stillWorking: e.stillWorking })))}
 
 Available Education Records:
-${JSON.stringify(params.education.map(ed => ({ id: ed._id, level: ed.level, degree: ed.degree, field_of_study: ed.field_of_study, institution: ed.institution, startYear: ed.startYear, endYear: ed.endYear, grade: ed.grade })))}
+${JSON.stringify(params.education.map((ed) => ({ id: ed._id, level: ed.level, degree: ed.degree, field_of_study: ed.field_of_study, institution: ed.institution, startYear: ed.startYear, endYear: ed.endYear, grade: ed.grade })))}
 
 Available Projects to showcase:
-${JSON.stringify(params.projects.map(p => ({ id: p._id, title: p.title, description: p.description, fullDescription: p.fullDescription, techStack: p.techStack, role: p.role })))}
+${JSON.stringify(params.projects.map((p) => ({ id: p._id, title: p.title, description: p.description, fullDescription: p.fullDescription, techStack: p.techStack, role: p.role })))}
 
 Available Services offered:
-${JSON.stringify(params.services.map(s => ({ id: s._id, name: s.name, description: s.decription, technologies: s.technologies })))}
+${JSON.stringify(params.services.map((s) => ({ id: s._id, name: s.name, description: s.decription, technologies: s.technologies })))}
 
 Available Technologies:
-${JSON.stringify(params.technologies.map(t => ({ id: t._id, name: t.name, category: t.category })))}
+${JSON.stringify(params.technologies.map((t) => ({ id: t._id, name: t.name, category: t.category })))}
 
 Based on the target job requirements:
 1. Select the most relevant projects (up to 4) that highlight matching skills.

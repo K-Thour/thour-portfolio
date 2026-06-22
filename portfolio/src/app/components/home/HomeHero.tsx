@@ -14,21 +14,16 @@ import { CodeRain } from '../../components/CodeRain';
 import { CodeSnippet } from '../../components/CodeSnippet';
 import { useTheme } from '../../context/ThemeContext';
 
-import { useEffect, useState } from 'react';
-import { fetchPublicUser } from '../../../services/api';
+import { useUser } from '../../context/UserContext';
 
-interface HomeHeroProps {
-  profileImage?: string;
-}
-
-export function HomeHero({ profileImage }: HomeHeroProps) {
-  const [userData, setUserData] = useState<any>(null);
-
-  useEffect(() => {
-    fetchPublicUser().then((data) => setUserData(data)).catch(console.error);
-  }, []);
+export function HomeHero() {
+  const { userData } = useUser();
   const { theme } = useTheme();
   const isDark = theme === 'avengers';
+
+  const fallbackImage =
+    'https://images.unsplash.com/photo-1576558656222-ba66febe3dec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjBoZWFkc2hvdCUyMHBvcnRyYWl0fGVufDF8fHx8MTc3MTQxMjcwM3ww&ixlib=rb-4.1.0&q=80&w=1080';
+  const profileImage = userData?.image || fallbackImage;
 
   return (
     <section
@@ -194,9 +189,9 @@ export function HomeHero({ profileImage }: HomeHeroProps) {
               >
                 {userData?.hobbies?.length > 0
                   ? userData.hobbies.join(' | ')
-                  : (isDark
+                  : isDark
                     ? 'Full Stack Developer | AI Enthusiast | Tech Innovator'
-                    : 'Full Stack Developer | Code Warrior | Digital Craftsman')}
+                    : 'Full Stack Developer | Code Warrior | Digital Craftsman'}
               </motion.p>
 
               <motion.p

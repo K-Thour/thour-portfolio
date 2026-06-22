@@ -68,7 +68,7 @@ export function Modal({
               className={`w-full ${sizeClasses[size]} my-8`}
             >
               <div
-                className={`rounded-2xl border ${
+                className={`rounded-2xl border flex flex-col max-h-[calc(100vh-2rem)] md:max-h-[calc(100vh-4rem)] overflow-hidden ${
                   isDark
                     ? "bg-slate-800 border-red-500/20"
                     : "bg-white border-blue-300/40 shadow-2xl shadow-blue-500/20"
@@ -76,7 +76,7 @@ export function Modal({
               >
                 {/* Header */}
                 <div
-                  className={`flex items-center justify-between p-6 border-b ${
+                  className={`flex items-center justify-between p-6 border-b shrink-0 ${
                     isDark ? "border-red-500/20" : "border-blue-300/30"
                   }`}
                 >
@@ -98,7 +98,7 @@ export function Modal({
                 </div>
 
                 {/* Content */}
-                <div className="p-6">{children}</div>
+                <div className="p-6 overflow-y-auto flex-1">{children}</div>
               </div>
             </motion.div>
           </div>

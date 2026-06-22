@@ -1,6 +1,7 @@
 import { motion } from 'motion/react';
 import { Target, Rocket, Brain } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
+import { useUser } from '../../context/UserContext';
 
 interface AboutStatsProps {
   isInView: boolean;
@@ -9,24 +10,25 @@ interface AboutStatsProps {
 export function AboutStats({ isInView }: AboutStatsProps) {
   const { theme } = useTheme();
   const isDark = theme === 'avengers';
+  const { userData } = useUser();
 
   const stats = [
     {
       id: 'projects',
       icon: Target,
-      value: '50+',
+      value: userData ? `${userData.completedProjects}+` : '50+',
       label: isDark ? 'Projects Completed' : 'Victories Claimed',
     },
     {
       id: 'experience',
       icon: Rocket,
-      value: '5+',
+      value: userData ? `${userData.experience}+` : '5+',
       label: isDark ? 'Years Experience' : 'Years of Battle',
     },
     {
       id: 'problems',
       icon: Brain,
-      value: '100+',
+      value: userData ? `${userData.solvedProblems}+` : '100+',
       label: isDark ? 'Problems Solved' : 'Challenges Conquered',
     },
   ];

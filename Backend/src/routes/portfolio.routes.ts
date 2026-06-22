@@ -158,8 +158,18 @@ const portfolioRoutes = express.Router();
  *         description: Not found
  */
 
-portfolioRoutes.post('/create', authMiddleware, validate(portfolioCreateSchema), controllers.portfolioControllers.create);
-portfolioRoutes.patch('/update/:id', authMiddleware, validate(portfolioUpdateSchema), controllers.portfolioControllers.update);
+portfolioRoutes.post(
+  '/create',
+  authMiddleware,
+  validate(portfolioCreateSchema),
+  controllers.portfolioControllers.create,
+);
+portfolioRoutes.patch(
+  '/update/:id',
+  authMiddleware,
+  validate(portfolioUpdateSchema),
+  controllers.portfolioControllers.update,
+);
 portfolioRoutes.delete(
   '/soft-delete/:id',
   authMiddleware,

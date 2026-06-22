@@ -1,6 +1,7 @@
-import { Modal } from "../../../../components/ui/model/Model";
-import { ProjectForm } from "./projectForm/ProjectForm";
 import type { ProjectModalProps } from "./types";
+import { ProjectFormWizard } from "./ProjectFormWizard";
+import { useAppSelector } from "../../../../hooks/useRedux";
+import type { RootState } from "../../../../store/store";
 
 export function ProjectModal({
   isOpen,
@@ -8,18 +9,21 @@ export function ProjectModal({
   editingProject,
   onSubmit,
 }: ProjectModalProps) {
+  const { theme } = useAppSelector((state: RootState) => state.theme);
+  const isDark = theme === "dark";
+
+  if (!isOpen) return null;
+
   return (
-    <Modal
+    <ProjectFormWizard
       isOpen={isOpen}
       onClose={onClose}
-      title={editingProject ? "Edit Project" : "Add New Project"}
-      size="lg"
-    >
-      <ProjectForm
-        onSubmit={onSubmit}
-        onCancel={onClose}
-        initialData={editingProject || undefined}
-      />
-    </Modal>
+      onSubmit={onSubmit}
+      initialData={editingProject || undefined}
+      isDark={isDark}
+      isEditing={!!editingProject}
+    />
   );
 }
+
+export default ProjectModal;

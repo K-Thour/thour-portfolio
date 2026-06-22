@@ -28,7 +28,22 @@ export function ServiceHeader({ service, isInView }: ServiceHeaderProps) {
                 : 'bg-gradient-to-br from-amber-600 via-amber-500 to-yellow-600 shadow-lg shadow-amber-500/30'
             }`}
           >
-            <Icon className="w-8 h-8 text-white" />
+            {typeof Icon === 'string' ? (
+              Icon.startsWith('http://') ||
+              Icon.startsWith('https://') ||
+              Icon.startsWith('/') ||
+              Icon.startsWith('data:') ? (
+                <img
+                  src={Icon}
+                  alt={service.title}
+                  className="w-8 h-8 object-contain"
+                />
+              ) : (
+                <span className="text-3xl">{Icon}</span>
+              )
+            ) : (
+              <Icon className="w-8 h-8 text-white" />
+            )}
           </div>
           <div>
             <p

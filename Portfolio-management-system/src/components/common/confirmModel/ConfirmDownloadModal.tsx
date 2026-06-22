@@ -91,7 +91,7 @@ function ConfirmDownloadModal({
               className="w-full max-w-2xl"
             >
               <div
-                className={`rounded-2xl border overflow-hidden ${
+                className={`rounded-2xl border overflow-hidden flex flex-col max-h-[calc(100vh-2rem)] md:max-h-[calc(100vh-4rem)] ${
                   isDark
                     ? "bg-slate-800 border-blue-500/30 shadow-2xl shadow-blue-500/20"
                     : "bg-white border-blue-300/50 shadow-2xl shadow-blue-500/30"
@@ -99,7 +99,7 @@ function ConfirmDownloadModal({
               >
                 {/* Header */}
                 <div
-                  className={`flex items-center justify-between p-4 border-b ${
+                  className={`flex items-center justify-between p-4 border-b shrink-0 ${
                     isDark ? "border-slate-700" : "border-gray-200"
                   }`}
                 >
@@ -147,7 +147,7 @@ function ConfirmDownloadModal({
                   </button>
                 </div>
 
-                <div className="flex flex-col md:flex-row">
+                <div className="flex flex-col md:flex-row overflow-y-auto flex-1">
                   {/* Preview Section */}
                   <div
                     className={`flex-1 p-6 ${

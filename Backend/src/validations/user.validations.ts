@@ -41,9 +41,24 @@ export const userCreateSchema = z.object({
   completedProjects: z.number({ message: 'Completed projects must be a number' }).min(0),
   solvedProblems: z.number({ message: 'Solved problems must be a number' }).min(0),
   happyClients: z.number({ message: 'Happy clients must be a number' }).min(0),
-  InstagramURL: z.string().url('Instagram URL must be a valid URL').or(z.literal('')).nullable().optional(),
-  LinkedInURL: z.string().url('LinkedIn URL must be a valid URL').or(z.literal('')).nullable().optional(),
-  GitHubURL: z.string().url('GitHub URL must be a valid URL').or(z.literal('')).nullable().optional(),
+  InstagramURL: z
+    .string()
+    .url('Instagram URL must be a valid URL')
+    .or(z.literal(''))
+    .nullable()
+    .optional(),
+  LinkedInURL: z
+    .string()
+    .url('LinkedIn URL must be a valid URL')
+    .or(z.literal(''))
+    .nullable()
+    .optional(),
+  GitHubURL: z
+    .string()
+    .url('GitHub URL must be a valid URL')
+    .or(z.literal(''))
+    .nullable()
+    .optional(),
   hobbies: z.array(z.string().min(1)).default([]),
   languages: z.array(languageSchema).default([]),
 });
@@ -71,9 +86,24 @@ export const userUpdateSchema = z
       .optional(),
     solvedProblems: z.number({ message: 'Solved problems must be a number' }).min(0).optional(),
     happyClients: z.number({ message: 'Happy clients must be a number' }).min(0).optional(),
-    InstagramURL: z.string().url('Instagram URL must be a valid URL').or(z.literal('')).nullable().optional(),
-    LinkedInURL: z.string().url('LinkedIn URL must be a valid URL').or(z.literal('')).nullable().optional(),
-    GitHubURL: z.string().url('GitHub URL must be a valid URL').or(z.literal('')).nullable().optional(),
+    InstagramURL: z
+      .string()
+      .url('Instagram URL must be a valid URL')
+      .or(z.literal(''))
+      .nullable()
+      .optional(),
+    LinkedInURL: z
+      .string()
+      .url('LinkedIn URL must be a valid URL')
+      .or(z.literal(''))
+      .nullable()
+      .optional(),
+    GitHubURL: z
+      .string()
+      .url('GitHub URL must be a valid URL')
+      .or(z.literal(''))
+      .nullable()
+      .optional(),
     hobbies: z.array(z.string().min(1)).optional(),
     languages: z.array(languageSchema).optional(),
   })

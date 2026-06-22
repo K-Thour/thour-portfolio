@@ -86,7 +86,13 @@ const update = (id: string, data: Partial<IUserModel>, updatedBy: Types.ObjectId
 
     await uploadBase64ImagesInObject(data, 'profiles');
 
-    if (currentUser && currentUser.image && currentUser.image.publicId && data.image && data.image.url) {
+    if (
+      currentUser &&
+      currentUser.image &&
+      currentUser.image.publicId &&
+      data.image &&
+      data.image.url
+    ) {
       if (currentUser.image.url !== data.image.url) {
         await deleteFromCloudinary(currentUser.image.publicId);
       }
@@ -187,7 +193,11 @@ const changePassword = (id: string, currentPassword: string, newPassword: string
     }
 
     const newHashedPassword = await hashPassword(newPassword);
-    const result = await models.user.repo.update(id, { passwordHash: newHashedPassword }, new Types.ObjectId(id));
+    const result = await models.user.repo.update(
+      id,
+      { passwordHash: newHashedPassword },
+      new Types.ObjectId(id),
+    );
 
     return commonResponse.success(
       result,

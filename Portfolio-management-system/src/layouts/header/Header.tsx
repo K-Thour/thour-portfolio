@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { User, LogOut, Settings, ChevronDown } from "lucide-react";
 import { ThemeToggle } from "../../components/ui/themeToggle/ThemeToggle";
+import { fetchCurrentUser } from "../../services/api";
 
 import {
   DropdownMenu,
@@ -18,11 +19,25 @@ const { cn } = utils.tailwindUtils;
 function Header({ className }: { className?: string }) {
   const navigate = useNavigate();
 
+  const [currentUser, setCurrentUser] = useState<any>(null);
+
+  useEffect(() => {
+    const loadUser = async () => {
+      try {
+        const data = await fetchCurrentUser();
+        setCurrentUser(data);
+      } catch (err) {
+        console.error("Failed to fetch user in Header:", err);
+      }
+    };
+    loadUser();
+  }, []);
+
   const user = {
-    name: "Admin User",
-    email: "admin@management.system",
+    name: currentUser?.name || "Admin User",
+    email: currentUser?.email || "admin@management.system",
     role: { name: "Admin" },
-    avatarUrl: "",
+    avatarUrl: currentUser?.image?.url || "",
   };
 
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);

@@ -81,11 +81,16 @@ const getOneService = (params?: IResumeRepoParams) => {
 
 import { generateResumeAI } from '../utils/gemini.utils';
 
-const generateService = (name: string, description: string, jobUrl: string | undefined, createdBy: Types.ObjectId) => {
+const generateService = (
+  name: string,
+  description: string,
+  jobUrl: string | undefined,
+  createdBy: Types.ObjectId,
+) => {
   return asyncCommonWrapper(async () => {
     // 1. Fetch user/developer profile details
     const user = await models.user.repo.getOne({
-      filter: [{ _id: createdBy }]
+      filter: [{ _id: createdBy }],
     });
     if (!user) {
       return commonResponse.error(null, 'User profile not found', STATUS_CODE.NOT_FOUND, 0);
@@ -117,9 +122,9 @@ const generateService = (name: string, description: string, jobUrl: string | und
     });
 
     // Convert selected string IDs to ObjectIds
-    const projectsUsed = aiResult.selectedProjectIds.map(id => new Types.ObjectId(id));
-    const servicesUsed = aiResult.selectedServiceIds.map(id => new Types.ObjectId(id));
-    const technologiesUsed = aiResult.selectedTechnologyIds.map(id => new Types.ObjectId(id));
+    const projectsUsed = aiResult.selectedProjectIds.map((id) => new Types.ObjectId(id));
+    const servicesUsed = aiResult.selectedServiceIds.map((id) => new Types.ObjectId(id));
+    const technologiesUsed = aiResult.selectedTechnologyIds.map((id) => new Types.ObjectId(id));
 
     // Create the resume document in DB
     const resumeData = {

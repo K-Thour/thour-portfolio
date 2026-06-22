@@ -8,9 +8,11 @@ import ITechnologyModel, {
 } from '../interface/models/technology/technology.interface';
 import { Types } from 'mongoose';
 import { ITechnologyRepoParams } from '../interface/models/technology/technologyRepo.interface';
+import { uploadBase64ImagesInObject, deleteFromCloudinary } from '../utils/cloudinary.utils';
 
 const createService = (data: createTechnologyInput, createdBy: Types.ObjectId) => {
   return asyncCommonWrapper(async () => {
+    await uploadBase64ImagesInObject(data, 'technologies');
     const result = await models.technology.repo.create(data, createdBy);
     return commonResponse.success(
       result,
@@ -23,6 +25,24 @@ const createService = (data: createTechnologyInput, createdBy: Types.ObjectId) =
 
 const updateService = (id: string, data: Partial<ITechnologyModel>, updatedBy: Types.ObjectId) => {
   return asyncCommonWrapper(async () => {
+    const currentTech = await models.technology.repo.getOne({
+      filter: [{ _id: new Types.ObjectId(id) }],
+    });
+
+    await uploadBase64ImagesInObject(data, 'technologies');
+
+    if (
+      currentTech &&
+      currentTech.iconUrl &&
+      currentTech.iconUrl.publicId &&
+      data.iconUrl &&
+      data.iconUrl.url
+    ) {
+      if (currentTech.iconUrl.url !== data.iconUrl.url) {
+        await deleteFromCloudinary(currentTech.iconUrl.publicId);
+      }
+    }
+
     const result = await models.technology.repo.update(id, data, updatedBy);
     return commonResponse.success(
       result,

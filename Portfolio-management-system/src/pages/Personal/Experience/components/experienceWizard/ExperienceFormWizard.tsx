@@ -9,14 +9,15 @@ import {
   experienceDescriptionSchema,
   experienceLinksSchema,
 } from "../../../../../validations/experience";
-import { STORAGE_KEY } from "../../../../../constraints/experience/expeirinceForm.constraints";
-import { useWizard } from "../../hooks/useWizard";
 import {
-  WizardHeader,
-  WizardStepper,
-  WizardContent,
-  WizardFooter,
-} from "./components";
+  STORAGE_KEY,
+  STEP_STORAGE_KEY,
+} from "../../../../../constraints/experience/expeirinceForm.constraints";
+import { useWizard } from "../../../../../hooks/useWizard";
+import { WizardHeader } from "../../../../../components/common/wizard/WizardHeader";
+import { WizardStepper } from "../../../../../components/common/wizard/WizardStepper";
+import { WizardFooter } from "../../../../../components/common/wizard/WizardFooter";
+import { WizardContent } from "./components/WizardContent";
 
 const { cn } = utils.tailwindUtils;
 
@@ -94,7 +95,15 @@ export const ExperienceFormWizard: React.FC<ExperienceFormWizardProps> = ({
     validateStep,
     getInitialValues,
     handleClose,
-  } = useWizard({ steps, defaultValues, initialData, isEditing, isOpen });
+  } = useWizard({
+    steps,
+    defaultValues,
+    initialData,
+    isEditing,
+    isOpen,
+    storageKey: STORAGE_KEY,
+    stepStorageKey: STEP_STORAGE_KEY,
+  });
 
   const form = useForm({
     defaultValues: getInitialValues(),
@@ -215,8 +224,8 @@ export const ExperienceFormWizard: React.FC<ExperienceFormWizardProps> = ({
         )}
       >
         <WizardHeader
+          title={isEditing ? "Edit Experience" : "Add Experience"}
           isDark={isDark}
-          isEditing={isEditing}
           onCancel={handleCancel}
         />
         <WizardStepper
@@ -229,8 +238,8 @@ export const ExperienceFormWizard: React.FC<ExperienceFormWizardProps> = ({
         <WizardFooter
           currentStep={currentStep}
           totalSteps={steps.length}
-          isEditing={isEditing}
           isDark={isDark}
+          submitText={isEditing ? "Save Changes" : "Add Experience"}
           onBack={handleBack}
           onNext={handleNext}
           onSubmit={handleSubmit}

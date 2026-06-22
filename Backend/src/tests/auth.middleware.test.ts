@@ -30,7 +30,7 @@ describe('authMiddleware', () => {
     expect(res.json).toHaveBeenCalledWith(
       expect.objectContaining({
         message: 'Token missing',
-      })
+      }),
     );
     expect(next).not.toHaveBeenCalled();
   });
@@ -46,7 +46,7 @@ describe('authMiddleware', () => {
     expect(res.json).toHaveBeenCalledWith(
       expect.objectContaining({
         message: 'Invalid token',
-      })
+      }),
     );
     expect(next).not.toHaveBeenCalled();
   });
@@ -61,7 +61,7 @@ describe('authMiddleware', () => {
     expect(res.json).toHaveBeenCalledWith(
       expect.objectContaining({
         message: 'User not found',
-      })
+      }),
     );
     expect(next).not.toHaveBeenCalled();
   });

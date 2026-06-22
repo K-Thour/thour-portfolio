@@ -30,11 +30,13 @@ export function SecuritySettingsCard() {
     } else if (newPassword.length < 8) {
       newErrors.newPassword = "Password must be at least 8 characters long";
     } else if (!/[A-Z]/.test(newPassword)) {
-      newErrors.newPassword = "Password must contain at least one uppercase letter";
+      newErrors.newPassword =
+        "Password must contain at least one uppercase letter";
     } else if (!/[0-9]/.test(newPassword)) {
       newErrors.newPassword = "Password must contain at least one number";
     } else if (!/[^A-Za-z0-9]/.test(newPassword)) {
-      newErrors.newPassword = "Password must contain at least one special character";
+      newErrors.newPassword =
+        "Password must contain at least one special character";
     }
 
     if (newPassword !== confirmPassword) {
@@ -62,7 +64,9 @@ export function SecuritySettingsCard() {
       setNewPassword("");
       setConfirmPassword("");
     } catch (err: any) {
-      const errMsg = err.response?.data?.message || "Failed to update password. Please check your credentials.";
+      const errMsg =
+        err.response?.data?.message ||
+        "Failed to update password. Please check your credentials.";
       toast({
         title: "Update Failed",
         description: errMsg,
@@ -87,9 +91,7 @@ export function SecuritySettingsCard() {
       <div className="flex items-center gap-3 mb-6">
         <div
           className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-            isDark
-              ? "bg-red-500/20 text-red-400"
-              : "bg-red-100 text-red-600"
+            isDark ? "bg-red-500/20 text-red-400" : "bg-red-100 text-red-600"
           }`}
         >
           <Lock className="w-5 h-5" />
@@ -106,7 +108,9 @@ export function SecuritySettingsCard() {
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Current Password */}
         <div>
-          <label className={`block text-sm font-medium mb-1.5 ${isDark ? "text-gray-300" : "text-gray-700"}`}>
+          <label
+            className={`block text-sm font-medium mb-1.5 ${isDark ? "text-gray-300" : "text-gray-700"}`}
+          >
             Current Password
           </label>
           <div className="relative">
@@ -125,17 +129,25 @@ export function SecuritySettingsCard() {
               onClick={() => setShowCurrent(!showCurrent)}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-white"
             >
-              {showCurrent ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              {showCurrent ? (
+                <EyeOff className="w-5 h-5" />
+              ) : (
+                <Eye className="w-5 h-5" />
+              )}
             </button>
           </div>
           {errors.currentPassword && (
-            <p className="mt-1 text-xs text-red-500">{errors.currentPassword}</p>
+            <p className="mt-1 text-xs text-red-500">
+              {errors.currentPassword}
+            </p>
           )}
         </div>
 
         {/* New Password */}
         <div>
-          <label className={`block text-sm font-medium mb-1.5 ${isDark ? "text-gray-300" : "text-gray-700"}`}>
+          <label
+            className={`block text-sm font-medium mb-1.5 ${isDark ? "text-gray-300" : "text-gray-700"}`}
+          >
             New Password
           </label>
           <div className="relative">
@@ -154,7 +166,11 @@ export function SecuritySettingsCard() {
               onClick={() => setShowNew(!showNew)}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-white"
             >
-              {showNew ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              {showNew ? (
+                <EyeOff className="w-5 h-5" />
+              ) : (
+                <Eye className="w-5 h-5" />
+              )}
             </button>
           </div>
           {errors.newPassword && (
@@ -164,7 +180,9 @@ export function SecuritySettingsCard() {
 
         {/* Confirm New Password */}
         <div>
-          <label className={`block text-sm font-medium mb-1.5 ${isDark ? "text-gray-300" : "text-gray-700"}`}>
+          <label
+            className={`block text-sm font-medium mb-1.5 ${isDark ? "text-gray-300" : "text-gray-700"}`}
+          >
             Confirm New Password
           </label>
           <div className="relative">
@@ -183,11 +201,17 @@ export function SecuritySettingsCard() {
               onClick={() => setShowConfirm(!showConfirm)}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-white"
             >
-              {showConfirm ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              {showConfirm ? (
+                <EyeOff className="w-5 h-5" />
+              ) : (
+                <Eye className="w-5 h-5" />
+              )}
             </button>
           </div>
           {errors.confirmPassword && (
-            <p className="mt-1 text-xs text-red-500">{errors.confirmPassword}</p>
+            <p className="mt-1 text-xs text-red-500">
+              {errors.confirmPassword}
+            </p>
           )}
         </div>
 

@@ -8,7 +8,12 @@ import { ExperienceTimeline } from "./components/ExperienceTimeline";
 import { EmptyExperienceState } from "./components/EmptyExperienceState";
 import type { ExperienceFormData } from "../../../validations/experienceSchema";
 import utils from "../../../utils/index";
-import { fetchExperiences, createExperience, updateExperience, deleteExperience } from "../../../services/api";
+import {
+  fetchExperiences,
+  createExperience,
+  updateExperience,
+  deleteExperience,
+} from "../../../services/api";
 
 export const ExperiencePage: React.FC = () => {
   const theme = useAppSelector((state) => state.theme.theme);
@@ -31,8 +36,12 @@ export const ExperiencePage: React.FC = () => {
         jobTitle: e.position || "",
         company: e.companyName || "",
         location: e.field || "",
-        startDate: e.dateOfJoining ? new Date(e.dateOfJoining).toISOString().split("T")[0] : "",
-        endDate: e.dateOfLeaving ? new Date(e.dateOfLeaving).toISOString().split("T")[0] : null,
+        startDate: e.dateOfJoining
+          ? new Date(e.dateOfJoining).toISOString().split("T")[0]
+          : "",
+        endDate: e.dateOfLeaving
+          ? new Date(e.dateOfLeaving).toISOString().split("T")[0]
+          : null,
         isCurrent: e.stillWorking || false,
         achievements: e.description ? e.description.split("\n") : [],
       }));
@@ -69,9 +78,15 @@ export const ExperiencePage: React.FC = () => {
       position: data.jobTitle,
       field: data.location,
       projectsCompleted: [],
-      description: data.features.filter((f): f is string => f !== undefined).join("\n"),
+      description: data.features
+        .filter((f): f is string => f !== undefined)
+        .join("\n"),
       dateOfJoining: new Date(data.startDate).toISOString(),
-      dateOfLeaving: data.isCurrent ? undefined : (data.endDate ? new Date(data.endDate).toISOString() : undefined),
+      dateOfLeaving: data.isCurrent
+        ? undefined
+        : data.endDate
+          ? new Date(data.endDate).toISOString()
+          : undefined,
       stillWorking: data.isCurrent || false,
     };
 
@@ -147,7 +162,9 @@ export const ExperiencePage: React.FC = () => {
 
       <div className={cn("flex-1")}>
         {loading ? (
-          <div className="text-center p-12 text-slate-500">Loading experiences...</div>
+          <div className="text-center p-12 text-slate-500">
+            Loading experiences...
+          </div>
         ) : experiences.length === 0 ? (
           <EmptyExperienceState
             isDark={isDark}

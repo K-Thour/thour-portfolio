@@ -35,7 +35,9 @@ export function LeadsTable({
         }`}
       >
         <p className="text-lg font-medium mb-2">No leads found</p>
-        <p className="text-sm">New leads from the portfolio forms will be listed here</p>
+        <p className="text-sm">
+          New leads from the portfolio forms will be listed here
+        </p>
       </div>
     );
   }

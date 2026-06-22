@@ -8,6 +8,8 @@ import portfolioServices from './portfolio.services';
 import projectServices from './project.services';
 import resumeServices from './resume.services';
 import serviceServices from './service.services';
+import dashboardServices from './dashboard.services';
+import imageServices from './image.services';
 
 export default {
   userServices,
@@ -20,4 +22,6 @@ export default {
   projectServices,
   resumeServices,
   serviceServices,
+  dashboardServices,
+  imageServices,
 };

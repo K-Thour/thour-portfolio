@@ -50,7 +50,10 @@ export function useEducationForm(initialData?: Education | null) {
         if (!formData.current) {
           if (!formData.endDate) {
             newErrors.endDate = "End date is required";
-          } else if (formData.startDate && new Date(formData.endDate) < new Date(formData.startDate)) {
+          } else if (
+            formData.startDate &&
+            new Date(formData.endDate) < new Date(formData.startDate)
+          ) {
             newErrors.endDate = "End date cannot be before start date";
           }
         }

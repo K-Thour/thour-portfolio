@@ -20,9 +20,12 @@ export function ContactInfo({ isInView }: ContactInfoProps) {
     fetchActiveContact().then(setActiveContact).catch(console.error);
   }, []);
 
-  const emailVal = userData?.email || (isDark ? 'hero@avengers.com' : 'warrior@valhalla.com');
-  const phoneVal = userData?.phoneNumber || (isDark ? '+1 (555) AVG-HERO' : '+1 (555) NOR-DWAR');
-  
+  const emailVal =
+    userData?.email || (isDark ? 'hero@avengers.com' : 'warrior@valhalla.com');
+  const phoneVal =
+    userData?.phoneNumber ||
+    (isDark ? '+1 (555) AVG-HERO' : '+1 (555) NOR-DWAR');
+
   let locationVal = isDark ? 'Avengers Tower, NYC' : 'Midgard Realm';
   if (activeContact) {
     locationVal = activeContact.Address1;
@@ -130,11 +133,11 @@ export function ContactInfo({ isInView }: ContactInfoProps) {
           {isDark ? 'Availability' : 'When to Call'}
         </h4>
         <p className={`mb-2 ${isDark ? 'text-gray-400' : 'text-gray-700'}`}>
-          {activeContact ? (
-            `${activeContact.startWorkingDay} - ${activeContact.endWorkingDay}: ${activeContact.startWorkingHour} - ${activeContact.endWorkingHour}`
-          ) : isDark
-            ? 'Monday - Friday: 9:00 AM - 6:00 PM EST'
-            : 'Sunrise to Sunset: All Days'}
+          {activeContact
+            ? `${activeContact.startWorkingDay} - ${activeContact.endWorkingDay}: ${activeContact.startWorkingHour} - ${activeContact.endWorkingHour}`
+            : isDark
+              ? 'Monday - Friday: 9:00 AM - 6:00 PM EST'
+              : 'Sunrise to Sunset: All Days'}
         </p>
         <p className={`mb-4 ${isDark ? 'text-gray-400' : 'text-gray-700'}`}>
           {isDark

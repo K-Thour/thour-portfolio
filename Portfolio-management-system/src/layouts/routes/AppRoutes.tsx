@@ -27,8 +27,14 @@ function AppRoutes() {
     <Routes>
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/profile" element={<Profile />} />
-      <Route path="/settings" element={<Settings />} />
+      <Route
+        path="/profile"
+        element={commonBundler({ component: <Profile /> })}
+      />
+      <Route
+        path="/settings"
+        element={commonBundler({ component: <Settings /> })}
+      />
       <Route
         path="/dashboard"
         element={commonBundler({ component: <Dashboard /> })}

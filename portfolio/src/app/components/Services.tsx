@@ -1,19 +1,12 @@
 import { motion } from 'motion/react';
 import { useInView } from 'motion/react';
-import { useRef } from 'react';
-import {
-  Code2,
-  Smartphone,
-  Cloud,
-  Database,
-  Sparkles,
-  Laptop,
-} from 'lucide-react';
+import { useRef, useEffect, useState } from 'react';
+import { Code2 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { ServicesHeader } from './service/ServicesHeader';
 import { ServiceCard, type ServiceItem } from './service/ServiceCard';
-import { useEffect, useState } from 'react';
 import { fetchServices } from '../../services/api';
+import { servicesData } from '../../data/services';
 
 export function Services() {
   const [services, setServices] = useState<any[]>([]);
@@ -27,14 +20,34 @@ export function Services() {
     const loadData = async () => {
       try {
         const data = await fetchServices();
-        const mappedData = data.map((s: any) => ({
-          icon: s.iconUrl?.url || Code2, // Fallback icon
-          title: s.name || s.title,
-          description: s.decription || s.description,
-          features: s.technologies || [],
-          color: isDark ? 'from-red-600 to-red-400' : 'from-blue-600 to-blue-400',
-          link: `/services/${s._id}`,
-        }));
+        const mappedData = data.map((s: any) => {
+          // Normalize name to lookup static fallback
+          const nameNormalized = (s.name || '')
+            .toLowerCase()
+            .replace(/[^a-z]/g, '');
+          const fallback =
+            Object.values(servicesData).find(
+              (item) =>
+                item.title.toLowerCase().replace(/[^a-z]/g, '') ===
+                nameNormalized,
+            ) ||
+            Object.values(servicesData).find(
+              (item) =>
+                nameNormalized.includes(item.title.toLowerCase()) ||
+                item.title.toLowerCase().includes(nameNormalized),
+            );
+
+          return {
+            icon: s.iconUrl?.url || (fallback ? fallback.icon : Code2),
+            title: s.name || (fallback ? fallback.title : ''),
+            description: s.decription || (fallback ? fallback.description : ''),
+            features: fallback ? fallback.features : [],
+            color: isDark
+              ? 'from-red-600 to-red-400'
+              : 'from-blue-600 to-blue-400',
+            link: `/services/${s._id}`,
+          };
+        });
         setServices(mappedData);
       } catch (error) {
         console.error('Error fetching services:', error);
@@ -70,7 +83,9 @@ export function Services() {
               <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
             </div>
           ) : services.length === 0 ? (
-            <div className="text-center py-20 text-slate-500">No services found.</div>
+            <div className="text-center py-20 text-slate-500">
+              No services found.
+            </div>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {services.map((service, index) => (

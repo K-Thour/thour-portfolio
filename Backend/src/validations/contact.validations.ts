@@ -10,6 +10,8 @@ export const contactCreateSchema = z.object({
   endWorkingHour: z.string().min(1, 'End working hour is required'),
 });
 
-export const contactUpdateSchema = contactCreateSchema.partial().refine((data) => Object.keys(data).length > 0, {
-  message: 'At least one field must be provided for update',
-});
+export const contactUpdateSchema = contactCreateSchema
+  .partial()
+  .refine((data) => Object.keys(data).length > 0, {
+    message: 'At least one field must be provided for update',
+  });

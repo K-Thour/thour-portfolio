@@ -159,7 +159,12 @@ const leadRoutes = express.Router();
  */
 
 leadRoutes.post('/create', validate(leadCreateSchema), controllers.leadControllers.create);
-leadRoutes.patch('/update/:id', authMiddleware, validate(leadUpdateSchema), controllers.leadControllers.update);
+leadRoutes.patch(
+  '/update/:id',
+  authMiddleware,
+  validate(leadUpdateSchema),
+  controllers.leadControllers.update,
+);
 leadRoutes.delete('/soft-delete/:id', authMiddleware, controllers.leadControllers.softDelete);
 leadRoutes.delete('/delete/:id', authMiddleware, controllers.leadControllers.deleteOne);
 leadRoutes.get('/get', authMiddleware, controllers.leadControllers.get);

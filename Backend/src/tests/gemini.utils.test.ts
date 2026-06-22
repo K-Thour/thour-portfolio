@@ -1,16 +1,16 @@
 import { generateResumeAI, GenerateResumeParams } from '../utils/gemini.utils';
-import { GoogleGenerativeAI } from '@google/generative-ai';
 
 jest.mock('@google/generative-ai', () => {
   const mockGenerateContent = jest.fn().mockResolvedValue({
     response: {
-      text: () => JSON.stringify({
-        selectedProjectIds: ['p1'],
-        selectedServiceIds: ['s1'],
-        selectedTechnologyIds: ['t1'],
-        tailoredSummary: 'This is a mocked tailored summary',
-        latexCode: '\\documentclass{article}\\begin{document}Mocked LaTeX\\end{document}',
-      }),
+      text: () =>
+        JSON.stringify({
+          selectedProjectIds: ['p1'],
+          selectedServiceIds: ['s1'],
+          selectedTechnologyIds: ['t1'],
+          tailoredSummary: 'This is a mocked tailored summary',
+          latexCode: '\\documentclass{article}\\begin{document}Mocked LaTeX\\end{document}',
+        }),
     },
   });
 
@@ -37,11 +37,40 @@ describe('generateResumeAI', () => {
         hobbies: ['Gaming'],
         languages: [{ name: 'English', level: 'Fluent' }],
       },
-      projects: [{ _id: 'p1', title: 'React Project', description: 'A great react project', techStack: ['React'], role: 'Lead' }],
+      projects: [
+        {
+          _id: 'p1',
+          title: 'React Project',
+          description: 'A great react project',
+          techStack: ['React'],
+          role: 'Lead',
+        },
+      ],
       services: [{ _id: 's1', name: 'Frontend Dev', decription: 'Service desc', technologies: [] }],
       technologies: [{ _id: 't1', name: 'React', category: 'Frontend' }],
-      education: [{ _id: 'ed1', level: 'Bachelor', degree: 'CS', field_of_study: 'CS', institution: 'Univ', startYear: '2020', endYear: '2024', grade: 'A' }],
-      experience: [{ _id: 'ex1', companyName: 'Company', position: 'Developer', field: 'IT', description: 'Work desc', dateOfJoining: '2024-01-01', stillWorking: true }],
+      education: [
+        {
+          _id: 'ed1',
+          level: 'Bachelor',
+          degree: 'CS',
+          field_of_study: 'CS',
+          institution: 'Univ',
+          startYear: '2020',
+          endYear: '2024',
+          grade: 'A',
+        },
+      ],
+      experience: [
+        {
+          _id: 'ex1',
+          companyName: 'Company',
+          position: 'Developer',
+          field: 'IT',
+          description: 'Work desc',
+          dateOfJoining: '2024-01-01',
+          stillWorking: true,
+        },
+      ],
     };
 
     const result = await generateResumeAI(params);

@@ -38,7 +38,7 @@ export const useAuthentication = () => {
           email: me.email,
           role: { name: "Admin" },
           avatarUrl: me.image?.url || "",
-          ...me
+          ...me,
         });
 
         setIsAuthenticated(true);

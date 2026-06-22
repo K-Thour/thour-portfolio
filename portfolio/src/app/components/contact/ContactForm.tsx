@@ -17,7 +17,9 @@ export function ContactForm({ isInView }: ContactFormProps) {
     message: '',
   });
 
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [status, setStatus] = useState<
+    'idle' | 'loading' | 'success' | 'error'
+  >('idle');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -154,14 +156,22 @@ export function ContactForm({ isInView }: ContactFormProps) {
               : 'bg-gradient-to-r from-blue-600 to-blue-500 text-white hover:shadow-lg hover:shadow-blue-500/50'
           } ${status === 'loading' ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
-          {status === 'loading' ? 'Sending...' : isDark ? 'Launch Mission' : 'Send to Valhalla'}
+          {status === 'loading'
+            ? 'Sending...'
+            : isDark
+              ? 'Launch Mission'
+              : 'Send to Valhalla'}
           <Send className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
         </button>
         {status === 'success' && (
-          <p className="text-green-500 text-center mt-2">Message sent successfully!</p>
+          <p className="text-green-500 text-center mt-2">
+            Message sent successfully!
+          </p>
         )}
         {status === 'error' && (
-          <p className="text-red-500 text-center mt-2">Failed to send message. Please try again.</p>
+          <p className="text-red-500 text-center mt-2">
+            Failed to send message. Please try again.
+          </p>
         )}
       </form>
     </motion.div>

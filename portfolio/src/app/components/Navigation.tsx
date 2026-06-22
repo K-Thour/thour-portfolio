@@ -4,11 +4,13 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useTheme } from '../context/ThemeContext';
 import { ThemeToggle } from './ThemeToggle';
+import { useUser } from '../context/UserContext';
 
 export function Navigation() {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const { theme } = useTheme();
+  const { userData } = useUser();
 
   const navItems = [
     { path: '/', label: 'Home' },
@@ -38,14 +40,14 @@ export function Navigation() {
                   : 'bg-gradient-to-br from-blue-600 to-blue-400 text-white'
               }`}
             >
-              K
+              {userData?.name ? userData.name[0] : 'K'}
             </div>
             <span
               className={`font-bold text-xl hidden sm:block ${
                 isDark ? 'text-white' : 'text-gray-900'
               }`}
             >
-              Karanveer Thour
+              {userData?.name || 'Karanveer Thour'}
             </span>
           </Link>
 

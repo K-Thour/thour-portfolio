@@ -8,6 +8,8 @@ import portfolioRoutes from './portfolio.routes';
 import projectRoutes from './project.routes';
 import resumeRoutes from './resume.routes';
 import serviceRoutes from './service.routes';
+import dashboardRoutes from './dashboard.routes';
+import imageRoutes from './image.routes';
 
 export default {
   userRoutes,
@@ -20,4 +22,6 @@ export default {
   projectRoutes,
   resumeRoutes,
   serviceRoutes,
+  dashboardRoutes,
+  imageRoutes,
 };

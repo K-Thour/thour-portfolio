@@ -158,8 +158,18 @@ const educationRoutes = express.Router();
  *         description: Not found
  */
 
-educationRoutes.post('/create', authMiddleware, validate(educationCreateSchema), controllers.educationControllers.create);
-educationRoutes.patch('/update/:id', authMiddleware, validate(educationUpdateSchema), controllers.educationControllers.update);
+educationRoutes.post(
+  '/create',
+  authMiddleware,
+  validate(educationCreateSchema),
+  controllers.educationControllers.create,
+);
+educationRoutes.patch(
+  '/update/:id',
+  authMiddleware,
+  validate(educationUpdateSchema),
+  controllers.educationControllers.update,
+);
 educationRoutes.delete(
   '/soft-delete/:id',
   authMiddleware,

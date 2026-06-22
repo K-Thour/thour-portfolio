@@ -1,39 +1,27 @@
 import Card from "../../../components/ui/card/Card";
+import { DateTime } from "luxon";
 import utils from "../../../utils";
 
 const { cn } = utils.tailwindUtils;
 
 interface RecentActivityProps {
   isDark: boolean;
+  activities: Array<{
+    id: string;
+    title: string;
+    description: string;
+    time: string;
+  }> | null;
 }
 
-export const RecentActivity = ({ isDark }: RecentActivityProps) => {
-  const activities = [
-    {
-      id: 1,
-      title: "New project added",
-      description: "AI Code Assistant",
-      time: "2 hours ago",
-    },
-    {
-      id: 2,
-      title: "Service updated",
-      description: "Web Development",
-      time: "5 hours ago",
-    },
-    {
-      id: 3,
-      title: "New lead received",
-      description: "John Doe",
-      time: "1 day ago",
-    },
-    {
-      id: 4,
-      title: "Message received",
-      description: "Project inquiry",
-      time: "2 days ago",
-    },
-  ];
+const formatRelativeTime = (timeStr: string) => {
+  const dt = DateTime.fromISO(timeStr);
+  if (!dt.isValid) return timeStr;
+  return dt.toRelative() || timeStr;
+};
+
+export const RecentActivity = ({ isDark, activities }: RecentActivityProps) => {
+  const activityList = activities || [];
 
   return (
     <Card
@@ -54,54 +42,65 @@ export const RecentActivity = ({ isDark }: RecentActivityProps) => {
       </h2>
 
       <div className="flex flex-col flex-1">
-        {activities.map((activity, index) => (
+        {activityList.length === 0 ? (
           <div
-            key={activity.id}
             className={cn(
-              "flex items-start gap-4 pb-4 mb-4",
-              index !== activities.length - 1
-                ? isDark
-                  ? "border-b border-slate-800/60"
-                  : "border-b border-blue-50/80"
-                : "pb-0 mb-0",
+              "flex-1 flex items-center justify-center text-sm",
+              isDark ? "text-slate-500" : "text-slate-400",
             )}
           >
-            <div className="mt-1.5 flex-shrink-0">
-              <div
-                className={cn(
-                  "w-2 h-2 rounded-full",
-                  isDark ? "bg-red-500" : "bg-blue-500",
-                )}
-              />
-            </div>
-            <div className="flex flex-col">
-              <p
-                className={cn(
-                  "text-sm font-medium mb-1",
-                  isDark ? "text-slate-200" : "text-slate-800",
-                )}
-              >
-                {activity.title}
-              </p>
-              <p
-                className={cn(
-                  "text-xs mb-1",
-                  isDark ? "text-slate-400" : "text-slate-500",
-                )}
-              >
-                {activity.description}
-              </p>
-              <p
-                className={cn(
-                  "text-xs",
-                  isDark ? "text-slate-500" : "text-slate-400",
-                )}
-              >
-                {activity.time}
-              </p>
-            </div>
+            No recent activity
           </div>
-        ))}
+        ) : (
+          activityList.map((activity, index) => (
+            <div
+              key={activity.id}
+              className={cn(
+                "flex items-start gap-4 pb-4 mb-4",
+                index !== activityList.length - 1
+                  ? isDark
+                    ? "border-b border-slate-800/60"
+                    : "border-b border-blue-50/80"
+                  : "pb-0 mb-0",
+              )}
+            >
+              <div className="mt-1.5 flex-shrink-0">
+                <div
+                  className={cn(
+                    "w-2 h-2 rounded-full",
+                    isDark ? "bg-red-500" : "bg-blue-500",
+                  )}
+                />
+              </div>
+              <div className="flex flex-col">
+                <p
+                  className={cn(
+                    "text-sm font-medium mb-1",
+                    isDark ? "text-slate-200" : "text-slate-800",
+                  )}
+                >
+                  {activity.title}
+                </p>
+                <p
+                  className={cn(
+                    "text-xs mb-1",
+                    isDark ? "text-slate-400" : "text-slate-500",
+                  )}
+                >
+                  {activity.description}
+                </p>
+                <p
+                  className={cn(
+                    "text-xs",
+                    isDark ? "text-slate-500" : "text-slate-400",
+                  )}
+                >
+                  {formatRelativeTime(activity.time)}
+                </p>
+              </div>
+            </div>
+          ))
+        )}
       </div>
     </Card>
   );

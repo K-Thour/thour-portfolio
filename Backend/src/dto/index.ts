@@ -1,4 +1,11 @@
-import { EDeviceType, EEducationType, EGradeType, ESchoolBoard, EStream, EDay } from '../interface/common/common.enum';
+import {
+  EDeviceType,
+  EEducationType,
+  EGradeType,
+  ESchoolBoard,
+  EStream,
+  EDay,
+} from '../interface/common/common.enum';
 
 // Image Data Sub-structure DTO
 export interface ImageDTO {

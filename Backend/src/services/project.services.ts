@@ -6,9 +6,11 @@ import models from '../models';
 import IProjectModel, { createProjectInput } from '../interface/models/project/project.interface';
 import { Types } from 'mongoose';
 import { IProjectRepoParams } from '../interface/models/project/projectRepo.interface';
+import { uploadBase64ImagesInObject, deleteFromCloudinary } from '../utils/cloudinary.utils';
 
 const createService = (data: createProjectInput, createdBy: Types.ObjectId) => {
   return asyncCommonWrapper(async () => {
+    await uploadBase64ImagesInObject(data, 'projects');
     const result = await models.project.repo.create(data, createdBy);
     return commonResponse.success(
       result,
@@ -21,6 +23,24 @@ const createService = (data: createProjectInput, createdBy: Types.ObjectId) => {
 
 const updateService = (id: string, data: Partial<IProjectModel>, updatedBy: Types.ObjectId) => {
   return asyncCommonWrapper(async () => {
+    const currentProject = await models.project.repo.getOne({
+      filter: [{ _id: new Types.ObjectId(id) }],
+    });
+
+    await uploadBase64ImagesInObject(data, 'projects');
+
+    if (
+      currentProject &&
+      currentProject.image &&
+      currentProject.image.publicId &&
+      data.image &&
+      data.image.url
+    ) {
+      if (currentProject.image.url !== data.image.url) {
+        await deleteFromCloudinary(currentProject.image.publicId);
+      }
+    }
+
     const result = await models.project.repo.update(id, data, updatedBy);
     return commonResponse.success(
       result,

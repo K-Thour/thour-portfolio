@@ -6,15 +6,23 @@ const { cn } = utils.tailwindUtils;
 
 interface PortfolioAnalyticsProps {
   isDark: boolean;
+  analytics: {
+    views: { value: string; trend: string };
+    conversionRate: { value: string; trend: string };
+    sessionTime: { value: string; trend: string };
+  } | null;
 }
 
-export const PortfolioAnalytics = ({ isDark }: PortfolioAnalyticsProps) => {
-  const analytics = [
+export const PortfolioAnalytics = ({
+  isDark,
+  analytics,
+}: PortfolioAnalyticsProps) => {
+  const analyticsData = [
     {
       id: "views",
       title: "Total Views",
-      value: "12,459",
-      trend: "+23% from last month",
+      value: analytics ? analytics.views.value : "0",
+      trend: analytics ? analytics.views.trend : "",
       icon: <Eye className="w-5 h-5" />,
       iconColorDark: "text-red-500",
       iconColorLight: "text-blue-500",
@@ -22,8 +30,8 @@ export const PortfolioAnalytics = ({ isDark }: PortfolioAnalyticsProps) => {
     {
       id: "conversion",
       title: "Conversion Rate",
-      value: "34.5%",
-      trend: "+5.2% improvement",
+      value: analytics ? analytics.conversionRate.value : "0.0%",
+      trend: analytics ? analytics.conversionRate.trend : "",
       icon: <TrendingUp className="w-5 h-5" />,
       iconColorDark: "text-yellow-500",
       iconColorLight: "text-blue-400",
@@ -31,8 +39,8 @@ export const PortfolioAnalytics = ({ isDark }: PortfolioAnalyticsProps) => {
     {
       id: "session",
       title: "Avg. Session Time",
-      value: "00:03:45",
-      trend: "+12s from last week",
+      value: analytics ? analytics.sessionTime.value : "00:00:00",
+      trend: analytics ? analytics.sessionTime.trend : "",
       icon: <Clock className="w-5 h-5" />,
       iconColorDark: "text-blue-500",
       iconColorLight: "text-blue-300",
@@ -58,7 +66,7 @@ export const PortfolioAnalytics = ({ isDark }: PortfolioAnalyticsProps) => {
       </h2>
 
       <div className="flex flex-col gap-4">
-        {analytics.map((item) => (
+        {analyticsData.map((item) => (
           <div
             key={item.id}
             className={cn(

@@ -1,43 +1,30 @@
+import React from "react";
 import { motion } from "motion/react";
-import type { AdditionalInfoStepProps } from "../types";
 import { SocialInputs } from "./SocialInputs";
 import { HobbiesInput } from "./HobbiesInput";
 import { LanguagesInput } from "./LanguagesInput";
 
-export function AdditionalInfoStep({
-  formData,
-  errors,
+interface AdditionalInfoStepProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  form: any;
+  isDark: boolean;
+}
+
+export const AdditionalInfoStep: React.FC<AdditionalInfoStepProps> = ({
+  form,
   isDark,
-  onSocialChange,
-  onAddHobby,
-  onRemoveHobby,
-  onAddLanguage,
-  onRemoveLanguage,
-}: AdditionalInfoStepProps) {
+}) => {
   return (
     <motion.div
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       className="space-y-6"
     >
-      <SocialInputs
-        formData={formData}
-        errors={errors}
-        isDark={isDark}
-        onSocialChange={onSocialChange}
-      />
-      <HobbiesInput
-        formData={formData}
-        isDark={isDark}
-        onAddHobby={onAddHobby}
-        onRemoveHobby={onRemoveHobby}
-      />
-      <LanguagesInput
-        formData={formData}
-        isDark={isDark}
-        onAddLanguage={onAddLanguage}
-        onRemoveLanguage={onRemoveLanguage}
-      />
+      <SocialInputs form={form} isDark={isDark} />
+      <HobbiesInput form={form} isDark={isDark} />
+      <LanguagesInput form={form} isDark={isDark} />
     </motion.div>
   );
-}
+};
+
+export default AdditionalInfoStep;

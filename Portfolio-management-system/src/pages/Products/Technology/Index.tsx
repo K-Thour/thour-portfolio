@@ -5,14 +5,23 @@ import { TechnologyHeader } from "./components/header";
 import { TechnologyList } from "./components/list";
 import ConfirmModal from "../../../components/common/confirmModel/confirmModel";
 import type { Technology } from "./types";
-import { fetchTechnologies, createTechnology, updateTechnology, deleteTechnology } from "../../../services/api";
+import {
+  fetchTechnologies,
+  createTechnology,
+  updateTechnology,
+  deleteTechnology,
+} from "../../../services/api";
 
 export function Technologies() {
   const [technologies, setTechnologies] = useState<Technology[]>([]);
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingTech, setEditingTech] = useState<Technology | undefined>(undefined);
-  const [deleteId, setDeleteId] = useState<string | number | undefined>(undefined);
+  const [editingTech, setEditingTech] = useState<Technology | undefined>(
+    undefined,
+  );
+  const [deleteId, setDeleteId] = useState<string | number | undefined>(
+    undefined,
+  );
 
   const loadTechnologies = useCallback(async () => {
     setLoading(true);
@@ -54,7 +63,10 @@ export function Technologies() {
       name: data.name,
       description: data.name, // description is required in backend validations
       category: data.category,
-      iconUrl: { publicId: "tech", url: data.iconUrl || data.icon || "https://placehold.co/100" },
+      iconUrl: {
+        publicId: "tech",
+        url: data.iconUrl || data.icon || "https://placehold.co/100",
+      },
       isActive: true,
     };
 
@@ -92,7 +104,9 @@ export function Technologies() {
     <div className="space-y-6">
       <TechnologyHeader onAdd={handleAdd} />
       {loading ? (
-        <div className="text-center p-12 text-slate-500">Loading technologies...</div>
+        <div className="text-center p-12 text-slate-500">
+          Loading technologies...
+        </div>
       ) : (
         <TechnologyList
           technologies={technologies}

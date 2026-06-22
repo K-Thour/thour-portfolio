@@ -10,6 +10,8 @@ export const leadCreateSchema = z.object({
   status: z.enum(['New', 'Contacted', 'Qualified', 'Proposal Sent', 'Lost', 'Won']).optional(),
 });
 
-export const leadUpdateSchema = leadCreateSchema.partial().refine((data) => Object.keys(data).length > 0, {
-  message: 'At least one field must be provided for update',
-});
+export const leadUpdateSchema = leadCreateSchema
+  .partial()
+  .refine((data) => Object.keys(data).length > 0, {
+    message: 'At least one field must be provided for update',
+  });

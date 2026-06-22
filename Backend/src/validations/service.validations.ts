@@ -15,6 +15,8 @@ export const serviceCreateSchema = z.object({
   imagesUrl: z.array(imageSchema),
 });
 
-export const serviceUpdateSchema = serviceCreateSchema.partial().refine((data) => Object.keys(data).length > 0, {
-  message: 'At least one field must be provided for update',
-});
+export const serviceUpdateSchema = serviceCreateSchema
+  .partial()
+  .refine((data) => Object.keys(data).length > 0, {
+    message: 'At least one field must be provided for update',
+  });

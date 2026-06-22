@@ -1,6 +1,10 @@
 import { useState, useCallback, useEffect } from "react";
 import type { Resume, ResumeFormData } from "../types";
-import { fetchResumes, deleteResume as deleteResumeApi, generateResumeAI } from "../../../../services/api";
+import {
+  fetchResumes,
+  deleteResume as deleteResumeApi,
+  generateResumeAI,
+} from "../../../../services/api";
 
 export function useResumeOperations() {
   const [resumes, setResumes] = useState<Resume[]>([]);
@@ -14,11 +18,11 @@ export function useResumeOperations() {
       const mappedList = list.map((r: any) => ({
         id: r._id,
         name: r.name,
-        description: r.description || '',
-        jobLink: r.jobUrl || '',
-        designType: r.designType || 'latex',
-        latexCode: r.latexCode || '',
-        status: r.isActive ? 'completed' : 'pending',
+        description: r.description || "",
+        jobLink: r.jobUrl || "",
+        designType: r.designType || "latex",
+        latexCode: r.latexCode || "",
+        status: r.isActive ? "completed" : "pending",
         createdAt: r.createdAt,
         updatedAt: r.updatedAt,
         generatedFileUrl: r.resumeUrl,
@@ -45,11 +49,11 @@ export function useResumeOperations() {
       const newResume: Resume = {
         id: response._id,
         name: response.name,
-        description: response.description || '',
-        jobLink: response.jobUrl || '',
-        designType: response.designType || 'latex',
-        latexCode: response.latexCode || '',
-        status: 'completed',
+        description: response.description || "",
+        jobLink: response.jobUrl || "",
+        designType: response.designType || "latex",
+        latexCode: response.latexCode || "",
+        status: "completed",
         createdAt: response.createdAt,
         updatedAt: response.updatedAt,
         generatedFileUrl: response.resumeUrl,

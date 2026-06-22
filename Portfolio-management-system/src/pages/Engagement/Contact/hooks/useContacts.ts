@@ -1,6 +1,11 @@
 import { useState, useCallback, useEffect } from "react";
 import type { Contact, ContactFormData } from "../types";
-import { fetchContacts, createContact, updateContact, deleteContact } from "../../../../services/api";
+import {
+  fetchContacts,
+  createContact,
+  updateContact,
+  deleteContact,
+} from "../../../../services/api";
 
 export function useContacts() {
   const [contacts, setContacts] = useState<Contact[]>([]);
@@ -92,20 +97,23 @@ export function useContacts() {
     setDeletingId(null);
   }, []);
 
-  const handleSetActive = useCallback(async (id: string | number) => {
-    try {
-      // Set target active
-      await updateContact(id.toString(), { isActive: true });
-      // Set all others inactive (frontend pattern, backend update for each)
-      const updates = contacts
-        .filter((c) => c.id !== id && c.isActive)
-        .map((c) => updateContact(c.id.toString(), { isActive: false }));
-      await Promise.all(updates);
-      await loadContacts();
-    } catch (err) {
-      console.error("Failed to set active contact:", err);
-    }
-  }, [contacts, loadContacts]);
+  const handleSetActive = useCallback(
+    async (id: string | number) => {
+      try {
+        // Set target active
+        await updateContact(id.toString(), { isActive: true });
+        // Set all others inactive (frontend pattern, backend update for each)
+        const updates = contacts
+          .filter((c) => c.id !== id && c.isActive)
+          .map((c) => updateContact(c.id.toString(), { isActive: false }));
+        await Promise.all(updates);
+        await loadContacts();
+      } catch (err) {
+        console.error("Failed to set active contact:", err);
+      }
+    },
+    [contacts, loadContacts],
+  );
 
   const handleCloseModal = useCallback(() => {
     setIsModalOpen(false);

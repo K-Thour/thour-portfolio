@@ -19,7 +19,8 @@ const defaultProfileData: ProfileData = {
 };
 
 export function useProfile() {
-  const [profileData, setProfileData] = useState<ProfileData>(defaultProfileData);
+  const [profileData, setProfileData] =
+    useState<ProfileData>(defaultProfileData);
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -45,10 +46,17 @@ export function useProfile() {
         GitHubURL: me.GitHubURL || "",
         hobbies: me.hobbies || [],
         languages: me.languages
-          ? me.languages.map((l: any) => ({
-              name: l.name,
-              proficiency: l.level === "fluent" ? 100 : 80,
-            }))
+          ? me.languages.map((l: any) => {
+              let proficiency = 80;
+              if (l.level === "native") proficiency = 100;
+              else if (l.level === "advanced") proficiency = 80;
+              else if (l.level === "intermediate") proficiency = 60;
+              else if (l.level === "beginner") proficiency = 40;
+              return {
+                name: l.name,
+                proficiency,
+              };
+            })
           : [],
       };
       setProfileData(mapped);
@@ -72,7 +80,9 @@ export function useProfile() {
       name: data.name,
       email: data.email,
       phoneNumber: data.phoneNumber,
-      image: data.image?.url ? { publicId: "profile", url: data.image.url } : undefined,
+      image: data.image?.url
+        ? { publicId: "profile", url: data.image.url }
+        : undefined,
       experience: Number(data.experience),
       completedProjects: Number(data.completedProjects),
       solvedProblems: Number(data.solvedProblems),
@@ -82,10 +92,17 @@ export function useProfile() {
       GitHubURL: data.GitHubURL,
       hobbies: data.hobbies || [],
       languages: data.languages
-        ? data.languages.map((l) => ({
-            name: l.name,
-            level: l.proficiency >= 90 ? "fluent" : "conversational",
-          }))
+        ? data.languages.map((l) => {
+            let level = "intermediate";
+            if (l.proficiency >= 90) level = "native";
+            else if (l.proficiency >= 75) level = "advanced";
+            else if (l.proficiency >= 50) level = "intermediate";
+            else level = "beginner";
+            return {
+              name: l.name,
+              level,
+            };
+          })
         : [],
     };
 

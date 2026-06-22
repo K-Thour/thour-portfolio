@@ -26,6 +26,8 @@ export const projectCreateSchema = z.object({
   techStack: z.array(z.string()),
 });
 
-export const projectUpdateSchema = projectCreateSchema.partial().refine((data) => Object.keys(data).length > 0, {
-  message: 'At least one field must be provided for update',
-});
+export const projectUpdateSchema = projectCreateSchema
+  .partial()
+  .refine((data) => Object.keys(data).length > 0, {
+    message: 'At least one field must be provided for update',
+  });

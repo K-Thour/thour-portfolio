@@ -1,82 +1,148 @@
-import { motion } from "motion/react";
+import React from "react";
 import { Plus, X } from "lucide-react";
-import { useAppSelector } from "../../../../../../hooks/useRedux";
-import type { RootState } from "../../../../../../store/store";
-import type { TechFeaturesStepProps } from "../../types";
+import { useStore } from "@tanstack/react-form";
+import utils from "../../../../../../utils";
+import { projectTechSchema } from "../../../../../../validations/project";
 
-export function TechFeaturesStep({
-  formData,
-  errors,
-  onAddArrayItem,
-  onRemoveArrayItem,
-}: TechFeaturesStepProps) {
-  const { theme } = useAppSelector((state: RootState) => state.theme);
-  const isDark = theme === "dark";
+const { cn } = utils.tailwindUtils;
+
+interface TechFeaturesStepProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  form: any;
+  isDark: boolean;
+}
+
+export const TechFeaturesStep: React.FC<TechFeaturesStepProps> = ({
+  form,
+  isDark,
+}) => {
+  const technologies = useStore(
+    form.store,
+    (state: any) => state.values.technologies || [],
+  );
+  const features = useStore(
+    form.store,
+    (state: any) => state.values.features || [],
+  );
+
+  const handleAddTech = (value: string) => {
+    if (value.trim() && !technologies.includes(value.trim())) {
+      form.setFieldValue("technologies", [...technologies, value.trim()]);
+    }
+  };
+
+  const handleRemoveTech = (index: number) => {
+    form.setFieldValue(
+      "technologies",
+      technologies.filter((_: any, i: number) => i !== index),
+    );
+  };
+
+  const handleAddFeature = (value: string) => {
+    if (value.trim() && !features.includes(value.trim())) {
+      form.setFieldValue("features", [...features, value.trim()]);
+    }
+  };
+
+  const handleRemoveFeature = (index: number) => {
+    form.setFieldValue(
+      "features",
+      features.filter((_: any, i: number) => i !== index),
+    );
+  };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      className="space-y-6"
-    >
+    <div className="space-y-6">
       <div>
-        <label
-          className={`block text-sm font-medium mb-2 ${isDark ? "text-gray-300" : "text-gray-800"}`}
-        >
-          Technologies *
-        </label>
-        <div className="flex gap-2">
-          <input
-            type="text"
-            id="tech-input"
-            className={`flex-1 px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 ${
-              isDark
-                ? "bg-slate-900/50 border-red-500/20 text-white focus:ring-red-500"
-                : "bg-white border-blue-300/50 text-gray-900 focus:ring-blue-500"
-            }`}
-            placeholder="React, TypeScript, etc."
-            onKeyPress={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                const input = e.currentTarget;
-                onAddArrayItem("technologies", input.value);
-                input.value = "";
+        <form.Field
+          name="technologies"
+          validators={{
+            onChange: ({ value }: { value: string[] }) => {
+              try {
+                projectTechSchema.validateSyncAt("technologies", {
+                  technologies: value,
+                });
+                return undefined;
+              } catch (err: any) {
+                return err.message;
               }
-            }}
-          />
-          <button
-            type="button"
-            onClick={() => {
-              const input = document.getElementById(
-                "tech-input",
-              ) as HTMLInputElement;
-              onAddArrayItem("technologies", input.value);
-              input.value = "";
-            }}
-            className={`px-4 py-3 rounded-xl font-medium transition-all ${
-              isDark
-                ? "bg-linear-to-r from-red-600 to-yellow-500 text-white hover:shadow-lg"
-                : "bg-linear-to-r from-blue-600 to-blue-500 text-white hover:shadow-lg"
-            }`}
-          >
-            <Plus className="w-5 h-5" />
-          </button>
-        </div>
-        {errors.technologies && (
-          <p className="text-red-500 text-sm mt-1">{errors.technologies}</p>
-        )}
+            },
+          }}
+        >
+          {(field: any) => (
+            <div>
+              <label
+                className={cn(
+                  "block text-sm font-medium mb-2",
+                  isDark ? "text-gray-300" : "text-gray-800",
+                )}
+              >
+                Technologies <span className="text-red-500">*</span>
+              </label>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  id="tech-input"
+                  className={cn(
+                    "flex-1 px-4 py-3 rounded-xl border bg-transparent focus:outline-none focus:ring-2 focus:ring-red-500 transition-all",
+                    isDark
+                      ? "bg-slate-900/50 border-red-500/20 text-white placeholder:text-gray-500 focus:border-red-500"
+                      : "bg-white border-blue-300/50 text-gray-900 placeholder:text-gray-400 focus:ring-blue-500 focus:ring-blue-500",
+                  )}
+                  placeholder="React, TypeScript, etc."
+                  onKeyPress={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      handleAddTech(e.currentTarget.value);
+                      e.currentTarget.value = "";
+                    }
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    const input = document.getElementById(
+                      "tech-input",
+                    ) as HTMLInputElement;
+                    if (input) {
+                      handleAddTech(input.value);
+                      input.value = "";
+                    }
+                  }}
+                  className={cn(
+                    "px-4 py-3 rounded-xl font-medium transition-all hover:shadow-lg",
+                    isDark
+                      ? "bg-linear-to-r from-red-600 to-yellow-500 text-white"
+                      : "bg-linear-to-r from-blue-600 to-blue-500 text-white",
+                  )}
+                >
+                  <Plus className="w-5 h-5" />
+                </button>
+              </div>
+              {field.state.meta.isTouched &&
+                field.state.meta.errors.length > 0 && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {field.state.meta.errors.join(", ")}
+                  </p>
+                )}
+            </div>
+          )}
+        </form.Field>
         <div className="flex flex-wrap gap-2 mt-3">
-          {formData.technologies.map((tech: string, index: number) => (
+          {technologies.map((tech: string, index: number) => (
             <span
               key={index}
-              className={`px-3 py-1 rounded-full text-sm flex items-center gap-2 ${
-                isDark ? "bg-slate-700 text-white" : "bg-blue-100 text-gray-900"
-              }`}
+              className={cn(
+                "px-3 py-1 rounded-full text-sm flex items-center gap-2",
+                isDark
+                  ? "bg-slate-700 text-white"
+                  : "bg-blue-100 text-gray-900",
+              )}
             >
               {tech}
               <button
                 type="button"
-                onClick={() => onRemoveArrayItem("technologies", index)}
+                onClick={() => handleRemoveTech(index)}
                 className="hover:text-red-500"
               >
                 <X className="w-4 h-4" />
@@ -87,65 +153,95 @@ export function TechFeaturesStep({
       </div>
 
       <div>
-        <label
-          className={`block text-sm font-medium mb-2 ${isDark ? "text-gray-300" : "text-gray-800"}`}
-        >
-          Key Features *
-        </label>
-        <div className="flex gap-2">
-          <input
-            type="text"
-            id="feature-input"
-            className={`flex-1 px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 ${
-              isDark
-                ? "bg-slate-900/50 border-red-500/20 text-white focus:ring-red-500"
-                : "bg-white border-blue-300/50 text-gray-900 focus:ring-blue-500"
-            }`}
-            placeholder="Add a key feature"
-            onKeyPress={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                const input = e.currentTarget;
-                onAddArrayItem("features", input.value);
-                input.value = "";
+        <form.Field
+          name="features"
+          validators={{
+            onChange: ({ value }: { value: string[] }) => {
+              try {
+                projectTechSchema.validateSyncAt("features", {
+                  features: value,
+                });
+                return undefined;
+              } catch (err: any) {
+                return err.message;
               }
-            }}
-          />
-          <button
-            type="button"
-            onClick={() => {
-              const input = document.getElementById(
-                "feature-input",
-              ) as HTMLInputElement;
-              onAddArrayItem("features", input.value);
-              input.value = "";
-            }}
-            className={`px-4 py-3 rounded-xl font-medium transition-all ${
-              isDark
-                ? "bg-linear-to-r from-red-600 to-yellow-500 text-white hover:shadow-lg"
-                : "bg-linear-to-r from-blue-600 to-blue-500 text-white hover:shadow-lg"
-            }`}
-          >
-            <Plus className="w-5 h-5" />
-          </button>
-        </div>
-        {errors.features && (
-          <p className="text-red-500 text-sm mt-1">{errors.features}</p>
-        )}
+            },
+          }}
+        >
+          {(field: any) => (
+            <div>
+              <label
+                className={cn(
+                  "block text-sm font-medium mb-2",
+                  isDark ? "text-gray-300" : "text-gray-800",
+                )}
+              >
+                Key Features <span className="text-red-500">*</span>
+              </label>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  id="feature-input"
+                  className={cn(
+                    "flex-1 px-4 py-3 rounded-xl border bg-transparent focus:outline-none focus:ring-2 focus:ring-red-500 transition-all",
+                    isDark
+                      ? "bg-slate-900/50 border-red-500/20 text-white placeholder:text-gray-500 focus:border-red-500"
+                      : "bg-white border-blue-300/50 text-gray-900 placeholder:text-gray-400 focus:ring-blue-500 focus:ring-blue-500",
+                  )}
+                  placeholder="Add a key feature"
+                  onKeyPress={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      handleAddFeature(e.currentTarget.value);
+                      e.currentTarget.value = "";
+                    }
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    const input = document.getElementById(
+                      "feature-input",
+                    ) as HTMLInputElement;
+                    if (input) {
+                      handleAddFeature(input.value);
+                      input.value = "";
+                    }
+                  }}
+                  className={cn(
+                    "px-4 py-3 rounded-xl font-medium transition-all hover:shadow-lg",
+                    isDark
+                      ? "bg-linear-to-r from-red-600 to-yellow-500 text-white"
+                      : "bg-linear-to-r from-blue-600 to-blue-500 text-white",
+                  )}
+                >
+                  <Plus className="w-5 h-5" />
+                </button>
+              </div>
+              {field.state.meta.isTouched &&
+                field.state.meta.errors.length > 0 && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {field.state.meta.errors.join(", ")}
+                  </p>
+                )}
+            </div>
+          )}
+        </form.Field>
         <div className="space-y-2 mt-3">
-          {formData.features.map((feature: string, index: number) => (
+          {features.map((feature: string, index: number) => (
             <div
               key={index}
-              className={`px-4 py-2 rounded-lg flex items-center justify-between ${
-                isDark ? "bg-slate-700/50" : "bg-blue-50"
-              }`}
+              className={cn(
+                "px-4 py-2 rounded-lg flex items-center justify-between",
+                isDark
+                  ? "bg-slate-700/50 text-white"
+                  : "bg-blue-50 text-gray-900",
+              )}
             >
-              <span className={isDark ? "text-white" : "text-gray-900"}>
-                {feature}
-              </span>
+              <span>{feature}</span>
               <button
                 type="button"
-                onClick={() => onRemoveArrayItem("features", index)}
+                onClick={() => handleRemoveFeature(index)}
                 className="hover:text-red-500"
               >
                 <X className="w-4 h-4" />
@@ -154,6 +250,8 @@ export function TechFeaturesStep({
           ))}
         </div>
       </div>
-    </motion.div>
+    </div>
   );
-}
+};
+
+export default TechFeaturesStep;

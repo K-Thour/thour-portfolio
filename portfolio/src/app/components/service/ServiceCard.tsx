@@ -43,7 +43,18 @@ export function ServiceCard({ service, index, isInView }: ServiceCardProps) {
           }`}
         >
           {typeof Icon === 'string' ? (
-            <img src={Icon} alt={service.title} className="w-7 h-7 object-contain" />
+            Icon.startsWith('http://') ||
+            Icon.startsWith('https://') ||
+            Icon.startsWith('/') ||
+            Icon.startsWith('data:') ? (
+              <img
+                src={Icon}
+                alt={service.title}
+                className="w-7 h-7 object-contain"
+              />
+            ) : (
+              <span className="text-2xl">{Icon}</span>
+            )
           ) : (
             <Icon className="w-7 h-7 text-white" />
           )}

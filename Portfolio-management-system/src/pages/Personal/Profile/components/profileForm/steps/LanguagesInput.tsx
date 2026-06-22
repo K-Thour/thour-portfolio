@@ -1,6 +1,20 @@
+import React from "react";
 import { Plus, X } from "lucide-react";
-import type { LanguagesInputProps } from "../types";
-import type { Language } from "../../../types";
+import { useStore } from "@tanstack/react-form";
+import utils from "../../../../../../utils";
+
+const { cn } = utils.tailwindUtils;
+
+interface LanguagesInputProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  form: any;
+  isDark: boolean;
+}
+
+interface Language {
+  name: string;
+  proficiency: number;
+}
 
 function LanguageItem({
   lang,
@@ -15,34 +29,43 @@ function LanguageItem({
 }) {
   return (
     <div
-      className={`p-3 rounded-lg flex items-center justify-between ${
-        isDark ? "bg-slate-700/50" : "bg-blue-50"
-      }`}
+      className={cn(
+        "p-3 rounded-lg flex items-center justify-between",
+        isDark ? "bg-slate-700/50" : "bg-blue-50",
+      )}
     >
       <div className="flex-1">
         <div className="flex items-center justify-between mb-1">
           <span
-            className={`font-medium ${isDark ? "text-white" : "text-gray-900"}`}
+            className={cn(
+              "font-medium",
+              isDark ? "text-white" : "text-gray-900",
+            )}
           >
             {lang.name}
           </span>
           <span
-            className={`text-sm ${isDark ? "text-gray-400" : "text-gray-600"}`}
+            className={cn(
+              "text-sm",
+              isDark ? "text-gray-400" : "text-gray-600",
+            )}
           >
             {lang.proficiency}%
           </span>
         </div>
         <div
-          className={`h-2 rounded-full overflow-hidden ${
-            isDark ? "bg-slate-900/50" : "bg-gray-200"
-          }`}
+          className={cn(
+            "h-2 rounded-full overflow-hidden",
+            isDark ? "bg-slate-900/50" : "bg-gray-200",
+          )}
         >
           <div
-            className={`h-full transition-all ${
+            className={cn(
+              "h-full transition-all",
               isDark
                 ? "bg-linear-to-r from-red-600 to-yellow-500"
-                : "bg-linear-to-r from-blue-600 to-blue-400"
-            }`}
+                : "bg-linear-to-r from-blue-600 to-blue-400",
+            )}
             style={{ width: `${lang.proficiency}%` }}
           />
         </div>
@@ -58,18 +81,38 @@ function LanguageItem({
   );
 }
 
-export function LanguagesInput({
-  formData,
+export const LanguagesInput: React.FC<LanguagesInputProps> = ({
+  form,
   isDark,
-  onAddLanguage,
-  onRemoveLanguage,
-}: LanguagesInputProps) {
+}) => {
+  const languages = useStore(
+    form.store,
+    (state: any) => state.values.languages || [],
+  );
+
+  const handleAddLanguage = (name: string, proficiency: number) => {
+    if (name.trim()) {
+      form.setFieldValue("languages", [
+        ...languages,
+        { name: name.trim(), proficiency },
+      ]);
+    }
+  };
+
+  const handleRemoveLanguage = (index: number) => {
+    form.setFieldValue(
+      "languages",
+      languages.filter((_: any, i: number) => i !== index),
+    );
+  };
+
   return (
     <div>
       <label
-        className={`block text-sm font-medium mb-2 ${
-          isDark ? "text-gray-300" : "text-gray-800"
-        }`}
+        className={cn(
+          "block text-sm font-medium mb-2",
+          isDark ? "text-gray-300" : "text-gray-800",
+        )}
       >
         Languages
       </label>
@@ -78,11 +121,12 @@ export function LanguagesInput({
           <input
             type="text"
             id="language-name"
-            className={`flex-1 px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 ${
+            className={cn(
+              "flex-1 px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 bg-transparent transition-all",
               isDark
-                ? "bg-slate-900/50 border-red-500/20 text-white focus:ring-red-500"
-                : "bg-white border-blue-300/50 text-gray-900 focus:ring-blue-500"
-            }`}
+                ? "bg-slate-900/50 border-red-500/20 text-white placeholder:text-gray-500 focus:ring-red-500 focus:border-red-500"
+                : "bg-white border-blue-300/50 text-gray-900 placeholder:text-gray-400 focus:ring-blue-500 focus:border-blue-500",
+            )}
             placeholder="Language name (e.g., English)"
           />
           <input
@@ -91,11 +135,12 @@ export function LanguagesInput({
             min="0"
             max="100"
             defaultValue="50"
-            className={`w-24 px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 ${
+            className={cn(
+              "w-24 px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 bg-transparent transition-all",
               isDark
-                ? "bg-slate-900/50 border-red-500/20 text-white focus:ring-red-500"
-                : "bg-white border-blue-300/50 text-gray-900 focus:ring-blue-500"
-            }`}
+                ? "bg-slate-900/50 border-red-500/20 text-white placeholder:text-gray-500 focus:ring-red-500 focus:border-red-500"
+                : "bg-white border-blue-300/50 text-gray-900 placeholder:text-gray-400 focus:ring-blue-500 focus:border-blue-500",
+            )}
             placeholder="%"
           />
           <button
@@ -108,7 +153,7 @@ export function LanguagesInput({
                 "language-level",
               ) as HTMLInputElement;
               if (nameInput && levelInput) {
-                onAddLanguage(
+                handleAddLanguage(
                   nameInput.value,
                   parseInt(levelInput.value) || 50,
                 );
@@ -116,27 +161,30 @@ export function LanguagesInput({
                 levelInput.value = "50";
               }
             }}
-            className={`px-4 py-3 rounded-xl font-medium transition-all ${
+            className={cn(
+              "px-4 py-3 rounded-xl font-medium transition-all hover:shadow-lg",
               isDark
-                ? "bg-linear-to-r from-red-600 to-yellow-500 text-white hover:shadow-lg"
-                : "bg-linear-to-r from-blue-600 to-blue-500 text-white hover:shadow-lg"
-            }`}
+                ? "bg-linear-to-r from-red-600 to-yellow-500 text-white"
+                : "bg-linear-to-r from-blue-600 to-blue-500 text-white",
+            )}
           >
             <Plus className="w-5 h-5" />
           </button>
         </div>
         <div className="space-y-2 mt-3">
-          {formData.languages.map((lang: Language, index: number) => (
+          {languages.map((lang: Language, index: number) => (
             <LanguageItem
               key={index}
               lang={lang}
               index={index}
               isDark={isDark}
-              onRemove={onRemoveLanguage}
+              onRemove={handleRemoveLanguage}
             />
           ))}
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default LanguagesInput;

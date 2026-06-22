@@ -69,7 +69,9 @@ export function Projects() {
               <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
             </div>
           ) : projects.length === 0 ? (
-            <div className="text-center py-20 text-slate-500">No projects found.</div>
+            <div className="text-center py-20 text-slate-500">
+              No projects found.
+            </div>
           ) : (
             <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
               {projects.map((project, index) => (

@@ -19,7 +19,9 @@ export function ContactsGrid({
         }`}
       >
         <p className="text-lg font-medium mb-2">No contact messages yet</p>
-        <p className="text-sm">Messages sent from the portfolio contact form will appear here</p>
+        <p className="text-sm">
+          Messages sent from the portfolio contact form will appear here
+        </p>
       </div>
     );
   }

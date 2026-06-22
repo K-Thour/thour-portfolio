@@ -158,8 +158,18 @@ const contactRoutes = express.Router();
  *         description: Not found
  */
 
-contactRoutes.post('/create', authMiddleware, validate(contactCreateSchema), controllers.contactControllers.create);
-contactRoutes.patch('/update/:id', authMiddleware, validate(contactUpdateSchema), controllers.contactControllers.update);
+contactRoutes.post(
+  '/create',
+  authMiddleware,
+  validate(contactCreateSchema),
+  controllers.contactControllers.create,
+);
+contactRoutes.patch(
+  '/update/:id',
+  authMiddleware,
+  validate(contactUpdateSchema),
+  controllers.contactControllers.update,
+);
 contactRoutes.delete('/soft-delete/:id', authMiddleware, controllers.contactControllers.softDelete);
 contactRoutes.delete('/delete/:id', authMiddleware, controllers.contactControllers.deleteOne);
 contactRoutes.get('/active', controllers.contactControllers.getActive);

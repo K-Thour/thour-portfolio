@@ -24,7 +24,9 @@ export function EducationTimeline({
         )}
       >
         <p className="text-lg font-medium mb-2">No education records yet</p>
-        <p className="text-sm">Start by adding your first education history item</p>
+        <p className="text-sm">
+          Start by adding your first education history item
+        </p>
       </div>
     );
   }

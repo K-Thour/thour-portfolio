@@ -1,21 +1,24 @@
 import { motion } from 'motion/react';
 import { useInView } from 'motion/react';
 import { useRef, useEffect, useState } from 'react';
-import { Coffee, GitBranch, Users, Zap, Briefcase, CheckCircle, Code } from 'lucide-react';
+import {
+  Coffee,
+  GitBranch,
+  Users,
+  Zap,
+  Briefcase,
+  CheckCircle,
+  Code,
+} from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
-import { fetchPublicUser } from '../../services/api';
+import { useUser } from '../context/UserContext';
 
 export function Stats() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.5 });
   const { theme } = useTheme();
   const isDark = theme === 'avengers';
-
-  const [userData, setUserData] = useState<any>(null);
-
-  useEffect(() => {
-    fetchPublicUser().then((data) => setUserData(data)).catch(console.error);
-  }, []);
+  const { userData } = useUser();
 
   const stats = [
     {
@@ -24,9 +27,24 @@ export function Stats() {
       suffix: '+',
       label: 'Years Experience',
     },
-    { icon: CheckCircle, value: userData?.completedProjects || 50, suffix: '+', label: 'Completed Projects' },
-    { icon: Users, value: userData?.happyClients || 30, suffix: '+', label: 'Happy Clients' },
-    { icon: Code, value: userData?.solvedProblems || 200, suffix: '+', label: 'Solved Problems' },
+    {
+      icon: CheckCircle,
+      value: userData?.completedProjects || 50,
+      suffix: '+',
+      label: 'Completed Projects',
+    },
+    {
+      icon: Users,
+      value: userData?.happyClients || 30,
+      suffix: '+',
+      label: 'Happy Clients',
+    },
+    {
+      icon: Code,
+      value: userData?.solvedProblems || 200,
+      suffix: '+',
+      label: 'Solved Problems',
+    },
   ];
 
   return (
