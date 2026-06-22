@@ -8,34 +8,69 @@ export function useResumePage() {
 
   const handleSubmit = async (data: ResumeFormData) => {
     console.log("Submitting resume:", data);
-    toast({
-      title: "Resume Generation Started",
-      description:
-        "Your resume is being generated. You'll be notified when it's ready.",
-      variant: "success",
-      duration: 3000,
-    });
-    handlers.handleCloseModal();
+    try {
+      toast({
+        title: "Resume Generation Started",
+        description: "Your resume is being generated via AI...",
+        variant: "default",
+        duration: 3000,
+      });
+      await handlers.handleSubmit();
+      toast({
+        title: "Resume Generated",
+        description: "Successfully generated resume with AI.",
+        variant: "success",
+        duration: 3000,
+      });
+    } catch (err) {
+      console.error("Failed to generate resume:", err);
+      toast({
+        title: "Generation Failed",
+        description: "Error generating resume. Check console.",
+        variant: "destructive",
+        duration: 3000,
+      });
+    }
   };
 
-  const handleDelete = (id: string) => {
-    handlers.handleDelete(id);
-    toast({
-      title: "Resume Deleted",
-      description: "The resume has been removed from your collection.",
-      variant: "warning",
-      duration: 3000,
-    });
+  const handleDelete = async (id: string) => {
+    try {
+      await handlers.handleDelete(id);
+      toast({
+        title: "Resume Deleted",
+        description: "The resume has been removed from your collection.",
+        variant: "warning",
+        duration: 3000,
+      });
+    } catch (err) {
+      console.error("Failed to delete resume:", err);
+      toast({
+        title: "Delete Failed",
+        description: "Error deleting resume. Check console.",
+        variant: "destructive",
+        duration: 3000,
+      });
+    }
   };
 
   const handleDownload = (resume: Resume) => {
-    handlers.handleDownload(resume);
-    toast({
-      title: "Download Started",
-      description: "Your resume is being downloaded.",
-      variant: "success",
-      duration: 2000,
-    });
+    try {
+      handlers.handleDownload(resume);
+      toast({
+        title: "Download Started",
+        description: "Your resume is being downloaded.",
+        variant: "success",
+        duration: 2000,
+      });
+    } catch (err) {
+      console.error("Failed to download resume:", err);
+      toast({
+        title: "Download Failed",
+        description: "Error downloading resume.",
+        variant: "destructive",
+        duration: 2000,
+      });
+    }
   };
 
   return {

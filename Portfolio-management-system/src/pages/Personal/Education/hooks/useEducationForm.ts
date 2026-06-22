@@ -20,16 +20,17 @@ export function useEducationForm(initialData?: Education | null) {
     Partial<Record<keyof EducationFormData, string>>
   >({});
   const [formData, setFormData] = useState<EducationFormData>({
+    level: (initialData as any)?.level || "graduation",
     degree: initialData?.degree || "",
     institution: initialData?.institution || "",
-    location: (initialData as Partial<EducationFormData>)?.location || "",
     startDate,
     endDate,
     current,
+    gradeType: (initialData as any)?.gradeType || "cgpa",
     grade: initialData?.grade || "",
     description: initialData?.description || "",
     achievements:
-      (initialData as Partial<EducationFormData>)?.achievements || [],
+      (initialData as any)?.achievements || [],
   });
 
   const validateStep = (step: number) => {
@@ -37,11 +38,12 @@ export function useEducationForm(initialData?: Education | null) {
 
     switch (step) {
       case 1:
+        if (!formData.level) {
+          (newErrors as any).level = "Education level is required";
+        }
         if (!formData.degree.trim()) newErrors.degree = "Degree is required";
         if (!formData.institution.trim())
           newErrors.institution = "Institution is required";
-        if (!formData.location.trim())
-          newErrors.location = "Location is required";
         break;
       case 2:
         if (!formData.startDate) {

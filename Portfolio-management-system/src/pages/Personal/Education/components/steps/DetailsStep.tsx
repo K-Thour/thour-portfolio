@@ -77,19 +77,36 @@ export function DetailsStep({
           I currently study here
         </label>
       </div>
-      <div>
-        <label
-          className={`block text-sm font-medium mb-2 ${isDark ? "text-gray-300" : "text-gray-800"}`}
-        >
-          Grade/GPA
-        </label>
-        <input
-          type="text"
-          value={formData.grade}
-          onChange={(e) => onUpdate("grade", e.target.value)}
-          className={baseInput(isDark)}
-          placeholder="4.0 GPA"
-        />
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label
+            className={`block text-sm font-medium mb-2 ${isDark ? "text-gray-300" : "text-gray-800"}`}
+          >
+            Grade Type *
+          </label>
+          <select
+            value={formData.gradeType || "cgpa"}
+            onChange={(e) => onUpdate("gradeType", e.target.value)}
+            className={baseInput(isDark)}
+          >
+            <option value="cgpa">CGPA</option>
+            <option value="%">Percentage (%)</option>
+          </select>
+        </div>
+        <div>
+          <label
+            className={`block text-sm font-medium mb-2 ${isDark ? "text-gray-300" : "text-gray-800"}`}
+          >
+            Grade/GPA
+          </label>
+          <input
+            type="text"
+            value={formData.grade}
+            onChange={(e) => onUpdate("grade", e.target.value)}
+            className={baseInput(isDark)}
+            placeholder="4.0 GPA"
+          />
+        </div>
       </div>
       <div>
         <label

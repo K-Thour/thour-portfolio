@@ -8,8 +8,54 @@ import { Types } from 'mongoose';
 import { IProjectRepoParams } from '../interface/models/project/projectRepo.interface';
 import { uploadBase64ImagesInObject, deleteFromCloudinary } from '../utils/cloudinary.utils';
 
+const resolveRefs = async (data: any) => {
+  if (data.category && typeof data.category === 'string' && !Types.ObjectId.isValid(data.category)) {
+    let service = await models.service.repo.getOne({
+      filter: [{ name: { $regex: new RegExp(`^${data.category}$`, 'i') } as any }],
+    });
+    if (!service) {
+      service = await models.service.repo.create({
+        name: data.category,
+        decription: `${data.category} services`,
+        technologies: [],
+        iconUrl: { publicId: 'service', url: 'https://placehold.co/100' },
+        mainImageUrl: { publicId: 'service', url: 'https://placehold.co/600' },
+        imagesUrl: [],
+      }, new Types.ObjectId('60d5ec4934d47d2b2c8b4567'));
+    }
+    data.category = service._id;
+  }
+
+  if (data.techStack && Array.isArray(data.techStack)) {
+    const resolvedIds: Types.ObjectId[] = [];
+    for (const item of data.techStack) {
+      if (typeof item === 'string') {
+        if (Types.ObjectId.isValid(item)) {
+          resolvedIds.push(new Types.ObjectId(item));
+        } else {
+          let tech = await models.technology.repo.getOne({
+            filter: [{ name: { $regex: new RegExp(`^${item}$`, 'i') } as any }],
+          });
+          if (!tech) {
+            tech = await models.technology.repo.create({
+              name: item,
+              description: `${item} technology`,
+              category: 'Development',
+              iconUrl: { publicId: 'tech', url: 'https://placehold.co/100' },
+              isActive: true,
+            }, new Types.ObjectId('60d5ec4934d47d2b2c8b4567'));
+          }
+          resolvedIds.push(tech._id);
+        }
+      }
+    }
+    data.techStack = resolvedIds;
+  }
+};
+
 const createService = (data: createProjectInput, createdBy: Types.ObjectId) => {
   return asyncCommonWrapper(async () => {
+    await resolveRefs(data);
     await uploadBase64ImagesInObject(data, 'projects');
     const result = await models.project.repo.create(data, createdBy);
     return commonResponse.success(
@@ -23,6 +69,7 @@ const createService = (data: createProjectInput, createdBy: Types.ObjectId) => {
 
 const updateService = (id: string, data: Partial<IProjectModel>, updatedBy: Types.ObjectId) => {
   return asyncCommonWrapper(async () => {
+    await resolveRefs(data);
     const currentProject = await models.project.repo.getOne({
       filter: [{ _id: new Types.ObjectId(id) }],
     });

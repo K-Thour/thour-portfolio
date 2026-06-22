@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import type { ProfileData } from "../types";
 import { fetchCurrentUser, updateCurrentUser } from "../../../../services/api";
+import { useToast } from "../../../../hooks/useToast";
 
 const defaultProfileData: ProfileData = {
   name: "",
@@ -19,6 +20,7 @@ const defaultProfileData: ProfileData = {
 };
 
 export function useProfile() {
+  const { toast } = useToast();
   const [profileData, setProfileData] =
     useState<ProfileData>(defaultProfileData);
   const [loading, setLoading] = useState(false);
@@ -108,10 +110,22 @@ export function useProfile() {
 
     try {
       await updateCurrentUser(payload);
+      toast({
+        title: "Profile Updated",
+        description: "Successfully updated profile information.",
+        variant: "success",
+        duration: 3000,
+      });
       await loadProfile();
       setIsModalOpen(false);
     } catch (err) {
       console.error("Failed to update profile:", err);
+      toast({
+        title: "Update Failed",
+        description: "Error updating profile details. Check console.",
+        variant: "destructive",
+        duration: 3000,
+      });
     }
   };
 

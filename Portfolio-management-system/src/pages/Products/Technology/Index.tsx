@@ -11,8 +11,10 @@ import {
   updateTechnology,
   deleteTechnology,
 } from "../../../services/api";
+import { useToast } from "../../../hooks/useToast";
 
 export function Technologies() {
+  const { toast } = useToast();
   const [technologies, setTechnologies] = useState<Technology[]>([]);
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -27,15 +29,19 @@ export function Technologies() {
     setLoading(true);
     try {
       const list = await fetchTechnologies();
-      const mappedList = list.map((e: any) => ({
-        id: e._id,
-        name: e.name || "",
-        category: e.category || "",
-        icon: e.iconUrl?.url || "",
-        iconType: "url",
-        iconUrl: e.iconUrl?.url || "",
-        proficiency: 80,
-      }));
+      const mappedList = list.map((e: any) => {
+        const isUrl = /^https?:\/\/.+/.test(e.iconUrl?.url || "");
+        return {
+          id: e._id,
+          name: e.name || "",
+          category: e.category || "",
+          icon: e.iconUrl?.url || "",
+          iconType: isUrl ? ("image" as const) : ("emoji" as const),
+          iconUrl: isUrl ? e.iconUrl?.url : "",
+          iconImage: isUrl ? e.iconUrl?.url : "",
+          proficiency: 80,
+        };
+      });
       setTechnologies(mappedList);
     } catch (err) {
       console.error("Failed to load technologies:", err);
@@ -59,13 +65,22 @@ export function Technologies() {
   };
 
   const handleSubmit = async (data: Omit<Technology, "id">) => {
+    let finalUrl = "https://placehold.co/100";
+    if (data.iconType === "image") {
+      finalUrl = data.iconImage || "https://placehold.co/100";
+    } else if (data.iconType === "url") {
+      finalUrl = data.iconUrl || "https://placehold.co/100";
+    } else {
+      finalUrl = data.icon || "⚛️";
+    }
+
     const payload = {
       name: data.name,
       description: data.name, // description is required in backend validations
       category: data.category,
       iconUrl: {
         publicId: "tech",
-        url: data.iconUrl || data.icon || "https://placehold.co/100",
+        url: finalUrl,
       },
       isActive: true,
     };
@@ -73,14 +88,32 @@ export function Technologies() {
     try {
       if (editingTech) {
         await updateTechnology(editingTech.id.toString(), payload);
+        toast({
+          title: "Technology Updated",
+          description: `Successfully updated ${data.name}`,
+          variant: "success",
+          duration: 3000,
+        });
       } else {
         await createTechnology(payload);
+        toast({
+          title: "Technology Created",
+          description: `Successfully created ${data.name}`,
+          variant: "success",
+          duration: 3000,
+        });
       }
       await loadTechnologies();
       setIsModalOpen(false);
       setEditingTech(undefined);
     } catch (err) {
       console.error("Failed to save technology:", err);
+      toast({
+        title: "Save Failed",
+        description: "Error saving technology. Check console.",
+        variant: "destructive",
+        duration: 3000,
+      });
     }
   };
 
@@ -92,9 +125,21 @@ export function Technologies() {
     if (deleteId) {
       try {
         await deleteTechnology(deleteId.toString());
+        toast({
+          title: "Technology Deleted",
+          description: "Successfully deleted technology record.",
+          variant: "warning",
+          duration: 3000,
+        });
         await loadTechnologies();
       } catch (err) {
         console.error("Failed to delete technology:", err);
+        toast({
+          title: "Delete Failed",
+          description: "Error deleting technology. Check console.",
+          variant: "destructive",
+          duration: 3000,
+        });
       }
     }
     setDeleteId(undefined);

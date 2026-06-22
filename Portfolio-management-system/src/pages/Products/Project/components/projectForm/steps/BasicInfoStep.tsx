@@ -13,11 +13,13 @@ interface BasicInfoStepProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   form: any;
   isDark: boolean;
+  services?: any[];
 }
 
 export const BasicInfoStep: React.FC<BasicInfoStepProps> = ({
   form,
   isDark,
+  services = [],
 }) => {
   const [cropperOpen, setCropperOpen] = useState(false);
   const [srcImage, setSrcImage] = useState("");
@@ -187,11 +189,21 @@ export const BasicInfoStep: React.FC<BasicInfoStepProps> = ({
               )}
             >
               <option value="">Select a category</option>
-              <option value="AI & Automation">AI & Automation</option>
-              <option value="Web Application">Web Application</option>
-              <option value="Mobile App">Mobile App</option>
-              <option value="DevOps & Monitoring">DevOps & Monitoring</option>
-              <option value="E-commerce">E-commerce</option>
+              {services && services.length > 0 ? (
+                services.map((s: any) => (
+                  <option key={s._id} value={s._id}>
+                    {s.name}
+                  </option>
+                ))
+              ) : (
+                <>
+                  <option value="AI & Automation">AI & Automation</option>
+                  <option value="Web Application">Web Application</option>
+                  <option value="Mobile App">Mobile App</option>
+                  <option value="DevOps & Monitoring">DevOps & Monitoring</option>
+                  <option value="E-commerce">E-commerce</option>
+                </>
+              )}
             </select>
             {field.state.meta.isTouched &&
               field.state.meta.errors.length > 0 && (

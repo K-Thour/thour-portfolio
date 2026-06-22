@@ -44,6 +44,8 @@ export const ExperiencePage: React.FC = () => {
           : null,
         isCurrent: e.stillWorking || false,
         achievements: e.description ? e.description.split("\n") : [],
+        features: e.description ? e.description.split("\n") : [],
+        description: e.description || "",
       }));
       setExperiences(mappedList);
     } catch (err) {
@@ -78,9 +80,9 @@ export const ExperiencePage: React.FC = () => {
       position: data.jobTitle,
       field: data.location,
       projectsCompleted: [],
-      description: data.features
-        .filter((f): f is string => f !== undefined)
-        .join("\n"),
+      description: (data.features && data.features.length > 0)
+        ? data.features.filter((f): f is string => f !== undefined).join("\n")
+        : data.description || "Experience description",
       dateOfJoining: new Date(data.startDate).toISOString(),
       dateOfLeaving: data.isCurrent
         ? undefined

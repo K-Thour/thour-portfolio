@@ -2,8 +2,10 @@ import { useState, useEffect, useCallback } from "react";
 import type { Lead, LeadStatus } from "../types";
 import { useFilters } from "./useFilters";
 import { fetchLeads, updateLead } from "../../../../services/api";
+import { useToast } from "../../../../hooks/useToast";
 
 export function useLeads() {
+  const { toast } = useToast();
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(false);
   const [viewingLead, setViewingLead] = useState<Lead | null>(null);
@@ -79,6 +81,12 @@ export function useLeads() {
   ) => {
     try {
       await updateLead(leadId.toString(), { status: newStatus });
+      toast({
+        title: "Lead Status Updated",
+        description: `Successfully updated lead status to ${newStatus}`,
+        variant: "success",
+        duration: 3000,
+      });
       await loadLeads();
 
       // Update local viewing lead if it matches
@@ -91,6 +99,12 @@ export function useLeads() {
       );
     } catch (err) {
       console.error("Failed to update lead status:", err);
+      toast({
+        title: "Update Failed",
+        description: "Error updating lead status. Check console.",
+        variant: "destructive",
+        duration: 3000,
+      });
     }
   };
 

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { useForm } from "@tanstack/react-form";
 import { FileText, Cpu, Link2, Info } from "lucide-react";
@@ -18,6 +18,7 @@ import { BasicInfoStep } from "./projectForm/steps/BasicInfoStep";
 import { DescriptionStep } from "./projectForm/steps/DescriptionStep";
 import { TechFeaturesStep } from "./projectForm/steps/TechFeaturesStep";
 import { LinksStep } from "./projectForm/steps/LinksStep";
+import { fetchServices } from "../../../../services/api";
 
 const { cn } = utils.tailwindUtils;
 
@@ -115,6 +116,21 @@ export const ProjectFormWizard: React.FC<ProjectFormWizardProps> = ({
       handleClose(onClose);
     },
   });
+
+  const [services, setServices] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const loadServices = async () => {
+      try {
+        const data = await fetchServices();
+        setServices(data || []);
+      } catch (err) {
+        console.error("Failed to fetch services in ProjectFormWizard:", err);
+      }
+    };
+    loadServices();
+  }, [isOpen]);
 
   // 💾 Auto-save form values to localStorage on every change (add-mode only)
   useEffect(() => {
@@ -238,7 +254,9 @@ export const ProjectFormWizard: React.FC<ProjectFormWizardProps> = ({
           onStepClick={handleStepClick}
         />
         <div className="px-6 py-6 overflow-y-auto flex-1">
-          {currentStep === 1 && <BasicInfoStep form={form} isDark={isDark} />}
+          {currentStep === 1 && (
+            <BasicInfoStep form={form} isDark={isDark} services={services} />
+          )}
           {currentStep === 2 && <DescriptionStep form={form} isDark={isDark} />}
           {currentStep === 3 && (
             <TechFeaturesStep form={form} isDark={isDark} />

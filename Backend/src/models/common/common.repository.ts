@@ -21,7 +21,11 @@ const findOne = async <T>(query: Query<T[], T>): Promise<T | null> => {
 };
 
 const create = async <T>(data: Partial<T>, model: Model<T>): Promise<T> => {
-  return model.create(data) as unknown as T;
+  const payload = { ...data } as any;
+  if (payload.createdBy && !payload.updatedBy) {
+    payload.updatedBy = payload.createdBy;
+  }
+  return model.create(payload) as unknown as T;
 };
 
 const commonRepository = {

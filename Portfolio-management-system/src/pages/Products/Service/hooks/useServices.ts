@@ -6,8 +6,10 @@ import {
   updateService,
   deleteService,
 } from "../../../../services/api";
+import { useToast } from "../../../../hooks/useToast";
 
 export function useServices() {
+  const { toast } = useToast();
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -78,14 +80,32 @@ export function useServices() {
     try {
       if (editingService) {
         await updateService(editingService.id.toString(), payload);
+        toast({
+          title: "Service Updated",
+          description: `Successfully updated ${data.title}`,
+          variant: "success",
+          duration: 3000,
+        });
       } else {
         await createService(payload);
+        toast({
+          title: "Service Created",
+          description: `Successfully created ${data.title}`,
+          variant: "success",
+          duration: 3000,
+        });
       }
       await loadServices();
       setIsModalOpen(false);
       setEditingService(null);
     } catch (err) {
       console.error("Failed to save service:", err);
+      toast({
+        title: "Save Failed",
+        description: "Error saving service. Check console.",
+        variant: "destructive",
+        duration: 3000,
+      });
     }
   };
 
@@ -98,11 +118,23 @@ export function useServices() {
     if (deletingId) {
       try {
         await deleteService(deletingId.toString());
+        toast({
+          title: "Service Deleted",
+          description: "Successfully deleted service record.",
+          variant: "warning",
+          duration: 3000,
+        });
         await loadServices();
         setIsDeleteDialogOpen(false);
         setDeletingId(null);
       } catch (err) {
         console.error("Failed to delete service:", err);
+        toast({
+          title: "Delete Failed",
+          description: "Error deleting service. Check console.",
+          variant: "destructive",
+          duration: 3000,
+        });
       }
     }
   };

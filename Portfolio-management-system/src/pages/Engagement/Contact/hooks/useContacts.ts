@@ -6,8 +6,10 @@ import {
   updateContact,
   deleteContact,
 } from "../../../../services/api";
+import { useToast } from "../../../../hooks/useToast";
 
 export function useContacts() {
+  const { toast } = useToast();
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -61,17 +63,35 @@ export function useContacts() {
       try {
         if (editingContact) {
           await updateContact(editingContact.id.toString(), data);
+          toast({
+            title: "Contact Updated",
+            description: "Successfully updated contact information.",
+            variant: "success",
+            duration: 3000,
+          });
         } else {
           await createContact(data);
+          toast({
+            title: "Contact Added",
+            description: "Successfully added new contact information.",
+            variant: "success",
+            duration: 3000,
+          });
         }
         await loadContacts();
         setIsModalOpen(false);
         setEditingContact(null);
       } catch (err) {
         console.error("Failed to save contact:", err);
+        toast({
+          title: "Save Failed",
+          description: "Error saving contact. Check console.",
+          variant: "destructive",
+          duration: 3000,
+        });
       }
     },
-    [editingContact, loadContacts],
+    [editingContact, loadContacts, toast],
   );
 
   const handleDeleteClick = useCallback((id: string | number) => {
@@ -83,14 +103,26 @@ export function useContacts() {
     if (deletingId) {
       try {
         await deleteContact(deletingId.toString());
+        toast({
+          title: "Contact Deleted",
+          description: "Successfully deleted contact record.",
+          variant: "warning",
+          duration: 3000,
+        });
         await loadContacts();
         setIsDeleteDialogOpen(false);
         setDeletingId(null);
       } catch (err) {
         console.error("Failed to delete contact:", err);
+        toast({
+          title: "Delete Failed",
+          description: "Error deleting contact. Check console.",
+          variant: "destructive",
+          duration: 3000,
+        });
       }
     }
-  }, [deletingId, loadContacts]);
+  }, [deletingId, loadContacts, toast]);
 
   const handleDeleteCancel = useCallback(() => {
     setIsDeleteDialogOpen(false);
@@ -107,12 +139,24 @@ export function useContacts() {
           .filter((c) => c.id !== id && c.isActive)
           .map((c) => updateContact(c.id.toString(), { isActive: false }));
         await Promise.all(updates);
+        toast({
+          title: "Active Contact Set",
+          description: "Successfully set active contact record.",
+          variant: "success",
+          duration: 3000,
+        });
         await loadContacts();
       } catch (err) {
         console.error("Failed to set active contact:", err);
+        toast({
+          title: "Action Failed",
+          description: "Error setting active contact record.",
+          variant: "destructive",
+          duration: 3000,
+        });
       }
     },
-    [contacts, loadContacts],
+    [contacts, loadContacts, toast],
   );
 
   const handleCloseModal = useCallback(() => {

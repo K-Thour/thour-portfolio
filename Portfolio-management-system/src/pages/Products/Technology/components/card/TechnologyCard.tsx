@@ -35,11 +35,19 @@ export function TechnologyCard({
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
           <div
-            className={`w-12 h-12 rounded-xl flex items-center justify-center text-2xl ${
+            className={`w-12 h-12 rounded-xl flex items-center justify-center text-2xl overflow-hidden ${
               isDark ? "bg-slate-900/50" : "bg-blue-50"
             }`}
           >
-            {tech.icon}
+            {tech.icon && (/^https?:\/\/.+/.test(tech.icon) || tech.icon.includes("/")) ? (
+              <img
+                src={tech.icon}
+                alt={tech.name}
+                className="w-8 h-8 object-contain"
+              />
+            ) : (
+              tech.icon
+            )}
           </div>
           <div>
             <h3

@@ -24,6 +24,29 @@ export function BasicInfoStep({
         <label
           className={`block text-sm font-medium mb-2 ${isDark ? "text-gray-300" : "text-gray-800"}`}
         >
+          Education Level *
+        </label>
+        <select
+          value={formData.level || "graduation"}
+          onChange={(e) => onUpdate("level", e.target.value)}
+          className={`w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 ${
+            isDark
+              ? "bg-slate-900/50 border-red-500/20 text-white focus:ring-red-500"
+              : "bg-white border-blue-300/50 text-gray-900 focus:ring-blue-500"
+          }`}
+        >
+          <option value="matriculation">Matriculation (10th Grade)</option>
+          <option value="seniorSecondary">Senior Secondary (12th Grade)</option>
+          <option value="graduation">Graduation (Bachelor's)</option>
+          <option value="postGraduation">Post Graduation (Master's)</option>
+          <option value="doctorate">Doctorate (Ph.D)</option>
+        </select>
+      </div>
+
+      <div>
+        <label
+          className={`block text-sm font-medium mb-2 ${isDark ? "text-gray-300" : "text-gray-800"}`}
+        >
           Degree *
         </label>
         <input
@@ -61,28 +84,6 @@ export function BasicInfoStep({
         />
         {errors.institution && (
           <p className="text-red-500 text-sm mt-1">{errors.institution}</p>
-        )}
-      </div>
-
-      <div>
-        <label
-          className={`block text-sm font-medium mb-2 ${isDark ? "text-gray-300" : "text-gray-800"}`}
-        >
-          Location *
-        </label>
-        <input
-          type="text"
-          value={formData.location}
-          onChange={(e) => onUpdate("location", e.target.value)}
-          className={`w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 ${
-            isDark
-              ? "bg-slate-900/50 border-red-500/20 text-white focus:ring-red-500"
-              : "bg-white border-blue-300/50 text-gray-900 focus:ring-blue-500"
-          } ${errors.location ? "border-red-500" : ""}`}
-          placeholder="Stanford, CA"
-        />
-        {errors.location && (
-          <p className="text-red-500 text-sm mt-1">{errors.location}</p>
         )}
       </div>
     </motion.div>

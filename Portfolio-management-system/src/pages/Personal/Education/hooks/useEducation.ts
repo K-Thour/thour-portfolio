@@ -6,8 +6,10 @@ import {
   updateEducation,
   deleteEducation,
 } from "../../../../services/api";
+import { useToast } from "../../../../hooks/useToast";
 
 export function useEducation() {
+  const { toast } = useToast();
   const [educationList, setEducationList] = useState<Education[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingEducation, setEditingEducation] = useState<Education | null>(
@@ -72,14 +74,14 @@ export function useEducation() {
   const handleSubmit = async (data: EducationFormData) => {
     // Map frontend fields to backend validation schema
     const payload = {
-      level: (data as any).level || "undergraduate",
+      level: data.level,
       degree: data.degree,
-      field_of_study: (data as any).field_of_study || data.degree,
+      field_of_study: data.degree,
       institution: data.institution,
       startYear: new Date(data.startDate).toISOString(),
       endYear: data.current ? "pursuing" : new Date(data.endDate).toISOString(),
       isPursuing: data.current,
-      gradeType: (data as any).gradeType || "cgpa",
+      gradeType: data.gradeType,
       grade: data.grade,
       description: data.description || "Education details",
     };
@@ -87,14 +89,32 @@ export function useEducation() {
     try {
       if (editingEducation) {
         await updateEducation(editingEducation.id.toString(), payload);
+        toast({
+          title: "Education Updated",
+          description: `Successfully updated ${data.degree} at ${data.institution}`,
+          variant: "success",
+          duration: 3000,
+        });
       } else {
         await createEducation(payload);
+        toast({
+          title: "Education Added",
+          description: `Successfully added ${data.degree} at ${data.institution}`,
+          variant: "success",
+          duration: 3000,
+        });
       }
       await loadEducation();
       setIsModalOpen(false);
       setEditingEducation(null);
     } catch (err) {
       console.error("Failed to save education:", err);
+      toast({
+        title: "Error",
+        description: "Failed to save education records.",
+        variant: "destructive",
+        duration: 3000,
+      });
     }
   };
 
@@ -110,8 +130,20 @@ export function useEducation() {
         setEducationList(educationList.filter((e) => e.id !== deletingId));
         setIsDeleteDialogOpen(false);
         setDeletingId(null);
+        toast({
+          title: "Education Deleted",
+          description: "Successfully deleted education record.",
+          variant: "warning",
+          duration: 3000,
+        });
       } catch (err) {
         console.error("Failed to delete education:", err);
+        toast({
+          title: "Error",
+          description: "Failed to delete education record.",
+          variant: "destructive",
+          duration: 3000,
+        });
       }
     }
   };

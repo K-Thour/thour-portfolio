@@ -25,10 +25,18 @@ export function useProjects() {
     try {
       const data = await fetchProjects();
       const mappedData = data.map((p: any) => ({
-        ...p,
         id: p._id,
-        liveUrl: p.workingUrl,
-        githubUrl: p.githubUrl,
+        title: p.title || "",
+        subtitle: p.device || "web",
+        category: p.category?._id || p.category || "",
+        description: p.description || "",
+        longDescription: p.fullDescription || "",
+        image: p.image?.url || "",
+        technologies: p.techStack?.map((t: any) => t.name || t) || [],
+        features: p.features || [],
+        github: p.githubUrl || "",
+        liveUrl: p.workingUrl || "",
+        status: p.isActive ? "Completed" : "In Progress",
       }));
       setProjects(mappedData);
     } catch (error) {
@@ -49,11 +57,49 @@ export function useProjects() {
   };
 
   const handleSubmit = async (data: any) => {
+    const normalizedDevice = ["web", "mobile", "desktop"].includes((data.subtitle || "").toLowerCase())
+      ? (data.subtitle || "").toLowerCase()
+      : "web";
+
+    const payload = {
+      title: data.title,
+      category: data.category,
+      description: data.description,
+      image: {
+        publicId: "project-main",
+        url: data.image || "https://placehold.co/600",
+      },
+      device: normalizedDevice,
+      year: new Date().getFullYear(),
+      client: "Personal",
+      fullDescription: data.longDescription || data.description,
+      role: "Developer",
+      outcome: "Completed successfully",
+      workingUrl: data.liveUrl || "https://example.com",
+      githubUrl: data.github || "https://github.com",
+      screenshots: [],
+      projectMetric: [],
+      projectTestimonial: [],
+      techStack: data.technologies || [],
+    };
+
     try {
       if (editingProject) {
-        await updateProject(editingProject.id, data);
+        await updateProject(editingProject.id, payload);
+        toast({
+          title: "Project Updated",
+          description: `Successfully updated ${data.title}`,
+          variant: "success",
+          duration: 3000,
+        });
       } else {
-        await createProject(data);
+        await createProject(payload);
+        toast({
+          title: "Project Created",
+          description: `Successfully created ${data.title}`,
+          variant: "success",
+          duration: 3000,
+        });
       }
       await loadProjects(); // Refresh data
       setIsModalOpen(false);
@@ -64,6 +110,7 @@ export function useProjects() {
         title: "Save Failed",
         description: "Error saving project. Check console.",
         variant: "destructive",
+        duration: 3000,
       });
     }
   };
@@ -77,9 +124,21 @@ export function useProjects() {
     if (deletingId) {
       try {
         await deleteProject(deletingId.toString());
+        toast({
+          title: "Project Deleted",
+          description: "Successfully deleted project record.",
+          variant: "warning",
+          duration: 3000,
+        });
         await loadProjects();
       } catch (error) {
         console.error("Failed to delete project", error);
+        toast({
+          title: "Delete Failed",
+          description: "Error deleting project. Check console.",
+          variant: "destructive",
+          duration: 3000,
+        });
       } finally {
         setIsDeleteDialogOpen(false);
         setDeletingId(null);

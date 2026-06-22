@@ -11,7 +11,11 @@ import { IEducationRepoParams } from '../interface/models/education/educationRep
 
 const createService = (data: createEducationInput, createdBy: Types.ObjectId) => {
   return asyncCommonWrapper(async () => {
-    const result = await models.education.repo.create(data, createdBy);
+    const cleanData = { ...data };
+    if (cleanData.endYear === 'pursuing') {
+      delete (cleanData as any).endYear;
+    }
+    const result = await models.education.repo.create(cleanData as any, createdBy);
     return commonResponse.success(
       result,
       MESSAGES_COMMON_UTIL.createdSuccessfully('Education'),
@@ -23,7 +27,11 @@ const createService = (data: createEducationInput, createdBy: Types.ObjectId) =>
 
 const updateService = (id: string, data: Partial<IEducationModel>, updatedBy: Types.ObjectId) => {
   return asyncCommonWrapper(async () => {
-    const result = await models.education.repo.update(id, data, updatedBy);
+    const cleanData = { ...data };
+    if (cleanData.endYear === 'pursuing') {
+      delete cleanData.endYear;
+    }
+    const result = await models.education.repo.update(id, cleanData, updatedBy);
     return commonResponse.success(
       result,
       MESSAGES_COMMON_UTIL.updatedSuccessfully('Education'),

@@ -1,10 +1,11 @@
 export interface EducationFormData {
+  level: string;
   degree: string;
   institution: string;
-  location: string;
   startDate: string;
   endDate: string;
   current: boolean;
+  gradeType: string;
   grade: string;
   description: string;
   achievements: string[];
@@ -23,10 +24,12 @@ export interface EducationFormProps {
 
 export interface Education {
   id: number;
+  level?: string;
   degree: string;
   institution: string;
   period: string;
   description: string;
+  gradeType?: string;
   grade: string;
 }
 
