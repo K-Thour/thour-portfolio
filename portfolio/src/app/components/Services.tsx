@@ -41,7 +41,12 @@ export function Services() {
             icon: s.iconUrl?.url || (fallback ? fallback.icon : Code2),
             title: s.name || (fallback ? fallback.title : ''),
             description: s.decription || (fallback ? fallback.description : ''),
-            features: fallback ? fallback.features : [],
+            features:
+              s.features && s.features.length > 0
+                ? s.features
+                : fallback
+                  ? fallback.features
+                  : [],
             color: isDark
               ? 'from-red-600 to-red-400'
               : 'from-blue-600 to-blue-400',

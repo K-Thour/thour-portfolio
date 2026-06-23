@@ -43,15 +43,35 @@ export function ServiceDetail() {
           setService({
             ...data,
             title: data.name || (fallback ? fallback.title : ''),
-            subtitle: fallback ? fallback.subtitle : '',
+            subtitle: data.subtitle || (fallback ? fallback.subtitle : ''),
             description:
               data.decription || (fallback ? fallback.description : ''),
             image: data.mainImageUrl?.url || (fallback ? fallback.image : ''),
             icon: data.iconUrl?.url || (fallback ? fallback.icon : Code2),
-            features: fallback ? fallback.features : [],
-            capabilities: fallback ? fallback.features : [],
-            technologies: fallback ? fallback.technologies : [],
-            process: fallback ? fallback.process : [],
+            features:
+              data.features && data.features.length > 0
+                ? data.features
+                : fallback
+                  ? fallback.features
+                  : [],
+            capabilities:
+              data.features && data.features.length > 0
+                ? data.features
+                : fallback
+                  ? fallback.features
+                  : [],
+            technologies:
+              data.technologies && data.technologies.length > 0
+                ? data.technologies
+                : fallback
+                  ? fallback.technologies
+                  : [],
+            process:
+              data.process && data.process.length > 0
+                ? data.process
+                : fallback
+                  ? fallback.process
+                  : [],
           });
         })
         .catch(console.error)

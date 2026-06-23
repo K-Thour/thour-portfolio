@@ -21,24 +21,46 @@ export function useServices() {
     setLoading(true);
     try {
       const list = await fetchServices();
-      const mappedList = list.map((e: any) => ({
-        id: e._id,
-        title: e.name || "",
-        subtitle: "",
-        category: "Development",
-        description: e.decription || "",
-        icon: e.iconUrl?.url || "🛠",
-        iconType: "url",
-        iconUrl: e.iconUrl?.url || "",
-        photoUrl: e.mainImageUrl?.url || "",
-        photoType: "url",
-        features: [],
-        benefits: [],
-        pricing: "Custom",
-        duration: "Flexible",
-        deliverables: [],
-        active: e.isActive !== false,
-      }));
+      const mappedList = list.map((e: any) => {
+        let extra: any = {};
+        try {
+          if (e.decription && e.decription.startsWith("{")) {
+            extra = JSON.parse(e.decription);
+          }
+        } catch (err) {
+          console.error("Failed to parse decription JSON:", err);
+        }
+
+        const isEmoji = e.iconUrl?.publicId?.startsWith("emoji:");
+        const emojiVal = isEmoji ? e.iconUrl.publicId.slice(6) : "🛠";
+
+        return {
+          id: e._id,
+          title: e.name || "",
+          subtitle: extra.subtitle || e.name || "",
+          category: extra.category || "Development",
+          description: extra.description || e.decription || "",
+          longDescription: extra.longDescription || e.decription || "",
+          icon: isEmoji ? emojiVal : "🛠",
+          iconType: isEmoji
+            ? ("emoji" as const)
+            : e.iconUrl?.url
+              ? ("url" as const)
+              : ("emoji" as const),
+          iconUrl: isEmoji ? "" : e.iconUrl?.url || "",
+          photoUrl: e.mainImageUrl?.url || "",
+          photoType: "url" as const,
+          features:
+            extra.features && extra.features.length > 0
+              ? extra.features
+              : ["Default Service Feature"],
+          benefits: extra.benefits || [],
+          pricing: extra.pricing || "Custom",
+          duration: extra.duration || "Flexible",
+          deliverables: extra.deliverables || [],
+          active: e.isActive !== false,
+        };
+      });
       setServices(mappedList);
     } catch (err) {
       console.error("Failed to load services:", err);
@@ -62,13 +84,40 @@ export function useServices() {
   };
 
   const handleSubmit = async (data: Omit<Service, "id" | "active">) => {
+    let iconUrl = "https://placehold.co/100";
+    let iconPublicId = "icon";
+    const iconType = data.iconType || "emoji";
+
+    if (iconType === "emoji") {
+      iconPublicId = `emoji:${data.icon || "⚡"}`;
+      iconUrl = "https://placehold.co/100";
+    } else if (iconType === "url") {
+      iconPublicId = "icon_url";
+      iconUrl = data.iconUrl || "https://placehold.co/100";
+    } else if (iconType === "upload") {
+      iconPublicId = "icon_upload";
+      iconUrl = data.iconUrl || "https://placehold.co/100";
+    }
+
+    const extra = {
+      subtitle: data.subtitle,
+      category: data.category,
+      description: data.description,
+      longDescription: data.longDescription,
+      features: data.features,
+      benefits: data.benefits,
+      pricing: data.pricing,
+      duration: data.duration,
+      deliverables: data.deliverables,
+    };
+
     const payload = {
       name: data.title,
-      decription: data.description, // Mongoose schema has decription typo
+      decription: JSON.stringify(extra),
       technologies: [],
       iconUrl: {
-        publicId: "icon",
-        url: data.iconUrl || data.icon || "https://placehold.co/100",
+        publicId: iconPublicId,
+        url: iconUrl,
       },
       mainImageUrl: {
         publicId: "photo",

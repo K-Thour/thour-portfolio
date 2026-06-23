@@ -34,14 +34,39 @@ export const fetchProjectById = async (id: string) => {
   return response.data.data;
 };
 
+const normalizeService = (s: any) => {
+  if (!s) return s;
+  let decription = s.decription || '';
+  let extra: any = {};
+  if (decription && decription.startsWith('{')) {
+    try {
+      extra = JSON.parse(decription);
+      decription = extra.description || extra.longDescription || '';
+    } catch (e) {
+      console.error('Failed to parse decription JSON:', e);
+    }
+  }
+  return {
+    ...s,
+    decription,
+    subtitle: extra.subtitle || '',
+    longDescription: extra.longDescription || '',
+    features: extra.features || [],
+    benefits: extra.benefits || [],
+    pricing: extra.pricing || '',
+    duration: extra.duration || '',
+    deliverables: extra.deliverables || [],
+  };
+};
+
 export const fetchServices = async (params?: any) => {
   const response = await apiClient.get('/service/get', { params });
-  return response.data.data;
+  return (response.data.data || []).map(normalizeService);
 };
 
 export const fetchServiceById = async (id: string) => {
   const response = await apiClient.get(`/service/get/${id}`);
-  return response.data.data;
+  return normalizeService(response.data.data);
 };
 
 export const fetchTechnologies = async () => {

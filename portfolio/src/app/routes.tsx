@@ -6,11 +6,14 @@ import { Projects } from './pages/Projects';
 import { Contact } from './pages/Contact';
 import { ServiceDetail } from './pages/ServiceDetail';
 import { ProjectDetail } from './pages/ProjectDetail';
+import { NotFound } from './pages/NotFound';
+import { ErrorPage } from './pages/ErrorPage';
 
 export const router = createBrowserRouter([
   {
     path: '/',
     Component: Root,
+    ErrorBoundary: ErrorPage,
     children: [
       {
         index: true,
@@ -35,6 +38,10 @@ export const router = createBrowserRouter([
       {
         path: 'contact',
         Component: Contact,
+      },
+      {
+        path: '*',
+        Component: NotFound,
       },
     ],
   },
