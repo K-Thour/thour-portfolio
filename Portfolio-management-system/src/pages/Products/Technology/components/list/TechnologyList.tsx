@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { categories } from "../../Data/Technologies";
 import { TechnologyCard } from "../card/TechnologyCard";
 import type { Technology } from "../../types";
@@ -7,7 +8,7 @@ import type { RootState } from "../../../../../store/store";
 interface TechnologyListProps {
   technologies: Technology[];
   onEdit: (tech: Technology) => void;
-  onDelete: (id: number) => void;
+  onDelete: (id: string | number) => void;
 }
 
 export function TechnologyList({
@@ -17,6 +18,16 @@ export function TechnologyList({
 }: TechnologyListProps) {
   const { theme } = useAppSelector((state: RootState) => state.theme);
   const isDark = theme === "dark";
+  const [selectedCategory, setSelectedCategory] = useState("All");
+
+  const filteredTechnologies =
+    selectedCategory === "All"
+      ? technologies
+      : technologies.filter(
+          (tech) =>
+            tech.category &&
+            tech.category.toLowerCase() === selectedCategory.toLowerCase(),
+        );
 
   return (
     <>
@@ -25,8 +36,9 @@ export function TechnologyList({
         {["All", ...categories].map((category) => (
           <button
             key={category}
-            className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
-              category === "All"
+            onClick={() => setSelectedCategory(category)}
+            className={`px-4 py-2 rounded-xl text-sm font-medium transition-all cursor-pointer ${
+              category === selectedCategory
                 ? isDark
                   ? "bg-linear-to-r from-red-600 to-yellow-500 text-white"
                   : "bg-linear-to-r from-blue-600 to-blue-500 text-white"
@@ -41,7 +53,7 @@ export function TechnologyList({
       </div>
 
       {/* Technologies Grid */}
-      {technologies.length === 0 ? (
+      {filteredTechnologies.length === 0 ? (
         <div
           className={`flex flex-col items-center justify-center py-16 rounded-2xl border-2 border-dashed ${
             isDark
@@ -49,12 +61,20 @@ export function TechnologyList({
               : "border-slate-300 text-slate-400 bg-white shadow-lg shadow-blue-500/5"
           }`}
         >
-          <p className="text-lg font-medium mb-2">No technologies yet</p>
-          <p className="text-sm">Start by adding your first technology</p>
+          <p className="text-lg font-medium mb-2">
+            {technologies.length === 0
+              ? "No technologies yet"
+              : `No ${selectedCategory} technologies found`}
+          </p>
+          <p className="text-sm">
+            {technologies.length === 0
+              ? "Start by adding your first technology"
+              : "Try choosing another category or add a new technology"}
+          </p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {technologies.map((tech, index) => (
+          {filteredTechnologies.map((tech, index) => (
             <TechnologyCard
               key={tech.id}
               tech={tech}

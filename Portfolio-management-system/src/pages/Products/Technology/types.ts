@@ -1,5 +1,5 @@
 export interface Technology {
-  id: number;
+  id: string | number;
   name: string;
   category: string;
   icon: string;

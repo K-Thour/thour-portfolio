@@ -1,9 +1,7 @@
 import { motion } from 'motion/react';
 import { useInView } from 'motion/react';
-import { useRef } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { useTheme } from '../context/ThemeContext';
-
-import { useEffect, useState } from 'react';
 import { fetchTechnologies } from '../../services/api';
 
 export function TechStack() {
@@ -18,7 +16,6 @@ export function TechStack() {
     const loadData = async () => {
       try {
         const data = await fetchTechnologies();
-        // Assume backend technology has name and category fields (or map them)
         const mappedData = data.map((t: any) => ({
           name: t.name || t.technology,
           category: t.category || 'Tool',
@@ -60,7 +57,7 @@ export function TechStack() {
 
           {/* Scrolling tech stack */}
           <div className="relative overflow-hidden">
-            <div className="flex gap-4 animate-scroll">
+            <div className="flex gap-4 animate-scroll w-max flex-nowrap">
               {[...technologies, ...technologies].map((tech, index) => (
                 <motion.div
                   key={`${tech.name}-${index}`}

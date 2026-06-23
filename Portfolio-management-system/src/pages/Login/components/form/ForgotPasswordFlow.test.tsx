@@ -32,12 +32,14 @@ describe("ForgotPasswordFlow toast unification", () => {
     // Enter email and submit
     const emailInput = screen.getByPlaceholderText("admin@portfolio.com");
     fireEvent.change(emailInput, { target: { value: "test@example.com" } });
-    
+
     const submitBtn = screen.getByRole("button", { name: /Send OTP/i });
     fireEvent.click(submitBtn);
 
     await waitFor(() => {
-      expect(forgotPassword).toHaveBeenCalledWith({ email: "test@example.com" });
+      expect(forgotPassword).toHaveBeenCalledWith({
+        email: "test@example.com",
+      });
     });
 
     expect(mockToast).toHaveBeenCalledWith({
@@ -61,12 +63,14 @@ describe("ForgotPasswordFlow toast unification", () => {
 
     const emailInput = screen.getByPlaceholderText("admin@portfolio.com");
     fireEvent.change(emailInput, { target: { value: "notfound@example.com" } });
-    
+
     const submitBtn = screen.getByRole("button", { name: /Send OTP/i });
     fireEvent.click(submitBtn);
 
     await waitFor(() => {
-      expect(forgotPassword).toHaveBeenCalledWith({ email: "notfound@example.com" });
+      expect(forgotPassword).toHaveBeenCalledWith({
+        email: "notfound@example.com",
+      });
     });
 
     expect(mockToast).toHaveBeenCalledWith({

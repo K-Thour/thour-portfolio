@@ -8,7 +8,7 @@ interface TechnologyCardProps {
   tech: Technology;
   index: number;
   onEdit: (tech: Technology) => void;
-  onDelete: (id: number) => void;
+  onDelete: (id: string | number) => void;
 }
 
 export function TechnologyCard({
