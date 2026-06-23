@@ -17,6 +17,10 @@ export interface IUser {
   isDeleted: boolean;
   hobbies: string[];
   languages: ILanguage[];
+  otp?: string;
+  otpExpiry?: Date;
+  resetToken?: string;
+  resetTokenExpiry?: Date;
 }
 
 export interface IUserModel extends IUser, ICommonModel {

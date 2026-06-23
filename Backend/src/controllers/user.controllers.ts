@@ -66,6 +66,24 @@ const changePassword = async (req: Request, res: Response) => {
   res.status(result.statusCode).json(result);
 };
 
+const forgotPassword = async (req: Request, res: Response) => {
+  const { email } = req.body;
+  const result = await services.userServices.forgotPassword(email);
+  res.status(result.statusCode).json(result);
+};
+
+const verifyOtp = async (req: Request, res: Response) => {
+  const { email, otp } = req.body;
+  const result = await services.userServices.verifyOtp(email, otp);
+  res.status(result.statusCode).json(result);
+};
+
+const resetPassword = async (req: Request, res: Response) => {
+  const { email, resetToken, password } = req.body;
+  const result = await services.userServices.resetPassword(email, resetToken, password);
+  res.status(result.statusCode).json(result);
+};
+
 const userControllers = {
   login,
   register,
@@ -73,6 +91,9 @@ const userControllers = {
   getPublicUser,
   updateCurrentUser,
   changePassword,
+  forgotPassword,
+  verifyOtp,
+  resetPassword,
 };
 
 export default userControllers;

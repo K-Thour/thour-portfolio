@@ -17,6 +17,8 @@ const userSchema = new mongoose.Schema<IUserModel>(
       type: String,
       required: true,
       unique: true,
+      lowercase: true,
+      trim: true,
     },
     passwordHash: {
       type: String,
@@ -74,6 +76,22 @@ const userSchema = new mongoose.Schema<IUserModel>(
     languages: {
       type: [languageSchema],
       default: [],
+    },
+    otp: {
+      type: String,
+      required: false,
+    },
+    otpExpiry: {
+      type: Date,
+      required: false,
+    },
+    resetToken: {
+      type: String,
+      required: false,
+    },
+    resetTokenExpiry: {
+      type: Date,
+      required: false,
     },
   },
   { timestamps: true },

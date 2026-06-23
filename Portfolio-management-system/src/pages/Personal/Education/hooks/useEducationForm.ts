@@ -29,8 +29,7 @@ export function useEducationForm(initialData?: Education | null) {
     gradeType: (initialData as any)?.gradeType || "cgpa",
     grade: initialData?.grade || "",
     description: initialData?.description || "",
-    achievements:
-      (initialData as any)?.achievements || [],
+    achievements: (initialData as any)?.achievements || [],
   });
 
   const validateStep = (step: number) => {

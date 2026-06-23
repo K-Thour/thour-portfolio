@@ -5,6 +5,9 @@ import {
   userLoginSchema,
   userUpdateSchema,
   changePasswordSchema,
+  forgotPasswordEmailSchema,
+  forgotPasswordOtpSchema,
+  resetPasswordSchema,
 } from '../validations/user.validations';
 import controllers from '../controllers';
 import authMiddleware from '../middlewares/auth.middleware';
@@ -133,6 +136,24 @@ userRoutes.patch(
   authMiddleware,
   validate(changePasswordSchema),
   controllers.userControllers.changePassword,
+);
+
+userRoutes.post(
+  '/forgot-password',
+  validate(forgotPasswordEmailSchema),
+  controllers.userControllers.forgotPassword,
+);
+
+userRoutes.post(
+  '/verify-otp',
+  validate(forgotPasswordOtpSchema),
+  controllers.userControllers.verifyOtp,
+);
+
+userRoutes.post(
+  '/reset-password',
+  validate(resetPasswordSchema),
+  controllers.userControllers.resetPassword,
 );
 
 export default userRoutes;

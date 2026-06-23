@@ -125,9 +125,29 @@ export const changePasswordSchema = z.object({
   newPassword: passwordSchema,
 });
 
+// ─── Forgot Password / Reset ───────────────────────────────────────────────────
+
+export const forgotPasswordEmailSchema = z.object({
+  email: z.string().email('Invalid email address'),
+});
+
+export const forgotPasswordOtpSchema = z.object({
+  email: z.string().email('Invalid email address'),
+  otp: z.string().length(6, 'OTP must be exactly 6 digits'),
+});
+
+export const resetPasswordSchema = z.object({
+  email: z.string().email('Invalid email address'),
+  resetToken: z.string().min(1, 'Reset token is required'),
+  password: passwordSchema,
+});
+
 // ─── Types (inferred) ──────────────────────────────────────────────────────────
 
 export type UserCreateInput = z.infer<typeof userCreateSchema>;
 export type UserUpdateInput = z.infer<typeof userUpdateSchema>;
 export type UserLoginInput = z.infer<typeof userLoginSchema>;
 export type ChangePasswordInput = z.infer<typeof changePasswordSchema>;
+export type ForgotPasswordEmailInput = z.infer<typeof forgotPasswordEmailSchema>;
+export type ForgotPasswordOtpInput = z.infer<typeof forgotPasswordOtpSchema>;
+export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;

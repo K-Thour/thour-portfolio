@@ -57,7 +57,9 @@ export function useProjects() {
   };
 
   const handleSubmit = async (data: any) => {
-    const normalizedDevice = ["web", "mobile", "desktop"].includes((data.subtitle || "").toLowerCase())
+    const normalizedDevice = ["web", "mobile", "desktop"].includes(
+      (data.subtitle || "").toLowerCase(),
+    )
       ? (data.subtitle || "").toLowerCase()
       : "web";
 

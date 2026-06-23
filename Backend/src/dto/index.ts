@@ -173,3 +173,19 @@ export interface PublicUserDTO {
   hobbies: string[];
   languages: { language: string; proficiency: string }[];
 }
+
+// ─── Forgot Password DTOs ──────────────────────────────────────────────────────
+export interface ForgotPasswordEmailDTO {
+  email: string;
+}
+
+export interface ForgotPasswordOtpDTO {
+  email: string;
+  otp: string;
+}
+
+export interface ResetPasswordDTO {
+  email: string;
+  resetToken: string;
+  password?: string;
+}

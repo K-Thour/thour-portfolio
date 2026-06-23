@@ -9,19 +9,26 @@ import { IProjectRepoParams } from '../interface/models/project/projectRepo.inte
 import { uploadBase64ImagesInObject, deleteFromCloudinary } from '../utils/cloudinary.utils';
 
 const resolveRefs = async (data: any) => {
-  if (data.category && typeof data.category === 'string' && !Types.ObjectId.isValid(data.category)) {
+  if (
+    data.category &&
+    typeof data.category === 'string' &&
+    !Types.ObjectId.isValid(data.category)
+  ) {
     let service = await models.service.repo.getOne({
       filter: [{ name: { $regex: new RegExp(`^${data.category}$`, 'i') } as any }],
     });
     if (!service) {
-      service = await models.service.repo.create({
-        name: data.category,
-        decription: `${data.category} services`,
-        technologies: [],
-        iconUrl: { publicId: 'service', url: 'https://placehold.co/100' },
-        mainImageUrl: { publicId: 'service', url: 'https://placehold.co/600' },
-        imagesUrl: [],
-      }, new Types.ObjectId('60d5ec4934d47d2b2c8b4567'));
+      service = await models.service.repo.create(
+        {
+          name: data.category,
+          decription: `${data.category} services`,
+          technologies: [],
+          iconUrl: { publicId: 'service', url: 'https://placehold.co/100' },
+          mainImageUrl: { publicId: 'service', url: 'https://placehold.co/600' },
+          imagesUrl: [],
+        },
+        new Types.ObjectId('60d5ec4934d47d2b2c8b4567'),
+      );
     }
     data.category = service._id;
   }
@@ -37,13 +44,16 @@ const resolveRefs = async (data: any) => {
             filter: [{ name: { $regex: new RegExp(`^${item}$`, 'i') } as any }],
           });
           if (!tech) {
-            tech = await models.technology.repo.create({
-              name: item,
-              description: `${item} technology`,
-              category: 'Development',
-              iconUrl: { publicId: 'tech', url: 'https://placehold.co/100' },
-              isActive: true,
-            }, new Types.ObjectId('60d5ec4934d47d2b2c8b4567'));
+            tech = await models.technology.repo.create(
+              {
+                name: item,
+                description: `${item} technology`,
+                category: 'Development',
+                iconUrl: { publicId: 'tech', url: 'https://placehold.co/100' },
+                isActive: true,
+              },
+              new Types.ObjectId('60d5ec4934d47d2b2c8b4567'),
+            );
           }
           resolvedIds.push(tech._id);
         }

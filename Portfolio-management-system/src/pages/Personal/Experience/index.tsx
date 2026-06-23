@@ -80,9 +80,10 @@ export const ExperiencePage: React.FC = () => {
       position: data.jobTitle,
       field: data.location,
       projectsCompleted: [],
-      description: (data.features && data.features.length > 0)
-        ? data.features.filter((f): f is string => f !== undefined).join("\n")
-        : data.description || "Experience description",
+      description:
+        data.features && data.features.length > 0
+          ? data.features.filter((f): f is string => f !== undefined).join("\n")
+          : data.description || "Experience description",
       dateOfJoining: new Date(data.startDate).toISOString(),
       dateOfLeaving: data.isCurrent
         ? undefined

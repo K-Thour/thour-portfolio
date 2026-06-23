@@ -4,6 +4,12 @@ import { ArrowLeft } from "lucide-react";
 import type { theme } from "../../../../interfaces/common/common.interface";
 import { LoginCardHeader } from "../LoginCardHeader";
 import { ForgotPasswordSteps } from "./ForgotPasswordSteps";
+import {
+  forgotPassword,
+  verifyOtp,
+  resetPassword,
+} from "../../../../services/api";
+import { useToast } from "../../../../hooks/useToast";
 
 interface ForgotPasswordFlowProps extends theme {
   onBackToLogin: () => void;
@@ -14,22 +20,50 @@ export const ForgotPasswordFlow: React.FC<ForgotPasswordFlowProps> = ({
   onBackToLogin,
 }) => {
   const isDark = theme === "dark";
+  const { toast } = useToast();
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [email, setEmail] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  const [resetToken, setResetToken] = useState("");
+
   const handleEmailSubmit = async ({ value }: { value: { email: string } }) => {
-    setEmail(value.email);
-    console.log("Sending OTP to:", value.email);
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    setStep(2);
+    try {
+      setEmail(value.email);
+      await forgotPassword({ email: value.email });
+      toast({
+        title: "OTP Sent",
+        description: "OTP sent to your email successfully.",
+        variant: "success",
+      });
+      setStep(2);
+    } catch (err: any) {
+      toast({
+        title: "Error",
+        description: err.response?.data?.message || "Failed to send OTP.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleOtpSubmit = async ({ value }: { value: { otp: string } }) => {
-    console.log("Verifying OTP:", value.otp, "for email:", email);
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    setStep(3);
+    try {
+      const data = await verifyOtp({ email, otp: value.otp });
+      setResetToken(data.resetToken);
+      toast({
+        title: "OTP Verified",
+        description: "OTP verified successfully.",
+        variant: "success",
+      });
+      setStep(3);
+    } catch (err: any) {
+      toast({
+        title: "Error",
+        description: err.response?.data?.message || "Invalid or expired OTP.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handlePasswordSubmit = async ({
@@ -37,14 +71,26 @@ export const ForgotPasswordFlow: React.FC<ForgotPasswordFlowProps> = ({
   }: {
     value: { password: string; confirmPassword: string };
   }) => {
-    console.log(
-      "Resetting password for:",
-      email,
-      "with new pass:",
-      value.password,
-    );
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    onBackToLogin();
+    try {
+      await resetPassword({
+        email,
+        resetToken,
+        password: value.password,
+      });
+      toast({
+        title: "Success",
+        description:
+          "Password reset successfully. Please login with your new password.",
+        variant: "success",
+      });
+      onBackToLogin();
+    } catch (err: any) {
+      toast({
+        title: "Error",
+        description: err.response?.data?.message || "Failed to reset password.",
+        variant: "destructive",
+      });
+    }
   };
 
   const buttonClassName = `

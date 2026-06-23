@@ -271,3 +271,23 @@ export const uploadImage = async (base64Image: string) => {
   });
   return unwrap(response);
 };
+
+// ─── FORGOT PASSWORD API ──────────────────────────────────────────────────────
+export const forgotPassword = async (data: { email: string }) => {
+  const response = await apiClient.post("/user/forgot-password", data);
+  return response.data;
+};
+
+export const verifyOtp = async (data: { email: string; otp: string }) => {
+  const response = await apiClient.post("/user/verify-otp", data);
+  return unwrap(response);
+};
+
+export const resetPassword = async (data: {
+  email: string;
+  resetToken: string;
+  password?: string;
+}) => {
+  const response = await apiClient.post("/user/reset-password", data);
+  return response.data;
+};

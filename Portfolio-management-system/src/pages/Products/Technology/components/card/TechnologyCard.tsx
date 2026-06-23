@@ -39,7 +39,8 @@ export function TechnologyCard({
               isDark ? "bg-slate-900/50" : "bg-blue-50"
             }`}
           >
-            {tech.icon && (/^https?:\/\/.+/.test(tech.icon) || tech.icon.includes("/")) ? (
+            {tech.icon &&
+            (/^https?:\/\/.+/.test(tech.icon) || tech.icon.includes("/")) ? (
               <img
                 src={tech.icon}
                 alt={tech.name}

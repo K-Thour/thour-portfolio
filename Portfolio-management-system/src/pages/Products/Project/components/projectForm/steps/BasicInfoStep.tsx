@@ -200,7 +200,9 @@ export const BasicInfoStep: React.FC<BasicInfoStepProps> = ({
                   <option value="AI & Automation">AI & Automation</option>
                   <option value="Web Application">Web Application</option>
                   <option value="Mobile App">Mobile App</option>
-                  <option value="DevOps & Monitoring">DevOps & Monitoring</option>
+                  <option value="DevOps & Monitoring">
+                    DevOps & Monitoring
+                  </option>
                   <option value="E-commerce">E-commerce</option>
                 </>
               )}
