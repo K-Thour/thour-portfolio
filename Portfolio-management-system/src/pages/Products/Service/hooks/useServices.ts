@@ -94,6 +94,9 @@ export function useServices() {
     } else if (iconType === "url") {
       iconPublicId = "icon_url";
       iconUrl = data.iconUrl || "https://placehold.co/100";
+    } else if (iconType === "library") {
+      iconPublicId = "icon_library";
+      iconUrl = data.iconUrl || "https://placehold.co/100";
     } else if (iconType === "upload") {
       iconPublicId = "icon_upload";
       iconUrl = data.iconUrl || "https://placehold.co/100";

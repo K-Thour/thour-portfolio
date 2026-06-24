@@ -12,7 +12,7 @@ const projectSchema = new Schema<IProjectModel>(
     },
     category: {
       type: Types.ObjectId,
-      ref: 'service',
+      ref: 'Service',
       required: true,
     },
     description: {
@@ -58,7 +58,7 @@ const projectSchema = new Schema<IProjectModel>(
     },
     screenshots: {
       type: [Types.ObjectId],
-      ref: 'image',
+      ref: 'ProjectScreenshot',
       required: true,
     },
     projectMetric: {

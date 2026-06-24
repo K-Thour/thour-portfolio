@@ -6,7 +6,6 @@ import { useTheme } from '../context/ThemeContext';
 import { ServicesHeader } from './service/ServicesHeader';
 import { ServiceCard, type ServiceItem } from './service/ServiceCard';
 import { fetchServices } from '../../services/api';
-import { servicesData } from '../../data/services';
 
 export function Services() {
   const [services, setServices] = useState<any[]>([]);
@@ -20,39 +19,18 @@ export function Services() {
     const loadData = async () => {
       try {
         const data = await fetchServices();
-        const mappedData = data.map((s: any) => {
-          // Normalize name to lookup static fallback
-          const nameNormalized = (s.name || '')
-            .toLowerCase()
-            .replace(/[^a-z]/g, '');
-          const fallback =
-            Object.values(servicesData).find(
-              (item) =>
-                item.title.toLowerCase().replace(/[^a-z]/g, '') ===
-                nameNormalized,
-            ) ||
-            Object.values(servicesData).find(
-              (item) =>
-                nameNormalized.includes(item.title.toLowerCase()) ||
-                item.title.toLowerCase().includes(nameNormalized),
-            );
-
-          return {
-            icon: s.iconUrl?.url || (fallback ? fallback.icon : Code2),
-            title: s.name || (fallback ? fallback.title : ''),
-            description: s.decription || (fallback ? fallback.description : ''),
-            features:
-              s.features && s.features.length > 0
-                ? s.features
-                : fallback
-                  ? fallback.features
-                  : [],
-            color: isDark
-              ? 'from-red-600 to-red-400'
-              : 'from-blue-600 to-blue-400',
-            link: `/services/${s._id}`,
-          };
-        });
+        // data is already normalized by normalizeService in api.ts
+        // — description, features, title, icon, image are all set correctly
+        const mappedData = data.map((s: any) => ({
+          icon: s.icon || Code2, // s.icon = iconUrl.url string or null
+          title: s.title || s.name || '', // s.title = s.name alias
+          description: s.description || '', // s.description = parsed from JSON blob
+          features: Array.isArray(s.features) ? s.features : [],
+          color: isDark
+            ? 'from-red-600 to-red-400'
+            : 'from-blue-600 to-blue-400',
+          link: `/services/${s._id}`,
+        }));
         setServices(mappedData);
       } catch (error) {
         console.error('Error fetching services:', error);

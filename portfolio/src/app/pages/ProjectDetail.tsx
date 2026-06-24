@@ -1,20 +1,15 @@
 import { motion } from 'motion/react';
-import { useInView } from 'motion/react';
-import { useRef } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router';
 import { ArrowLeft } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { ProjectHeader } from '../components/project/ProjectHeader';
 import { ProjectFeatures } from '../components/project/ProjectFeatures';
 import { ProjectResults } from '../components/project/ProjectResults';
-
-import { useEffect, useState } from 'react';
 import { fetchProjectById } from '../../services/api';
 
 export function ProjectDetail() {
   const { projectId } = useParams();
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, amount: 0.2 });
   const { theme } = useTheme();
   const isDark = theme === 'avengers';
 
@@ -25,22 +20,31 @@ export function ProjectDetail() {
     const loadProject = async () => {
       if (!projectId) return;
       try {
-        const data = await fetchProjectById(projectId);
+        const data = await fetchProjectById(projectId, {
+          populate: 'techStack category',
+        });
         if (data) {
           setProject({
             title: data.title,
             subtitle: data.device || 'Project',
-            category: data.category || 'Category',
+            category:
+              data.category && typeof data.category === 'object'
+                ? data.category.name
+                : data.category || 'Category',
             description: data.description,
             image: data.image?.url || 'https://via.placeholder.com/1080',
             status: data.isActive ? 'Active' : 'Completed',
-            date: new Date(data.year, 0, 1).getFullYear().toString() || '2024',
+            date: data.year ? data.year.toString() : '2026',
             team: data.role || 'Solo Developer',
-            technologies: data.techStack || [],
+            technologies: Array.isArray(data.techStack)
+              ? data.techStack.map((t: any) =>
+                  typeof t === 'object' && t?.name ? t.name : t,
+                )
+              : [],
             link: data.workingUrl || '#',
             github: data.githubUrl || '#',
             challenges: data.projectMetric || [],
-            features: [data.fullDescription],
+            features: [data.fullDescription || data.description || ''],
             results: data.projectTestimonial || [],
           });
         }
@@ -55,20 +59,47 @@ export function ProjectDetail() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+      <div
+        className={`min-h-screen flex items-center justify-center pt-16 ${
+          isDark
+            ? 'bg-gradient-to-b from-slate-950 to-slate-900 text-white'
+            : 'bg-gradient-to-b from-slate-50 via-blue-50 to-white text-gray-900'
+        }`}
+      >
+        <div
+          className={`w-10 h-10 border-4 border-t-transparent rounded-full animate-spin ${
+            isDark ? 'border-red-500' : 'border-blue-500'
+          }`}
+        />
       </div>
     );
   }
 
   if (!project) {
     return (
-      <div className="min-h-screen flex items-center justify-center pt-16">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-white mb-4">
+      <div
+        className={`min-h-screen flex items-center justify-center pt-16 ${
+          isDark
+            ? 'bg-gradient-to-b from-slate-950 to-slate-900'
+            : 'bg-gradient-to-b from-slate-50 via-blue-50 to-white'
+        }`}
+      >
+        <div className="text-center bg-transparent">
+          <h1
+            className={`text-2xl font-bold mb-4 ${
+              isDark ? 'text-white' : 'text-gray-900'
+            }`}
+          >
             Project Not Found
           </h1>
-          <Link to="/projects" className="text-red-500 hover:underline">
+          <Link
+            to="/projects"
+            className={`hover:underline font-semibold ${
+              isDark
+                ? 'text-red-500 hover:text-red-400'
+                : 'text-blue-600 hover:text-blue-500'
+            }`}
+          >
             Back to Projects
           </Link>
         </div>
@@ -86,10 +117,9 @@ export function ProjectDetail() {
     >
       <div className="container mx-auto px-6">
         <motion.div
-          ref={ref}
-          initial={{ opacity: 0, y: 50 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
-          transition={{ duration: 0.8 }}
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
           className="max-w-5xl mx-auto"
         >
           {/* Back Button */}
@@ -106,33 +136,31 @@ export function ProjectDetail() {
           </Link>
 
           {/* Header */}
-          <ProjectHeader project={project} isInView={isInView} />
+          <ProjectHeader project={project} />
 
           {/* Hero Image */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
-            animate={
-              isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.95 }
-            }
-            transition={{ duration: 0.8, delay: 0.3 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
             className={`rounded-2xl overflow-hidden mb-12 border ${
               isDark
-                ? 'border-red-500/20'
-                : 'border-blue-300/30 shadow-xl shadow-blue-500/10'
+                ? 'border-red-500/20 bg-slate-950'
+                : 'border-blue-300/30 shadow-xl shadow-blue-500/10 bg-slate-950'
             }`}
           >
             <img
               src={project.image}
               alt={project.title}
-              className="w-full h-96 object-cover"
+              className="w-full aspect-[2.4/1] object-cover"
             />
           </motion.div>
 
           {/* Features, Technologies, Challenges */}
-          <ProjectFeatures project={project} isInView={isInView} />
+          <ProjectFeatures project={project} />
 
           {/* Results & CTA */}
-          <ProjectResults project={project} isInView={isInView} />
+          <ProjectResults project={project} />
         </motion.div>
       </div>
     </div>

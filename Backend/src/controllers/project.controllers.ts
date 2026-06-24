@@ -40,6 +40,7 @@ const getOne = async (req: Request, res: Response) => {
   const id: string = req.params.id as string;
   const result = await services.projectServices.getOneService({
     filter: [{ _id: new Types.ObjectId(id) }],
+    ...req.query,
   });
   res.status(result.statusCode).json(result);
 };

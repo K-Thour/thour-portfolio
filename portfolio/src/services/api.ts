@@ -29,33 +29,55 @@ export const fetchPublicUser = async () => {
   return response.data.data;
 };
 
-export const fetchProjectById = async (id: string) => {
-  const response = await apiClient.get(`/project/get/${id}`);
+export const fetchProjectById = async (id: string, params?: any) => {
+  const response = await apiClient.get(`/project/get/${id}`, { params });
   return response.data.data;
 };
 
 const normalizeService = (s: any) => {
   if (!s) return s;
-  let decription = s.decription || '';
+
+  // `decription` (typo in DB) holds a JSON string with extended fields
+  const rawDecription = s.decription || '';
   let extra: any = {};
-  if (decription && decription.startsWith('{')) {
+  let shortDescription = rawDecription;
+
+  if (rawDecription && rawDecription.startsWith('{')) {
     try {
-      extra = JSON.parse(decription);
-      decription = extra.description || extra.longDescription || '';
+      extra = JSON.parse(rawDecription);
+      shortDescription =
+        extra.description || extra.longDescription || rawDecription;
     } catch (e) {
       console.error('Failed to parse decription JSON:', e);
     }
   }
+
+  // technologies from backend are ObjectId refs (not populated) — map to name strings if they have a name, else skip
+  const technologies: string[] = (s.technologies || [])
+    .map((t: any) => (typeof t === 'object' && t?.name ? t.name : null))
+    .filter(Boolean);
+
   return {
+    // Raw backend fields
     ...s,
-    decription,
-    subtitle: extra.subtitle || '',
-    longDescription: extra.longDescription || '',
-    features: extra.features || [],
-    benefits: extra.benefits || [],
+    // Properly named description field (fixes the undefined bug)
+    description: shortDescription,
+    subtitle: extra.subtitle || extra.category || '',
+    longDescription: extra.longDescription || shortDescription,
+    // Features, benefits etc from the parsed JSON blob
+    features: Array.isArray(extra.features) ? extra.features : [],
+    benefits: Array.isArray(extra.benefits) ? extra.benefits : [],
     pricing: extra.pricing || '',
     duration: extra.duration || '',
-    deliverables: extra.deliverables || [],
+    deliverables: Array.isArray(extra.deliverables) ? extra.deliverables : [],
+    // Technologies as name strings
+    technologies,
+    // process doesn't exist in the backend schema — always empty
+    process: [],
+    // Convenience aliases used by ServiceHeader
+    title: s.name || '',
+    image: s.mainImageUrl?.url || '',
+    icon: s.iconUrl?.url || null,
   };
 };
 

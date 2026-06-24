@@ -5,10 +5,9 @@ import { type ProjectData } from '../../../data/projects';
 
 interface ProjectHeaderProps {
   project: ProjectData;
-  isInView: boolean;
 }
 
-export function ProjectHeader({ project, isInView }: ProjectHeaderProps) {
+export function ProjectHeader({ project }: ProjectHeaderProps) {
   const { theme } = useTheme();
   const isDark = theme === 'avengers';
 
@@ -16,7 +15,7 @@ export function ProjectHeader({ project, isInView }: ProjectHeaderProps) {
     <div className="mb-12">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
-        animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
         className="mb-6"
       >
@@ -88,12 +87,14 @@ export function ProjectHeader({ project, isInView }: ProjectHeaderProps) {
       {/* Action Buttons */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
-        animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.2 }}
         className="flex gap-4"
       >
         <a
           href={project.link}
+          target="_blank"
+          rel="noopener noreferrer"
           className={`inline-flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-all hover:scale-105 ${
             isDark
               ? 'bg-gradient-to-r from-red-600 to-yellow-500 text-white hover:shadow-lg hover:shadow-red-500/50'
@@ -105,6 +106,8 @@ export function ProjectHeader({ project, isInView }: ProjectHeaderProps) {
         </a>
         <a
           href={project.github}
+          target="_blank"
+          rel="noopener noreferrer"
           className={`inline-flex items-center gap-2 px-6 py-3 rounded-xl border font-medium transition-all hover:scale-105 ${
             isDark
               ? 'border-red-500/50 text-white hover:bg-red-500/10'
