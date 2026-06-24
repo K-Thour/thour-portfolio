@@ -97,7 +97,11 @@ const deleteOneService = (id: string) => {
 
 const getService = (params: IServiceRepoParams) => {
   return asyncCommonWrapper(async () => {
-    const result = await models.service.repo.get(params);
+    const paramsWithPopulate: IServiceRepoParams = {
+      ...params,
+      populate: { path: 'technologies', select: 'name iconUrl category' },
+    };
+    const result = await models.service.repo.get(paramsWithPopulate);
     return commonResponse.success(
       result,
       MESSAGES_COMMON_UTIL.fetchedSuccessfully('Service'),
@@ -109,7 +113,11 @@ const getService = (params: IServiceRepoParams) => {
 
 const getOneService = (params?: IServiceRepoParams) => {
   return asyncCommonWrapper(async () => {
-    const result = await models.service.repo.getOne(params);
+    const paramsWithPopulate: IServiceRepoParams = {
+      ...params,
+      populate: { path: 'technologies', select: 'name iconUrl category' },
+    };
+    const result = await models.service.repo.getOne(paramsWithPopulate);
     return commonResponse.success(
       result,
       MESSAGES_COMMON_UTIL.fetchedSuccessfully('Service'),

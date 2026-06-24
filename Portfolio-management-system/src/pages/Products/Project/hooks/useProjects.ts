@@ -33,7 +33,7 @@ export function useProjects() {
         longDescription: p.fullDescription || "",
         image: p.image?.url || "",
         technologies: p.techStack?.map((t: any) => t.name || t) || [],
-        features: p.features || [],
+        features: Array.isArray(p.features) ? p.features : [],
         github: p.githubUrl || "",
         liveUrl: p.workingUrl || "",
         status: p.isActive ? "Completed" : "In Progress",
@@ -83,6 +83,7 @@ export function useProjects() {
       projectMetric: [],
       projectTestimonial: [],
       techStack: data.technologies || [],
+      features: data.features || [],
     };
 
     try {

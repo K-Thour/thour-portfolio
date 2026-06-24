@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Plus, X, Search } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import { useStore } from "@tanstack/react-form";
 import utils from "../../../../../../utils";
 import { projectTechSchema } from "../../../../../../validations/project";
@@ -393,6 +393,14 @@ export const TechFeaturesStep: React.FC<TechFeaturesStepProps> = ({
           )}
         </form.Field>
         <div className="space-y-2 mt-3">
+          {features.length === 0 && (
+            <p className={cn(
+              "text-sm italic",
+              isDark ? "text-gray-500" : "text-gray-400"
+            )}>
+              No features added yet
+            </p>
+          )}
           {features.map((feature: string, index: number) => (
             <div
               key={index}

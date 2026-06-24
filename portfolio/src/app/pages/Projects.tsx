@@ -26,11 +26,20 @@ export function Projects() {
         const data = await fetchProjects();
         const formattedProjects = data.map((p: any) => ({
           id: p._id,
-          title: p.title,
+          title: p.title || '',
           subtitle: p.device || 'Project',
-          description: p.description,
+          description: p.description || '',
           image: p.image?.url || 'https://via.placeholder.com/1080',
-          tags: p.techStack || [],
+
+          // Convert tech stack objects into strings
+          tags:
+            p.techStack?.map((tech: any) => {
+              if (typeof tech === 'object' && tech !== null) {
+                return tech.name;
+              }
+              return tech;
+            }) || [],
+
           link: p.workingUrl || '#',
           github: p.githubUrl || '#',
           status: p.isActive ? 'Active' : 'Completed',
@@ -47,11 +56,10 @@ export function Projects() {
 
   return (
     <div
-      className={`min-h-screen pt-24 pb-20 ${
-        isDark
+      className={`min-h-screen pt-24 pb-20 ${isDark
           ? 'bg-gradient-to-b from-slate-950 to-slate-900'
           : 'bg-gradient-to-b from-slate-50 via-blue-50 to-white'
-      }`}
+        }`}
     >
       <div className="container mx-auto px-6">
         <motion.div

@@ -52,10 +52,15 @@ const normalizeService = (s: any) => {
     }
   }
 
-  // technologies from backend are ObjectId refs (not populated) — map to name strings if they have a name, else skip
-  const technologies: string[] = (s.technologies || [])
-    .map((t: any) => (typeof t === 'object' && t?.name ? t.name : null))
-    .filter(Boolean);
+  // technologies: if populated (objects with name), keep as full objects; if just ObjectIds (strings), skip
+  const technologies = (s.technologies || [])
+    .filter((t: any) => typeof t === 'object' && t?.name)
+    .map((t: any) => ({
+      _id: t._id,
+      name: t.name,
+      category: t.category || '',
+      iconUrl: t.iconUrl?.url || null,
+    }));
 
   return {
     // Raw backend fields

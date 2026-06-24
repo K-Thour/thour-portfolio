@@ -9,8 +9,8 @@ export const projectTechSchema = yup.object({
   features: yup
     .array()
     .of(yup.string().required())
-    .min(1, "Add at least one feature")
-    .required("Add at least one feature"),
+    .min(0)
+    .default([]),
 });
 
 export type ProjectTechData = yup.InferType<typeof projectTechSchema>;

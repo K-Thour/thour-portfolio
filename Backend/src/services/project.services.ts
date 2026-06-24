@@ -98,6 +98,11 @@ const updateService = (id: string, data: Partial<IProjectModel>, updatedBy: Type
       }
     }
 
+    // Preserve features if not provided in update payload
+    if (currentProject && data.features === undefined) {
+      data.features = currentProject.features || [];
+    }
+
     const result = await models.project.repo.update(id, data, updatedBy);
     return commonResponse.success(
       result,
@@ -134,19 +139,44 @@ const deleteOneService = (id: string) => {
 
 const getService = (params: IProjectRepoParams) => {
   return asyncCommonWrapper(async () => {
-    const result = await models.project.repo.get(params);
+    const paramsWithPopulate: IProjectRepoParams = {
+      ...params,
+      populate: [
+        { path: 'category', select: 'name iconUrl' },
+        { path: 'techStack', select: 'name iconUrl category' },
+      ],
+      select: 'title description image device year client fullDescription features role outcome workingUrl githubUrl screenshots projectMetric projectTestimonial techStack isDeleted isActive deletedBy createdBy updatedBy deletedAt',
+    };
+    const result = await models.project.repo.get(paramsWithPopulate);
+    // Ensure features is always an array
+    const normalizedResult = result.map((project: any) => ({
+      ...project,
+      features: Array.isArray(project.features) ? project.features : [],
+    }));
     return commonResponse.success(
-      result,
+      normalizedResult,
       MESSAGES_COMMON_UTIL.fetchedSuccessfully('Project'),
       STATUS_CODE.OK,
-      result.length,
+      normalizedResult.length,
     );
   });
 };
 
 const getOneService = (params?: IProjectRepoParams) => {
   return asyncCommonWrapper(async () => {
-    const result = await models.project.repo.getOne(params);
+    const paramsWithPopulate: IProjectRepoParams = {
+      ...params,
+      populate: [
+        { path: 'category', select: 'name iconUrl' },
+        { path: 'techStack', select: 'name iconUrl category' },
+      ],
+      select: 'title description image device year client fullDescription features role outcome workingUrl githubUrl screenshots projectMetric projectTestimonial techStack isDeleted isActive deletedBy createdBy updatedBy deletedAt',
+    };
+    const result = await models.project.repo.getOne(paramsWithPopulate);
+    // Ensure features is always an array
+    if (result && !Array.isArray(result.features)) {
+      result.features = [];
+    }
     return commonResponse.success(
       result,
       MESSAGES_COMMON_UTIL.fetchedSuccessfully('Project'),

@@ -20,17 +20,17 @@ export function ProjectDetail() {
     const loadProject = async () => {
       if (!projectId) return;
       try {
-        const data = await fetchProjectById(projectId, {
-          populate: 'techStack category',
-        });
+        const data = await fetchProjectById(projectId);
         if (data) {
           setProject({
             title: data.title,
             subtitle: data.device || 'Project',
-            category:
-              data.category && typeof data.category === 'object'
-                ? data.category.name
-                : data.category || 'Category',
+            category: data.category && typeof data.category === 'object'
+              ? {
+                  name: data.category.name,
+                  iconUrl: data.category.iconUrl?.url || null,
+                }
+              : { name: data.category || 'Category', iconUrl: null },
             description: data.description,
             image: data.image?.url || 'https://via.placeholder.com/1080',
             status: data.isActive ? 'Active' : 'Completed',
@@ -38,13 +38,15 @@ export function ProjectDetail() {
             team: data.role || 'Solo Developer',
             technologies: Array.isArray(data.techStack)
               ? data.techStack.map((t: any) =>
-                  typeof t === 'object' && t?.name ? t.name : t,
+                  typeof t === 'object' && t?.name
+                    ? { _id: t._id, name: t.name, category: t.category || '', iconUrl: t.iconUrl?.url || null }
+                    : { name: String(t) },
                 )
               : [],
             link: data.workingUrl || '#',
             github: data.githubUrl || '#',
             challenges: data.projectMetric || [],
-            features: [data.fullDescription || data.description || ''],
+            features: Array.isArray(data.features) ? data.features : [],
             results: data.projectTestimonial || [],
           });
         }
@@ -124,7 +126,7 @@ export function ProjectDetail() {
         >
           {/* Back Button */}
           <Link
-            to="/projects"
+            to="../projects"
             className={`inline-flex items-center gap-2 mb-8 transition-colors ${
               isDark
                 ? 'text-gray-400 hover:text-white'

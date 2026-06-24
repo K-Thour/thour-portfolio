@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { Calendar, ExternalLink, Github, Users } from 'lucide-react';
+import { Calendar, ExternalLink, Github, Users, Folder } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import { type ProjectData } from '../../../data/projects';
 
@@ -10,6 +10,9 @@ interface ProjectHeaderProps {
 export function ProjectHeader({ project }: ProjectHeaderProps) {
   const { theme } = useTheme();
   const isDark = theme === 'avengers';
+
+  console.log("Project data:", project)
+  console.log("Category:", project.category)
 
   return (
     <div className="mb-12">
@@ -22,7 +25,7 @@ export function ProjectHeader({ project }: ProjectHeaderProps) {
         <div className="flex items-center gap-3 mb-4">
           <span
             className={`px-4 py-1 rounded-full text-sm font-medium border ${
-              project.status === 'Completed'
+              project.outcome == 'Completed successfully'
                 ? isDark
                   ? 'bg-green-500/20 text-green-400 border-green-500/50'
                   : 'bg-green-100 text-green-700 border-green-300'
@@ -31,22 +34,34 @@ export function ProjectHeader({ project }: ProjectHeaderProps) {
                   : 'bg-yellow-100 text-yellow-700 border-yellow-300'
             }`}
           >
-            {project.status === 'Completed'
+            {project.outcome == 'Completed successfully'
               ? isDark
-                ? 'Completed'
+                ? 'Completed successfully'
                 : 'Victory Achieved'
               : isDark
                 ? 'In Progress'
                 : 'Battle Ongoing'}
           </span>
           <span
-            className={`px-4 py-1 rounded-full text-sm font-medium border ${
+            className={`px-4 py-1 rounded-full text-sm font-medium border flex items-center gap-2 ${
               isDark
                 ? 'bg-slate-800/80 border-red-500/30 text-gray-300'
                 : 'bg-blue-100 border-blue-300 text-blue-800'
             }`}
           >
-            {project.category}
+            {project.category?.iconUrl ? (
+              <img
+                src={project.category.iconUrl}
+                alt=""
+                className="w-4 h-4 rounded-full object-cover"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                }}
+              />
+            ) : (
+              <Folder className={`w-4 h-4 ${isDark ? 'text-red-500' : 'text-blue-600'}`} />
+            )}
+            {typeof project.category === 'object' ? project.category.name : project.category}
           </span>
         </div>
 

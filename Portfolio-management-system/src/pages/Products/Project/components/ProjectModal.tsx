@@ -16,6 +16,7 @@ export function ProjectModal({
 
   return (
     <ProjectFormWizard
+      key={editingProject ? String(editingProject.id) : 'new'}
       isOpen={isOpen}
       onClose={onClose}
       onSubmit={onSubmit}

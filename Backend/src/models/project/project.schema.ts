@@ -40,6 +40,10 @@ const projectSchema = new Schema<IProjectModel>(
       type: String,
       required: true,
     },
+    features: {
+      type: [String],
+      default: [],
+    },
     role: {
       type: String,
       required: true,

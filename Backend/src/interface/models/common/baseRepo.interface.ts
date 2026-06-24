@@ -1,12 +1,16 @@
 import { Types } from 'mongoose';
 
+export type IPopulateOptions = {
+  path: string;
+  select?: string;
+  model?: string;
+  populate?: IPopulateOptions;
+};
+
 export type IBaseRepoParams<T> = Partial<T> & {
   filter?: Partial<T>[];
-  populate?: {
-    path: Extract<keyof T, string>;
-    populate?: IBaseRepoParams<T>['populate'];
-  };
-  select?: Extract<keyof T, string>[];
+  populate?: IPopulateOptions | IPopulateOptions[];
+  select?: string;
   sort?: Partial<Record<Extract<keyof T, string>, 1 | -1>>;
 };
 

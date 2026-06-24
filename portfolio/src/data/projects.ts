@@ -9,7 +9,7 @@ export interface ProjectData {
   category: string;
   description: string;
   image: string;
-  status: string;
+  outcome: string;
   date: string;
   team: string;
   technologies: string[];
@@ -29,7 +29,7 @@ export const projectsData: Record<string, ProjectData> = {
       'An intelligent code completion and documentation tool powered by GPT-4, designed to help developers write better code faster with AI-powered suggestions and automatic documentation generation.',
     image:
       'https://images.unsplash.com/photo-1697577418970-95d99b5a55cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhcnRpZmljaWFsJTIwaW50ZWxsaWdlbmNlJTIwdGVjaG5vbG9neXxlbnwxfHx8fDE3NzE0NzYzMTF8MA&ixlib=rb-4.1.0&q=80&w=1080',
-    status: 'Completed',
+    outcome: 'Completed successfully',
     date: 'January 2025',
     team: 'Solo Developer',
     technologies: [

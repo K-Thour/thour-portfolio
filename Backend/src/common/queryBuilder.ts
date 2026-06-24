@@ -10,7 +10,7 @@ const queryBuilder = <T>(queryParams: IqueryBuilderParams<T>) => {
 
   let query = model.find(parsedFilter);
 
-  if (select && select.length > 0) query = query.select(select);
+  if (select) query = query.select(select);
   if (populate) query = query.populate(populate);
   if (sort) query = query.sort(sort);
 

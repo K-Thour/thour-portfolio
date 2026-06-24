@@ -11,6 +11,7 @@ export interface IProject {
   year: number;
   client: string;
   fullDescription: string;
+  features: string[];
   role: string;
   outcome: string;
   workingUrl: string;
@@ -39,6 +40,7 @@ export interface createProjectInput {
   year: number;
   client: string;
   fullDescription: string;
+  features?: string[];
   role: string;
   outcome: string;
   workingUrl: string;
