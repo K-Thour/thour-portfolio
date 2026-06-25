@@ -26,8 +26,8 @@ export function ProjectHeroImage({
       }`}
     >
       <img
-        src={project.image}
-        alt={project.title}
+        src={project?.image}
+        alt={project?.title}
         className="w-full h-96 object-cover"
       />
     </motion.div>

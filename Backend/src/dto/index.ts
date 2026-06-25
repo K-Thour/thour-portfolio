@@ -32,6 +32,7 @@ export interface CreateProjectDTO {
   projectMetric: string[];
   projectTestimonial: string[];
   techStack: string[];
+  features?: string[];
 }
 
 export type UpdateProjectDTO = Partial<CreateProjectDTO>;

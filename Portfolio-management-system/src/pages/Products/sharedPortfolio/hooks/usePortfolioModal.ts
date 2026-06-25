@@ -26,7 +26,7 @@ export function usePortfolioModal() {
     setFormData({ name: "", projectIds: [] });
   }, []);
 
-  const toggleProject = useCallback((projectId: number) => {
+  const toggleProject = useCallback((projectId: string) => {
     setFormData((prev) => ({
       ...prev,
       projectIds: prev.projectIds.includes(projectId)

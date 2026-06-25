@@ -4,7 +4,7 @@ interface StatusBadgeProps {
 }
 
 export function StatusBadge({ status, isDark }: StatusBadgeProps) {
-  const isCompleted = status === "Completed";
+  const isCompleted = status === "Completed successfully";
   return (
     <span
       className={`px-4 py-1 rounded-full text-sm font-medium border ${

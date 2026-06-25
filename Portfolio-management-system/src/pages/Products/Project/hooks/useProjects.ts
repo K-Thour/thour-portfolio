@@ -15,6 +15,8 @@ export function useProjects() {
   const [editingProject, setEditingProject] = useState<any | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [deletingId, setDeletingId] = useState<string | number | null>(null);
+  const [viewingProject, setViewingProject] = useState<any | null>(null);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
 
   useEffect(() => {
     loadProjects();
@@ -33,10 +35,11 @@ export function useProjects() {
         longDescription: p.fullDescription || "",
         image: p.image?.url || "",
         technologies: p.techStack?.map((t: any) => t.name || t) || [],
-        features: Array.isArray(p.features) ? p.features : [],
+        features: Array.isArray(p.features) ? [...p.features] : [],
         github: p.githubUrl || "",
         liveUrl: p.workingUrl || "",
-        status: p.isActive ? "Completed" : "In Progress",
+        status:
+          p.outcome === "Completed successfully" ? "Completed" : "In Progress",
       }));
       setProjects(mappedData);
     } catch (error) {
@@ -154,7 +157,13 @@ export function useProjects() {
   };
 
   const handleView = (project: any) => {
-    window.open(project.liveUrl, "_blank");
+    setViewingProject(project);
+    setIsDetailModalOpen(true);
+  };
+
+  const handleCloseDetailModal = () => {
+    setIsDetailModalOpen(false);
+    setViewingProject(null);
   };
 
   const handleCloseModal = () => {
@@ -174,6 +183,8 @@ export function useProjects() {
     editingProject,
     isDeleteDialogOpen,
     deletingId,
+    viewingProject,
+    isDetailModalOpen,
     handlers: {
       handleAdd,
       handleEdit,
@@ -184,6 +195,7 @@ export function useProjects() {
       handleDeleteConfirm,
       handleDeleteClick,
       handleDeleteCancel,
+      handleCloseDetailModal,
     },
   };
 }

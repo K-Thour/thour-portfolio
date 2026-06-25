@@ -238,18 +238,40 @@ export const generateResumeAI = async (data: {
 };
 
 // ─── PORTFOLIO API ────────────────────────────────────────────────────────────
+export const normalizePortfolioPayload = (data: any) => {
+  const normalized = { ...data };
+
+  if (Array.isArray(normalized.projects)) {
+    normalized.project = normalized.projects;
+    delete normalized.projects;
+  }
+
+  if (Array.isArray(normalized.projectIds)) {
+    normalized.project = normalized.projectIds;
+    delete normalized.projectIds;
+  }
+
+  return normalized;
+};
+
 export const fetchPortfolios = async () => {
   const response = await apiClient.get("/portfolio/get");
   return unwrap(response);
 };
 
 export const createPortfolio = async (data: any) => {
-  const response = await apiClient.post("/portfolio/create", data);
+  const response = await apiClient.post(
+    "/portfolio/create",
+    normalizePortfolioPayload(data),
+  );
   return unwrap(response);
 };
 
 export const updatePortfolio = async (id: string, data: any) => {
-  const response = await apiClient.patch(`/portfolio/update/${id}`, data);
+  const response = await apiClient.patch(
+    `/portfolio/update/${id}`,
+    normalizePortfolioPayload(data),
+  );
   return unwrap(response);
 };
 

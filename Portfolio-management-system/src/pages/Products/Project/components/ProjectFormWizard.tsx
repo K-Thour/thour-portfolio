@@ -135,13 +135,18 @@ export const ProjectFormWizard: React.FC<ProjectFormWizardProps> = ({
   // 🔄 When editing, ensure the form is seeded with the full initialData on open
   useEffect(() => {
     if (isEditing && isOpen && initialData) {
-      form.reset();
       const values = getInitialValues();
-      Object.entries(values).forEach(([key, val]) => {
-        form.setFieldValue(key as any, val);
-      });
+      // Reset with the full initial values atomically so features/technologies
+      // are never wiped to [] by a plain form.reset() call first
+      form.reset();
+      // Use setTimeout to let the reset settle before re-seeding values
+      setTimeout(() => {
+        Object.entries(values).forEach(([key, val]) => {
+          form.setFieldValue(key as any, val);
+        });
+      }, 0);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, isEditing]);
 
   // 💾 Auto-save form values to localStorage on every change (add-mode only)

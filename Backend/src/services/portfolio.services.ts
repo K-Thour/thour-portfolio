@@ -59,7 +59,16 @@ const deleteOneService = (id: string) => {
 
 const getService = (params: IPortfolioRepoParams) => {
   return asyncCommonWrapper(async () => {
-    const result = await models.portfolio.repo.get(params);
+    const paramsWithPopulate: IPortfolioRepoParams = {
+      ...params,
+      populate: [
+        {
+          path: 'createdBy',
+          select: 'name username fullName firstName lastName',
+        },
+      ],
+    };
+    const result = await models.portfolio.repo.get(paramsWithPopulate);
     return commonResponse.success(
       result,
       MESSAGES_COMMON_UTIL.fetchedSuccessfully('Portfolio'),
@@ -71,7 +80,16 @@ const getService = (params: IPortfolioRepoParams) => {
 
 const getOneService = (params?: IPortfolioRepoParams) => {
   return asyncCommonWrapper(async () => {
-    const result = await models.portfolio.repo.getOne(params);
+    const paramsWithPopulate: IPortfolioRepoParams = {
+      ...params,
+      populate: [
+        {
+          path: 'createdBy',
+          select: 'name username fullName firstName lastName',
+        },
+      ],
+    };
+    const result = await models.portfolio.repo.getOne(paramsWithPopulate);
     return commonResponse.success(
       result,
       MESSAGES_COMMON_UTIL.fetchedSuccessfully('Portfolio'),

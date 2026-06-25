@@ -394,10 +394,12 @@ export const TechFeaturesStep: React.FC<TechFeaturesStepProps> = ({
         </form.Field>
         <div className="space-y-2 mt-3">
           {features.length === 0 && (
-            <p className={cn(
-              "text-sm italic",
-              isDark ? "text-gray-500" : "text-gray-400"
-            )}>
+            <p
+              className={cn(
+                "text-sm italic",
+                isDark ? "text-gray-500" : "text-gray-400",
+              )}
+            >
               No features added yet
             </p>
           )}

@@ -11,8 +11,8 @@ export function ProjectHeader({ project }: ProjectHeaderProps) {
   const { theme } = useTheme();
   const isDark = theme === 'avengers';
 
-  console.log("Project data:", project)
-  console.log("Category:", project.category)
+  console.log('Project data:', project);
+  console.log('Category:', project.category);
 
   return (
     <div className="mb-12">
@@ -59,9 +59,13 @@ export function ProjectHeader({ project }: ProjectHeaderProps) {
                 }}
               />
             ) : (
-              <Folder className={`w-4 h-4 ${isDark ? 'text-red-500' : 'text-blue-600'}`} />
+              <Folder
+                className={`w-4 h-4 ${isDark ? 'text-red-500' : 'text-blue-600'}`}
+              />
             )}
-            {typeof project.category === 'object' ? project.category.name : project.category}
+            {typeof project.category === 'object'
+              ? project.category.name
+              : project.category}
           </span>
         </div>
 

@@ -56,10 +56,11 @@ export function Projects() {
 
   return (
     <div
-      className={`min-h-screen pt-24 pb-20 ${isDark
+      className={`min-h-screen pt-24 pb-20 ${
+        isDark
           ? 'bg-gradient-to-b from-slate-950 to-slate-900'
           : 'bg-gradient-to-b from-slate-50 via-blue-50 to-white'
-        }`}
+      }`}
     >
       <div className="container mx-auto px-6">
         <motion.div

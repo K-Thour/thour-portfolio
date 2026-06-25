@@ -3,6 +3,7 @@ import { ProjectHeader } from "./components/ProjectHeader";
 import { ProjectList } from "./components/ProjectList";
 import { ProjectModal } from "./components/ProjectModal";
 import { DeleteConfirmModal } from "./components/DeleteConfirmModal";
+import { ProjectDetailModal } from "./components/ProjectDetailModal";
 import type { RootState } from "../../../store/store";
 import { useAppSelector } from "../../../hooks/useRedux";
 
@@ -16,6 +17,8 @@ function ProjectPage() {
     editingProject,
     handlers,
     isDeleteDialogOpen,
+    viewingProject,
+    isDetailModalOpen,
   } = useProjects();
 
   return (
@@ -40,6 +43,11 @@ function ProjectPage() {
         onConfirm={handlers.handleDeleteConfirm}
         onCancel={handlers.handleDeleteCancel}
         isDark={isDark}
+      />
+      <ProjectDetailModal
+        project={viewingProject}
+        isOpen={isDetailModalOpen}
+        onClose={handlers.handleCloseDetailModal}
       />
     </div>
   );

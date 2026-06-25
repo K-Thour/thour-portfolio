@@ -1,5 +1,3 @@
-import { Link } from "react-router";
-import { ArrowLeft } from "lucide-react";
 import type { NotFoundStateProps } from "../types";
 
 export function NotFoundState({ isDark }: NotFoundStateProps) {
@@ -27,9 +25,10 @@ export function NotFoundState({ isDark }: NotFoundStateProps) {
           Portfolio Not Found
         </div>
         <p className={`mb-6 ${isDark ? "text-gray-400" : "text-gray-600"}`}>
-          This portfolio link may be invalid or has been removed.
+          This portfolio link may be invalid or has been removed.Please check
+          the URL or contact the portfolio owner for assistance.
         </p>
-        <Link
+        {/* <Link
           to="/"
           className={`inline-flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-all hover:scale-105 ${
             isDark
@@ -39,7 +38,7 @@ export function NotFoundState({ isDark }: NotFoundStateProps) {
         >
           <ArrowLeft className="w-5 h-5" />
           Go to Home
-        </Link>
+        </Link> */}
       </div>
     </div>
   );

@@ -4,7 +4,10 @@ import type { PortfolioHeaderProps } from "../types";
 export function PortfolioHeader({
   isDark,
   projectCount,
+  userName,
 }: PortfolioHeaderProps) {
+  const displayName = userName?.trim() ? userName.trim() : "User";
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -16,7 +19,7 @@ export function PortfolioHeader({
           isDark ? "text-white" : "text-gray-900"
         }`}
       >
-        {isDark ? "Mission Showcase" : "Battle Victories"}
+        {`${displayName}'s portfolio`}
       </h2>
       <p className={`text-lg ${isDark ? "text-gray-400" : "text-gray-600"}`}>
         {projectCount} Selected Project{projectCount !== 1 ? "s" : ""}

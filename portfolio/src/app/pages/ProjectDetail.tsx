@@ -25,21 +25,28 @@ export function ProjectDetail() {
           setProject({
             title: data.title,
             subtitle: data.device || 'Project',
-            category: data.category && typeof data.category === 'object'
-              ? {
-                  name: data.category.name,
-                  iconUrl: data.category.iconUrl?.url || null,
-                }
-              : { name: data.category || 'Category', iconUrl: null },
+            category:
+              data.category && typeof data.category === 'object'
+                ? {
+                    name: data.category.name,
+                    iconUrl: data.category.iconUrl?.url || null,
+                  }
+                : { name: data.category || 'Category', iconUrl: null },
             description: data.description,
+            fullDescription: data.fullDescription || '',
             image: data.image?.url || 'https://via.placeholder.com/1080',
-            status: data.isActive ? 'Active' : 'Completed',
+            outcome: data.outcome || '',
             date: data.year ? data.year.toString() : '2026',
             team: data.role || 'Solo Developer',
             technologies: Array.isArray(data.techStack)
               ? data.techStack.map((t: any) =>
                   typeof t === 'object' && t?.name
-                    ? { _id: t._id, name: t.name, category: t.category || '', iconUrl: t.iconUrl?.url || null }
+                    ? {
+                        _id: t._id,
+                        name: t.name,
+                        category: t.category || '',
+                        iconUrl: t.iconUrl?.url || null,
+                      }
                     : { name: String(t) },
                 )
               : [],
@@ -157,6 +164,42 @@ export function ProjectDetail() {
               className="w-full aspect-[2.4/1] object-cover"
             />
           </motion.div>
+
+          {/* Full Description */}
+          {project.fullDescription &&
+            project.fullDescription !== project.description && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+                className={`mb-12 rounded-2xl p-8 border ${
+                  isDark
+                    ? 'bg-slate-900/60 border-red-500/20'
+                    : 'bg-white/70 border-blue-200 shadow-lg shadow-blue-500/5'
+                }`}
+              >
+                <h2
+                  className={`text-2xl font-bold mb-4 ${
+                    isDark ? 'text-white' : 'text-gray-900'
+                  }`}
+                >
+                  {isDark ? 'Mission Overview' : 'About This Project'}
+                </h2>
+                <div
+                  className={`border-l-4 pl-5 ${
+                    isDark ? 'border-red-500' : 'border-blue-500'
+                  }`}
+                >
+                  <p
+                    className={`text-base leading-relaxed whitespace-pre-line ${
+                      isDark ? 'text-gray-300' : 'text-gray-700'
+                    }`}
+                  >
+                    {project.fullDescription}
+                  </p>
+                </div>
+              </motion.div>
+            )}
 
           {/* Features, Technologies, Challenges */}
           <ProjectFeatures project={project} />

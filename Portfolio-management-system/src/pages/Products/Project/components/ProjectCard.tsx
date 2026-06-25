@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { Edit2, Trash2, ExternalLink, Eye } from "lucide-react";
+import { Edit2, Trash2, ExternalLink, Eye, Github } from "lucide-react";
 import { useAppSelector } from "../../../../hooks/useRedux";
 import type { RootState } from "../../../../store/store";
 import type { ProjectCardProps } from "./types";
@@ -93,13 +93,32 @@ export function ProjectCard({
               <Eye className="w-4 h-4" />
               <span>{project.views} views</span>
             </div>
-            <button
-              onClick={() => onView(project)}
-              className={`flex items-center gap-2 text-sm font-medium ${isDark ? "text-red-500 hover:text-red-400" : "text-blue-600 hover:text-blue-700"}`}
-            >
-              <ExternalLink className="w-4 h-4" />
-              View Live
-            </button>
+            {project.github &&
+              project.github !== "#" &&
+              project.github !== "https://github.com" && (
+                <a
+                  href={project.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`flex items-center gap-2 text-sm font-medium transition-colors ${isDark ? "text-gray-400 hover:text-white" : "text-gray-500 hover:text-gray-700"}`}
+                >
+                  <Github className="w-4 h-4" />
+                  Source Code
+                </a>
+              )}
+            {project.liveUrl &&
+              project.liveUrl !== "#" &&
+              project.liveUrl !== "https://example.com" && (
+                <a
+                  href={project.liveUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`flex items-center gap-2 text-sm font-medium ${isDark ? "text-red-500 hover:text-red-400" : "text-blue-600 hover:text-blue-700"}`}
+                >
+                  <ExternalLink className="w-4 h-4" />
+                  View Live
+                </a>
+              )}
           </div>
         </div>
       </div>

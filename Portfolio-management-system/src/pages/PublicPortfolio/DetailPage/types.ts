@@ -3,17 +3,23 @@ export interface ProjectFeature {
   description: string;
 }
 
+export interface TechItemData {
+  name: string;
+  iconUrl?: string;
+}
+
 export interface ProjectData {
   id: number;
   title: string;
   subtitle: string;
   category: string;
   description: string;
+  fullDescription?: string;
   image: string;
   status: string;
   date: string;
   team: string;
-  technologies: string[];
+  technologies: TechItemData[];
   link: string;
   github: string;
   challenges: ProjectFeature[];

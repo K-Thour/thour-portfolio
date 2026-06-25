@@ -1,5 +1,6 @@
 import { motion } from "motion/react";
 import { Link } from "react-router";
+import envConstraints from "../../../../constraints/env.constraints";
 
 interface ContactCTAProps {
   isInView: boolean;
@@ -29,7 +30,7 @@ export function ContactCTA({ isInView, isDark }: ContactCTAProps) {
           : "Let us forge your legend together."}
       </p>
       <Link
-        to="/contact"
+        to={envConstraints.PORTFOLIO_WEB_BASE_URL + "/contact"}
         className={`inline-block px-8 py-4 rounded-xl font-medium transition-all duration-300 hover:scale-105 ${
           isDark
             ? "bg-linear-to-r from-red-600 to-yellow-500 text-white hover:shadow-lg hover:shadow-red-500/50"

@@ -34,6 +34,7 @@ export interface NotFoundStateProps {
 export interface PortfolioHeaderProps {
   isDark: boolean;
   projectCount: number;
+  userName: string;
 }
 
 export interface ProjectCardProps {

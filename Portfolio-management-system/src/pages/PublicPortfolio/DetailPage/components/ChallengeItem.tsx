@@ -16,7 +16,7 @@ export function ChallengeItem({
 }: ChallengeItemProps) {
   return (
     <motion.div
-      key={challenge.title}
+      key={challenge?.title}
       initial={{ opacity: 0, y: 20 }}
       animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
       transition={{ duration: 0.6, delay: 0.7 + index * 0.1 }}
@@ -29,10 +29,10 @@ export function ChallengeItem({
       <h3
         className={`text-lg font-bold mb-2 ${isDark ? "text-white" : "text-gray-900"}`}
       >
-        {challenge.title}
+        {challenge?.title}
       </h3>
       <p className={isDark ? "text-gray-400" : "text-gray-700"}>
-        {challenge.description}
+        {challenge?.description}
       </p>
     </motion.div>
   );

@@ -1,4 +1,8 @@
 export default {
   API_BASE_URL:
     import.meta.env.REACT_APP_API_BASE_URL || "http://localhost:3000/api",
+  PORTFOLIO_WEB_BASE_URL:
+    import.meta.env.PORTFOLIO_WEB_BASE_URL || "http://localhost:5174",
+  PORTFOLIO_MANAGEMENT_BASE_URL:
+    import.meta.env.PORTFOLIO_MANAGEMENT_BASE_URL || "http://localhost:5173",
 };

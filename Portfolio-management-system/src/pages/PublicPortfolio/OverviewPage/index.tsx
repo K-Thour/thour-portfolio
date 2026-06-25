@@ -3,9 +3,39 @@ import { useParams } from "react-router";
 import { useAppSelector } from "../../../hooks/useRedux";
 import type { RootState } from "../../../store/store";
 import { NotFoundState, PortfolioHeader, ProjectsGrid } from "./components";
-import { allProjects } from "./data/allProjects";
-import type { PortfolioData, Project, SharedPortfolio } from "./types";
+import type { PortfolioData } from "./types";
 import { LoadingState } from "../../../components/common/loadingState/LoadingState";
+import {
+  fetchCurrentUser,
+  fetchPortfolios,
+  fetchProjects,
+} from "../../../services/api";
+import { buildPublicPortfolioData } from "./utils/portfolioData";
+import { allProjects } from "./data/allProjects";
+
+const getDisplayNameFromValue = (value: unknown, fallback = "User") => {
+  if (!value) return fallback;
+
+  if (typeof value === "string") {
+    return value.trim() || fallback;
+  }
+
+  if (typeof value === "object") {
+    const candidate = value as Record<string, unknown>;
+    const name =
+      (candidate.name as string | undefined) ||
+      (candidate.username as string | undefined) ||
+      (candidate.fullName as string | undefined) ||
+      (candidate.firstName as string | undefined) ||
+      (candidate.lastName as string | undefined);
+
+    if (typeof name === "string" && name.trim()) {
+      return name.trim();
+    }
+  }
+
+  return fallback;
+};
 
 function PublicPortfolioOverviewPage() {
   const params = useParams();
@@ -17,33 +47,90 @@ function PublicPortfolioOverviewPage() {
     null,
   );
   const [loading, setLoading] = useState(true);
+  const [userName, setUserName] = useState("User");
 
   useEffect(() => {
-    const sharedPortfolios = JSON.parse(
-      localStorage.getItem("shared-portfolios") || "[]",
-    );
-    const portfolio = sharedPortfolios.find(
-      (p: SharedPortfolio) => p.id === token,
-    );
+    const loadUser = async () => {
+      if (!localStorage.getItem("token")) {
+        return;
+      }
 
-    if (portfolio) {
-      const projects = portfolio.projectIds
-        .map((id: number) => allProjects.find((p) => p.id === id))
-        .filter(Boolean) as Project[];
+      try {
+        const data = await fetchCurrentUser();
+        setUserName(
+          getDisplayNameFromValue(
+            data?.name ||
+              data?.username ||
+              data?.firstName ||
+              data?.fullName ||
+              data,
+          ),
+        );
+      } catch {
+        setUserName((current) => current || "User");
+      }
+    };
 
-      // Defer setState to avoid cascading renders
-      queueMicrotask(() => {
-        setPortfolioData({
-          name: portfolio.name,
-          projects,
-          createdAt: portfolio.createdAt,
-        });
-      });
-    }
+    void loadUser();
+  }, []);
 
-    queueMicrotask(() => {
-      setLoading(false);
-    });
+  useEffect(() => {
+    const loadPortfolio = async () => {
+      setLoading(true);
+      try {
+        const [portfolioDataResponse, projectsResponse] = await Promise.all([
+          fetchPortfolios(),
+          fetchProjects(),
+        ]);
+        const portfolio = (portfolioDataResponse || []).find(
+          (p: any) => p._id === token,
+        );
+
+        if (portfolio) {
+          const normalizedProjects = Array.isArray(projectsResponse)
+            ? projectsResponse
+            : projectsResponse?.data || [];
+          const builtPortfolio = buildPublicPortfolioData(
+            portfolio,
+            normalizedProjects,
+          );
+
+          if (!builtPortfolio.projects.length) {
+            const fallbackProjects = allProjects.filter((project: any) =>
+              (
+                portfolio.project ||
+                portfolio.projects ||
+                portfolio.projectIds ||
+                []
+              ).some((id: any) => {
+                const selectedId =
+                  typeof id === "object" ? id._id || String(id) : String(id);
+                return String(project.id) === selectedId;
+              }),
+            );
+
+            builtPortfolio.projects = fallbackProjects;
+          }
+
+          setUserName((current) => {
+            if (current && current !== "User") {
+              return current;
+            }
+            return getDisplayNameFromValue(portfolio.createdBy, "User");
+          });
+          setPortfolioData(builtPortfolio as PortfolioData);
+        } else {
+          setPortfolioData(null);
+        }
+      } catch (error) {
+        console.error("Failed to load public portfolio:", error);
+        setPortfolioData(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    void loadPortfolio();
   }, [token]);
 
   if (loading) {
@@ -63,6 +150,7 @@ function PublicPortfolioOverviewPage() {
         <PortfolioHeader
           isDark={isDark}
           projectCount={portfolioData.projects.length}
+          userName={userName}
         />
         <ProjectsGrid projects={portfolioData.projects} isDark={isDark} />
       </main>

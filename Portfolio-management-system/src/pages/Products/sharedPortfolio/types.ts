@@ -1,25 +1,26 @@
 export interface Portfolio {
   id: string;
   name: string;
-  projectIds: number[];
+  projectIds: string[];
   url: string;
   createdAt: string;
 }
 
 export interface Project {
-  id: number;
+  id: string;
   title: string;
   category: string;
+  image?: string;
 }
 
 export interface FormData {
   name: string;
-  projectIds: number[];
+  projectIds: string[];
 }
 
 export interface PortfolioListProps {
   portfolios: Portfolio[];
-  allProjects: { id: number; title: string; category: string }[];
+  allProjects: { id: string; title: string; category: string }[];
   isDark: boolean;
   copiedId: string | null;
   onEdit: (portfolio: Portfolio) => void;
@@ -59,7 +60,7 @@ export interface NameInputProps {
 
 export interface PortfolioCardProps {
   portfolio: Portfolio;
-  allProjects: { id: number; title: string; category: string }[];
+  allProjects: { id: string; title: string; category: string }[];
   isDark: boolean;
   isCopied: boolean;
   onEdit: () => void;
@@ -69,6 +70,7 @@ export interface PortfolioCardProps {
 
 export interface PortfolioHeaderProps {
   isDark: boolean;
+  userName: string;
   onAdd: () => void;
 }
 
@@ -78,28 +80,30 @@ export interface PortfolioModalProps {
   editingPortfolio: Portfolio | null;
   formData: FormData;
   allProjects: Project[];
+  isLoadingProjects?: boolean;
   onClose: () => void;
   onSubmit: (e: React.FormEvent) => void;
   onNameChange: (name: string) => void;
-  onToggleProject: (projectId: number) => void;
+  onToggleProject: (projectId: string) => void;
 }
 
 export interface ProjectMultiSelectProps {
   isDark: boolean;
   projects: Project[];
-  selectedIds: number[];
-  onToggle: (id: number) => void;
+  selectedIds: string[];
+  onToggle: (id: string) => void;
+  isLoading?: boolean;
 }
 
 export interface ProjectSelectorProps {
   isDark: boolean;
   projects: Project[];
-  selectedIds: number[];
-  onToggle: (id: number) => void;
+  selectedIds: string[];
+  onToggle: (id: string) => void;
 }
 
 export interface ProjectTagsProps {
-  projectIds: number[];
-  allProjects: { id: number; title: string }[];
+  projectIds: string[];
+  allProjects: { id: string; title: string }[];
   isDark: boolean;
 }

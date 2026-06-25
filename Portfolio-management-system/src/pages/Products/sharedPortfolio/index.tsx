@@ -1,17 +1,21 @@
+import { useEffect, useState } from "react";
 import { useAppSelector } from "../../../hooks/useRedux";
 import type { RootState } from "../../../store/store";
-import { useShareProjects, allProjects } from "./hooks/useShareProjects";
+import { useShareProjects } from "./hooks/useShareProjects";
 import { copyToClipboard } from "./utils/clipboard";
 import { PortfolioHeader, PortfolioList, PortfolioModal } from "./components";
 import ConfirmModal from "../../../components/common/confirmModel/confirmModel";
 import { useToast } from "../../../hooks/useToast";
+import { fetchCurrentUser } from "../../../services/api";
 
 function ShareProjectsPortfolio() {
   const { theme } = useAppSelector((state: RootState) => state.theme);
   const isDark = theme === "dark";
   const { toast } = useToast();
+  const [userName, setUserName] = useState("User");
   const {
     portfolios,
+    allProjects,
     isModalOpen,
     editingPortfolio,
     formData,
@@ -29,6 +33,19 @@ function ShareProjectsPortfolio() {
     setPortfolioToDelete,
     removePortfolio,
   } = useShareProjects();
+
+  useEffect(() => {
+    const loadUser = async () => {
+      try {
+        const data = await fetchCurrentUser();
+        setUserName(data?.name || data?.username || "User");
+      } catch {
+        setUserName("User");
+      }
+    };
+
+    void loadUser();
+  }, []);
 
   const handleCopy = (url: string, id: string) => {
     copyToClipboard(
@@ -48,7 +65,11 @@ function ShareProjectsPortfolio() {
 
   return (
     <div className="space-y-6 overflow-hidden">
-      <PortfolioHeader isDark={isDark} onAdd={() => openModal()} />
+      <PortfolioHeader
+        isDark={isDark}
+        userName={userName}
+        onAdd={() => openModal()}
+      />
       <PortfolioList
         portfolios={portfolios}
         allProjects={allProjects}

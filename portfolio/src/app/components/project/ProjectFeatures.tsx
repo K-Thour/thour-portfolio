@@ -104,7 +104,8 @@ export function ProjectFeatures({ project }: ProjectFeaturesProps) {
                         onError={(e) => {
                           const img = e.currentTarget as HTMLImageElement;
                           img.style.display = 'none';
-                          const fallback = img.nextElementSibling as HTMLElement;
+                          const fallback =
+                            img.nextElementSibling as HTMLElement;
                           if (fallback) fallback.style.display = 'flex';
                         }}
                       />
@@ -143,7 +144,6 @@ export function ProjectFeatures({ project }: ProjectFeaturesProps) {
             </div>
           </div>
         )}
-
 
       {Array.isArray(project.challenges) && project.challenges.length > 0 && (
         <div className="mb-12">

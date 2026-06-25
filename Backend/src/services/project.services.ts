@@ -98,9 +98,20 @@ const updateService = (id: string, data: Partial<IProjectModel>, updatedBy: Type
       }
     }
 
-    // Preserve features if not provided in update payload
-    if (currentProject && data.features === undefined) {
-      data.features = currentProject.features || [];
+    // Preserve features if not provided in update payload, or if an empty
+    // array is sent but the project already has features saved (prevents
+    // accidental wipe when editing other fields without touching features)
+    if (currentProject) {
+      if (data.features === undefined) {
+        data.features = currentProject.features || [];
+      } else if (
+        Array.isArray(data.features) &&
+        data.features.length === 0 &&
+        currentProject.features &&
+        currentProject.features.length > 0
+      ) {
+        data.features = currentProject.features;
+      }
     }
 
     const result = await models.project.repo.update(id, data, updatedBy);
@@ -145,7 +156,8 @@ const getService = (params: IProjectRepoParams) => {
         { path: 'category', select: 'name iconUrl' },
         { path: 'techStack', select: 'name iconUrl category' },
       ],
-      select: 'title description image device year client fullDescription features role outcome workingUrl githubUrl screenshots projectMetric projectTestimonial techStack isDeleted isActive deletedBy createdBy updatedBy deletedAt',
+      select:
+        'title category description image device year client fullDescription features role outcome workingUrl githubUrl screenshots projectMetric projectTestimonial techStack isDeleted isActive deletedBy createdBy updatedBy deletedAt',
     };
     const result = await models.project.repo.get(paramsWithPopulate);
     // Ensure features is always an array
@@ -170,7 +182,8 @@ const getOneService = (params?: IProjectRepoParams) => {
         { path: 'category', select: 'name iconUrl' },
         { path: 'techStack', select: 'name iconUrl category' },
       ],
-      select: 'title description image device year client fullDescription features role outcome workingUrl githubUrl screenshots projectMetric projectTestimonial techStack isDeleted isActive deletedBy createdBy updatedBy deletedAt',
+      select:
+        'title category description image device year client fullDescription features role outcome workingUrl githubUrl screenshots projectMetric projectTestimonial techStack isDeleted isActive deletedBy createdBy updatedBy deletedAt',
     };
     const result = await models.project.repo.getOne(paramsWithPopulate);
     // Ensure features is always an array

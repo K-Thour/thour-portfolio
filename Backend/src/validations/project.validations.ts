@@ -24,6 +24,7 @@ export const projectCreateSchema = z.object({
   projectMetric: z.array(z.string()),
   projectTestimonial: z.array(z.string()),
   techStack: z.array(z.string()),
+  features: z.array(z.string()).optional().default([]),
 });
 
 export const projectUpdateSchema = projectCreateSchema

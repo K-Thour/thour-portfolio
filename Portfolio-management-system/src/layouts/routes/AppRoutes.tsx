@@ -82,6 +82,7 @@ function AppRoutes() {
         element={commonBundler({
           component: <PublicPortfolioOverviewPage />,
           isPublic: true,
+          isProtected: false,
           isLayoutRequired: true,
         })}
       />
@@ -90,6 +91,7 @@ function AppRoutes() {
         element={commonBundler({
           component: <ProjectDetailPage />,
           isPublic: true,
+          isProtected: false,
           isLayoutRequired: true,
         })}
       />
