@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { useRef, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router';
 import { ArrowLeft } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
