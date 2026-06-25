@@ -23,7 +23,7 @@ export function ProjectHeader({ project, isInView }: ProjectHeaderProps) {
           <BackButton isDark={isDark} />
           <div className="flex items-center justify-end gap-2 mr-8 flex-1">
             <StatusBadge status={project?.status} isDark={isDark} />
-            <CategoryBadge category={project?.category} isDark={isDark} />
+            <CategoryBadge category={project?.category} categoryIconUrl={project?.categoryIconUrl} isDark={isDark} />
           </div>
         </div>
         <h1

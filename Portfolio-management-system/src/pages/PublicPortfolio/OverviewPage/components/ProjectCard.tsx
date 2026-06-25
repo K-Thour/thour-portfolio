@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { Github, Globe, Calendar, Tag } from "lucide-react";
+import { Github, Globe, Calendar, Tag, Folder } from "lucide-react";
 import type { ProjectCardProps } from "../types";
 import { useNavigate } from "react-router-dom";
 
@@ -28,10 +28,22 @@ export function ProjectCard({ project, index, isDark }: ProjectCardProps) {
           className="w-full h-full object-cover transition-transform hover:scale-110"
         />
         <div
-          className={`absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-medium ${
+          className={`absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-medium flex items-center gap-2 ${
             isDark ? "bg-slate-900/90 text-white" : "bg-white/90 text-gray-900"
           }`}
         >
+          {project.categoryIconUrl ? (
+            <img
+              src={project.categoryIconUrl}
+              alt=""
+              className="w-4 h-4 rounded-full object-cover"
+              onError={(e) => {
+                e.currentTarget.style.display = 'none';
+              }}
+            />
+          ) : (
+            <Folder className={`w-4 h-4 ${isDark ? 'text-red-500' : 'text-blue-600'}`} />
+          )}
           {project.category}
         </div>
       </div>

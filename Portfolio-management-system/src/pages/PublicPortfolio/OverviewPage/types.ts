@@ -2,6 +2,7 @@ export interface Project {
   id: number;
   title: string;
   category: string;
+  categoryIconUrl?: string;
   image: string;
   description: string;
   technologies: string[];

@@ -161,7 +161,7 @@ export function ProjectDetail() {
             <img
               src={project.image}
               alt={project.title}
-              className="w-full aspect-[2.4/1] object-cover"
+              className="w-full aspect-[16/9] object-cover"
             />
           </motion.div>
 

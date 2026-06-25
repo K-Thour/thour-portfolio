@@ -125,47 +125,61 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
   };
 
   const generateCrop = async () => {
-    if (!imgRef.current || !completedCrop) return;
+  if (!imgRef.current || !completedCrop) return;
 
-    const image = imgRef.current;
-    const canvas = document.createElement("canvas");
-    const scaleX = image.naturalWidth / image.width;
-    const scaleY = image.naturalHeight / image.height;
+  const image = imgRef.current;
 
-    canvas.width = completedCrop.width;
-    canvas.height = completedCrop.height;
-    const ctx = canvas.getContext("2d");
+  // Scale between displayed image and original image
+  const scaleX = image.naturalWidth / image.width;
+  const scaleY = image.naturalHeight / image.height;
 
-    if (!ctx) return;
+  // Create a high-resolution canvas
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
 
-    if (circular) {
-      ctx.beginPath();
-      ctx.arc(
-        completedCrop.width / 2,
-        completedCrop.height / 2,
-        Math.min(completedCrop.width, completedCrop.height) / 2,
-        0,
-        2 * Math.PI,
-      );
-      ctx.clip();
-    }
+  if (!ctx) return;
 
-    ctx.drawImage(
-      image,
-      completedCrop.x * scaleX,
-      completedCrop.y * scaleY,
-      completedCrop.width * scaleX,
-      completedCrop.height * scaleY,
+  // Canvas size should match the ORIGINAL crop size
+  canvas.width = Math.floor(completedCrop.width * scaleX);
+  canvas.height = Math.floor(completedCrop.height * scaleY);
+
+  // High quality rendering
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = "high";
+
+  // Transparent background for circular crop
+  if (circular) {
+    ctx.beginPath();
+    ctx.arc(
+      canvas.width / 2,
+      canvas.height / 2,
+      Math.min(canvas.width, canvas.height) / 2,
       0,
-      0,
-      completedCrop.width,
-      completedCrop.height,
+      Math.PI * 2
     );
+    ctx.closePath();
+    ctx.clip();
+  }
 
-    const base64Image = canvas.toDataURL("image/jpeg");
-    onCropComplete(base64Image);
-    onClose();
-  };
+  // Draw cropped image in ORIGINAL resolution
+  ctx.drawImage(
+    image,
+    completedCrop.x * scaleX,
+    completedCrop.y * scaleY,
+    completedCrop.width * scaleX,
+    completedCrop.height * scaleY,
+    0,
+    0,
+    canvas.width,
+    canvas.height
+  );
+
+  // Export with maximum JPEG quality
+  const base64Image = canvas.toDataURL("image/jpeg", 1.0);
+
+  onCropComplete(base64Image);
+  onClose();
+};
 
   if (!isOpen) return null;
 

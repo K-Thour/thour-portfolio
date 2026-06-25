@@ -13,6 +13,7 @@ export interface ProjectData {
   title: string;
   subtitle: string;
   category: string;
+  categoryIconUrl?: string;
   description: string;
   fullDescription?: string;
   image: string;

@@ -20,6 +20,21 @@ const getCategoryName = (category: any) => {
   return String(category);
 };
 
+const getCategoryIconUrl = (category: any) => {
+  if (!category) return undefined;
+
+  if (typeof category === "object") {
+    if (category.iconUrl?.url) {
+      return category.iconUrl.url;
+    }
+    if (category.iconUrl) {
+      return category.iconUrl;
+    }
+  }
+
+  return undefined;
+};
+
 export function buildPublicPortfolioData(portfolio: any, projects: any[]) {
   const selectedIds = (
     portfolio.project ||
@@ -41,6 +56,7 @@ export function buildPublicPortfolioData(portfolio: any, projects: any[]) {
       id: project._id || project.id,
       title: project.title || "Untitled project",
       category: getCategoryName(project.category),
+      categoryIconUrl: getCategoryIconUrl(project.category),
       image: project.image?.url || project.image || "",
       description: project.description || project.fullDescription || "",
       technologies: (project.techStack || []).map(

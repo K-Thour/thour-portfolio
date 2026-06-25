@@ -6,6 +6,7 @@ import utils from "../../../../../../utils";
 import { projectBasicInfoSchema } from "../../../../../../validations/project";
 import { ImageCropperModal } from "../../../../../../components/common/imageCropper/ImageCropperModal";
 import { uploadImage } from "../../../../../../services/api";
+import { useToast } from "../../../../../../hooks/useToast";
 
 const { cn } = utils.tailwindUtils;
 
@@ -25,6 +26,7 @@ export const BasicInfoStep: React.FC<BasicInfoStepProps> = ({
   const [srcImage, setSrcImage] = useState("");
   const [uploading, setUploading] = useState(false);
   const [imageType, setImageType] = useState<"url" | "file">("url");
+  const { toast } = useToast();
 
   const handleImageFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -43,8 +45,20 @@ export const BasicInfoStep: React.FC<BasicInfoStepProps> = ({
     try {
       const res = await uploadImage(croppedBase64);
       field.handleChange(res.url);
+      toast({
+        title: "Image Uploaded",
+        description: "Image uploaded successfully",
+        variant: "success",
+        duration: 5000,
+      });
     } catch (err) {
       console.error("Failed to upload image:", err);
+      toast({
+        title: "Error",
+        description: "Failed to upload image",
+        variant: "destructive",
+        duration: 5000,
+      });
     } finally {
       setUploading(false);
     }

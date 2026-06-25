@@ -22,6 +22,9 @@ export const uploadToCloudinary = async (
   base64String: string,
   folder: string = 'portfolio',
 ): Promise<{ url: string; publicId: string }> => {
+  console.log('Cloudinary upload started, configured:', isCloudinaryConfigured);
+  console.log('Base64 string length:', base64String.length);
+
   if (!isCloudinaryConfigured) {
     // If not configured, return the base64 string directly so it displays fine locally
     return {
@@ -34,7 +37,10 @@ export const uploadToCloudinary = async (
     const uploadResponse = await cloudinary.uploader.upload(base64String, {
       folder,
       resource_type: 'image',
+      quality: 'auto:best',
+      fetch_format: 'auto',
     });
+    console.log('Cloudinary upload successful:', uploadResponse.public_id);
     return {
       url: uploadResponse.secure_url,
       publicId: uploadResponse.public_id,
