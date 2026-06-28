@@ -90,7 +90,7 @@ function PublicPortfolioOverviewPage() {
           const normalizedProjects = Array.isArray(projectsResponse)
             ? projectsResponse
             : projectsResponse?.data || [];
-          const builtPortfolio = buildPublicPortfolioData(
+          const builtPortfolio: any = buildPublicPortfolioData(
             portfolio,
             normalizedProjects,
           );
