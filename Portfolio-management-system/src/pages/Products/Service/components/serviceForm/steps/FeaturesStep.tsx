@@ -7,7 +7,6 @@ import { serviceFeaturesSchema } from "../../../../../../validations/service";
 const { cn } = utils.tailwindUtils;
 
 interface FeaturesStepProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   form: any;
   isDark: boolean;
 }

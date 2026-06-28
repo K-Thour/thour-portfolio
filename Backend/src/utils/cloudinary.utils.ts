@@ -62,11 +62,10 @@ export const deleteFromCloudinary = async (publicId: string): Promise<void> => {
   }
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const uploadBase64ImagesInObject = async (
-  obj: any,
+  obj: any, // eslint-disable-line @typescript-eslint/no-explicit-any
   folder: string = 'portfolio',
-): Promise<any> => {
+): Promise<any> => { // eslint-disable-line @typescript-eslint/no-explicit-any
   if (!obj || typeof obj !== 'object') {
     return obj;
   }

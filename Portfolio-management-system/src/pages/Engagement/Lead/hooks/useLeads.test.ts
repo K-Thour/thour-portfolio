@@ -44,6 +44,7 @@ describe("useLeads hook", () => {
       date: "2026-06-16",
       status: "New",
       description: "Need assistance",
+      statusMessage: "",
     });
   });
 
@@ -69,7 +70,10 @@ describe("useLeads hook", () => {
       await result.current.handleStatusChange("l1", "Contacted");
     });
 
-    expect(updateLead).toHaveBeenCalledWith("l1", { status: "Contacted" });
+    expect(updateLead).toHaveBeenCalledWith("l1", {
+      status: "Contacted",
+      statusMessage: undefined,
+    });
     expect(fetchLeads).toHaveBeenCalledTimes(2); // reloads leads after status change
   });
 });

@@ -10,7 +10,7 @@ interface ProjectResultsProps {
 }
 
 export function ProjectResults({
-  project: _project,
+  project: _project, // eslint-disable-line @typescript-eslint/no-unused-vars
   isInView,
 }: ProjectResultsProps) {
   const { theme } = useAppSelector((state: RootState) => state.theme);

@@ -6,7 +6,7 @@ import { InputFieldRenderer } from "./InputFieldRenderer";
 
 interface FieldRendererProps {
   field: AnyFieldApi;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   fieldConfig: FormFieldConfig<any>;
   isDark: boolean;
 }

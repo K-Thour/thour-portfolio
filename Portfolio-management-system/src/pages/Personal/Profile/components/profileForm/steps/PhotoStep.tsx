@@ -9,7 +9,6 @@ import { uploadImage } from "../../../../../../services/api";
 const { cn } = utils.tailwindUtils;
 
 interface PhotoStepProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   form: any;
   isDark: boolean;
 }

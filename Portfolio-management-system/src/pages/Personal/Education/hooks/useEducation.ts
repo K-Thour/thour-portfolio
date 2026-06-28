@@ -72,6 +72,7 @@ export function useEducation() {
   };
 
   const handleSubmit = async (data: EducationFormData) => {
+    setLoading(true);
     // Map frontend fields to backend validation schema
     const payload = {
       level: data.level,
@@ -115,6 +116,8 @@ export function useEducation() {
         variant: "destructive",
         duration: 3000,
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -125,6 +128,7 @@ export function useEducation() {
 
   const handleDeleteConfirm = async () => {
     if (deletingId) {
+      setLoading(true);
       try {
         await deleteEducation(deletingId.toString());
         setEducationList(educationList.filter((e) => e.id !== deletingId));
@@ -144,6 +148,8 @@ export function useEducation() {
           variant: "destructive",
           duration: 3000,
         });
+      } finally {
+        setLoading(false);
       }
     }
   };

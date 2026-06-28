@@ -7,7 +7,7 @@ import { Input } from "../../../ui/input";
 
 interface InputFieldRendererProps {
   field: AnyFieldApi;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   fieldConfig: FormFieldConfig<any>;
   isDark: boolean;
 }
@@ -23,7 +23,7 @@ export const InputFieldRenderer: React.FC<InputFieldRendererProps> = ({
   const onChange = field.handleChange;
 
   const errorMessage = field.state.meta.errors
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     .map((err: any) =>
       typeof err === "string" ? err : err?.message || "Invalid input",
     )
@@ -45,7 +45,6 @@ export const InputFieldRenderer: React.FC<InputFieldRendererProps> = ({
           value={(value as string) || ""}
           onBlur={onBlur}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             onChange(e.target.value as any);
           }}
           placeholder={fieldConfig.placeholder || ""}
@@ -66,7 +65,7 @@ export const InputFieldRenderer: React.FC<InputFieldRendererProps> = ({
               fieldConfig.type === "number"
                 ? Number(e.target.value)
                 : e.target.value;
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
             onChange(val as any);
           }}
           placeholder={fieldConfig.placeholder}

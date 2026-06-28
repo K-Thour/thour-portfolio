@@ -11,11 +11,11 @@ import { IEducationRepoParams } from '../interface/models/education/educationRep
 
 const createService = (data: createEducationInput, createdBy: Types.ObjectId) => {
   return asyncCommonWrapper(async () => {
-    const cleanData = { ...data };
+    const cleanData = { ...data } as Partial<createEducationInput>;
     if (cleanData.endYear === 'pursuing') {
-      delete (cleanData as any).endYear;
+      delete (cleanData as Partial<createEducationInput>).endYear;
     }
-    const result = await models.education.repo.create(cleanData as any, createdBy);
+    const result = await models.education.repo.create(cleanData, createdBy);
     return commonResponse.success(
       result,
       MESSAGES_COMMON_UTIL.createdSuccessfully('Education'),

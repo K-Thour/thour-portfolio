@@ -5,7 +5,6 @@ import type { FieldType } from "../../../hooks/useExperienceForm.types";
 const { cn } = utils.tailwindUtils;
 
 interface DescriptionStepProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   form: any;
   isDark: boolean;
 }

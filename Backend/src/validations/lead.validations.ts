@@ -8,6 +8,7 @@ export const leadCreateSchema = z.object({
   service: z.string().optional(),
   description: z.string().min(1, 'Description is required'),
   status: z.enum(['New', 'Contacted', 'Qualified', 'Proposal Sent', 'Lost', 'Won']).optional(),
+  statusMessage: z.string().optional(),
 });
 
 export const leadUpdateSchema = leadCreateSchema

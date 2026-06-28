@@ -24,12 +24,23 @@ export function useContacts() {
       const list = await fetchContacts();
       const mappedList = list.map((c: any) => ({
         id: c._id,
-        Address1: c.Address1,
-        Address2: c.Address2 || "",
-        startWorkingDay: c.startWorkingDay,
-        endWorkingDay: c.endWorkingDay,
-        startWorkingHour: c.startWorkingHour,
-        endWorkingHour: c.endWorkingHour,
+        label: c.label,
+        email: c.email,
+        phone: c.phone,
+        address: c.address,
+        city: c.city,
+        state: c.state,
+        country: c.country,
+        zipCode: c.zipCode,
+        website: c.website || "",
+        linkedin: c.linkedin || "",
+        github: c.github || "",
+        twitter: c.twitter || "",
+        instagram: c.instagram || "",
+        facebook: c.facebook || "",
+        youtube: c.youtube || "",
+        availability: c.availability || "",
+        timezone: c.timezone || "",
         isActive: c.isActive !== false,
       }));
       setContacts(mappedList);
@@ -60,6 +71,7 @@ export function useContacts() {
 
   const handleSubmit = useCallback(
     async (data: ContactFormData) => {
+      setLoading(true);
       try {
         if (editingContact) {
           await updateContact(editingContact.id.toString(), data);
@@ -89,6 +101,8 @@ export function useContacts() {
           variant: "destructive",
           duration: 3000,
         });
+      } finally {
+        setLoading(false);
       }
     },
     [editingContact, loadContacts, toast],
@@ -101,6 +115,7 @@ export function useContacts() {
 
   const handleDeleteConfirm = useCallback(async () => {
     if (deletingId) {
+      setLoading(true);
       try {
         await deleteContact(deletingId.toString());
         toast({
@@ -120,6 +135,8 @@ export function useContacts() {
           variant: "destructive",
           duration: 3000,
         });
+      } finally {
+        setLoading(false);
       }
     }
   }, [deletingId, loadContacts, toast]);
@@ -131,6 +148,7 @@ export function useContacts() {
 
   const handleSetActive = useCallback(
     async (id: string | number) => {
+      setLoading(true);
       try {
         // Set target active
         await updateContact(id.toString(), { isActive: true });
@@ -154,6 +172,8 @@ export function useContacts() {
           variant: "destructive",
           duration: 3000,
         });
+      } finally {
+        setLoading(false);
       }
     },
     [contacts, loadContacts, toast],

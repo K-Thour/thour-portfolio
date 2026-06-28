@@ -6,7 +6,6 @@ import utils from "../../../../../../utils";
 const { cn } = utils.tailwindUtils;
 
 interface HobbiesInputProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   form: any;
   isDark: boolean;
 }

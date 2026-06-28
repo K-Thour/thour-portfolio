@@ -29,9 +29,9 @@ export interface CommonFormProps<TData> {
   defaultValues: TData;
   onSubmit: (values: { value: TData }) => void | Promise<void>;
   fields?: FormFieldConfig<TData>[];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   children?: ((form: any) => ReactNode) | ReactNode;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   customFooter?: (form: any) => ReactNode;
   submitText?: string;
   className?: string;

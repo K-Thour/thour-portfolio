@@ -38,11 +38,13 @@ export function ProjectCard({ project, index, isDark }: ProjectCardProps) {
               alt=""
               className="w-4 h-4 rounded-full object-cover"
               onError={(e) => {
-                e.currentTarget.style.display = 'none';
+                e.currentTarget.style.display = "none";
               }}
             />
           ) : (
-            <Folder className={`w-4 h-4 ${isDark ? 'text-red-500' : 'text-blue-600'}`} />
+            <Folder
+              className={`w-4 h-4 ${isDark ? "text-red-500" : "text-blue-600"}`}
+            />
           )}
           {project.category}
         </div>

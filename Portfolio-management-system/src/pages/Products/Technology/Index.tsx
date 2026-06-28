@@ -65,6 +65,7 @@ export function Technologies() {
   };
 
   const handleSubmit = async (data: Omit<Technology, "id">) => {
+    setLoading(true);
     let finalUrl = "https://placehold.co/100";
     if (data.iconType === "image") {
       finalUrl = data.iconImage || "https://placehold.co/100";
@@ -114,6 +115,8 @@ export function Technologies() {
         variant: "destructive",
         duration: 3000,
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -123,6 +126,7 @@ export function Technologies() {
 
   const handleConfirmDelete = async () => {
     if (deleteId) {
+      setLoading(true);
       try {
         await deleteTechnology(deleteId.toString());
         toast({
@@ -140,6 +144,8 @@ export function Technologies() {
           variant: "destructive",
           duration: 3000,
         });
+      } finally {
+        setLoading(false);
       }
     }
     setDeleteId(undefined);

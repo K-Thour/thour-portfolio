@@ -27,6 +27,7 @@ export function useLeads() {
           : "",
         status: l.status || "New",
         description: l.description || "",
+        statusMessage: l.statusMessage || "",
       }));
       setLeads(mappedList);
     } catch (err) {
@@ -79,8 +80,12 @@ export function useLeads() {
     newStatus: LeadStatus,
     reason?: string,
   ) => {
+    setLoading(true);
     try {
-      await updateLead(leadId.toString(), { status: newStatus });
+      await updateLead(leadId.toString(), {
+        status: newStatus,
+        statusMessage: reason,
+      });
       toast({
         title: "Lead Status Updated",
         description: `Successfully updated lead status to ${newStatus}`,
@@ -91,7 +96,9 @@ export function useLeads() {
 
       // Update local viewing lead if it matches
       setViewingLead((prev) =>
-        prev && prev.id === leadId ? { ...prev, status: newStatus } : prev,
+        prev && prev.id === leadId
+          ? { ...prev, status: newStatus, statusMessage: reason || "" }
+          : prev,
       );
       console.log(
         `Status changed for lead ${leadId} to ${newStatus}`,
@@ -105,6 +112,8 @@ export function useLeads() {
         variant: "destructive",
         duration: 3000,
       });
+    } finally {
+      setLoading(false);
     }
   };
 

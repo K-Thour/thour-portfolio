@@ -18,6 +18,7 @@ export function useShareProjects() {
   // ─── Projects from API ─────────────────────────────────────────────────────
   const [allProjects, setAllProjects] = useState<Project[]>([]);
   const [isLoadingProjects, setIsLoadingProjects] = useState(true);
+  const [isLoadingPortfolios, setIsLoadingPortfolios] = useState(false);
 
   useEffect(() => {
     const loadProjects = async () => {
@@ -59,6 +60,7 @@ export function useShareProjects() {
   );
 
   const loadPortfolios = useCallback(async () => {
+    setIsLoadingPortfolios(true);
     try {
       const data = await fetchPortfolios();
       const mapped: Portfolio[] = (data || []).map((p: any) => ({
@@ -74,6 +76,8 @@ export function useShareProjects() {
       setPortfolios(mapped);
     } catch (err) {
       console.error("Failed to load portfolios:", err);
+    } finally {
+      setIsLoadingPortfolios(false);
     }
   }, []);
 
@@ -99,6 +103,7 @@ export function useShareProjects() {
       return;
     }
 
+    setIsLoadingPortfolios(true);
     try {
       if (editing) {
         await updatePortfolio(editing.id, {
@@ -130,6 +135,8 @@ export function useShareProjects() {
         description: "Could not save portfolio. Please try again.",
         variant: "destructive",
       });
+    } finally {
+      setIsLoadingPortfolios(false);
     }
   };
 
@@ -141,6 +148,7 @@ export function useShareProjects() {
 
   const removePortfolio = useCallback(
     async (id: string) => {
+      setIsLoadingPortfolios(true);
       try {
         await deletePortfolio(id);
         await loadPortfolios();
@@ -156,6 +164,8 @@ export function useShareProjects() {
           description: "Could not delete portfolio. Please try again.",
           variant: "destructive",
         });
+      } finally {
+        setIsLoadingPortfolios(false);
       }
     },
     [loadPortfolios, toast],
@@ -165,6 +175,7 @@ export function useShareProjects() {
     portfolios,
     allProjects,
     isLoadingProjects,
+    isLoadingPortfolios,
     isModalOpen: isOpen,
     editingPortfolio: editing,
     formData,

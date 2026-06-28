@@ -2,7 +2,7 @@ import { useState, useCallback, useRef, useEffect } from "react";
 
 interface StepConfig {
   id: number;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   schema: any | null;
   fields: string[];
 }
@@ -25,7 +25,7 @@ interface UseWizardReturn<TForm> {
   validateStep: (
     stepId: number,
     values: TForm,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     form: any,
   ) => Promise<boolean>;
   getInitialValues: () => TForm;
@@ -59,7 +59,6 @@ function saveStepState(
   );
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const useWizard = <TForm extends Record<string, any>>({
   steps,
   defaultValues,
@@ -139,7 +138,7 @@ export const useWizard = <TForm extends Record<string, any>>({
     async (
       stepId: number,
       _values: TForm,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       form: any,
     ): Promise<boolean> => {
       const step = steps.find((s) => s.id === stepId);
@@ -147,7 +146,6 @@ export const useWizard = <TForm extends Record<string, any>>({
 
       // 1️⃣ Touch all fields first — TanStack Form skips validateField when isTouched is false
       step.fields.forEach((field: string) => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         form.setFieldMeta(field, (meta: any) => ({ ...meta, isTouched: true }));
       });
 

@@ -41,35 +41,46 @@ export function useResumeOperations() {
 
   const createResume = useCallback(
     async (formData: ResumeFormData): Promise<Resume> => {
-      const response = await generateResumeAI({
-        name: formData.name,
-        description: formData.description,
-        jobLink: formData.jobLink,
-      });
-      const newResume: Resume = {
-        id: response._id,
-        name: response.name,
-        description: response.description || "",
-        jobLink: response.jobUrl || "",
-        designType: response.designType || "latex",
-        latexCode: response.latexCode || "",
-        status: "completed",
-        createdAt: response.createdAt,
-        updatedAt: response.updatedAt,
-        generatedFileUrl: response.resumeUrl,
-      };
-      setResumes((prev) => [newResume, ...prev]);
-      return newResume;
+      setLoading(true);
+      try {
+        const response = await generateResumeAI({
+          name: formData.name,
+          description: formData.description,
+          jobLink: formData.jobLink,
+        });
+        const newResume: Resume = {
+          id: response._id,
+          name: response.name,
+          description: response.description || "",
+          jobLink: response.jobUrl || "",
+          designType: response.designType || "latex",
+          latexCode: response.latexCode || "",
+          status: "completed",
+          createdAt: response.createdAt,
+          updatedAt: response.updatedAt,
+          generatedFileUrl: response.resumeUrl,
+        };
+        setResumes((prev) => [newResume, ...prev]);
+        return newResume;
+      } catch (err) {
+        console.error("Failed to create resume:", err);
+        throw err;
+      } finally {
+        setLoading(false);
+      }
     },
     [],
   );
 
   const deleteResume = useCallback(async (id: string) => {
+    setLoading(true);
     try {
       await deleteResumeApi(id);
       setResumes((prev) => prev.filter((r) => r.id !== id));
     } catch (err) {
       console.error("Failed to delete resume:", err);
+    } finally {
+      setLoading(false);
     }
   }, []);
 

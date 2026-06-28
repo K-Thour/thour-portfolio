@@ -2,7 +2,6 @@ import React from "react";
 import Button from "../../../ui/button/Button";
 
 interface FormSubmitButtonProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   form: any;
   buttonClassName?: string;
   submitText?: string;

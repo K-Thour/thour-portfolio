@@ -47,7 +47,6 @@ export function CommonForm<TData>({
             >
               {(field) => (
                 <FieldRenderer
-                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
                   field={field as any}
                   fieldConfig={fieldConfig}
                   isDark={isDark}

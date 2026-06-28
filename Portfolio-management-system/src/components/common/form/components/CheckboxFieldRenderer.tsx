@@ -4,7 +4,7 @@ import type { FormFieldConfig } from "../interface/interfaces";
 
 interface CheckboxFieldRendererProps {
   field: AnyFieldApi;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   fieldConfig: FormFieldConfig<any>;
   isDark: boolean;
 }
@@ -24,7 +24,6 @@ export const CheckboxFieldRenderer: React.FC<CheckboxFieldRendererProps> = ({
           type="checkbox"
           id={fieldConfig.name as string}
           checked={value as boolean}
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           onChange={(e) => onChange(e.target.checked as any)}
           className={`w-4 h-4 rounded cursor-pointer ${isDark ? "accent-red-500" : "accent-blue-600"}`}
         />

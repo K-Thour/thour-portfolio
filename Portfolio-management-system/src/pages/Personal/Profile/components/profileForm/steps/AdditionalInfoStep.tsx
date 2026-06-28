@@ -5,7 +5,6 @@ import { HobbiesInput } from "./HobbiesInput";
 import { LanguagesInput } from "./LanguagesInput";
 
 interface AdditionalInfoStepProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   form: any;
   isDark: boolean;
 }

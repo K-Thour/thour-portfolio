@@ -8,7 +8,6 @@ import { fetchTechnologies } from "../../../../../../services/api";
 const { cn } = utils.tailwindUtils;
 
 interface TechFeaturesStepProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   form: any;
   isDark: boolean;
 }

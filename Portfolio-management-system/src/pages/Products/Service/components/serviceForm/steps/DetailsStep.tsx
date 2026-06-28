@@ -7,7 +7,6 @@ import { servicePricingSchema } from "../../../../../../validations/service";
 const { cn } = utils.tailwindUtils;
 
 interface DetailsStepProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   form: any;
   isDark: boolean;
 }

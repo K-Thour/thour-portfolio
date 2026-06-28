@@ -6,6 +6,7 @@ export interface Lead {
   date: string;
   status: LeadStatus;
   description: string;
+  statusMessage?: string;
 }
 
 export type LeadStatus =

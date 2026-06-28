@@ -64,7 +64,9 @@ export function useProjectDetail(): UseProjectDetailReturn {
                 : matched.category || "Uncategorized",
             categoryIconUrl:
               typeof matched.category === "object"
-                ? matched.category?.iconUrl?.url || matched.category?.iconUrl || undefined
+                ? matched.category?.iconUrl?.url ||
+                  matched.category?.iconUrl ||
+                  undefined
                 : undefined,
             description: matched.description || matched.fullDescription || "",
             fullDescription:

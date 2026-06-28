@@ -10,7 +10,7 @@ import { comparePassword, hashPassword } from '../utils/bcrypt.utils';
 import { generateToken } from '../utils/jwt.utils';
 import { uploadBase64ImagesInObject, deleteFromCloudinary } from '../utils/cloudinary.utils';
 
-const escapeRegex = (string: string) => string.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+const escapeRegex = (string: string) => string.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
 
 const getAll = (params: IUserRepoParams) => {
   return asyncCommonWrapper(async () => {
@@ -44,8 +44,8 @@ const register = (data: createUserInput) => {
     const emailStr = data.email.trim();
     const emailRegex = new RegExp(`^${escapeRegex(emailStr)}$`, 'i');
     const isUserExist = await models.user.repo.get({
-      filter: [{ email: emailRegex as any }],
-      select: ['email'],
+      filter: [{ email: emailRegex as any }], // eslint-disable-line @typescript-eslint/no-explicit-any
+      select: 'email',
     });
     data.email = emailStr.toLowerCase();
     if (isUserExist.length > 0) {
@@ -79,7 +79,7 @@ const update = (id: string, data: Partial<IUserModel>, updatedBy: Types.ObjectId
       const emailStr = data.email.trim();
       const emailRegex = new RegExp(`^${escapeRegex(emailStr)}$`, 'i');
       const isEmailExist = await models.user.repo.getOne({
-        filter: [{ email: emailRegex as any, _id: { $ne: new Types.ObjectId(id) } as any }],
+        filter: [{ email: emailRegex as any, _id: { $ne: new Types.ObjectId(id) } as any }], // eslint-disable-line @typescript-eslint/no-explicit-any
       });
       data.email = emailStr.toLowerCase();
       if (isEmailExist) {
@@ -144,8 +144,8 @@ const login = (email: string, password: string) => {
   return asyncCommonWrapper(async () => {
     const emailRegex = new RegExp(`^${escapeRegex(email.trim())}$`, 'i');
     const result = await models.user.repo.get({
-      filter: [{ email: emailRegex as any }],
-      select: ['email', 'passwordHash'],
+      filter: [{ email: emailRegex as any }], // eslint-disable-line @typescript-eslint/no-explicit-any
+      select: 'email passwordHash',
     });
     if (result.length === 0) {
       return commonResponse.error(
@@ -179,7 +179,7 @@ const changePassword = (id: string, currentPassword: string, newPassword: string
   return asyncCommonWrapper(async () => {
     const user = await models.user.repo.getOne({
       filter: [{ _id: new Types.ObjectId(id) }],
-      select: ['passwordHash'],
+      select: 'passwordHash',
     });
 
     if (!user) {
@@ -220,7 +220,7 @@ const changePassword = (id: string, currentPassword: string, newPassword: string
 const forgotPassword = (email: string) => {
   return asyncCommonWrapper(async () => {
     const emailRegex = new RegExp(`^${escapeRegex(email.trim())}$`, 'i');
-    const result = await models.user.repo.getOne({ filter: [{ email: emailRegex as any }] });
+    const result = await models.user.repo.getOne({ filter: [{ email: emailRegex as any }] }); // eslint-disable-line @typescript-eslint/no-explicit-any
     if (!result) {
       return commonResponse.error(
         null,
@@ -249,8 +249,8 @@ const verifyOtp = (email: string, otp: string) => {
   return asyncCommonWrapper(async () => {
     const emailRegex = new RegExp(`^${escapeRegex(email.trim())}$`, 'i');
     const user = await models.user.repo.getOne({
-      filter: [{ email: emailRegex as any }],
-      select: ['otp', 'otpExpiry'],
+      filter: [{ email: emailRegex as any }], // eslint-disable-line @typescript-eslint/no-explicit-any
+      select: 'otp otpExpiry',
     });
 
     if (!user) {
@@ -282,8 +282,8 @@ const resetPassword = (email: string, resetToken: string, passwordHash: string) 
   return asyncCommonWrapper(async () => {
     const emailRegex = new RegExp(`^${escapeRegex(email.trim())}$`, 'i');
     const user = await models.user.repo.getOne({
-      filter: [{ email: emailRegex as any }],
-      select: ['resetToken', 'resetTokenExpiry'],
+      filter: [{ email: emailRegex as any }], // eslint-disable-line @typescript-eslint/no-explicit-any
+      select: 'resetToken resetTokenExpiry',
     });
 
     if (!user) {

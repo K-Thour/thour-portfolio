@@ -11,7 +11,6 @@ import { useStore } from "@tanstack/react-form";
 const { cn } = utils.tailwindUtils;
 
 interface MediaStepProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   form: any;
   isDark: boolean;
 }

@@ -75,6 +75,7 @@ export const ExperiencePage: React.FC = () => {
   };
 
   const handleSubmitExperience = async (data: ExperienceFormData) => {
+    setLoading(true);
     const payload = {
       companyName: data.company,
       position: data.jobTitle,
@@ -120,6 +121,8 @@ export const ExperiencePage: React.FC = () => {
         variant: "destructive",
         duration: 3000,
       });
+    } finally {
+      setLoading(false);
     }
     handleCloseWizard();
   };
@@ -131,6 +134,7 @@ export const ExperiencePage: React.FC = () => {
 
   const handleConfirmDelete = async () => {
     if (!deletingId) return;
+    setLoading(true);
     try {
       await deleteExperience(deletingId);
       const expToDelete = experiences.find((e) => e.id === deletingId);
@@ -145,6 +149,8 @@ export const ExperiencePage: React.FC = () => {
       });
     } catch (err) {
       console.error("Failed to delete experience:", err);
+    } finally {
+      setLoading(false);
     }
     setDeleteModalOpen(false);
     setDeletingId(null);

@@ -15,6 +15,7 @@ const leadSchema = new Schema<ILeadModel>(
       enum: ['New', 'Contacted', 'Qualified', 'Proposal Sent', 'Lost', 'Won'],
       default: 'New',
     },
+    statusMessage: { type: String, required: false },
     updatedBy: { type: Schema.Types.ObjectId, ref: 'User' },
     deletedBy: { type: Schema.Types.ObjectId, ref: 'User' },
     createdAt: { type: Date, default: () => new Date(timeZone.utc.dateTime() + 'Z') },

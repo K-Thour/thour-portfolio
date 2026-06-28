@@ -1,14 +1,24 @@
 import { Types } from 'mongoose';
-import { EDay } from '../../common/common.enum';
 import { ICommonModel } from '../../common/common.interface';
 
 export interface IContact {
-  Address1: string;
-  Address2?: string;
-  startWorkingDay: EDay;
-  endWorkingDay: EDay;
-  startWorkingHour: string;
-  endWorkingHour: string;
+  label: string;
+  email: string;
+  phone: string;
+  address: string;
+  city: string;
+  state: string;
+  country: string;
+  zipCode: string;
+  website: string;
+  linkedin: string;
+  github: string;
+  twitter: string;
+  instagram: string;
+  facebook: string;
+  youtube: string;
+  availability: string;
+  timezone: string;
   isActive: boolean;
   isDeleted: boolean;
 }
@@ -21,12 +31,23 @@ export interface IContactModel extends IContact, ICommonModel {
 }
 
 export interface createContactInput {
-  Address1: string;
-  Address2?: string;
-  startWorkingDay: EDay;
-  endWorkingDay: EDay;
-  startWorkingHour: string;
-  endWorkingHour: string;
+  label: string;
+  email: string;
+  phone: string;
+  address: string;
+  city: string;
+  state: string;
+  country: string;
+  zipCode: string;
+  website: string;
+  linkedin: string;
+  github: string;
+  twitter: string;
+  instagram: string;
+  facebook: string;
+  youtube: string;
+  availability: string;
+  timezone: string;
 }
 
 export default IContactModel;

@@ -6,7 +6,11 @@ interface CategoryBadgeProps {
   isDark: boolean;
 }
 
-export function CategoryBadge({ category, categoryIconUrl, isDark }: CategoryBadgeProps) {
+export function CategoryBadge({
+  category,
+  categoryIconUrl,
+  isDark,
+}: CategoryBadgeProps) {
   return (
     <span
       className={`px-4 py-1 rounded-full text-sm font-medium border flex items-center gap-2 ${
@@ -21,11 +25,13 @@ export function CategoryBadge({ category, categoryIconUrl, isDark }: CategoryBad
           alt=""
           className="w-4 h-4 rounded-full object-cover"
           onError={(e) => {
-            e.currentTarget.style.display = 'none';
+            e.currentTarget.style.display = "none";
           }}
         />
       ) : (
-        <Folder className={`w-4 h-4 ${isDark ? 'text-red-500' : 'text-blue-600'}`} />
+        <Folder
+          className={`w-4 h-4 ${isDark ? "text-red-500" : "text-blue-600"}`}
+        />
       )}
       {category}
     </span>

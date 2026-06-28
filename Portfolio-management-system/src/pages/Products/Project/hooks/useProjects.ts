@@ -60,6 +60,7 @@ export function useProjects() {
   };
 
   const handleSubmit = async (data: any) => {
+    setIsLoading(true);
     const normalizedDevice = ["web", "mobile", "desktop"].includes(
       (data.subtitle || "").toLowerCase(),
     )
@@ -118,6 +119,8 @@ export function useProjects() {
         variant: "destructive",
         duration: 3000,
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -128,6 +131,7 @@ export function useProjects() {
 
   const handleDeleteConfirm = async () => {
     if (deletingId) {
+      setIsLoading(true);
       try {
         await deleteProject(deletingId.toString());
         toast({
@@ -146,6 +150,7 @@ export function useProjects() {
           duration: 3000,
         });
       } finally {
+        setIsLoading(false);
         setIsDeleteDialogOpen(false);
         setDeletingId(null);
       }

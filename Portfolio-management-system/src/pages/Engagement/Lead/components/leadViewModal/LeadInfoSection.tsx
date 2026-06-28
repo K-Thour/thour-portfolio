@@ -3,6 +3,7 @@ import { LeadHeader } from "./LeadHeader";
 import { ContactInfoCard } from "./ContactInfoCard";
 import { DetailsRow } from "./DetailsRow";
 import { DescriptionCard } from "./DescriptionCard";
+import { StatusMessageCard } from "./StatusMessageCard";
 
 interface LeadInfoSectionProps {
   lead: Lead;
@@ -28,6 +29,7 @@ export function LeadInfoSection({
       <ContactInfoCard lead={lead} isDark={isDark} cardBase={cardBase} />
       <DetailsRow lead={lead} isDark={isDark} cardBase={cardBase} />
       <DescriptionCard lead={lead} isDark={isDark} cardBase={cardBase} />
+      <StatusMessageCard lead={lead} isDark={isDark} cardBase={cardBase} />
     </div>
   );
 }

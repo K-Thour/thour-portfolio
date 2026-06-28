@@ -1,30 +1,26 @@
 import { Schema } from 'mongoose';
 import IContactModel from '../../interface/models/contact/contact.interface';
-import { EDay } from '../../interface/common/common.enum';
 import timeZone from '../../utils/date.utils';
 
 const contactSchema = new Schema<IContactModel>(
   {
-    Address1: { type: String, required: true },
-    Address2: { type: String },
-    startWorkingDay: {
-      type: String,
-      enum: Object.values(EDay),
-      required: true,
-    },
-    endWorkingDay: {
-      type: String,
-      enum: Object.values(EDay),
-      required: true,
-    },
-    startWorkingHour: {
-      type: String,
-      required: true,
-    },
-    endWorkingHour: {
-      type: String,
-      required: true,
-    },
+    label: { type: String, required: true },
+    email: { type: String, required: true },
+    phone: { type: String, required: true },
+    address: { type: String, required: true },
+    city: { type: String, required: true },
+    state: { type: String, required: true },
+    country: { type: String, required: true },
+    zipCode: { type: String, required: true },
+    website: { type: String, default: '' },
+    linkedin: { type: String, default: '' },
+    github: { type: String, default: '' },
+    twitter: { type: String, default: '' },
+    instagram: { type: String, default: '' },
+    facebook: { type: String, default: '' },
+    youtube: { type: String, default: '' },
+    availability: { type: String, default: '' },
+    timezone: { type: String, default: '' },
     isActive: {
       type: Boolean,
       default: true,

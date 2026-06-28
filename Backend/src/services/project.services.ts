@@ -8,14 +8,14 @@ import { Types } from 'mongoose';
 import { IProjectRepoParams } from '../interface/models/project/projectRepo.interface';
 import { uploadBase64ImagesInObject, deleteFromCloudinary } from '../utils/cloudinary.utils';
 
-const resolveRefs = async (data: any) => {
+const resolveRefs = async (data: Partial<IProjectModel>) => {
   if (
     data.category &&
     typeof data.category === 'string' &&
     !Types.ObjectId.isValid(data.category)
   ) {
     let service = await models.service.repo.getOne({
-      filter: [{ name: { $regex: new RegExp(`^${data.category}$`, 'i') } as any }],
+      filter: [{ name: { $regex: new RegExp(`^${data.category}$`, 'i') } as any }], // eslint-disable-line @typescript-eslint/no-explicit-any
     });
     if (!service) {
       service = await models.service.repo.create(
@@ -41,7 +41,7 @@ const resolveRefs = async (data: any) => {
           resolvedIds.push(new Types.ObjectId(item));
         } else {
           let tech = await models.technology.repo.getOne({
-            filter: [{ name: { $regex: new RegExp(`^${item}$`, 'i') } as any }],
+            filter: [{ name: { $regex: new RegExp(`^${item}$`, 'i') } as any }], // eslint-disable-line @typescript-eslint/no-explicit-any
           });
           if (!tech) {
             tech = await models.technology.repo.create(
@@ -161,7 +161,7 @@ const getService = (params: IProjectRepoParams) => {
     };
     const result = await models.project.repo.get(paramsWithPopulate);
     // Ensure features is always an array
-    const normalizedResult = result.map((project: any) => ({
+    const normalizedResult = result.map((project: IProjectModel) => ({
       ...project,
       features: Array.isArray(project.features) ? project.features : [],
     }));

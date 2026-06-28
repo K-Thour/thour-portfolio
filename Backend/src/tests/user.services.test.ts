@@ -38,7 +38,7 @@ describe('userServices.changePassword', () => {
     expect(response.message).toContain('Updated successfully Password');
     expect(models.user.repo.getOne).toHaveBeenCalledWith({
       filter: [{ _id: new Types.ObjectId(userId) }],
-      select: ['passwordHash'],
+      select: 'passwordHash',
     });
     expect(comparePassword).toHaveBeenCalledWith(currentPassword, 'hashed_current_password');
     expect(hashPassword).toHaveBeenCalledWith(newPassword);

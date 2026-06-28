@@ -6,7 +6,6 @@ import { CATEGORIES } from "../constants";
 const { cn } = utils.tailwindUtils;
 
 interface BasicInfoStepProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   form: any;
   isDark: boolean;
 }

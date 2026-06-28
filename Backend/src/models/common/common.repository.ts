@@ -21,9 +21,10 @@ const findOne = async <T>(query: Query<T[], T>): Promise<T | null> => {
 };
 
 const create = async <T>(data: Partial<T>, model: Model<T>): Promise<T> => {
-  const payload = { ...data } as any;
-  if (payload.createdBy && !payload.updatedBy) {
-    payload.updatedBy = payload.createdBy;
+  const payload = { ...data } as Partial<T>;
+  const payloadObj = payload as Record<string, unknown>;
+  if (payloadObj.createdBy && !payloadObj.updatedBy) {
+    payloadObj.updatedBy = payloadObj.createdBy;
   }
   return model.create(payload) as unknown as T;
 };

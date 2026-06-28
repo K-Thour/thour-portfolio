@@ -9,6 +9,7 @@ export interface ILead {
   service?: Types.ObjectId;
   description: string;
   status?: string;
+  statusMessage?: string;
 }
 
 export interface ILeadModel extends ILead, ICommonModel {
@@ -26,6 +27,7 @@ export interface createLeadInput {
   service?: Types.ObjectId;
   description: string;
   status?: string;
+  statusMessage?: string;
 }
 
 export default ILeadModel;

@@ -84,6 +84,7 @@ export function useServices() {
   };
 
   const handleSubmit = async (data: Omit<Service, "id" | "active">) => {
+    setLoading(true);
     let iconUrl = "https://placehold.co/100";
     let iconPublicId = "icon";
     const iconType = data.iconType || "emoji";
@@ -96,9 +97,6 @@ export function useServices() {
       iconUrl = data.iconUrl || "https://placehold.co/100";
     } else if (iconType === "upload") {
       iconPublicId = "icon_library";
-      iconUrl = data.iconUrl || "https://placehold.co/100";
-    } else if (iconType === "upload") {
-      iconPublicId = "icon_upload";
       iconUrl = data.iconUrl || "https://placehold.co/100";
     }
 
@@ -158,6 +156,8 @@ export function useServices() {
         variant: "destructive",
         duration: 3000,
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -168,6 +168,7 @@ export function useServices() {
 
   const handleDeleteConfirm = async () => {
     if (deletingId) {
+      setLoading(true);
       try {
         await deleteService(deletingId.toString());
         toast({
@@ -187,6 +188,8 @@ export function useServices() {
           variant: "destructive",
           duration: 3000,
         });
+      } finally {
+        setLoading(false);
       }
     }
   };
@@ -205,11 +208,14 @@ export function useServices() {
     // Find current service in local state to see active status
     const target = services.find((s) => s.id === id);
     if (!target) return;
+    setLoading(true);
     try {
       await updateService(id.toString(), { isActive: !target.active });
       await loadServices();
     } catch (err) {
       console.error("Failed to toggle service status:", err);
+    } finally {
+      setLoading(false);
     }
   };
 
