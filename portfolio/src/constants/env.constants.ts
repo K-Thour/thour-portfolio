@@ -4,15 +4,12 @@ declare const process: {
   };
 };
 
-
 export default {
   API_BASE_URL:
-    import.meta.env.VITE_API_BASE_URL ||
-    'http://localhost:3000/api',
+    import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api',
 
   PORTFOLIO_WEB_BASE_URL:
-    import.meta.env.VITE_PORTFOLIO_WEB_BASE_URL ||
-    'http://localhost:5174',
+    import.meta.env.VITE_PORTFOLIO_WEB_BASE_URL || 'http://localhost:5174',
 
   PORTFOLIO_MANAGEMENT_BASE_URL:
     import.meta.env.VITE_PORTFOLIO_MANAGEMENT_BASE_URL ||
