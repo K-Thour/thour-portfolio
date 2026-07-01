@@ -26,13 +26,24 @@ export function ContactInfo({ isInView }: ContactInfoProps) {
     userData?.phoneNumber ||
     (isDark ? '+1 (555) AVG-HERO' : '+1 (555) NOR-DWAR');
 
-  let locationVal = isDark ? 'Avengers Tower, NYC' : 'Midgard Realm';
-  if (activeContact) {
-    locationVal = activeContact.Address1;
-    if (activeContact.Address2) {
-      locationVal += `, ${activeContact.Address2}`;
-    }
-  }
+  const locationParts = activeContact
+    ? [
+        activeContact.address,
+        activeContact.city,
+        activeContact.state,
+        activeContact.country,
+      ].filter(Boolean)
+    : [];
+  const locationVal =
+    locationParts.length > 0
+      ? locationParts.join(', ')
+      : isDark
+        ? 'Avengers Tower, NYC'
+        : 'Midgard Realm';
+  const locationLink =
+    locationParts.length > 0
+      ? `https://maps.google.com/?q=${encodeURIComponent(locationVal)}`
+      : '#';
 
   const contactInfo = [
     {
@@ -54,7 +65,7 @@ export function ContactInfo({ isInView }: ContactInfoProps) {
       icon: MapPin,
       title: 'Location',
       value: locationVal,
-      link: '#',
+      link: locationLink,
     },
   ];
 
@@ -133,12 +144,17 @@ export function ContactInfo({ isInView }: ContactInfoProps) {
           {isDark ? 'Availability' : 'When to Call'}
         </h4>
         <p className={`mb-2 ${isDark ? 'text-gray-400' : 'text-gray-700'}`}>
-          {activeContact
-            ? `${activeContact.startWorkingDay} - ${activeContact.endWorkingDay}: ${activeContact.startWorkingHour} - ${activeContact.endWorkingHour}`
+          {activeContact?.availability
+            ? activeContact.availability
             : isDark
-              ? 'Monday - Friday: 9:00 AM - 6:00 PM EST'
+              ? 'Monday - Friday: 9:00 AM - 6:00 PM'
               : 'Sunrise to Sunset: All Days'}
         </p>
+        {activeContact?.timezone && (
+          <p className={`mb-2 text-sm ${isDark ? 'text-gray-500' : 'text-gray-600'}`}>
+            🌐 Timezone: {activeContact.timezone}
+          </p>
+        )}
         <p className={`mb-4 ${isDark ? 'text-gray-400' : 'text-gray-700'}`}>
           {isDark
             ? 'Emergency missions: 24/7 on-call'
