@@ -110,6 +110,7 @@ export function useProfile() {
 
     try {
       await updateCurrentUser(payload);
+      window.dispatchEvent(new CustomEvent("profile-updated", { detail: payload }));
       toast({
         title: "Profile Updated",
         description: "Successfully updated profile information.",

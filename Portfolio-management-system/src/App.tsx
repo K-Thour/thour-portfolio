@@ -6,6 +6,41 @@ import { AppToaster } from "./components/ui/toast/AppToaster";
 import AppRoutes from "./layouts/routes/AppRoutes";
 import { PersistGate } from "redux-persist/integration/react";
 import { persistor } from "./store/store";
+import { fetchPublicUser } from "./services/api";
+
+function TitleSync() {
+  useEffect(() => {
+    const loadTitle = async () => {
+      try {
+        const data = await fetchPublicUser();
+        if (data && data.name) {
+          document.title = `${data.name} Portfolio CMS`;
+        } else {
+          document.title = "Karanveer Thour Portfolio CMS";
+        }
+      } catch (err) {
+        console.error("Failed to load CMS title:", err);
+        document.title = "Karanveer Thour Portfolio CMS";
+      }
+    };
+
+    loadTitle();
+
+    const handleProfileUpdate = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      if (customEvent.detail && customEvent.detail.name) {
+        document.title = `${customEvent.detail.name} Portfolio CMS`;
+      }
+    };
+
+    window.addEventListener("profile-updated", handleProfileUpdate);
+    return () => {
+      window.removeEventListener("profile-updated", handleProfileUpdate);
+    };
+  }, []);
+
+  return null;
+}
 
 function ThemeSync() {
   const theme = useSelector((state: RootState) => state.theme.theme);
@@ -28,6 +63,7 @@ function App() {
       <PersistGate persistor={persistor}>
         <BrowserRouter>
           <ThemeSync />
+          <TitleSync />
           <AppRoutes />
           <AppToaster />
         </BrowserRouter>

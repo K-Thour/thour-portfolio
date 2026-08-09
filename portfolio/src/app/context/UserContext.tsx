@@ -96,6 +96,12 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     };
   }, []);
 
+  useEffect(() => {
+    if (userData && userData.name) {
+      document.title = `${userData.name} Portfolio`;
+    }
+  }, [userData]);
+
   return (
     <UserContext.Provider value={{ userData, loading }}>
       {children}

@@ -50,6 +50,11 @@ export const fetchCurrentUser = async () => {
   return unwrap(response);
 };
 
+export const fetchPublicUser = async () => {
+  const response = await apiClient.get("/user/public");
+  return unwrap(response);
+};
+
 export const updateCurrentUser = async (data: any) => {
   const response = await apiClient.patch("/user/update", data);
   return unwrap(response);
