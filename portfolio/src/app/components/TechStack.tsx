@@ -69,7 +69,7 @@ function TechPill({ tech, isDark }: TechPillProps) {
   );
 }
 
-const SMOOTH_EASE = [0.22, 1, 0.36, 1];
+const SMOOTH_EASE = [0.22, 1, 0.36, 1] as const;
 
 export function TechStack() {
   const [technologies, setTechnologies] = useState<Technology[]>([]);

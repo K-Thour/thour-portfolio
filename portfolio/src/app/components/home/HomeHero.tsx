@@ -31,7 +31,7 @@ const STATIC_SNOWFLAKES = Array.from({ length: 16 }, (_, i) => ({
   delay: `${(i * 0.5) % 4}s`,
 }));
 
-const SMOOTH_EASE = [0.22, 1, 0.36, 1];
+const SMOOTH_EASE = [0.22, 1, 0.36, 1] as const;
 
 export function HomeHero() {
   const { userData, loading: userLoading } = useUser();

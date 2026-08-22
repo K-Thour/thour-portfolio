@@ -1,5 +1,5 @@
 import React from 'react';
-import { Shield, Axe, Zap, Sparkles } from 'lucide-react';
+import { Shield, Axe } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 
 export const HeroAvatarLoader: React.FC = () => {

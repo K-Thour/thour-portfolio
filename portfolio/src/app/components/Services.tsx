@@ -4,7 +4,7 @@ import { useRef, useEffect, useState } from 'react';
 import { Code2 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { ServicesHeader } from './service/ServicesHeader';
-import { ServiceCard, type ServiceItem } from './service/ServiceCard';
+import { ServiceCard } from './service/ServiceCard';
 import { ServiceSkeletonCard } from './ui/skeleton';
 import { fetchServices } from '../../services/api';
 

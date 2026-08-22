@@ -5,7 +5,7 @@ import { Users, Briefcase, CheckCircle, Code } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { useUser } from '../context/UserContext';
 
-const SMOOTH_EASE = [0.22, 1, 0.36, 1];
+const SMOOTH_EASE = [0.22, 1, 0.36, 1] as const;
 
 export function Stats() {
   const ref = useRef<HTMLDivElement>(null);
