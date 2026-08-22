@@ -28,10 +28,7 @@ export const uploadBase64Image = async (
   }
 
   // If it is already a Cloudinary or external URL, do not re-upload
-  if (
-    base64String.startsWith('http://') ||
-    base64String.startsWith('https://')
-  ) {
+  if (base64String.startsWith('http://') || base64String.startsWith('https://')) {
     return base64String;
   }
 
@@ -47,9 +44,7 @@ export const uploadBase64Image = async (
   }
 };
 
-export const deleteCloudinaryImage = async (
-  imageUrl: string,
-): Promise<void> => {
+export const deleteCloudinaryImage = async (imageUrl: string): Promise<void> => {
   if (!isCloudinaryConfigured || !imageUrl.includes('cloudinary.com')) {
     return;
   }

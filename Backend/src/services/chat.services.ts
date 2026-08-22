@@ -45,7 +45,11 @@ const buildPortfolioKnowledge = async (): Promise<CachedContext> => {
       user.bio ||
       `Full Stack Software Engineer & AI Developer with ${user.experience || 3}+ years of experience, specializing in React, Node.js, Next.js, TypeScript, and Cloud Architecture.`;
 
-    const techList = technologies.map((t: any) => t.name || t.title).filter(Boolean).slice(0, 15).join(', ');
+    const techList = technologies
+      .map((t: any) => t.name || t.title)
+      .filter(Boolean)
+      .slice(0, 15)
+      .join(', ');
     const projectList = projects
       .slice(0, 5)
       .map(
@@ -69,7 +73,10 @@ const buildPortfolioKnowledge = async (): Promise<CachedContext> => {
 
     const eduList = educations
       .slice(0, 2)
-      .map((ed: any) => `• ${ed.degree || 'Degree'} from ${ed.institution || ed.school || ''} (${ed.year || ''})`)
+      .map(
+        (ed: any) =>
+          `• ${ed.degree || 'Degree'} from ${ed.institution || ed.school || ''} (${ed.year || ''})`,
+      )
       .join('\n');
 
     const contactInfo: any = contacts[0] || {};
