@@ -65,7 +65,8 @@ export function HomeHero() {
   const particles = useMemo(() => STATIC_PARTICLES, []);
   const snowflakes = useMemo(() => STATIC_SNOWFLAKES, []);
 
-  const showLoader = userLoading || (!imageLoaded && !imageError && Boolean(profileImage));
+  const showLoader =
+    userLoading || (!imageLoaded && !imageError && Boolean(profileImage));
   const showMonogram = (!userLoading && !profileImage) || imageError;
 
   return (
@@ -242,7 +243,9 @@ export function HomeHero() {
                       : 'bg-white border-blue-300/40 shadow-xs text-gray-700'
                   }`}
                 >
-                  <Code className={`w-4 h-4 ${isDark ? 'text-red-500' : 'text-blue-600'}`} />
+                  <Code
+                    className={`w-4 h-4 ${isDark ? 'text-red-500' : 'text-blue-600'}`}
+                  />
                   <span>Clean Code</span>
                 </div>
                 <div
@@ -252,7 +255,9 @@ export function HomeHero() {
                       : 'bg-white border-blue-300/40 shadow-xs text-gray-700'
                   }`}
                 >
-                  <Cpu className={`w-4 h-4 ${isDark ? 'text-yellow-500' : 'text-blue-500'}`} />
+                  <Cpu
+                    className={`w-4 h-4 ${isDark ? 'text-yellow-500' : 'text-blue-500'}`}
+                  />
                   <span>AI Powered</span>
                 </div>
                 <div
@@ -262,7 +267,9 @@ export function HomeHero() {
                       : 'bg-white border-blue-300/40 shadow-xs text-gray-700'
                   }`}
                 >
-                  <Terminal className={`w-4 h-4 ${isDark ? 'text-blue-500' : 'text-blue-700'}`} />
+                  <Terminal
+                    className={`w-4 h-4 ${isDark ? 'text-blue-500' : 'text-blue-700'}`}
+                  />
                   <span>Full Stack</span>
                 </div>
               </motion.div>
@@ -404,7 +411,9 @@ export function HomeHero() {
         transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
       >
         <ArrowDown
-          className={isDark ? 'w-5 h-5 text-red-500/80' : 'w-5 h-5 text-blue-600/80'}
+          className={
+            isDark ? 'w-5 h-5 text-red-500/80' : 'w-5 h-5 text-blue-600/80'
+          }
         />
       </motion.div>
     </section>

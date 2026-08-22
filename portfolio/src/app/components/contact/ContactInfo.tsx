@@ -151,7 +151,9 @@ export function ContactInfo({ isInView }: ContactInfoProps) {
               : 'Sunrise to Sunset: All Days'}
         </p>
         {activeContact?.timezone && (
-          <p className={`mb-2 text-sm ${isDark ? 'text-gray-500' : 'text-gray-600'}`}>
+          <p
+            className={`mb-2 text-sm ${isDark ? 'text-gray-500' : 'text-gray-600'}`}
+          >
             🌐 Timezone: {activeContact.timezone}
           </p>
         )}

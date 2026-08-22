@@ -4,7 +4,9 @@ interface ServiceSkeletonCardProps {
   isDark?: boolean;
 }
 
-export function ServiceSkeletonCard({ isDark: propIsDark }: ServiceSkeletonCardProps) {
+export function ServiceSkeletonCard({
+  isDark: propIsDark,
+}: ServiceSkeletonCardProps) {
   const { theme } = useTheme();
   const isDark = propIsDark !== undefined ? propIsDark : theme === 'avengers';
 

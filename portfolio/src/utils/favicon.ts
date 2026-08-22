@@ -12,7 +12,9 @@ export function updateFavicon(href: string) {
     "link[rel='apple-touch-icon']",
   ];
 
-  let links = document.querySelectorAll<HTMLLinkElement>(linkSelectors.join(','));
+  let links = document.querySelectorAll<HTMLLinkElement>(
+    linkSelectors.join(','),
+  );
 
   if (links.length === 0) {
     const newLink = document.createElement('link');
@@ -49,7 +51,7 @@ export function getLoadingFaviconSvg(isDark = true): string {
 
 export function createCircularAvatarFavicon(
   imageUrl: string,
-  isDark = true
+  isDark = true,
 ): Promise<string> {
   return new Promise((resolve) => {
     if (!imageUrl) {

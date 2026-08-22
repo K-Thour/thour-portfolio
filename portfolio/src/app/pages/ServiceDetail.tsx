@@ -231,7 +231,11 @@ export function ServiceDetail() {
                   {hasPricing && (
                     <motion.div
                       whileHover={{ y: -6, scale: 1.02 }}
-                      transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                      transition={{
+                        type: 'spring',
+                        stiffness: 300,
+                        damping: 20,
+                      }}
                       className={`p-6 rounded-2xl border text-center transition-all flex flex-col justify-between ${
                         isDark
                           ? 'bg-slate-900/60 border-red-500/20 hover:border-red-500/40 shadow-lg shadow-red-950/20 hover:shadow-red-500/10'
@@ -269,7 +273,11 @@ export function ServiceDetail() {
                   {hasDuration && (
                     <motion.div
                       whileHover={{ y: -6, scale: 1.02 }}
-                      transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                      transition={{
+                        type: 'spring',
+                        stiffness: 300,
+                        damping: 20,
+                      }}
                       className={`p-6 rounded-2xl border text-center transition-all flex flex-col justify-between ${
                         isDark
                           ? 'bg-slate-900/60 border-red-500/20 hover:border-red-500/40 shadow-lg shadow-red-950/20 hover:shadow-red-500/10'
@@ -307,7 +315,11 @@ export function ServiceDetail() {
                   {hasDeliverables && (
                     <motion.div
                       whileHover={{ y: -6, scale: 1.02 }}
-                      transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                      transition={{
+                        type: 'spring',
+                        stiffness: 300,
+                        damping: 20,
+                      }}
                       className={`p-6 rounded-2xl border transition-all ${
                         isDark
                           ? 'bg-slate-900/60 border-red-500/20 hover:border-red-500/40 shadow-lg shadow-red-950/20 hover:shadow-red-500/10'

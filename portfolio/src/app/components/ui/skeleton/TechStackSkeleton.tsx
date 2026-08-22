@@ -5,7 +5,10 @@ interface TechStackSkeletonProps {
   count?: number;
 }
 
-export function TechStackSkeleton({ isDark: propIsDark, count = 8 }: TechStackSkeletonProps) {
+export function TechStackSkeleton({
+  isDark: propIsDark,
+  count = 8,
+}: TechStackSkeletonProps) {
   const { theme } = useTheme();
   const isDark = propIsDark !== undefined ? propIsDark : theme === 'avengers';
 

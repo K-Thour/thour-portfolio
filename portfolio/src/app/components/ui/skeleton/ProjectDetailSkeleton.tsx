@@ -4,7 +4,9 @@ interface ProjectDetailSkeletonProps {
   isDark?: boolean;
 }
 
-export function ProjectDetailSkeleton({ isDark: propIsDark }: ProjectDetailSkeletonProps) {
+export function ProjectDetailSkeleton({
+  isDark: propIsDark,
+}: ProjectDetailSkeletonProps) {
   const { theme } = useTheme();
   const isDark = propIsDark !== undefined ? propIsDark : theme === 'avengers';
 

@@ -6,12 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Loading...</title>
     <script>
-      (function() {
+      (function () {
         try {
           var saved = localStorage.getItem('portfolio-theme');
-          var theme = (saved === 'avengers' || saved === 'godofwar')
-            ? saved
-            : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'avengers' : 'avengers');
+          var theme =
+            saved === 'avengers' || saved === 'godofwar'
+              ? saved
+              : window.matchMedia &&
+                  window.matchMedia('(prefers-color-scheme: dark)').matches
+                ? 'avengers'
+                : 'avengers';
           document.documentElement.setAttribute('data-theme', theme);
           if (theme === 'avengers') {
             document.documentElement.classList.add('dark');

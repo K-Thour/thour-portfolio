@@ -4,7 +4,9 @@ interface ServiceDetailSkeletonProps {
   isDark?: boolean;
 }
 
-export function ServiceDetailSkeleton({ isDark: propIsDark }: ServiceDetailSkeletonProps) {
+export function ServiceDetailSkeleton({
+  isDark: propIsDark,
+}: ServiceDetailSkeletonProps) {
   const { theme } = useTheme();
   const isDark = propIsDark !== undefined ? propIsDark : theme === 'avengers';
 

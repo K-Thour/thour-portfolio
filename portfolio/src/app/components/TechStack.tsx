@@ -88,7 +88,8 @@ export function TechStack() {
       const mapped: Technology[] = (data || []).map((t: any) => ({
         name: t.name || t.technology || 'Unknown',
         category: t.category || 'Tool',
-        iconUrl: t.iconUrl?.url || (typeof t.iconUrl === 'string' ? t.iconUrl : null),
+        iconUrl:
+          t.iconUrl?.url || (typeof t.iconUrl === 'string' ? t.iconUrl : null),
       }));
       if (mapped.length === 0) {
         setError(true);

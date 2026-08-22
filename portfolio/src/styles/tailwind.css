@@ -17,10 +17,11 @@ button,
 input,
 textarea,
 select {
-  transition: background-color 0.4s cubic-bezier(0.22, 1, 0.36, 1),
-              border-color 0.4s cubic-bezier(0.22, 1, 0.36, 1),
-              color 0.3s ease-out,
-              box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  transition:
+    background-color 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.3s ease-out,
+    box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* Exclude active GPU transforms and cursor spotlights from transition dragging lag */
@@ -57,7 +58,8 @@ select {
 }
 
 @keyframes particle-twinkle {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.2;
     transform: scale(0.8);
   }

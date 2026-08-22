@@ -19,7 +19,7 @@ import {
 import { Link } from 'react-router';
 import { useTheme } from '../../context/ThemeContext';
 import { useUser } from '../../context/UserContext';
-import { sendChatMessage,type ChatMessage } from '../../../services/api';
+import { sendChatMessage, type ChatMessage } from '../../../services/api';
 
 interface FormattedMessage {
   id: string;
@@ -29,10 +29,26 @@ interface FormattedMessage {
 }
 
 const CATEGORIZED_PROMPTS = [
-  { label: 'Core Tech Stack', query: 'What are your core technical skills and tools?', icon: Layers },
-  { label: 'Featured Projects', query: 'Showcase your best projects with live demos', icon: Code2 },
-  { label: 'Work Experience', query: 'Tell me about your software engineering experience', icon: Briefcase },
-  { label: 'Hire / Contact Me', query: 'How can I get in touch or hire you for a project?', icon: Mail },
+  {
+    label: 'Core Tech Stack',
+    query: 'What are your core technical skills and tools?',
+    icon: Layers,
+  },
+  {
+    label: 'Featured Projects',
+    query: 'Showcase your best projects with live demos',
+    icon: Code2,
+  },
+  {
+    label: 'Work Experience',
+    query: 'Tell me about your software engineering experience',
+    icon: Briefcase,
+  },
+  {
+    label: 'Hire / Contact Me',
+    query: 'How can I get in touch or hire you for a project?',
+    icon: Mail,
+  },
 ];
 
 /**
@@ -63,13 +79,7 @@ async function copyToClipboard(text: string): Promise<boolean> {
 /**
  * Parses markdown with bolding, inline code chips, bullet points, and internal links
  */
-function MarkdownContent({
-  text,
-  isDark,
-}: {
-  text: string;
-  isDark: boolean;
-}) {
+function MarkdownContent({ text, isDark }: { text: string; isDark: boolean }) {
   const formatParagraph = (paragraph: string, pIdx: number) => {
     // Process markdown links [label](url)
     const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
@@ -114,7 +124,7 @@ function MarkdownContent({
             }`}
           >
             {label}
-          </a>
+          </a>,
         );
       }
       lastIndex = match.index + match[0].length;
@@ -138,7 +148,10 @@ function MarkdownContent({
           subParts.push(part.substring(subLastIdx, bMatch.index));
         }
         subParts.push(
-          <strong key={`bold-${partIdx}-${bMatch.index}`} className="font-bold text-foreground">
+          <strong
+            key={`bold-${partIdx}-${bMatch.index}`}
+            className="font-bold text-foreground"
+          >
             {bMatch[1]}
           </strong>,
         );
@@ -150,7 +163,11 @@ function MarkdownContent({
       return subParts;
     });
 
-    return <p key={pIdx} className="mb-2 last:mb-0 leading-relaxed">{renderedParts}</p>;
+    return (
+      <p key={pIdx} className="mb-2 last:mb-0 leading-relaxed">
+        {renderedParts}
+      </p>
+    );
   };
 
   const lines = text.split('\n');
@@ -160,9 +177,14 @@ function MarkdownContent({
   const flushList = () => {
     if (currentList.length > 0) {
       renderedElements.push(
-        <ul key={`ul-${renderedElements.length}`} className="list-disc pl-4 space-y-1.5 mb-2.5">
+        <ul
+          key={`ul-${renderedElements.length}`}
+          className="list-disc pl-4 space-y-1.5 mb-2.5"
+        >
           {currentList.map((item, i) => (
-            <li key={i} className="leading-relaxed">{formatParagraph(item, i)}</li>
+            <li key={i} className="leading-relaxed">
+              {formatParagraph(item, i)}
+            </li>
           ))}
         </ul>,
       );
@@ -172,7 +194,11 @@ function MarkdownContent({
 
   lines.forEach((line) => {
     const trimmed = line.trim();
-    if (trimmed.startsWith('•') || trimmed.startsWith('-') || trimmed.startsWith('* ')) {
+    if (
+      trimmed.startsWith('•') ||
+      trimmed.startsWith('-') ||
+      trimmed.startsWith('* ')
+    ) {
       const itemContent = trimmed.replace(/^[•\-*]\s*/, '');
       currentList.push(itemContent);
     } else if (trimmed === '') {
@@ -203,7 +229,10 @@ export function ChatBot() {
       id: 'welcome',
       role: 'model',
       content: `Hello! 👋 I'm **${developerName}'s AI Assistant**.\n\nI can provide verified insights on **${developerName}'s** full-stack projects, architecture experience, core technical skills, or direct contact links. How may I assist you?`,
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      timestamp: new Date().toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit',
+      }),
     },
   ]);
 
@@ -239,7 +268,10 @@ export function ChatBot() {
   // When a new message arrives, scroll smoothly to the start/top of that message
   useEffect(() => {
     if (messages.length > 1) {
-      latestMessageRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      latestMessageRef.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
     }
   }, [messages.length, loading]);
 
@@ -260,7 +292,10 @@ export function ChatBot() {
       id: userMessageId,
       role: 'user',
       content: textToSend,
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      timestamp: new Date().toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit',
+      }),
     };
 
     setMessages((prev) => [...prev, userMsg]);
@@ -277,9 +312,14 @@ export function ChatBot() {
         }));
 
       const res = await sendChatMessage(textToSend, historyContext);
-      const fullReply = res.reply || `I'm sorry, I couldn't process that. Feel free to contact ${developerName} directly!`;
+      const fullReply =
+        res.reply ||
+        `I'm sorry, I couldn't process that. Feel free to contact ${developerName} directly!`;
       const modelId = `model-${Date.now()}`;
-      const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const timestamp = new Date().toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit',
+      });
 
       setMessages((prev) => [
         ...prev,
@@ -297,7 +337,10 @@ export function ChatBot() {
         id: `error-${Date.now()}`,
         role: 'model',
         content: `Sorry, I ran into an issue reaching the AI backend. You can connect with **${developerName}** directly on the **/contact** page!`,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        timestamp: new Date().toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit',
+        }),
       };
       setMessages((prev) => [...prev, errorMsg]);
     } finally {
@@ -311,7 +354,10 @@ export function ChatBot() {
         id: `welcome-${Date.now()}`,
         role: 'model',
         content: `Conversation reset! What else would you like to discover about **${developerName}**?`,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        timestamp: new Date().toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit',
+        }),
       },
     ]);
   };
@@ -357,7 +403,11 @@ export function ChatBot() {
                       : 'bg-linear-to-br from-blue-600 to-blue-400 text-white shadow-blue-500/30'
                   }`}
                 >
-                  {isDark ? <Shield className="w-5 h-5" /> : <Axe className="w-5 h-5" />}
+                  {isDark ? (
+                    <Shield className="w-5 h-5" />
+                  ) : (
+                    <Axe className="w-5 h-5" />
+                  )}
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
@@ -396,7 +446,10 @@ export function ChatBot() {
             </div>
 
             {/* Message Thread */}
-            <div ref={scrollContainerRef} className="flex-1 p-4 sm:p-5 overflow-y-auto space-y-4 scroll-smooth">
+            <div
+              ref={scrollContainerRef}
+              className="flex-1 p-4 sm:p-5 overflow-y-auto space-y-4 scroll-smooth"
+            >
               {messages.map((msg, idx) => {
                 const isUser = msg.role === 'user';
                 const isLatest = idx === messages.length - 1;
@@ -421,7 +474,11 @@ export function ChatBot() {
                             : 'bg-blue-100 border border-blue-300 text-blue-700'
                       }`}
                     >
-                      {isUser ? <User className="w-4 h-4" /> : <Sparkles className="w-4 h-4" />}
+                      {isUser ? (
+                        <User className="w-4 h-4" />
+                      ) : (
+                        <Sparkles className="w-4 h-4" />
+                      )}
                     </div>
 
                     {/* Bubble Container */}
@@ -455,7 +512,9 @@ export function ChatBot() {
                             {copiedMessageId === msg.id ? (
                               <>
                                 <Check className="w-3 h-3 text-emerald-500" />
-                                <span className="text-emerald-500 font-medium">Copied!</span>
+                                <span className="text-emerald-500 font-medium">
+                                  Copied!
+                                </span>
                               </>
                             ) : (
                               <>
@@ -481,7 +540,9 @@ export function ChatBot() {
                 >
                   <div
                     className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
-                      isDark ? 'bg-slate-900 border border-red-500/30 text-red-400' : 'bg-blue-100 text-blue-700'
+                      isDark
+                        ? 'bg-slate-900 border border-red-500/30 text-red-400'
+                        : 'bg-blue-100 text-blue-700'
                     }`}
                   >
                     <Sparkles className="w-4 h-4 animate-spin" />
@@ -493,10 +554,21 @@ export function ChatBot() {
                         : 'bg-slate-50 border-blue-100 text-blue-600'
                     }`}
                   >
-                    <span className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '0ms' }} />
-                    <span className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '150ms' }} />
-                    <span className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '300ms' }} />
-                    <span className="text-xs font-mono ml-1 opacity-70">Synthesizing...</span>
+                    <span
+                      className="w-2 h-2 rounded-full bg-current animate-bounce"
+                      style={{ animationDelay: '0ms' }}
+                    />
+                    <span
+                      className="w-2 h-2 rounded-full bg-current animate-bounce"
+                      style={{ animationDelay: '150ms' }}
+                    />
+                    <span
+                      className="w-2 h-2 rounded-full bg-current animate-bounce"
+                      style={{ animationDelay: '300ms' }}
+                    />
+                    <span className="text-xs font-mono ml-1 opacity-70">
+                      Synthesizing...
+                    </span>
                   </div>
                 </motion.div>
               )}
@@ -522,7 +594,9 @@ export function ChatBot() {
                         }`}
                       >
                         <IconComponent className="w-3.5 h-3.5 shrink-0 opacity-80" />
-                        <span className="truncate font-medium">{prompt.label}</span>
+                        <span className="truncate font-medium">
+                          {prompt.label}
+                        </span>
                       </button>
                     );
                   })}

@@ -1,12 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import { useInView } from 'motion/react';
-import {
-  Users,
-  Briefcase,
-  CheckCircle,
-  Code,
-} from 'lucide-react';
+import { Users, Briefcase, CheckCircle, Code } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { useUser } from '../context/UserContext';
 

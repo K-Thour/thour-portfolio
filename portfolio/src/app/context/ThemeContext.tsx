@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+} from 'react';
 
 export type Theme = 'avengers' | 'godofwar';
 
@@ -10,7 +16,11 @@ function getInitialTheme(): Theme {
     if (saved === 'avengers' || saved === 'godofwar') {
       return saved;
     }
-    if (typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    if (
+      typeof window !== 'undefined' &&
+      window.matchMedia &&
+      window.matchMedia('(prefers-color-scheme: dark)').matches
+    ) {
       return 'avengers';
     }
   } catch (e) {

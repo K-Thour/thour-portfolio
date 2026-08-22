@@ -1,10 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'motion/react';
-import {
-  Shield,
-  Axe,
-  ChevronRight,
-} from 'lucide-react';
+import { Shield, Axe, ChevronRight } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 
 interface GameLoaderProps {
@@ -99,13 +95,13 @@ export const GameLoader: React.FC<GameLoaderProps> = ({ onComplete }) => {
       if (isDark) {
         const nextLogIndex = Math.min(
           Math.floor((currentPct / 100) * AVENGERS_LOGS.length),
-          AVENGERS_LOGS.length - 1
+          AVENGERS_LOGS.length - 1,
         );
         setLogIndex(nextLogIndex);
       } else {
         const nextTipIndex = Math.min(
           Math.floor((currentPct / 100) * NORDIC_TIPS.length),
-          NORDIC_TIPS.length - 1
+          NORDIC_TIPS.length - 1,
         );
         setLogIndex(nextTipIndex);
       }
@@ -177,7 +173,9 @@ export const GameLoader: React.FC<GameLoaderProps> = ({ onComplete }) => {
                 isDark ? 'text-red-500' : 'text-blue-600'
               }`}
             >
-              {isDark ? 'STARK INDUSTRIES // HUD v4.8' : 'VALHALLA ARCHIVES // CHAPTER I'}
+              {isDark
+                ? 'STARK INDUSTRIES // HUD v4.8'
+                : 'VALHALLA ARCHIVES // CHAPTER I'}
             </span>
             <span
               className={`text-[10px] font-mono ${
@@ -213,7 +211,9 @@ export const GameLoader: React.FC<GameLoaderProps> = ({ onComplete }) => {
           {/* Outer Rotating Energy Ring */}
           <div
             className={`absolute inset-0 rounded-full border-2 border-dashed will-change-transform animate-[spin_10s_linear_infinite] ${
-              isDark ? 'border-red-500/50 shadow-lg shadow-red-500/20' : 'border-blue-500/50 shadow-lg shadow-blue-500/20'
+              isDark
+                ? 'border-red-500/50 shadow-lg shadow-red-500/20'
+                : 'border-blue-500/50 shadow-lg shadow-blue-500/20'
             }`}
           />
 
@@ -263,9 +263,13 @@ export const GameLoader: React.FC<GameLoaderProps> = ({ onComplete }) => {
             }`}
           >
             {isDark ? (
-              <span className="text-red-400 font-bold">&gt; {AVENGERS_LOGS[logIndex]}</span>
+              <span className="text-red-400 font-bold">
+                &gt; {AVENGERS_LOGS[logIndex]}
+              </span>
             ) : (
-              <span className="text-blue-700 font-semibold">{NORDIC_TIPS[logIndex]}</span>
+              <span className="text-blue-700 font-semibold">
+                {NORDIC_TIPS[logIndex]}
+              </span>
             )}
           </p>
         </div>
@@ -318,10 +322,14 @@ export const GameLoader: React.FC<GameLoaderProps> = ({ onComplete }) => {
         <div className="mt-3 text-center transition-opacity">
           <span
             className={`text-[11px] font-mono tracking-widest uppercase animate-pulse ${
-              isDark ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-blue-700'
+              isDark
+                ? 'text-gray-400 hover:text-white'
+                : 'text-gray-600 hover:text-blue-700'
             }`}
           >
-            {progress >= 100 ? 'PRESS [SPACE] OR CLICK TO ENTER' : 'CLICK ANYWHERE TO SKIP'}
+            {progress >= 100
+              ? 'PRESS [SPACE] OR CLICK TO ENTER'
+              : 'CLICK ANYWHERE TO SKIP'}
           </span>
         </div>
       </div>

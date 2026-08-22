@@ -40,7 +40,9 @@ export const CursorGlow: React.FC = () => {
       const target = e.target as HTMLElement | null;
       if (target) {
         const isInteractive = Boolean(
-          target.closest('a, button, input, textarea, select, [role="button"], [tabindex]:not([tabindex="-1"])')
+          target.closest(
+            'a, button, input, textarea, select, [role="button"], [tabindex]:not([tabindex="-1"])',
+          ),
         );
         setIsHovering(isInteractive);
       }
@@ -63,8 +65,10 @@ export const CursorGlow: React.FC = () => {
     // Smooth ambient background trailing loop
     const animate = () => {
       // Fluid ambient lerp (0.3 for lively floating spotlight)
-      ambientPos.current.x += (targetPos.current.x - ambientPos.current.x) * 0.3;
-      ambientPos.current.y += (targetPos.current.y - ambientPos.current.y) * 0.3;
+      ambientPos.current.x +=
+        (targetPos.current.x - ambientPos.current.x) * 0.3;
+      ambientPos.current.y +=
+        (targetPos.current.y - ambientPos.current.y) * 0.3;
 
       if (ambientRef.current) {
         ambientRef.current.style.transform = `translate3d(${ambientPos.current.x}px, ${ambientPos.current.y}px, 0) translate(-50%, -50%)`;

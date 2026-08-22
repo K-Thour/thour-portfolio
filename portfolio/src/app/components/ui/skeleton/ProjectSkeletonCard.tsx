@@ -4,7 +4,9 @@ interface ProjectSkeletonCardProps {
   isDark?: boolean;
 }
 
-export function ProjectSkeletonCard({ isDark: propIsDark }: ProjectSkeletonCardProps) {
+export function ProjectSkeletonCard({
+  isDark: propIsDark,
+}: ProjectSkeletonCardProps) {
   const { theme } = useTheme();
   const isDark = propIsDark !== undefined ? propIsDark : theme === 'avengers';
 
