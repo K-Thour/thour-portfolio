@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { Navigation } from './components/Navigation';
 import { ThemeProvider } from './context/ThemeContext';
 import { UserProvider } from './context/UserContext';
+import { CursorGlow } from './components/ui/CursorGlow';
 
 export function Root() {
   const { pathname } = useLocation();
@@ -14,7 +15,8 @@ export function Root() {
   return (
     <ThemeProvider>
       <UserProvider>
-        <div className="min-h-screen">
+        <div className="min-h-screen relative">
+          <CursorGlow />
           <Navigation />
           <Outlet />
         </div>
