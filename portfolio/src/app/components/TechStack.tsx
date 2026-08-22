@@ -69,12 +69,14 @@ function TechPill({ tech, isDark }: TechPillProps) {
   );
 }
 
+const SMOOTH_EASE = [0.22, 1, 0.36, 1];
+
 export function TechStack() {
   const [technologies, setTechnologies] = useState<Technology[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, amount: 0.2 });
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, amount: 0.15 });
   const { theme } = useTheme();
   const isDark = theme === 'avengers';
 
@@ -114,9 +116,9 @@ export function TechStack() {
       <div className="container mx-auto px-6">
         <motion.div
           ref={ref}
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-          transition={{ duration: 0.7 }}
+          initial={{ opacity: 0, y: 15 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 15 }}
+          transition={{ duration: 0.5, ease: SMOOTH_EASE }}
           className="max-w-6xl mx-auto"
         >
           {/* Section Header */}
@@ -124,7 +126,7 @@ export function TechStack() {
             <motion.span
               initial={{ opacity: 0 }}
               animate={isInView ? { opacity: 1 } : { opacity: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
+              transition={{ duration: 0.4, delay: 0.05 }}
               className={`text-xs font-semibold tracking-widest uppercase mb-3 block ${
                 isDark ? 'text-red-500' : 'text-blue-600'
               }`}
@@ -132,17 +134,17 @@ export function TechStack() {
               {isDark ? 'ARSENAL' : 'TOOLS'}
             </motion.span>
             <motion.h2
-              initial={{ opacity: 0, y: 10 }}
-              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
-              transition={{ duration: 0.6, delay: 0.15 }}
-              className={`text-4xl font-bold mb-3 ${isDark ? 'text-white' : 'text-gray-900'}`}
+              initial={{ opacity: 0, y: 8 }}
+              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 8 }}
+              transition={{ duration: 0.5, delay: 0.1, ease: SMOOTH_EASE }}
+              className={`text-3xl sm:text-4xl font-bold mb-3 ${isDark ? 'text-white' : 'text-gray-900'}`}
             >
               {isDark ? 'Tech Arsenal' : 'Weapons of Choice'}
             </motion.h2>
             <motion.p
               initial={{ opacity: 0 }}
               animate={isInView ? { opacity: 1 } : { opacity: 0 }}
-              transition={{ duration: 0.5, delay: 0.25 }}
+              transition={{ duration: 0.4, delay: 0.15 }}
               className={isDark ? 'text-gray-400' : 'text-gray-600'}
             >
               Technologies I work with on a daily basis
@@ -186,8 +188,13 @@ export function TechStack() {
 
           {/* Scrolling Tech Row */}
           {!loading && !error && technologies.length > 0 && (
-            <div className="relative overflow-hidden">
-              <div className="flex gap-4 animate-scroll w-max flex-nowrap">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.4 }}
+              className="relative overflow-hidden"
+            >
+              <div className="flex gap-4 animate-scroll w-max flex-nowrap will-change-transform">
                 {[...technologies, ...technologies].map((tech, i) => (
                   <TechPill
                     key={`${tech.name}-${i}`}
@@ -196,7 +203,7 @@ export function TechStack() {
                   />
                 ))}
               </div>
-            </div>
+            </motion.div>
           )}
         </motion.div>
       </div>

@@ -1,11 +1,8 @@
+import React, { useRef, useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import { useInView } from 'motion/react';
-import { useRef, useEffect, useState } from 'react';
 import {
-  Coffee,
-  GitBranch,
   Users,
-  Zap,
   Briefcase,
   CheckCircle,
   Code,
@@ -13,9 +10,11 @@ import {
 import { useTheme } from '../context/ThemeContext';
 import { useUser } from '../context/UserContext';
 
+const SMOOTH_EASE = [0.22, 1, 0.36, 1];
+
 export function Stats() {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, amount: 0.5 });
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, amount: 0.15 });
   const { theme } = useTheme();
   const isDark = theme === 'avengers';
   const { userData } = useUser();
@@ -65,7 +64,7 @@ export function Stats() {
                 value={stat.value}
                 suffix={stat.suffix}
                 label={stat.label}
-                delay={index * 0.1}
+                delay={index * 0.08}
                 isInView={isInView}
               />
             );
@@ -98,28 +97,34 @@ function StatCard({
   useEffect(() => {
     if (!isInView) return;
 
-    let start = 0;
-    const duration = 2000;
-    const increment = value / (duration / 16);
+    let startTime: number | null = null;
+    let animationFrameId: number;
+    const duration = 1400;
 
-    const timer = setInterval(() => {
-      start += increment;
-      if (start >= value) {
-        setCount(value);
-        clearInterval(timer);
-      } else {
-        setCount(Math.floor(start));
+    const step = (timestamp: number) => {
+      if (!startTime) startTime = timestamp;
+      const progress = Math.min((timestamp - startTime) / duration, 1);
+      // easeOutExpo
+      const easeProgress = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+      setCount(Math.round(easeProgress * value));
+
+      if (progress < 1) {
+        animationFrameId = requestAnimationFrame(step);
       }
-    }, 16);
+    };
 
-    return () => clearInterval(timer);
+    animationFrameId = requestAnimationFrame(step);
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+    };
   }, [isInView, value]);
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-      transition={{ duration: 0.6, delay }}
+      initial={{ opacity: 0, y: 15 }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 15 }}
+      transition={{ duration: 0.5, delay, ease: SMOOTH_EASE }}
       className={`text-center p-6 rounded-xl border transition-all ${
         isDark
           ? 'bg-slate-800/50 border-red-500/20 hover:border-red-500/50'

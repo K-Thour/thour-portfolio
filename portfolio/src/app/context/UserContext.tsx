@@ -42,7 +42,7 @@ const FALLBACK_USER: UserData = {
 export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [userData, setUserData] = useState<UserData | null>(null);
+  const [userData, setUserData] = useState<UserData | null>(FALLBACK_USER);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

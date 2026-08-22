@@ -1,39 +1,36 @@
-import { motion } from 'motion/react';
-import { useEffect, useState } from 'react';
+import React, { useMemo } from 'react';
 
-export function CodeRain() {
-  const [columns, setColumns] = useState<number[]>([]);
+const STATIC_RAIN_COLUMNS = Array.from({ length: 24 }, (_, i) => ({
+  id: i,
+  left: `${(i * 4.2) + 1}%`,
+  duration: `${8 + (i % 7) * 1.5}s`,
+  delay: `${(i * 0.35) % 4}s`,
+  chars: ['0', '1', '{', '}', '<', '>', '/', ';', ':', '=', '+', '-', '*', '&', '|', '%', '$', '#', '@', '!']
+    .sort(() => ((i * 7 + 13) % 5) - 2)
+    .slice(0, 16)
+    .join('\n'),
+}));
 
-  useEffect(() => {
-    const cols = Math.floor(window.innerWidth / 20);
-    setColumns(Array.from({ length: cols }, (_, i) => i));
-  }, []);
-
-  const codeChars = '01{}[]<>/();:=+-*&|%$#@!';
+export const CodeRain: React.FC = React.memo(function CodeRain() {
+  const columns = useMemo(() => STATIC_RAIN_COLUMNS, []);
 
   return (
-    <div className="absolute inset-0 overflow-hidden opacity-20">
+    <div
+      aria-hidden="true"
+      className="absolute inset-0 overflow-hidden opacity-20 pointer-events-none select-none motion-reduce:hidden"
+    >
       {columns.map((col) => (
-        <motion.div
-          key={col}
-          className="absolute top-0 text-red-500 font-mono text-xs"
-          style={{ left: `${col * 20}px` }}
-          initial={{ y: -100 }}
-          animate={{ y: window.innerHeight }}
-          transition={{
-            duration: Math.random() * 10 + 10,
-            repeat: Infinity,
-            delay: Math.random() * 5,
-            ease: 'linear',
+        <div
+          key={col.id}
+          className="absolute top-0 text-red-500 font-mono text-xs whitespace-pre leading-4 will-change-transform"
+          style={{
+            left: col.left,
+            animation: `coderain-fall ${col.duration} linear ${col.delay} infinite`,
           }}
         >
-          {Array.from({ length: 20 }).map((_, i) => (
-            <div key={i}>
-              {codeChars[Math.floor(Math.random() * codeChars.length)]}
-            </div>
-          ))}
-        </motion.div>
+          {col.chars}
+        </div>
       ))}
     </div>
   );
-}
+});
