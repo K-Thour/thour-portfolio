@@ -5,6 +5,9 @@ import {
   Shield,
   Axe,
   Snowflake,
+  Cpu,
+  Terminal,
+  Code,
 } from 'lucide-react';
 import { Link } from 'react-router';
 import { CodeRain } from '../../components/CodeRain';
@@ -66,22 +69,33 @@ export function HomeHero() {
   const showMonogram = (!userLoading && !profileImage) || imageError;
 
   return (
-    <section
-      className={`min-h-screen flex items-center justify-center relative overflow-hidden pt-16 ${
-        isDark
-          ? 'bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900'
-          : 'bg-gradient-to-br from-blue-50 via-white to-blue-100'
-      }`}
-    >
-      {/* Code Rain Background - Only in dark mode (GPU-Accelerated) */}
-      {isDark && <CodeRain />}
-
-      {/* Snowflakes for light mode (GPU-Accelerated) */}
-      {!isDark && (
+    <section className="min-h-screen flex items-center justify-center relative overflow-hidden pt-16">
+      {/* Dark Mode Atmosphere Layer (GPU Cross-fade) */}
+      <div
+        aria-hidden="true"
+        className={`absolute inset-0 pointer-events-none transition-opacity duration-500 ease-in-out ${
+          isDark ? 'opacity-100' : 'opacity-0'
+        } bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900`}
+      >
+        <CodeRain />
         <div
-          aria-hidden="true"
-          className="absolute inset-0 overflow-hidden pointer-events-none select-none motion-reduce:hidden"
-        >
+          className="absolute w-96 h-96 rounded-full blur-3xl opacity-30 animate-pulse bg-red-600/20"
+          style={{ top: '10%', left: '10%' }}
+        />
+        <div
+          className="absolute w-96 h-96 rounded-full blur-3xl opacity-30 animate-pulse bg-yellow-500/20"
+          style={{ bottom: '10%', right: '10%', animationDelay: '1.5s' }}
+        />
+      </div>
+
+      {/* Light Mode Atmosphere Layer (GPU Cross-fade) */}
+      <div
+        aria-hidden="true"
+        className={`absolute inset-0 pointer-events-none select-none transition-opacity duration-500 ease-in-out ${
+          !isDark ? 'opacity-100' : 'opacity-0'
+        } bg-gradient-to-br from-slate-100 via-blue-50 to-indigo-100`}
+      >
+        <div className="absolute inset-0 overflow-hidden motion-reduce:hidden">
           {snowflakes.map((snow) => (
             <div
               key={snow.id}
@@ -96,7 +110,15 @@ export function HomeHero() {
             </div>
           ))}
         </div>
-      )}
+        <div
+          className="absolute w-96 h-96 rounded-full blur-3xl opacity-20 animate-pulse bg-blue-600/20"
+          style={{ top: '10%', left: '10%' }}
+        />
+        <div
+          className="absolute w-96 h-96 rounded-full blur-3xl opacity-20 animate-pulse bg-blue-400/20"
+          style={{ bottom: '10%', right: '10%', animationDelay: '1.5s' }}
+        />
+      </div>
 
       {/* GPU Twinkling Stars/Particles */}
       <div
@@ -116,22 +138,6 @@ export function HomeHero() {
             }}
           />
         ))}
-      </div>
-
-      {/* Ambient Glowing Orbs */}
-      <div aria-hidden="true" className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div
-          className={`absolute w-96 h-96 rounded-full blur-3xl opacity-30 animate-pulse ${
-            isDark ? 'bg-red-600/20' : 'bg-blue-600/20'
-          }`}
-          style={{ top: '10%', left: '10%' }}
-        />
-        <div
-          className={`absolute w-96 h-96 rounded-full blur-3xl opacity-30 animate-pulse ${
-            isDark ? 'bg-yellow-500/20' : 'bg-blue-400/20'
-          }`}
-          style={{ bottom: '10%', right: '10%', animationDelay: '1.5s' }}
-        />
       </div>
 
       <div className="container mx-auto px-6 relative z-10">
@@ -302,7 +308,7 @@ export function HomeHero() {
                 {/* Glowing ring effect */}
                 <div
                   aria-hidden="true"
-                  className={`absolute inset-0 rounded-full blur-2xl opacity-40 animate-pulse ${
+                  className={`absolute inset-0 rounded-full blur-2xl opacity-40 animate-pulse transition-colors duration-500 ${
                     isDark
                       ? 'bg-gradient-to-r from-red-600 to-yellow-500'
                       : 'bg-gradient-to-r from-blue-600 to-blue-400'
@@ -340,7 +346,7 @@ export function HomeHero() {
                       className={`relative w-full h-full rounded-full overflow-hidden border-4 shadow-2xl flex flex-col items-center justify-center ${
                         isDark
                           ? 'border-red-500/80 shadow-red-500/30 bg-gradient-to-br from-slate-900 via-slate-950 to-blue-950 text-white'
-                          : 'border-blue-500/80 shadow-blue-500/20 bg-gradient-to-br from-blue-50 via-white to-blue-100 text-blue-900'
+                          : 'border-blue-500/80 shadow-blue-500/20 bg-gradient-to-br from-slate-100 via-blue-50 to-indigo-100 text-blue-900'
                       }`}
                     >
                       <div

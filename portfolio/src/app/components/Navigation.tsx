@@ -23,10 +23,10 @@ export function Navigation() {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 backdrop-blur-sm border-b transition-colors ${
+      className={`fixed top-0 left-0 right-0 z-50 backdrop-blur-md border-b transition-all duration-400 ease-in-out ${
         isDark
-          ? 'bg-slate-900/95 border-red-500/20'
-          : 'bg-white/95 border-blue-300/30 shadow-sm'
+          ? 'bg-slate-950/90 border-red-500/20 shadow-md shadow-slate-950/50'
+          : 'bg-white/90 border-blue-200/60 shadow-xs shadow-blue-100/50'
       }`}
     >
       <div className="container mx-auto px-6">

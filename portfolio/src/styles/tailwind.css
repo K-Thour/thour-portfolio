@@ -3,6 +3,33 @@
 
 @import 'tw-animate-css';
 
+/* Smooth Theme Transitions Engine */
+html,
+body,
+nav,
+header,
+footer,
+section,
+main,
+article,
+aside,
+button,
+input,
+textarea,
+select {
+  transition: background-color 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+              border-color 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+              color 0.3s ease-out,
+              box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Exclude active GPU transforms and cursor spotlights from transition dragging lag */
+.cursor-glow,
+.will-change-transform,
+.no-theme-transition {
+  transition: opacity 0.3s ease !important;
+}
+
 @keyframes scroll {
   0% {
     transform: translateX(0);
@@ -51,5 +78,16 @@
   100% {
     transform: translate3d(30px, 105vh, 0) rotate(360deg);
     opacity: 0.2;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
