@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { User, LogOut, Settings, ChevronDown } from "lucide-react";
+import { motion } from "motion/react";
 import { ThemeToggle } from "../../components/ui/themeToggle/ThemeToggle";
-import { fetchCurrentUser } from "../../services/api";
+import { fetchCurrentUser, fetchPublicUser } from "../../services/api";
 
 import {
   DropdownMenu,
@@ -20,14 +21,34 @@ function Header({ className }: { className?: string }) {
   const navigate = useNavigate();
 
   const [currentUser, setCurrentUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let active = true;
+
     const loadUser = async () => {
       try {
-        const data = await fetchCurrentUser();
-        setCurrentUser(data);
+        setLoading(true);
+        let data = null;
+        if (localStorage.getItem(constraints.globalConstraints.TOKEN_KEY)) {
+          try {
+            data = await fetchCurrentUser();
+          } catch {
+            // fallback to public user
+          }
+        }
+        if (!data) {
+          data = await fetchPublicUser();
+        }
+        if (active && data) {
+          setCurrentUser(data);
+        }
       } catch (err) {
         console.error("Failed to fetch user in Header:", err);
+      } finally {
+        if (active) {
+          setLoading(false);
+        }
       }
     };
     loadUser();
@@ -44,15 +65,16 @@ function Header({ className }: { className?: string }) {
 
     window.addEventListener("profile-updated", handleProfileUpdate);
     return () => {
+      active = false;
       window.removeEventListener("profile-updated", handleProfileUpdate);
     };
   }, []);
 
   const user = {
-    name: currentUser?.name || "Admin User",
+    name: currentUser?.name || "Karanveer Thour",
     email: currentUser?.email || "admin@management.system",
     role: { name: "Admin" },
-    avatarUrl: currentUser?.image?.url || "",
+    avatarUrl: currentUser?.image?.url || (typeof currentUser?.image === "string" ? currentUser.image : ""),
   };
 
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
@@ -79,9 +101,20 @@ function Header({ className }: { className?: string }) {
           className="flex items-center gap-2 cursor-pointer"
           onClick={() => navigate("/")}
         >
-          <h1 className="text-xl font-bold tracking-tight bg-linear-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-            Management System
-          </h1>
+          {loading ? (
+            <div className="h-6 w-48 sm:w-80 rounded-md animate-pulse bg-muted/60 flex items-center px-2">
+              <span className="text-xs text-muted-foreground font-mono animate-pulse">Loading...</span>
+            </div>
+          ) : (
+            <motion.h1
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3 }}
+              className="text-base sm:text-lg md:text-xl font-bold tracking-tight bg-linear-to-r from-primary via-primary/90 to-primary/60 bg-clip-text text-transparent truncate max-w-[200px] sm:max-w-[380px] md:max-w-none"
+            >
+              {user.name ? `${user.name} CMS` : "Karanveer Thour CMS"}
+            </motion.h1>
+          )}
         </div>
 
         <div className="flex items-center gap-4">
@@ -108,58 +141,44 @@ function Header({ className }: { className?: string }) {
               </div>
               <div className="flex flex-col items-start sm:flex">
                 <span className="text-sm font-medium leading-none">
-                  {user?.name || "User"}
+                  {user.name}
                 </span>
-                <span className="text-xs text-muted-foreground">
-                  {user?.role?.name || "Admin"}
+                <span className="text-xs text-muted-foreground mt-0.5">
+                  {user.role.name}
                 </span>
               </div>
               <ChevronDown size={14} className="text-muted-foreground" />
             </DropdownMenuTrigger>
-
-            <DropdownMenuContent className="w-56" align="end">
-              {/* User info header */}
-              <div className="px-3 py-2 text-sm">
-                <p className="font-medium leading-none">{user?.name}</p>
-                <p className="text-xs text-muted-foreground mt-1">
-                  {user?.email}
-                </p>
-              </div>
-              <div className="h-px bg-border my-1" />
-              <DropdownMenuItem
-                onClick={() => navigate("/profile")}
-                className="cursor-pointer"
-              >
-                <User className="mr-2 h-4 w-4" />
-                <span>My Profile</span>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuItem onClick={() => navigate("/profile")}>
+                <User size={16} className="mr-2" />
+                Profile
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate("/settings")}>
+                <Settings size={16} className="mr-2" />
+                Settings
               </DropdownMenuItem>
               <DropdownMenuItem
-                onClick={() => navigate("/settings")}
-                className="cursor-pointer"
-              >
-                <Settings className="mr-2 h-4 w-4" />
-                <span>Settings</span>
-              </DropdownMenuItem>
-              <div className="h-px bg-border my-1" />
-              <DropdownMenuItem
+                className="text-destructive focus:text-destructive cursor-pointer"
                 onClick={handleLogoutClick}
-                className="cursor-pointer text-red-500 focus:text-red-600 focus:bg-red-50 dark:focus:bg-red-950/30"
               >
-                <LogOut className="mr-2 h-4 w-4" />
-                <span>Log out</span>
+                <LogOut size={16} className="mr-2" />
+                Logout
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
       </header>
 
+      {/* Logout Confirmation Modal */}
       <ConfirmModal
         isOpen={showLogoutConfirm}
         onCancel={() => setShowLogoutConfirm(false)}
         onConfirm={handleLogoutConfirm}
         title="Confirm Logout"
-        message="Are you sure you want to log out?"
+        message="Are you sure you want to log out of your account?"
         confirmText="Logout"
+        cancelText="Cancel"
       />
     </>
   );
