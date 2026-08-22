@@ -8,6 +8,7 @@ import { fetchTechnologies } from '../../services/api';
 interface Technology {
   name: string;
   category: string;
+  iconUrl?: string | null;
 }
 
 interface TechPillProps {
@@ -16,25 +17,52 @@ interface TechPillProps {
 }
 
 function TechPill({ tech, isDark }: TechPillProps) {
+  const [imgError, setImgError] = useState(false);
+
   return (
     <motion.div
       whileHover={{ scale: 1.05, y: -2 }}
       transition={{ duration: 0.15 }}
-      className={`flex-shrink-0 rounded-xl px-5 py-3 min-w-fit border cursor-default select-none ${
+      className={`flex-shrink-0 flex items-center gap-3 rounded-xl px-4 py-2.5 min-w-fit border cursor-default select-none ${
         isDark
           ? 'bg-slate-800/70 border-red-500/20 hover:border-red-500/40 hover:bg-slate-800'
           : 'bg-white border-blue-300/40 shadow-sm hover:border-blue-400/60 hover:shadow-md'
       }`}
     >
-      <div
-        className={`font-semibold text-sm ${isDark ? 'text-white' : 'text-gray-900'}`}
-      >
-        {tech.name}
-      </div>
-      <div
-        className={`text-xs mt-0.5 ${isDark ? 'text-gray-500' : 'text-gray-500'}`}
-      >
-        {tech.category}
+      {/* Backend Tech Icon */}
+      {tech.iconUrl && !imgError ? (
+        <img
+          src={tech.iconUrl}
+          alt={tech.name}
+          onError={() => setImgError(true)}
+          className="w-8 h-8 object-contain rounded shrink-0"
+        />
+      ) : (
+        <div
+          className={`w-8 h-8 rounded flex items-center justify-center font-bold text-xs shrink-0 ${
+            isDark ? 'bg-red-500/20 text-red-400' : 'bg-blue-100 text-blue-600'
+          }`}
+        >
+          {tech.name.charAt(0).toUpperCase()}
+        </div>
+      )}
+
+      {/* Tech Name & Category */}
+      <div className="flex flex-col">
+        <span
+          className={`font-semibold text-sm leading-tight ${
+            isDark ? 'text-white' : 'text-gray-900'
+          }`}
+        >
+          {tech.name}
+        </span>
+        <span
+          className={`text-xs mt-0.5 leading-none ${
+            isDark ? 'text-gray-400' : 'text-gray-500'
+          }`}
+        >
+          {tech.category}
+        </span>
       </div>
     </motion.div>
   );
@@ -57,6 +85,7 @@ export function TechStack() {
       const mapped: Technology[] = (data || []).map((t: any) => ({
         name: t.name || t.technology || 'Unknown',
         category: t.category || 'Tool',
+        iconUrl: t.iconUrl?.url || (typeof t.iconUrl === 'string' ? t.iconUrl : null),
       }));
       if (mapped.length === 0) {
         setError(true);
@@ -125,7 +154,7 @@ export function TechStack() {
               {Array.from({ length: 8 }).map((_, i) => (
                 <div
                   key={i}
-                  className={`flex-shrink-0 rounded-xl px-5 py-3 w-28 h-14 animate-pulse ${
+                  className={`flex-shrink-0 rounded-xl px-5 py-3 w-36 h-14 animate-pulse ${
                     isDark ? 'bg-slate-800/50' : 'bg-blue-100/60'
                   }`}
                 />
