@@ -1,5 +1,5 @@
-import React, { useState, useMemo } from 'react';
-import { motion } from 'motion/react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import {
   ArrowDown,
   Shield,
@@ -8,11 +8,13 @@ import {
   Terminal,
   Axe,
   Snowflake,
+  Sparkles,
 } from 'lucide-react';
 import { Link } from 'react-router';
 import { TerminalWindow } from '../../components/TerminalWindow';
 import { CodeRain } from '../../components/CodeRain';
 import { CodeSnippet } from '../../components/CodeSnippet';
+import { HeroAvatarLoader } from './HeroAvatarLoader';
 import { useTheme } from '../../context/ThemeContext';
 import { useUser } from '../../context/UserContext';
 
@@ -35,17 +37,39 @@ const STATIC_SNOWFLAKES = Array.from({ length: 16 }, (_, i) => ({
 const SMOOTH_EASE = [0.22, 1, 0.36, 1];
 
 export function HomeHero() {
-  const { userData } = useUser();
+  const { userData, loading: userLoading } = useUser();
   const { theme } = useTheme();
   const isDark = theme === 'avengers';
-  const [imageLoaded, setImageLoaded] = useState(false);
 
-  const fallbackImage =
-    'https://images.unsplash.com/photo-1576558656222-ba66febe3dec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjBoZWFkc2hvdCUyMHBvcnRyYWl0fGVufDF8fHx8MTc3MTQxMjcwM3ww&ixlib=rb-4.1.0&q=80&w=1080';
-  const profileImage = userData?.image || fallbackImage;
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
+
+  const profileImage = userData?.image?.trim() || '';
+
+  // Preload image when profileImage URL becomes available
+  useEffect(() => {
+    if (!profileImage) {
+      setImageLoaded(false);
+      return;
+    }
+
+    const img = new Image();
+    img.src = profileImage;
+    img.onload = () => {
+      setImageLoaded(true);
+      setImageError(false);
+    };
+    img.onerror = () => {
+      setImageLoaded(false);
+      setImageError(true);
+    };
+  }, [profileImage]);
 
   const particles = useMemo(() => STATIC_PARTICLES, []);
   const snowflakes = useMemo(() => STATIC_SNOWFLAKES, []);
+
+  const showLoader = userLoading || (!imageLoaded && !imageError && Boolean(profileImage));
+  const showMonogram = (!userLoading && !profileImage) || imageError;
 
   return (
     <section
@@ -275,64 +299,99 @@ export function HomeHero() {
 
             {/* Profile Avatar Container with Zero-CLS Constraint */}
             <div className="relative flex justify-center items-center">
-              {profileImage ? (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.94 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.7, delay: 0.2, ease: SMOOTH_EASE }}
-                  className="relative w-full max-w-sm sm:max-w-md aspect-square"
-                >
-                  {/* Glowing ring effect */}
-                  <div
-                    aria-hidden="true"
-                    className={`absolute inset-0 rounded-full blur-2xl opacity-40 animate-pulse ${
-                      isDark
-                        ? 'bg-gradient-to-r from-red-600 to-yellow-500'
-                        : 'bg-gradient-to-r from-blue-600 to-blue-400'
-                    }`}
-                  />
+              <motion.div
+                initial={{ opacity: 0, scale: 0.94 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.7, delay: 0.2, ease: SMOOTH_EASE }}
+                className="relative w-full max-w-sm sm:max-w-md aspect-square"
+              >
+                {/* Glowing ring effect */}
+                <div
+                  aria-hidden="true"
+                  className={`absolute inset-0 rounded-full blur-2xl opacity-40 animate-pulse ${
+                    isDark
+                      ? 'bg-gradient-to-r from-red-600 to-yellow-500'
+                      : 'bg-gradient-to-r from-blue-600 to-blue-400'
+                  }`}
+                />
 
-                  {/* Image container */}
-                  <div
-                    className={`relative w-full h-full rounded-full overflow-hidden border-4 shadow-2xl ${
-                      isDark
-                        ? 'border-red-500/80 shadow-red-500/30 bg-slate-800'
-                        : 'border-blue-500/80 shadow-blue-500/20 bg-blue-50'
-                    }`}
-                  >
-                    {!imageLoaded && (
-                      <div className="absolute inset-0 animate-pulse bg-slate-700/40" />
-                    )}
-                    <img
-                      src={profileImage}
-                      alt="Profile"
-                      onLoad={() => setImageLoaded(true)}
-                      className={`w-full h-full object-cover transition-opacity duration-300 ${
-                        imageLoaded ? 'opacity-100' : 'opacity-0'
+                {/* Main Avatar Container */}
+                <div className="relative w-full h-full rounded-full">
+                  {/* Theme-Adaptive Animated Loader (Shown while loading or before image is ready) */}
+                  {showLoader && <HeroAvatarLoader />}
+
+                  {/* Real Profile Image (Cross-fades in once bytes are decoded) */}
+                  {imageLoaded && profileImage && (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.5, ease: 'easeOut' }}
+                      className={`relative w-full h-full rounded-full overflow-hidden border-4 shadow-2xl ${
+                        isDark
+                          ? 'border-red-500/80 shadow-red-500/30 bg-slate-800'
+                          : 'border-blue-500/80 shadow-blue-500/20 bg-blue-50'
                       }`}
-                    />
-                  </div>
+                    >
+                      <img
+                        src={profileImage}
+                        alt={userData?.name || 'Profile'}
+                        className="w-full h-full object-cover"
+                      />
+                    </motion.div>
+                  )}
 
-                  {/* Corner accents */}
-                  <div
-                    aria-hidden="true"
-                    className={`absolute -top-3 -right-3 w-16 h-16 border-t-4 border-r-4 rounded-tr-3xl pointer-events-none ${
-                      isDark ? 'border-yellow-500' : 'border-blue-400'
-                    }`}
-                  />
-                  <div
-                    aria-hidden="true"
-                    className={`absolute -bottom-3 -left-3 w-16 h-16 border-b-4 border-l-4 rounded-bl-3xl pointer-events-none ${
-                      isDark ? 'border-red-500' : 'border-blue-600'
-                    }`}
-                  />
-                </motion.div>
-              ) : (
-                <div className="space-y-6 w-full">
-                  <TerminalWindow delay={0.2} />
-                  <CodeSnippet delay={0.4} />
+                  {/* Fallback Branded Monogram (If user has no picture configured) */}
+                  {showMonogram && (
+                    <div
+                      className={`relative w-full h-full rounded-full overflow-hidden border-4 shadow-2xl flex flex-col items-center justify-center ${
+                        isDark
+                          ? 'border-red-500/80 shadow-red-500/30 bg-gradient-to-br from-slate-900 via-slate-950 to-blue-950 text-white'
+                          : 'border-blue-500/80 shadow-blue-500/20 bg-gradient-to-br from-blue-50 via-white to-blue-100 text-blue-900'
+                      }`}
+                    >
+                      <div
+                        className={`w-24 h-24 sm:w-28 sm:h-28 rounded-full flex items-center justify-center border-2 mb-2 ${
+                          isDark
+                            ? 'bg-red-500/10 border-red-500/40 text-red-400'
+                            : 'bg-blue-100 border-blue-400/60 text-blue-700'
+                        }`}
+                      >
+                        <span className="text-3xl sm:text-4xl font-extrabold font-mono tracking-wider">
+                          {userData?.name
+                            ? userData.name
+                                .split(' ')
+                                .map((n) => n[0])
+                                .join('')
+                                .toUpperCase()
+                                .slice(0, 2)
+                            : 'KT'}
+                        </span>
+                      </div>
+                      <span
+                        className={`text-xs font-semibold tracking-widest uppercase ${
+                          isDark ? 'text-gray-400' : 'text-blue-600'
+                        }`}
+                      >
+                        {userData?.name || 'Karanveer Thour'}
+                      </span>
+                    </div>
+                  )}
                 </div>
-              )}
+
+                {/* Corner accents */}
+                <div
+                  aria-hidden="true"
+                  className={`absolute -top-3 -right-3 w-16 h-16 border-t-4 border-r-4 rounded-tr-3xl pointer-events-none ${
+                    isDark ? 'border-yellow-500' : 'border-blue-400'
+                  }`}
+                />
+                <div
+                  aria-hidden="true"
+                  className={`absolute -bottom-3 -left-3 w-16 h-16 border-b-4 border-l-4 rounded-bl-3xl pointer-events-none ${
+                    isDark ? 'border-red-500' : 'border-blue-600'
+                  }`}
+                />
+              </motion.div>
             </div>
           </div>
         </div>

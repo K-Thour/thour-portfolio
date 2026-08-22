@@ -24,13 +24,10 @@ interface UserContextType {
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
-const DEFAULT_IMAGE =
-  'https://images.unsplash.com/photo-1576558656222-ba66febe3dec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjBoZWFkc2hvdCUyMHBvcnRyYWl0fGVufDF8fHx8MTc3MTQxMjcwM3ww&ixlib=rb-4.1.0&q=80&w=1080';
-
 const FALLBACK_USER: UserData = {
   name: 'Karanveer Thour',
   email: 'karan@thour.com',
-  image: DEFAULT_IMAGE,
+  image: '',
   experience: 5,
   completedProjects: 50,
   solvedProblems: 200,

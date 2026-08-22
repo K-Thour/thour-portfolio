@@ -5,6 +5,22 @@
     <link rel="icon" type="image/png" href="/favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Modern Portfolio Design</title>
+    <script>
+      (function() {
+        try {
+          var saved = localStorage.getItem('portfolio-theme');
+          var theme = (saved === 'avengers' || saved === 'godofwar')
+            ? saved
+            : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'avengers' : 'avengers');
+          document.documentElement.setAttribute('data-theme', theme);
+          if (theme === 'avengers') {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+        } catch (e) {}
+      })();
+    </script>
   </head>
 
   <body>
