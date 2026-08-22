@@ -1,4 +1,4 @@
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router';
 import { ArrowLeft } from 'lucide-react';
@@ -6,6 +6,7 @@ import { useTheme } from '../context/ThemeContext';
 import { ProjectHeader } from '../components/project/ProjectHeader';
 import { ProjectFeatures } from '../components/project/ProjectFeatures';
 import { ProjectResults } from '../components/project/ProjectResults';
+import { ProjectDetailSkeleton } from '../components/ui/skeleton';
 import { fetchProjectById } from '../../services/api';
 
 export function ProjectDetail() {
@@ -17,10 +18,13 @@ export function ProjectDetail() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let isMounted = true;
     const loadProject = async () => {
       if (!projectId) return;
+      setLoading(true);
       try {
         const data = await fetchProjectById(projectId);
+        if (!isMounted) return;
         if (data) {
           setProject({
             title: data.title,
@@ -60,61 +64,14 @@ export function ProjectDetail() {
       } catch (error) {
         console.error('Error fetching project:', error);
       } finally {
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     };
     loadProject();
+    return () => {
+      isMounted = false;
+    };
   }, [projectId]);
-
-  if (loading) {
-    return (
-      <div
-        className={`min-h-screen flex items-center justify-center pt-16 ${
-          isDark
-            ? 'bg-gradient-to-b from-slate-950 to-slate-900 text-white'
-            : 'bg-gradient-to-b from-slate-50 via-blue-50 to-white text-gray-900'
-        }`}
-      >
-        <div
-          className={`w-10 h-10 border-4 border-t-transparent rounded-full animate-spin ${
-            isDark ? 'border-red-500' : 'border-blue-500'
-          }`}
-        />
-      </div>
-    );
-  }
-
-  if (!project) {
-    return (
-      <div
-        className={`min-h-screen flex items-center justify-center pt-16 ${
-          isDark
-            ? 'bg-gradient-to-b from-slate-950 to-slate-900'
-            : 'bg-gradient-to-b from-slate-50 via-blue-50 to-white'
-        }`}
-      >
-        <div className="text-center bg-transparent">
-          <h1
-            className={`text-2xl font-bold mb-4 ${
-              isDark ? 'text-white' : 'text-gray-900'
-            }`}
-          >
-            Project Not Found
-          </h1>
-          <Link
-            to="/projects"
-            className={`hover:underline font-semibold ${
-              isDark
-                ? 'text-red-500 hover:text-red-400'
-                : 'text-blue-600 hover:text-blue-500'
-            }`}
-          >
-            Back to Projects
-          </Link>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div
@@ -125,88 +82,125 @@ export function ProjectDetail() {
       }`}
     >
       <div className="container mx-auto px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="max-w-5xl mx-auto"
-        >
-          {/* Back Button */}
-          <Link
-            to="../projects"
-            className={`inline-flex items-center gap-2 mb-8 transition-colors ${
-              isDark
-                ? 'text-gray-400 hover:text-white'
-                : 'text-gray-600 hover:text-gray-900'
-            }`}
-          >
-            <ArrowLeft className="w-5 h-5" />
-            <span>{isDark ? 'Back to Projects' : 'Return to Saga'}</span>
-          </Link>
-
-          {/* Header */}
-          <ProjectHeader project={project} />
-
-          {/* Hero Image */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className={`rounded-2xl overflow-hidden mb-12 border ${
-              isDark
-                ? 'border-red-500/20 bg-slate-950'
-                : 'border-blue-300/30 shadow-xl shadow-blue-500/10 bg-slate-950'
-            }`}
-          >
-            <img
-              src={project.image}
-              alt={project.title}
-              className="w-full aspect-[16/9] object-cover"
-            />
-          </motion.div>
-
-          {/* Full Description */}
-          {project.fullDescription &&
-            project.fullDescription !== project.description && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.3 }}
-                className={`mb-12 rounded-2xl p-8 border ${
-                  isDark
-                    ? 'bg-slate-900/60 border-red-500/20'
-                    : 'bg-white/70 border-blue-200 shadow-lg shadow-blue-500/5'
+        <AnimatePresence mode="wait">
+          {loading ? (
+            <motion.div
+              key="detail-skeleton"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <ProjectDetailSkeleton />
+            </motion.div>
+          ) : !project ? (
+            <motion.div
+              key="detail-empty"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-center py-20"
+            >
+              <h1
+                className={`text-2xl font-bold mb-4 ${
+                  isDark ? 'text-white' : 'text-gray-900'
                 }`}
               >
-                <h2
-                  className={`text-2xl font-bold mb-4 ${
-                    isDark ? 'text-white' : 'text-gray-900'
-                  }`}
-                >
-                  {isDark ? 'Mission Overview' : 'About This Project'}
-                </h2>
-                <div
-                  className={`border-l-4 pl-5 ${
-                    isDark ? 'border-red-500' : 'border-blue-500'
-                  }`}
-                >
-                  <p
-                    className={`text-base leading-relaxed whitespace-pre-line ${
-                      isDark ? 'text-gray-300' : 'text-gray-700'
+                Project Not Found
+              </h1>
+              <Link
+                to="/projects"
+                className={`hover:underline font-semibold ${
+                  isDark
+                    ? 'text-red-500 hover:text-red-400'
+                    : 'text-blue-600 hover:text-blue-500'
+                }`}
+              >
+                Back to Projects
+              </Link>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="detail-content"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
+              className="max-w-5xl mx-auto"
+            >
+              {/* Back Button */}
+              <Link
+                to="../projects"
+                className={`inline-flex items-center gap-2 mb-8 transition-colors ${
+                  isDark
+                    ? 'text-gray-400 hover:text-white'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                <ArrowLeft className="w-5 h-5" />
+                <span>{isDark ? 'Back to Projects' : 'Return to Saga'}</span>
+              </Link>
+
+              {/* Header */}
+              <ProjectHeader project={project} />
+
+              {/* Hero Image */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.98 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5 }}
+                className={`rounded-2xl overflow-hidden mb-12 border ${
+                  isDark
+                    ? 'border-red-500/20 bg-slate-950'
+                    : 'border-blue-300/30 shadow-xl shadow-blue-500/10 bg-slate-950'
+                }`}
+              >
+                <img
+                  src={project.image}
+                  alt={project.title}
+                  className="w-full aspect-[16/9] object-cover"
+                />
+              </motion.div>
+
+              {/* Full Description */}
+              {project.fullDescription &&
+                project.fullDescription !== project.description && (
+                  <div
+                    className={`mb-12 rounded-2xl p-8 border ${
+                      isDark
+                        ? 'bg-slate-900/60 border-red-500/20'
+                        : 'bg-white/70 border-blue-200 shadow-lg shadow-blue-500/5'
                     }`}
                   >
-                    {project.fullDescription}
-                  </p>
-                </div>
-              </motion.div>
-            )}
+                    <h2
+                      className={`text-2xl font-bold mb-4 ${
+                        isDark ? 'text-white' : 'text-gray-900'
+                      }`}
+                    >
+                      {isDark ? 'Mission Overview' : 'About This Project'}
+                    </h2>
+                    <div
+                      className={`border-l-4 pl-5 ${
+                        isDark ? 'border-red-500' : 'border-blue-500'
+                      }`}
+                    >
+                      <p
+                        className={`text-base leading-relaxed whitespace-pre-line ${
+                          isDark ? 'text-gray-300' : 'text-gray-700'
+                        }`}
+                      >
+                        {project.fullDescription}
+                      </p>
+                    </div>
+                  </div>
+                )}
 
-          {/* Features, Technologies, Challenges */}
-          <ProjectFeatures project={project} />
+              {/* Features, Technologies, Challenges */}
+              <ProjectFeatures project={project} />
 
-          {/* Results & CTA */}
-          <ProjectResults project={project} />
-        </motion.div>
+              {/* Results & CTA */}
+              <ProjectResults project={project} />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );

@@ -37,10 +37,15 @@ export function ProjectCard({ project, index, isInView }: ProjectCardProps) {
       }`}
     >
       <Link to={`/projects/${project.id}`} className="block">
-        <div className="relative overflow-hidden h-64">
+        <div
+          className={`relative overflow-hidden h-64 ${
+            isDark ? 'bg-slate-900' : 'bg-blue-50'
+          }`}
+        >
           <img
             src={project.image}
             alt={project.title}
+            loading="lazy"
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
           />
           <div

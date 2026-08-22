@@ -4,6 +4,7 @@ import { useRef, useEffect, useState } from 'react';
 import { AlertTriangle, RefreshCw } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { fetchTechnologies } from '../../services/api';
+import { TechStackSkeleton } from './ui/skeleton';
 
 interface Technology {
   name: string;
@@ -149,18 +150,7 @@ export function TechStack() {
           </div>
 
           {/* Loading Skeleton */}
-          {loading && (
-            <div className="flex gap-4 overflow-hidden">
-              {Array.from({ length: 8 }).map((_, i) => (
-                <div
-                  key={i}
-                  className={`flex-shrink-0 rounded-xl px-5 py-3 w-36 h-14 animate-pulse ${
-                    isDark ? 'bg-slate-800/50' : 'bg-blue-100/60'
-                  }`}
-                />
-              ))}
-            </div>
-          )}
+          {loading && <TechStackSkeleton />}
 
           {/* Error State */}
           {!loading && error && (

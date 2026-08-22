@@ -1,45 +1,47 @@
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { useInView } from 'motion/react';
 import { useRef, useEffect, useState } from 'react';
 import { Code2 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { ServicesHeader } from './service/ServicesHeader';
 import { ServiceCard, type ServiceItem } from './service/ServiceCard';
+import { ServiceSkeletonCard } from './ui/skeleton';
 import { fetchServices } from '../../services/api';
 
 export function Services() {
   const [services, setServices] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, amount: 0.2 });
+  const isInView = useInView(ref, { once: true, amount: 0.1 });
   const { theme } = useTheme();
   const isDark = theme === 'avengers';
 
   useEffect(() => {
+    let isMounted = true;
     const loadData = async () => {
       try {
         const data = await fetchServices();
-        // data is already normalized by normalizeService in api.ts
-        // — description, features, title, icon, image are all set correctly
+        if (!isMounted) return;
         const mappedData = data.map((s: any) => ({
-          icon: s.icon || Code2, // s.icon = iconUrl.url string or null
-          title: s.title || s.name || '', // s.title = s.name alias
-          description: s.description || '', // s.description = parsed from JSON blob
+          icon: s.icon || Code2,
+          title: s.title || s.name || '',
+          description: s.description || '',
           features: Array.isArray(s.features) ? s.features : [],
-          color: isDark
-            ? 'from-red-600 to-red-400'
-            : 'from-blue-600 to-blue-400',
+          color: 'from-blue-600 to-blue-400',
           link: `/services/${s._id}`,
         }));
         setServices(mappedData);
       } catch (error) {
         console.error('Error fetching services:', error);
       } finally {
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     };
     loadData();
-  }, [isDark]);
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   return (
     <section
@@ -52,35 +54,62 @@ export function Services() {
       <div className="container mx-auto px-6">
         <motion.div
           ref={ref}
-          initial={{ opacity: 0, y: 50 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
-          transition={{ duration: 0.8 }}
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+          transition={{ duration: 0.6 }}
           className="max-w-6xl mx-auto"
         >
           {/* Header */}
           <ServicesHeader isInView={isInView} />
 
-          {/* Services Grid */}
-          {loading ? (
-            <div className="flex justify-center py-20">
-              <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-            </div>
-          ) : services.length === 0 ? (
-            <div className="text-center py-20 text-slate-500">
-              No services found.
-            </div>
-          ) : (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {services.map((service, index) => (
-                <ServiceCard
-                  key={service.title}
-                  service={service as ServiceItem}
-                  index={index}
-                  isInView={isInView}
-                />
-              ))}
-            </div>
-          )}
+          {/* Services Grid with Smooth Skeleton Transitions */}
+          <AnimatePresence mode="wait">
+            {loading ? (
+              <motion.div
+                key="services-skeleton"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.25 }}
+                className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
+              >
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <ServiceSkeletonCard key={i} />
+                ))}
+              </motion.div>
+            ) : services.length === 0 ? (
+              <motion.div
+                key="services-empty"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="text-center py-16 text-slate-500"
+              >
+                No services found.
+              </motion.div>
+            ) : (
+              <motion.div
+                key="services-grid"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.4 }}
+                className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
+              >
+                {services.map((service, index) => (
+                  <ServiceCard
+                    key={service.link || service.title}
+                    service={{
+                      ...service,
+                      color: isDark
+                        ? 'from-red-600 to-red-400'
+                        : 'from-blue-600 to-blue-400',
+                    }}
+                    index={index}
+                    isInView={true}
+                  />
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </motion.div>
       </div>
     </section>
