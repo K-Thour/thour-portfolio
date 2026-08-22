@@ -1,19 +1,13 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { useState, useEffect, useMemo } from 'react';
+import { motion } from 'motion/react';
 import {
   ArrowDown,
   Shield,
-  Code,
-  Cpu,
-  Terminal,
   Axe,
   Snowflake,
-  Sparkles,
 } from 'lucide-react';
 import { Link } from 'react-router';
-import { TerminalWindow } from '../../components/TerminalWindow';
 import { CodeRain } from '../../components/CodeRain';
-import { CodeSnippet } from '../../components/CodeSnippet';
 import { HeroAvatarLoader } from './HeroAvatarLoader';
 import { useTheme } from '../../context/ThemeContext';
 import { useUser } from '../../context/UserContext';

@@ -1,5 +1,10 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { fetchPublicUser } from '../../services/api';
+import {
+  updateFavicon,
+  getLoadingFaviconSvg,
+  createCircularAvatarFavicon,
+} from '../../utils/favicon';
 
 export interface UserData {
   name: string;
@@ -94,10 +99,35 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
   }, []);
 
   useEffect(() => {
-    if (userData && userData.name) {
+    let active = true;
+
+    if (loading) {
+      document.title = 'Loading...';
+      const isDark =
+        document.documentElement.getAttribute('data-theme') === 'avengers' ||
+        document.documentElement.classList.contains('dark');
+      updateFavicon(getLoadingFaviconSvg(isDark));
+    } else if (userData && userData.name) {
       document.title = `${userData.name} Portfolio`;
+      if (userData.image) {
+        const isDark =
+          document.documentElement.getAttribute('data-theme') === 'avengers' ||
+          document.documentElement.classList.contains('dark');
+        createCircularAvatarFavicon(userData.image, isDark).then((fav) => {
+          if (active) updateFavicon(fav);
+        });
+      } else {
+        updateFavicon('/favicon.png');
+      }
+    } else {
+      document.title = `${FALLBACK_USER.name} Portfolio`;
+      updateFavicon('/favicon.png');
     }
-  }, [userData]);
+
+    return () => {
+      active = false;
+    };
+  }, [userData, loading]);
 
   return (
     <UserContext.Provider value={{ userData, loading }}>

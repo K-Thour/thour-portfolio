@@ -7,20 +7,45 @@ import AppRoutes from "./layouts/routes/AppRoutes";
 import { PersistGate } from "redux-persist/integration/react";
 import { persistor } from "./store/store";
 import { fetchPublicUser } from "./services/api";
+import {
+  updateFavicon,
+  getLoadingFaviconSvg,
+  createCircularAvatarFavicon,
+} from "./utils/favicon";
 
 function TitleSync() {
+  const theme = useSelector((state: RootState) => state.theme.theme);
+  const isDark = theme === "dark";
+
   useEffect(() => {
+    let active = true;
+    document.title = "Loading...";
+    updateFavicon(getLoadingFaviconSvg(isDark));
+
     const loadTitle = async () => {
       try {
         const data = await fetchPublicUser();
+        if (!active) return;
         if (data && data.name) {
           document.title = `${data.name} Portfolio CMS`;
         } else {
           document.title = "Karanveer Thour Portfolio CMS";
         }
+
+        const avatarUrl = data?.image?.url || (typeof data?.image === "string" ? data.image : "");
+        if (avatarUrl) {
+          createCircularAvatarFavicon(avatarUrl, isDark).then((fav) => {
+            if (active) updateFavicon(fav);
+          });
+        } else {
+          updateFavicon("/favicon.png");
+        }
       } catch (err) {
-        console.error("Failed to load CMS title:", err);
-        document.title = "Karanveer Thour Portfolio CMS";
+        console.error("Failed to load CMS title and favicon:", err);
+        if (active) {
+          document.title = "Karanveer Thour Portfolio CMS";
+          updateFavicon("/favicon.png");
+        }
       }
     };
 
@@ -31,13 +56,20 @@ function TitleSync() {
       if (customEvent.detail && customEvent.detail.name) {
         document.title = `${customEvent.detail.name} Portfolio CMS`;
       }
+      const newAvatar = customEvent.detail?.image?.url || (typeof customEvent.detail?.image === "string" ? customEvent.detail.image : "");
+      if (newAvatar) {
+        createCircularAvatarFavicon(newAvatar, isDark).then((fav) => {
+          if (active) updateFavicon(fav);
+        });
+      }
     };
 
     window.addEventListener("profile-updated", handleProfileUpdate);
     return () => {
+      active = false;
       window.removeEventListener("profile-updated", handleProfileUpdate);
     };
-  }, []);
+  }, [isDark]);
 
   return null;
 }
