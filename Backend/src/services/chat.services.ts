@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { asyncCommonWrapper } from '../common/asyncCommon.wrapper';
 import commonResponse from '../common/commonResponses';
 import constants from '../constants';
@@ -79,6 +80,7 @@ Developer: ${name} (Full Stack Engineer & AI Developer)
 Experience: ${user.experience || 3}+ Years, ${user.completedProjects || 20}+ Projects
 Bio: ${bio}
 Email: ${email}
+Phone: ${phone}
 Skills: ${techList || 'React, TypeScript, Node.js, Express, MongoDB, Next.js, Tailwind CSS, Python'}
 Projects:\n${projectList}
 Experience:\n${expList}

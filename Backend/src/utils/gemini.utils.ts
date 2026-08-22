@@ -51,7 +51,9 @@ export const verifyGeminiConnection = async (): Promise<boolean> => {
   const apiKey = envConstant.GEMINI_API_KEY;
 
   if (!apiKey || apiKey.includes('your_gemini_api_key')) {
-    console.log('⚠️  [Gemini AI] GEMINI_API_KEY is not set or using placeholder in .env (Smart fallback engine active)');
+    console.log(
+      '⚠️  [Gemini AI] GEMINI_API_KEY is not set or using placeholder in .env (Smart fallback engine active)',
+    );
     return false;
   }
 
@@ -63,7 +65,9 @@ export const verifyGeminiConnection = async (): Promise<boolean> => {
       const pingResult = await model.generateContent('ping');
       const response = pingResult.response.text();
       if (response) {
-        console.log(`✅ [Gemini AI] Connection verified successfully (Model: ${modelName} is online and ready)`);
+        console.log(
+          `✅ [Gemini AI] Connection verified successfully (Model: ${modelName} is online and ready)`,
+        );
         return true;
       }
     } catch {
@@ -71,7 +75,9 @@ export const verifyGeminiConnection = async (): Promise<boolean> => {
     }
   }
 
-  console.log('ℹ️  [Gemini AI] Smart knowledge-base fallback engine is active and ready to handle incoming chat');
+  console.log(
+    'ℹ️  [Gemini AI] Smart knowledge-base fallback engine is active and ready to handle incoming chat',
+  );
   return false;
 };
 
@@ -102,7 +108,11 @@ export const generateChatResponseAI = async (params: GenerateChatParams): Promis
           temperature: 0.75,
           topP: 0.9,
         },
-        systemInstruction: chatPromptConstant.buildChatSystemInstruction(name, email, knowledgeBase),
+        systemInstruction: chatPromptConstant.buildChatSystemInstruction(
+          name,
+          email,
+          knowledgeBase,
+        ),
       });
 
       const contents = [
@@ -126,7 +136,9 @@ export const generateChatResponseAI = async (params: GenerateChatParams): Promis
         };
       }
     } catch (modelErr: any) {
-      console.warn(`[Gemini AI] Model ${modelName} unavailable (${modelErr?.message?.slice(0, 80)}), trying alternative...`);
+      console.warn(
+        `[Gemini AI] Model ${modelName} unavailable (${modelErr?.message?.slice(0, 80)}), trying alternative...`,
+      );
     }
   }
 

@@ -64,7 +64,13 @@ export const buildRuleBasedFallbackReply = (
 Let's discuss your specific requirements, timeline, and features in detail! You can send a direct project inquiry via the **/contact** page or email **${name}** at [${email}](mailto:${email}).`;
   }
 
-  if (lower.includes('hire') || lower.includes('contact') || lower.includes('email') || lower.includes('reach') || lower.includes('collaborate')) {
+  if (
+    lower.includes('hire') ||
+    lower.includes('contact') ||
+    lower.includes('email') ||
+    lower.includes('reach') ||
+    lower.includes('collaborate')
+  ) {
     return `**${name}** is actively open to new freelance projects, full-time engineering roles, and technical collaborations!
 
 ### 📬 How to Connect:
@@ -73,16 +79,33 @@ Let's discuss your specific requirements, timeline, and features in detail! You 
 • **Turnaround:** **${name}** typically responds within 24 hours. Let's build something extraordinary together!`;
   }
 
-  if (lower.includes('project') || lower.includes('work') || lower.includes('portfolio') || lower.includes('showcase')) {
+  if (
+    lower.includes('project') ||
+    lower.includes('work') ||
+    lower.includes('portfolio') ||
+    lower.includes('showcase')
+  ) {
     if (projects.length > 0) {
-      const projectDetails = projects.slice(0, 3).map((p) => `• **${p.title}**: ${p.desc}`).join('\n');
+      const projectDetails = projects
+        .slice(0, 3)
+        .map((p) => `• **${p.title}**: ${p.desc}`)
+        .join('\n');
       return `Here are some of **${name}'s** top featured full-stack engineering projects:\n\n${projectDetails}\n\nExplore live interactive demos, source code repositories, and complete project breakdowns on the **/projects** page!`;
     }
     return `**${name}** has engineered high-performance web applications, AI integrations, real-time WebSocket platforms, and full-stack systems. Check out the **/projects** page for live demos!`;
   }
 
-  if (lower.includes('skill') || lower.includes('tech') || lower.includes('stack') || lower.includes('language') || lower.includes('tool')) {
-    const skillList = skills.length > 0 ? skills.slice(0, 10).join(', ') : 'React, TypeScript, Node.js, Next.js, Express, MongoDB, Tailwind CSS, Redux, WebSockets, Python, Docker';
+  if (
+    lower.includes('skill') ||
+    lower.includes('tech') ||
+    lower.includes('stack') ||
+    lower.includes('language') ||
+    lower.includes('tool')
+  ) {
+    const skillList =
+      skills.length > 0
+        ? skills.slice(0, 10).join(', ')
+        : 'React, TypeScript, Node.js, Next.js, Express, MongoDB, Tailwind CSS, Redux, WebSockets, Python, Docker';
     return `**${name}** specializes in modern full-stack development, cloud architecture, and AI integrations.
 
 ### 💻 Core Tech Stack:
@@ -93,9 +116,18 @@ Let's discuss your specific requirements, timeline, and features in detail! You 
 Key strengths include **${skillList}**. Feel free to explore the **/about** section for a detailed breakdown!`;
   }
 
-  if (lower.includes('experience') || lower.includes('job') || lower.includes('company') || lower.includes('career') || lower.includes('background')) {
+  if (
+    lower.includes('experience') ||
+    lower.includes('job') ||
+    lower.includes('company') ||
+    lower.includes('career') ||
+    lower.includes('background')
+  ) {
     if (experience.length > 0) {
-      const expDetails = experience.slice(0, 2).map((e) => `• **${e.role}** at **${e.company}**${e.duration ? ` (${e.duration})` : ''}`).join('\n');
+      const expDetails = experience
+        .slice(0, 2)
+        .map((e) => `• **${e.role}** at **${e.company}**${e.duration ? ` (${e.duration})` : ''}`)
+        .join('\n');
       return `**${name}** brings rich hands-on engineering experience across modern web systems:\n\n${expDetails}\n\nHighlights include engineering high-throughput microservices, boosting team productivity by 40%, and delivering responsive user interfaces across 25+ successful client deployments.`;
     }
     return `**${name}** has extensive experience developing scalable web applications, secure REST APIs, and responsive user interfaces with over 3+ years in production engineering.`;
@@ -108,7 +140,13 @@ Key strengths include **${skillList}**. Feel free to explore the **/about** sect
     return `**${name}** provides Full Stack Web Development, Custom API Design, Performance Optimization, UI/UX Engineering, and AI Integrations.`;
   }
 
-  if (lower.includes('hi') || lower.includes('hello') || lower.includes('hey') || lower.includes('who are you') || lower.includes('about')) {
+  if (
+    lower.includes('hi') ||
+    lower.includes('hello') ||
+    lower.includes('hey') ||
+    lower.includes('who are you') ||
+    lower.includes('about')
+  ) {
     return `Hello! 👋 I'm **${name}'s AI Assistant**.\n\n**${name}** is a Full Stack Software Engineer & AI Developer specializing in building high-performance web applications, scalable APIs, and intelligent digital experiences.
 
 Feel free to ask me about:

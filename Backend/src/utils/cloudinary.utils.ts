@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { v2 as cloudinary } from 'cloudinary';
 import envConstant from '../constants/env.constant';
 
@@ -14,58 +15,64 @@ if (isCloudinaryConfigured) {
   });
 } else {
   console.warn(
-    'Cloudinary credentials not set in .env. Falling back to local/dataURL image storage.',
+    'Cloudinary is not fully configured. Image uploads will fall back to original strings.',
   );
 }
 
-export const uploadToCloudinary = async (
+export const uploadBase64Image = async (
   base64String: string,
   folder: string = 'portfolio',
-): Promise<{ url: string; publicId: string }> => {
-  console.log('Cloudinary upload started, configured:', isCloudinaryConfigured);
-  console.log('Base64 string length:', base64String.length);
-
+): Promise<string> => {
   if (!isCloudinaryConfigured) {
-    // If not configured, return the base64 string directly so it displays fine locally
-    return {
-      url: base64String,
-      publicId: `local_fallback_${Date.now()}`,
-    };
+    return base64String;
+  }
+
+  // If it is already a Cloudinary or external URL, do not re-upload
+  if (
+    base64String.startsWith('http://') ||
+    base64String.startsWith('https://')
+  ) {
+    return base64String;
   }
 
   try {
-    const uploadResponse = await cloudinary.uploader.upload(base64String, {
-      folder,
-      resource_type: 'image',
-      quality: 'auto:best',
-      fetch_format: 'auto',
+    const result = await cloudinary.uploader.upload(base64String, {
+      folder: `portfolio-cms/${folder}`,
+      resource_type: 'auto',
     });
-    console.log('Cloudinary upload successful:', uploadResponse.public_id);
-    return {
-      url: uploadResponse.secure_url,
-      publicId: uploadResponse.public_id,
-    };
+    return result.secure_url;
   } catch (error) {
     console.error('Error uploading to Cloudinary:', error);
     throw new Error('Failed to upload image to Cloudinary', { cause: error });
   }
 };
 
-export const deleteFromCloudinary = async (publicId: string): Promise<void> => {
-  if (!isCloudinaryConfigured || !publicId || publicId.startsWith('local_fallback_')) {
+export const deleteCloudinaryImage = async (
+  imageUrl: string,
+): Promise<void> => {
+  if (!isCloudinaryConfigured || !imageUrl.includes('cloudinary.com')) {
     return;
   }
+
   try {
-    await cloudinary.uploader.destroy(publicId);
+    const parts = imageUrl.split('/');
+    const fileWithExt = parts.slice(-2).join('/');
+    const publicId = fileWithExt.substring(0, fileWithExt.lastIndexOf('.'));
+    if (publicId) {
+      await cloudinary.uploader.destroy(publicId);
+    }
   } catch (error) {
     console.error('Error deleting from Cloudinary:', error);
   }
 };
 
+export const uploadToCloudinary = uploadBase64Image;
+export const deleteFromCloudinary = deleteCloudinaryImage;
+
 export const uploadBase64ImagesInObject = async (
-  obj: any, // eslint-disable-line @typescript-eslint/no-explicit-any
+  obj: any,
   folder: string = 'portfolio',
-): Promise<any> => { // eslint-disable-line @typescript-eslint/no-explicit-any
+): Promise<any> => {
   if (!obj || typeof obj !== 'object') {
     return obj;
   }
@@ -77,21 +84,14 @@ export const uploadBase64ImagesInObject = async (
     return obj;
   }
 
-  // If the object matches imageDataSchema and has a base64 URL
-  if (obj.url && typeof obj.url === 'string' && obj.url.startsWith('data:image/')) {
-    try {
-      const uploadRes = await uploadToCloudinary(obj.url, folder);
-      obj.url = uploadRes.url;
-      obj.publicId = uploadRes.publicId;
-    } catch (err) {
-      console.error('Failed to auto-upload base64 image in object:', err);
+  const updatedObj = { ...obj };
+  for (const key of Object.keys(updatedObj)) {
+    const value = updatedObj[key];
+    if (typeof value === 'string' && value.startsWith('data:image/')) {
+      updatedObj[key] = await uploadBase64Image(value, folder);
+    } else if (value && typeof value === 'object') {
+      updatedObj[key] = await uploadBase64ImagesInObject(value, folder);
     }
-    return obj;
   }
-
-  for (const key of Object.keys(obj)) {
-    obj[key] = await uploadBase64ImagesInObject(obj[key], folder);
-  }
-
-  return obj;
+  return updatedObj;
 };
