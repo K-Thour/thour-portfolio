@@ -15,7 +15,8 @@
     "lint-fix": "eslint . --fix",
     "prepare": "husky",
     "deploy": "npm run format && npm run lint:fix && git add . && git commit -m",
-    "postdeploy": "git push"
+    "postdeploy": "git push",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@base-ui/react": "^1.2.0",

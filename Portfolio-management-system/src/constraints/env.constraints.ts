@@ -4,5 +4,6 @@ export default {
   PORTFOLIO_WEB_BASE_URL:
     import.meta.env.VITE_PORTFOLIO_WEB_BASE_URL || "http://localhost:5174",
   PORTFOLIO_MANAGEMENT_BASE_URL:
-    import.meta.env.VITE_PORTFOLIO_MANAGEMENT_BASE_URL || "http://localhost:5173",
+    import.meta.env.VITE_PORTFOLIO_MANAGEMENT_BASE_URL ||
+    "http://localhost:5173",
 };

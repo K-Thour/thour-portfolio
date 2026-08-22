@@ -32,7 +32,9 @@ function TitleSync() {
           document.title = "Karanveer Thour Portfolio CMS";
         }
 
-        const avatarUrl = data?.image?.url || (typeof data?.image === "string" ? data.image : "");
+        const avatarUrl =
+          data?.image?.url ||
+          (typeof data?.image === "string" ? data.image : "");
         if (avatarUrl) {
           createCircularAvatarFavicon(avatarUrl, isDark).then((fav) => {
             if (active) updateFavicon(fav);
@@ -56,7 +58,11 @@ function TitleSync() {
       if (customEvent.detail && customEvent.detail.name) {
         document.title = `${customEvent.detail.name} Portfolio CMS`;
       }
-      const newAvatar = customEvent.detail?.image?.url || (typeof customEvent.detail?.image === "string" ? customEvent.detail.image : "");
+      const newAvatar =
+        customEvent.detail?.image?.url ||
+        (typeof customEvent.detail?.image === "string"
+          ? customEvent.detail.image
+          : "");
       if (newAvatar) {
         createCircularAvatarFavicon(newAvatar, isDark).then((fav) => {
           if (active) updateFavicon(fav);

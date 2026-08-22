@@ -74,7 +74,9 @@ function Header({ className }: { className?: string }) {
     name: currentUser?.name || "Karanveer Thour",
     email: currentUser?.email || "admin@management.system",
     role: { name: "Admin" },
-    avatarUrl: currentUser?.image?.url || (typeof currentUser?.image === "string" ? currentUser.image : ""),
+    avatarUrl:
+      currentUser?.image?.url ||
+      (typeof currentUser?.image === "string" ? currentUser.image : ""),
   };
 
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
@@ -103,7 +105,9 @@ function Header({ className }: { className?: string }) {
         >
           {loading ? (
             <div className="h-6 w-48 sm:w-80 rounded-md animate-pulse bg-muted/60 flex items-center px-2">
-              <span className="text-xs text-muted-foreground font-mono animate-pulse">Loading...</span>
+              <span className="text-xs text-muted-foreground font-mono animate-pulse">
+                Loading...
+              </span>
             </div>
           ) : (
             <motion.h1
