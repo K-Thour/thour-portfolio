@@ -125,3 +125,19 @@ export const fetchActiveContact = async () => {
   const response = await apiClient.get('/contact/active');
   return response.data.data;
 };
+
+export interface ChatMessage {
+  role: 'user' | 'model' | 'assistant';
+  content: string;
+}
+
+export const sendChatMessage = async (
+  message: string,
+  history?: ChatMessage[],
+): Promise<{ reply: string; source: string }> => {
+  const response = await apiClient.post('/chat/message', {
+    message,
+    history,
+  });
+  return response.data.data;
+};

@@ -4,6 +4,7 @@ import { ENTITIES } from './entities.constant';
 import envConstant from './env.constant';
 import MESSAGES_COMMON from './messages.constant';
 import { STATUS_CODE } from './statusCode.constant';
+import chatPromptConstant from './chatPrompt.constant';
 
 export default {
   dateConstraints,
@@ -12,4 +13,5 @@ export default {
   MESSAGES_COMMON,
   STATUS_CODE,
   envConstant,
+  chatPromptConstant,
 };

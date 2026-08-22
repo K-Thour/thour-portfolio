@@ -10,6 +10,7 @@ import resumeControllers from './resume.controllers';
 import serviceControllers from './service.controllers';
 import dashboardControllers from './dashboard.controllers';
 import imageControllers from './image.controllers';
+import chatControllers from './chat.controllers';
 
 export default {
   userControllers,
@@ -24,4 +25,5 @@ export default {
   serviceControllers,
   dashboardControllers,
   imageControllers,
+  chatControllers,
 };

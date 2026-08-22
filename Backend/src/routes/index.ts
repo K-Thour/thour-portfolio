@@ -10,6 +10,7 @@ import resumeRoutes from './resume.routes';
 import serviceRoutes from './service.routes';
 import dashboardRoutes from './dashboard.routes';
 import imageRoutes from './image.routes';
+import chatRoutes from './chat.routes';
 
 export default {
   userRoutes,
@@ -24,4 +25,5 @@ export default {
   serviceRoutes,
   dashboardRoutes,
   imageRoutes,
+  chatRoutes,
 };

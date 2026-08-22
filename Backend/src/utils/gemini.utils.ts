@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import envConstant from '../constants/env.constant';
+import chatPromptConstant, { ChatKnowledgeSummary } from '../constants/chatPrompt.constant';
 
 const genAI = new GoogleGenerativeAI(envConstant.GEMINI_API_KEY);
 
@@ -29,13 +30,121 @@ export interface AIResumeResponse {
   latexCode: string;
 }
 
+export interface GenerateChatParams {
+  message: string;
+  history?: Array<{ role: string; content: string }>;
+  name: string;
+  email: string;
+  knowledgeBase: string;
+  knowledgeSummary: ChatKnowledgeSummary;
+}
+
+export interface AIChatResult {
+  reply: string;
+  source: 'gemini-ai' | 'knowledge-base' | 'knowledge-base-fallback';
+}
+
+/**
+ * Validates Gemini API Key and tests connectivity on server startup
+ */
+export const verifyGeminiConnection = async (): Promise<boolean> => {
+  const apiKey = envConstant.GEMINI_API_KEY;
+
+  if (!apiKey || apiKey.includes('your_gemini_api_key')) {
+    console.log('⚠️  [Gemini AI] GEMINI_API_KEY is not set or using placeholder in .env (Smart fallback engine active)');
+    return false;
+  }
+
+  const modelsToTry = ['gemini-3.7-flash', 'gemini-3.5-flash', 'gemini-3.6-flash'];
+
+  for (const modelName of modelsToTry) {
+    try {
+      const model = genAI.getGenerativeModel({ model: modelName });
+      const pingResult = await model.generateContent('ping');
+      const response = pingResult.response.text();
+      if (response) {
+        console.log(`✅ [Gemini AI] Connection verified successfully (Model: ${modelName} is online and ready)`);
+        return true;
+      }
+    } catch {
+      // try next model
+    }
+  }
+
+  console.log('ℹ️  [Gemini AI] Smart knowledge-base fallback engine is active and ready to handle incoming chat');
+  return false;
+};
+
+/**
+ * Generates an articulate, comprehensive AI Chatbot response with RAG knowledge injection and fallback
+ */
+export const generateChatResponseAI = async (params: GenerateChatParams): Promise<AIChatResult> => {
+  const { message, history = [], name, email, knowledgeBase, knowledgeSummary } = params;
+  const apiKey = envConstant.GEMINI_API_KEY;
+
+  if (!apiKey || apiKey.includes('your_gemini_api_key')) {
+    const fallbackReply = chatPromptConstant.buildRuleBasedFallbackReply(message, knowledgeSummary);
+    return {
+      reply: fallbackReply,
+      source: 'knowledge-base',
+    };
+  }
+
+  // Multi-tier model fallback chain (tries 3.7-flash -> 3.5-flash -> 3.6-flash)
+  const modelsToTry = ['gemini-3.7-flash', 'gemini-3.5-flash', 'gemini-3.6-flash'];
+
+  for (const modelName of modelsToTry) {
+    try {
+      const model = genAI.getGenerativeModel({
+        model: modelName,
+        generationConfig: {
+          maxOutputTokens: 2048,
+          temperature: 0.75,
+          topP: 0.9,
+        },
+        systemInstruction: chatPromptConstant.buildChatSystemInstruction(name, email, knowledgeBase),
+      });
+
+      const contents = [
+        ...history.slice(-8).map((h) => ({
+          role: h.role === 'model' || h.role === 'assistant' ? 'model' : 'user',
+          parts: [{ text: h.content }],
+        })),
+        {
+          role: 'user',
+          parts: [{ text: message }],
+        },
+      ];
+
+      const result = await model.generateContent({ contents });
+      const responseText = result.response.text();
+
+      if (responseText && responseText.trim()) {
+        return {
+          reply: responseText,
+          source: 'gemini-ai',
+        };
+      }
+    } catch (modelErr: any) {
+      console.warn(`[Gemini AI] Model ${modelName} unavailable (${modelErr?.message?.slice(0, 80)}), trying alternative...`);
+    }
+  }
+
+  // If API quotas are exceeded or network fails, use the rich fallback knowledge engine
+  const fallbackReply = chatPromptConstant.buildRuleBasedFallbackReply(message, knowledgeSummary);
+  return {
+    reply: fallbackReply,
+    source: 'knowledge-base-fallback',
+  };
+};
+
 export const generateResumeAI = async (params: GenerateResumeParams): Promise<AIResumeResponse> => {
   if (!envConstant.GEMINI_API_KEY) {
     throw new Error('GEMINI_API_KEY is not configured in the environment');
   }
 
   const model = genAI.getGenerativeModel({
-    model: 'gemini-1.5-flash',
+    model: 'gemini-3.7-flash',
     generationConfig: {
       responseMimeType: 'application/json',
     },
@@ -101,3 +210,11 @@ You must return a JSON object containing EXACTLY these keys:
   const responseText = result.response.text();
   return JSON.parse(responseText) as AIResumeResponse;
 };
+
+const geminiUtils = {
+  verifyGeminiConnection,
+  generateChatResponseAI,
+  generateResumeAI,
+};
+
+export default geminiUtils;

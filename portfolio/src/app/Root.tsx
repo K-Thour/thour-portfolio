@@ -6,6 +6,7 @@ import { ThemeProvider, useTheme } from './context/ThemeContext';
 import { UserProvider } from './context/UserContext';
 import { CursorGlow } from './components/ui/CursorGlow';
 import { GameLoader } from './components/ui/GameLoader';
+import { ChatBot } from './components/ui/ChatBot';
 
 function RootLayout() {
   const { pathname } = useLocation();
@@ -42,6 +43,7 @@ function RootLayout() {
       >
         <Outlet />
       </motion.main>
+      <ChatBot />
     </div>
   );
 }

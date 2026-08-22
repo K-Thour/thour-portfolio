@@ -10,6 +10,7 @@ import resumeServices from './resume.services';
 import serviceServices from './service.services';
 import dashboardServices from './dashboard.services';
 import imageServices from './image.services';
+import chatServices from './chat.services';
 
 export default {
   userServices,
@@ -24,4 +25,5 @@ export default {
   serviceServices,
   dashboardServices,
   imageServices,
+  chatServices,
 };
