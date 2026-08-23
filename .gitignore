@@ -34,7 +34,7 @@ _bmad-output
 .agent
 .agents
 .claude
-.github
+.github/agents
 .windsurf
 .antigravity
 .codex
