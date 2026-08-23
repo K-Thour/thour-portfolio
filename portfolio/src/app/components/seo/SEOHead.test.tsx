@@ -39,7 +39,7 @@ describe('SEOHead Component', () => {
             canonicalUrl="https://karanveerthour.com/custom"
           />
         </UserProvider>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     await waitFor(() => {
@@ -50,7 +50,9 @@ describe('SEOHead Component', () => {
     expect(descMeta?.getAttribute('content')).toBe('Custom page description');
 
     const canonicalLink = document.querySelector('link[rel="canonical"]');
-    expect(canonicalLink?.getAttribute('href')).toBe('https://karanveerthour.com/custom');
+    expect(canonicalLink?.getAttribute('href')).toBe(
+      'https://karanveerthour.com/custom',
+    );
 
     const scriptTag = document.getElementById('seo-structured-data-script');
     expect(scriptTag).not.toBeNull();

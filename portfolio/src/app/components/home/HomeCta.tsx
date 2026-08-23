@@ -61,8 +61,9 @@ export function HomeCta() {
                 isDark ? 'text-slate-300' : 'text-blue-100'
               }`}
             >
-              Whether you need full-stack web architecture, scalable API microservices, or an
-              interactive AI experience, I am ready to bring your vision to life.
+              Whether you need full-stack web architecture, scalable API
+              microservices, or an interactive AI experience, I am ready to
+              bring your vision to life.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">

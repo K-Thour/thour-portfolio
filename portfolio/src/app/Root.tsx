@@ -8,6 +8,7 @@ import { CursorGlow } from './components/ui/CursorGlow';
 import { GameLoader } from './components/ui/GameLoader';
 import { ChatBot } from './components/ui/ChatBot';
 import { SEOHead } from './components/seo/SEOHead';
+import { ScrollProgress } from './components/ui/ScrollProgress';
 
 function RootLayout() {
   const { pathname } = useLocation();
@@ -32,6 +33,7 @@ function RootLayout() {
       </AnimatePresence>
 
       <SEOHead />
+      <ScrollProgress />
       <CursorGlow />
       <Navigation />
       <motion.main

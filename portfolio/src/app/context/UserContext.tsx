@@ -110,7 +110,11 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
         document.documentElement.classList.contains('dark');
       updateFavicon(getLoadingFaviconSvg(isDark));
     } else if (userData && userData.name) {
-      if (!document.title || document.title === 'Loading...' || document.title.includes('Portfolio')) {
+      if (
+        !document.title ||
+        document.title === 'Loading...' ||
+        document.title.includes('Portfolio')
+      ) {
         document.title = `${userData.name} Portfolio`;
       }
       if (userData.image) {

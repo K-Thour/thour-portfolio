@@ -15,6 +15,7 @@ import { ServiceHeader } from '../components/service/ServiceHeader';
 import { ServiceFeatures } from '../components/service/ServiceFeatures';
 import { ServiceProcess } from '../components/service/ServiceProcess';
 import { ServiceDetailSkeleton } from '../components/ui/skeleton';
+import { BackButton } from '../components/ui/BackButton';
 import { fetchServiceById } from '../../services/api';
 
 export function ServiceDetail() {
@@ -89,17 +90,13 @@ export function ServiceDetail() {
               >
                 Service Not Found
               </h1>
-              {error && <p className="text-gray-400 mb-4 text-sm">{error}</p>}
-              <Link
-                to="/"
-                className={`hover:underline font-semibold ${
-                  isDark
-                    ? 'text-red-500 hover:text-red-400'
-                    : 'text-blue-600 hover:text-blue-500'
-                }`}
-              >
-                Return Home
-              </Link>
+              {error && <p className="text-gray-400 mb-6 text-sm">{error}</p>}
+              <div className="flex justify-center">
+                <BackButton
+                  fallbackPath="/#services"
+                  label="Back to Services"
+                />
+              </div>
             </motion.div>
           ) : (
             <motion.div
@@ -110,17 +107,12 @@ export function ServiceDetail() {
               className="max-w-5xl mx-auto"
             >
               {/* Back Button */}
-              <Link
-                to="/"
-                className={`inline-flex items-center gap-2 mb-8 transition-colors ${
-                  isDark
-                    ? 'text-gray-400 hover:text-white'
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                <ArrowLeft className="w-5 h-5" />
-                <span>Back to Home</span>
-              </Link>
+              <div className="mb-8">
+                <BackButton
+                  fallbackPath="/#services"
+                  label="Back to Services"
+                />
+              </div>
 
               {/* Header & Hero Image */}
               <ServiceHeader service={service} />

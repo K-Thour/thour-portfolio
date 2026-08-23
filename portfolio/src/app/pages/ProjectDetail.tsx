@@ -7,6 +7,7 @@ import { ProjectHeader } from '../components/project/ProjectHeader';
 import { ProjectFeatures } from '../components/project/ProjectFeatures';
 import { ProjectResults } from '../components/project/ProjectResults';
 import { ProjectDetailSkeleton } from '../components/ui/skeleton';
+import { BackButton } from '../components/ui/BackButton';
 import { fetchProjectById } from '../../services/api';
 
 export function ProjectDetail() {
@@ -107,16 +108,9 @@ export function ProjectDetail() {
               >
                 Project Not Found
               </h1>
-              <Link
-                to="/projects"
-                className={`hover:underline font-semibold ${
-                  isDark
-                    ? 'text-red-500 hover:text-red-400'
-                    : 'text-blue-600 hover:text-blue-500'
-                }`}
-              >
-                Back to Projects
-              </Link>
+              <div className="flex justify-center">
+                <BackButton fallbackPath="/projects" label="Back to Projects" />
+              </div>
             </motion.div>
           ) : (
             <motion.div
@@ -127,17 +121,9 @@ export function ProjectDetail() {
               className="max-w-5xl mx-auto"
             >
               {/* Back Button */}
-              <Link
-                to="../projects"
-                className={`inline-flex items-center gap-2 mb-8 transition-colors ${
-                  isDark
-                    ? 'text-gray-400 hover:text-white'
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                <ArrowLeft className="w-5 h-5" />
-                <span>{isDark ? 'Back to Projects' : 'Return to Saga'}</span>
-              </Link>
+              <div className="mb-8">
+                <BackButton fallbackPath="/projects" label="Back to Projects" />
+              </div>
 
               {/* Header */}
               <ProjectHeader project={project} />

@@ -60,13 +60,17 @@ export function HomeFeaturedProjects() {
   }
 
   return (
-    <section className={`py-24 relative ${isDark ? 'bg-slate-900/60' : 'bg-white/80'}`}>
+    <section
+      className={`py-24 relative ${isDark ? 'bg-slate-900/60' : 'bg-white/80'}`}
+    >
       <div className="container mx-auto px-6 max-w-7xl">
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
           <div>
             <div className="flex items-center gap-2 mb-3">
-              <Sparkles className={`w-5 h-5 ${isDark ? 'text-yellow-500' : 'text-blue-600'}`} />
+              <Sparkles
+                className={`w-5 h-5 ${isDark ? 'text-yellow-500' : 'text-blue-600'}`}
+              />
               <span
                 className={`text-xs font-bold uppercase tracking-widest ${
                   isDark ? 'text-yellow-400' : 'text-blue-600'

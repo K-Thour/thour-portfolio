@@ -17,10 +17,7 @@ export function Home() {
         isDark ? 'bg-slate-900' : 'bg-gradient-to-b from-slate-50 to-blue-50'
       }
     >
-      <SEOHead
-        ogType="website"
-        canonicalUrl="https://karanveerthour.com/"
-      />
+      <SEOHead ogType="website" canonicalUrl="https://karanveerthour.com/" />
 
       {/* Hero Section */}
       <HomeHero />
