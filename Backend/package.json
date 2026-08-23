@@ -15,6 +15,7 @@
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "deploy": "npm run format && npm run lint:fix && git add . && git commit -m",
+    "deploy:server": "bash deploy-backend.sh",
     "postdeploy": "git push",
     "typecheck": "tsc --noEmit"
   },

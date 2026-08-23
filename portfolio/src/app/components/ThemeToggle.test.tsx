@@ -10,9 +10,11 @@ vi.mock('../context/ThemeContext', () => ({
 describe('ThemeToggle', () => {
   it('should render correct icon and call toggleTheme when clicked', () => {
     const toggleThemeMock = vi.fn();
+    const setThemeMock = vi.fn();
     vi.mocked(useTheme).mockReturnValue({
       theme: 'avengers',
       toggleTheme: toggleThemeMock,
+      setTheme: setThemeMock,
     });
 
     render(<ThemeToggle />);
