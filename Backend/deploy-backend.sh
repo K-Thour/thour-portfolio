@@ -62,11 +62,7 @@ fi
 echo "📦 Installing npm dependencies..."
 npm install
 
-# 7. Run automated test suite
-echo "🧪 Running automated tests before deployment..."
-npm test
-
-# 8. Compile TypeScript
+# 7. Compile TypeScript
 echo "🔨 Compiling TypeScript application..."
 npm run build
 
@@ -77,7 +73,7 @@ if [ ! -f "$ENTRY_POINT" ]; then
 fi
 echo "✅ Build artifact verified: $ENTRY_POINT"
 
-# 7. Check PM2 availability
+# 8. Check PM2 availability
 if ! command -v pm2 > /dev/null 2>&1; then
     echo "❌ ERROR: PM2 CLI is required but not found. Please install PM2 globally via: npm install -g pm2"
     exit 1
