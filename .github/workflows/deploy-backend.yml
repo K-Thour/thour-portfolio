@@ -52,8 +52,10 @@ jobs:
           port: ${{ secrets.SERVER_PORT || 22 }}
           script: |
             set -e
-            DEPLOY_PATH="${{ secrets.SERVER_DEPLOY_PATH || '~/thour-portfolio/Backend' }}"
+            DEPLOY_PATH="${{ secrets.SERVER_DEPLOY_PATH || '/home/ubuntu/thour-portfolio/Backend' }}"
             echo "Navigating to deploy path: $DEPLOY_PATH"
             cd "$DEPLOY_PATH"
+            echo "Fetching latest changes from Git..."
+            git pull origin main
             chmod +x deploy-backend.sh
             ./deploy-backend.sh
