@@ -42,7 +42,8 @@ echo "📂 Backend directory: $BACKEND_DIR"
 echo "📥 Fetching latest code from Git branch: $BRANCH..."
 if git -C "$REPO_ROOT" rev-parse --is-inside-work-tree > /dev/null 2>&1; then
     cd "$REPO_ROOT"
-    git pull origin "$BRANCH"
+    git fetch origin "$BRANCH"
+    git reset --hard "origin/$BRANCH"
 else
     echo "ℹ️ Note: Not inside a git repository work-tree, skipping git pull."
 fi

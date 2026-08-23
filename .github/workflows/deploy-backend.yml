@@ -57,7 +57,8 @@ jobs:
             echo "Navigating to deploy path: $DEPLOY_PATH"
             cd "$DEPLOY_PATH"
             REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || echo "$DEPLOY_PATH/..")"
-            echo "Pulling from repo root: $REPO_ROOT"
-            git -C "$REPO_ROOT" pull origin main
+            echo "Syncing from repo root: $REPO_ROOT"
+            git -C "$REPO_ROOT" fetch origin main
+            git -C "$REPO_ROOT" reset --hard origin/main
             chmod +x deploy-backend.sh
             ./deploy-backend.sh
