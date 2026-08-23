@@ -74,7 +74,14 @@ if [ ! -f "$ENTRY_POINT" ]; then
 fi
 echo "✅ Build artifact verified: $ENTRY_POINT"
 
-# 8. Check PM2 availability
+# 8. Copy .env to dist folder
+if [ -f ".env" ]; then
+    echo "📋 Syncing .env to dist/ folder..."
+    cp -f .env dist/.env
+    echo "✅ .env copied to dist/.env"
+fi
+
+# 9. Check PM2 availability
 if ! command -v pm2 > /dev/null 2>&1; then
     echo "❌ ERROR: PM2 CLI is required but not found. Please install PM2 globally via: npm install -g pm2"
     exit 1

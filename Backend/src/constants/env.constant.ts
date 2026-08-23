@@ -2,7 +2,10 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { SignOptions } from 'jsonwebtoken';
 
+// Load .env from process cwd, Backend root, or dist folder
+dotenv.config();
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 export default {
   MONGO_URI: process.env.MONGO_URI || 'mongodb://localhost:27017',
