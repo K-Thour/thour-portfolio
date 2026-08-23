@@ -26,8 +26,6 @@ dist-ssr
 *.sln
 *.sw?
 
-package-lock.json
-
 # BMAD Files
 _bmad
 _bmad-output
