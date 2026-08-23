@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Disallow private and system routes
+Disallow: /admin
+Disallow: /api/
+
+# Sitemap location
+Sitemap: https://karanveerthour.com/sitemap.xml

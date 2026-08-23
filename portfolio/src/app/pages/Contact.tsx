@@ -5,6 +5,7 @@ import { useTheme } from '../context/ThemeContext';
 import { ContactHeader } from '../components/contact/ContactHeader';
 import { ContactInfo } from '../components/contact/ContactInfo';
 import { ContactForm } from '../components/contact/ContactForm';
+import { SEOHead } from '../components/seo/SEOHead';
 
 export function Contact() {
   const ref = useRef(null);
@@ -20,6 +21,10 @@ export function Contact() {
           : 'bg-gradient-to-b from-slate-50 via-blue-50 to-white'
       }`}
     >
+      <SEOHead
+        title="Get In Touch & Contact | Karanveer Thour"
+        description="Connect with Karanveer Thour for full-stack engineering collaborations, freelance inquiries, tech advisory, and project development."
+      />
       <div className="container mx-auto px-6">
         <motion.div
           ref={ref}

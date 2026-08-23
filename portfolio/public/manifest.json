@@ -1,0 +1,17 @@
+{
+  "name": "Karanveer Thour - Senior Full Stack Developer & AI Engineer",
+  "short_name": "Karan Portfolio",
+  "description": "Portfolio of Karanveer Thour - Senior Full Stack Developer, AI & Cloud Architect.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#020617",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "192x192 512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -10,6 +10,7 @@ import {
 import { ProjectsCta } from '../components/projects/ProjectsCta';
 import { ProjectSkeletonCard } from '../components/ui/skeleton';
 import { fetchProjects } from '../../services/api';
+import { SEOHead } from '../components/seo/SEOHead';
 
 export function Projects() {
   const ref = useRef(null);
@@ -64,6 +65,10 @@ export function Projects() {
           : 'bg-gradient-to-b from-slate-50 via-blue-50 to-white'
       }`}
     >
+      <SEOHead
+        title="Featured Projects & Work | Karanveer Thour"
+        description="Browse full stack web applications, AI projects, and software engineering case studies built by Karanveer Thour."
+      />
       <div className="container mx-auto px-6">
         <motion.div
           ref={ref}

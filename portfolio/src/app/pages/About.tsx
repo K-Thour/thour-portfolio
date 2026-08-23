@@ -6,6 +6,7 @@ import { AboutHero } from '../components/about/AboutHero';
 import { AboutStats } from '../components/about/AboutStats';
 import { AboutSkills } from '../components/about/AboutSkills';
 import { AboutMission } from '../components/about/AboutMission';
+import { SEOHead } from '../components/seo/SEOHead';
 
 export function About() {
   const ref = useRef(null);
@@ -21,6 +22,10 @@ export function About() {
           : 'bg-gradient-to-b from-slate-50 via-blue-50 to-white'
       }`}
     >
+      <SEOHead
+        title="About Me | Karanveer Thour - Senior Full Stack Developer"
+        description="Learn more about Karanveer Thour, career journey, technical skills, problem-solving philosophy, and development mission."
+      />
       <div className="container mx-auto px-6">
         <motion.div
           ref={ref}

@@ -102,13 +102,17 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     let active = true;
 
     if (loading) {
-      document.title = 'Loading...';
+      if (!document.title || document.title === 'Loading...') {
+        document.title = 'Loading...';
+      }
       const isDark =
         document.documentElement.getAttribute('data-theme') === 'avengers' ||
         document.documentElement.classList.contains('dark');
       updateFavicon(getLoadingFaviconSvg(isDark));
     } else if (userData && userData.name) {
-      document.title = `${userData.name} Portfolio`;
+      if (!document.title || document.title === 'Loading...' || document.title.includes('Portfolio')) {
+        document.title = `${userData.name} Portfolio`;
+      }
       if (userData.image) {
         const isDark =
           document.documentElement.getAttribute('data-theme') === 'avengers' ||
@@ -120,7 +124,9 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
         updateFavicon('/favicon.png');
       }
     } else {
-      document.title = `${FALLBACK_USER.name} Portfolio`;
+      if (!document.title || document.title === 'Loading...') {
+        document.title = `${FALLBACK_USER.name} Portfolio`;
+      }
       updateFavicon('/favicon.png');
     }
 
