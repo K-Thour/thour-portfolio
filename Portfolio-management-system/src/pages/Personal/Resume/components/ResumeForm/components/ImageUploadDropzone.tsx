@@ -1,28 +1,26 @@
 import React, { useRef, useState } from "react";
-import { Upload, FileText, X, CheckCircle2, RefreshCw } from "lucide-react";
+import { Image as ImageIcon, Upload, X, CheckCircle2, RefreshCw } from "lucide-react";
 
-interface FileUploadDropzoneProps {
-  fileName?: string;
+interface ImageUploadDropzoneProps {
   file?: File;
-  filePreviewUrl?: string;
+  previewUrl?: string;
   isDark: boolean;
   onFileChange: (file?: File, previewUrl?: string) => void;
 }
 
-export function FileUploadDropzone({
-  fileName,
+export function ImageUploadDropzone({
   file,
-  filePreviewUrl,
+  previewUrl,
   isDark,
   onFileChange,
-}: FileUploadDropzoneProps) {
+}: ImageUploadDropzoneProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [dragOver, setDragOver] = useState(false);
 
   const handleProcessFile = (selectedFile: File) => {
     if (!selectedFile) return;
-    if (selectedFile.type !== "application/pdf" && !selectedFile.name.endsWith(".pdf")) {
-      alert("Please upload a valid PDF document (.pdf)");
+    if (!selectedFile.type.startsWith("image/")) {
+      alert("Please upload an image file (PNG, JPG, JPEG, WEBP)");
       return;
     }
 
@@ -48,9 +46,6 @@ export function FileUploadDropzone({
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
-  const displayName = fileName || file?.name;
-  const displaySize = file ? `${(file.size / 1024).toFixed(1)} KB` : "PDF Document";
-
   return (
     <div className="space-y-2">
       <label
@@ -58,21 +53,21 @@ export function FileUploadDropzone({
           isDark ? "text-slate-200" : "text-slate-700"
         }`}
       >
-        <FileText className="w-4 h-4 text-red-500" />
-        PDF Resume Reference (.pdf)
+        <ImageIcon className="w-4 h-4 text-blue-500" />
+        Design Mockup Image (PNG, JPG, WEBP)
       </label>
 
       <input
         ref={fileInputRef}
         type="file"
-        accept="application/pdf"
+        accept="image/png,image/jpeg,image/jpg,image/webp"
         className="hidden"
         onChange={(e) => {
           if (e.target.files?.[0]) handleProcessFile(e.target.files[0]);
         }}
       />
 
-      {displayName ? (
+      {previewUrl ? (
         <div
           className={`p-3 rounded-xl border flex items-center justify-between gap-3 ${
             isDark
@@ -81,8 +76,12 @@ export function FileUploadDropzone({
           }`}
         >
           <div className="flex items-center gap-3 min-w-0">
-            <div className="w-10 h-10 rounded-lg bg-red-500/10 border border-red-500/30 text-red-500 flex items-center justify-center shrink-0">
-              <FileText className="w-5 h-5" />
+            <div className="w-14 h-14 rounded-lg overflow-hidden border border-slate-700 bg-black/40 shrink-0 flex items-center justify-center">
+              <img
+                src={previewUrl}
+                alt="Design Preview"
+                className="w-full h-full object-cover"
+              />
             </div>
             <div className="min-w-0">
               <p
@@ -90,17 +89,17 @@ export function FileUploadDropzone({
                   isDark ? "text-slate-200" : "text-slate-800"
                 }`}
               >
-                {displayName}
+                {file?.name || "Mockup Image"}
               </p>
               <p
                 className={`text-[11px] ${
                   isDark ? "text-slate-400" : "text-slate-500"
                 }`}
               >
-                {displaySize}
+                {file ? `${(file.size / 1024).toFixed(1)} KB` : "Attached Image"}
               </p>
               <span className="inline-flex items-center gap-1 text-[10px] text-emerald-500 font-medium mt-0.5">
-                <CheckCircle2 className="w-3 h-3" /> PDF attached
+                <CheckCircle2 className="w-3 h-3" /> Ready for AI parsing
               </span>
             </div>
           </div>
@@ -114,7 +113,7 @@ export function FileUploadDropzone({
                   ? "bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700"
                   : "bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100"
               }`}
-              title="Replace PDF"
+              title="Replace image"
             >
               <RefreshCw className="w-3.5 h-3.5" />
             </button>
@@ -122,7 +121,7 @@ export function FileUploadDropzone({
               type="button"
               onClick={handleRemove}
               className="p-1.5 rounded-lg border border-red-500/30 bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-all"
-              title="Remove PDF"
+              title="Remove image"
             >
               <X className="w-3.5 h-3.5" />
             </button>
@@ -140,16 +139,16 @@ export function FileUploadDropzone({
           className={`p-5 rounded-xl border border-dashed text-center transition-all cursor-pointer ${
             dragOver
               ? isDark
-                ? "border-red-400 bg-red-950/40"
-                : "border-red-500 bg-red-50"
+                ? "border-blue-400 bg-blue-950/40"
+                : "border-blue-500 bg-blue-50"
               : isDark
                 ? "border-slate-700 bg-slate-900/40 hover:bg-slate-800/40 hover:border-slate-600"
-                : "border-slate-300 bg-slate-50/70 hover:bg-slate-100 hover:border-red-400"
+                : "border-slate-300 bg-slate-50/70 hover:bg-slate-100 hover:border-blue-400"
           }`}
         >
           <div
             className={`w-10 h-10 mx-auto mb-2 rounded-full flex items-center justify-center ${
-              isDark ? "bg-red-950/60 text-red-400" : "bg-red-100 text-red-600"
+              isDark ? "bg-blue-950/60 text-blue-400" : "bg-blue-100 text-blue-600"
             }`}
           >
             <Upload className="w-5 h-5" />
@@ -159,14 +158,14 @@ export function FileUploadDropzone({
               isDark ? "text-slate-200" : "text-slate-800"
             }`}
           >
-            Click or drag & drop PDF template
+            Click or drag & drop resume mockup
           </p>
           <p
             className={`text-[11px] mt-0.5 ${
               isDark ? "text-slate-400" : "text-slate-500"
             }`}
           >
-            PDF documents up to 10MB
+            PNG, JPG, or WEBP up to 10MB
           </p>
         </div>
       )}

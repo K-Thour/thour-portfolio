@@ -2,30 +2,46 @@ import { useState, useCallback } from "react";
 import type { ResumeFormData } from "../types";
 import { initialFormData } from "../data/initialData";
 
-export function useResumeForm() {
-  const [formData, setFormData] = useState<ResumeFormData>(initialFormData);
-  const [errors, setErrors] = useState<
-    Partial<Record<keyof ResumeFormData, string>>
-  >({});
+export function useResumeForm(initialData?: ResumeFormData | null) {
+  const [formData, setFormData] = useState<ResumeFormData>(
+    initialData || initialFormData,
+  );
+  const [errors, setErrors] = useState<Partial<Record<keyof ResumeFormData, string>>>({});
+
+  const updateField = useCallback(
+    <K extends keyof ResumeFormData>(field: K, value: ResumeFormData[K]) => {
+      setFormData((prev) => ({ ...prev, [field]: value }));
+      setErrors((prev) => {
+        if (prev[field]) {
+          const next = { ...prev };
+          delete next[field];
+          return next;
+        }
+        return prev;
+      });
+    },
+    [],
+  );
 
   const validateForm = useCallback((): boolean => {
     const newErrors: Partial<Record<keyof ResumeFormData, string>> = {};
-    if (!formData.name.trim()) newErrors.name = "Name is required";
-    if (!formData.description.trim())
-      newErrors.description = "Description is required";
-    if (!formData.jobLink.trim()) newErrors.jobLink = "Job link is required";
-    else if (!/^https?:\/\/.+/.test(formData.jobLink))
-      newErrors.jobLink = "Please enter a valid URL";
-    if (
-      (formData.designType === "image" || formData.designType === "pdf") &&
-      !formData.designFile &&
-      !formData.designUrl
-    ) {
-      newErrors.designType = "Please provide a design file or URL";
+
+    if (!formData.name.trim()) {
+      newErrors.name = "Resume title is required";
     }
+    if (!formData.description.trim()) {
+      newErrors.description = "Summary or focus area is required";
+    }
+    if (!formData.jobLink.trim()) {
+      newErrors.jobLink = "Job posting link is required";
+    } else if (!/^https?:\/\/.+/i.test(formData.jobLink)) {
+      newErrors.jobLink = "Please enter a valid URL (e.g., https://...)";
+    }
+
     if (formData.designType === "latex" && !formData.latexCode?.trim()) {
-      newErrors.latexCode = "LaTeX code is required";
+      newErrors.latexCode = "LaTeX code is required for LaTeX template";
     }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   }, [formData]);
@@ -34,6 +50,7 @@ export function useResumeForm() {
     setFormData(initialFormData);
     setErrors({});
   }, []);
+
   const updateForm = useCallback((data: ResumeFormData) => {
     setFormData(data);
     setErrors({});
@@ -42,6 +59,7 @@ export function useResumeForm() {
   return {
     formData,
     errors,
+    updateField,
     setFormData,
     setErrors,
     validateForm,

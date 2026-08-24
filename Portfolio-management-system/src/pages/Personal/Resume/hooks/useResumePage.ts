@@ -7,28 +7,21 @@ export function useResumePage() {
   const { resumes, isModalOpen, handlers } = useResumes();
 
   const handleSubmit = async (data: ResumeFormData) => {
-    console.log("Submitting resume:", data);
     try {
       toast({
-        title: "Resume Generation Started",
-        description: "Your resume is being generated via AI...",
+        title: "Task Queued in Background",
+        description: `Generating "${data.name}" in background task manager.`,
         variant: "default",
-        duration: 3000,
+        duration: 3500,
       });
-      await handlers.handleSubmit();
+      await handlers.handleSubmit(data);
+    } catch (err: any) {
+      console.error("Failed to enqueue resume task:", err);
       toast({
-        title: "Resume Generated",
-        description: "Successfully generated resume with AI.",
-        variant: "success",
-        duration: 3000,
-      });
-    } catch (err) {
-      console.error("Failed to generate resume:", err);
-      toast({
-        title: "Generation Failed",
-        description: "Error generating resume. Check console.",
+        title: "Task Error",
+        description: err?.message || "Failed to start background task.",
         variant: "destructive",
-        duration: 3000,
+        duration: 4000,
       });
     }
   };
@@ -46,7 +39,7 @@ export function useResumePage() {
       console.error("Failed to delete resume:", err);
       toast({
         title: "Delete Failed",
-        description: "Error deleting resume. Check console.",
+        description: "Error deleting resume.",
         variant: "destructive",
         duration: 3000,
       });
@@ -55,20 +48,23 @@ export function useResumePage() {
 
   const handleDownload = (resume: Resume) => {
     try {
+      if (!resume.generatedFileUrl) {
+        throw new Error("Resume file is not ready yet. Please wait for generation to complete.");
+      }
       handlers.handleDownload(resume);
       toast({
-        title: "Download Started",
-        description: "Your resume is being downloaded.",
+        title: "Opening Document",
+        description: "Your resume document is opening.",
         variant: "success",
         duration: 2000,
       });
-    } catch (err) {
+    } catch (err: any) {
       console.error("Failed to download resume:", err);
       toast({
-        title: "Download Failed",
-        description: "Error downloading resume.",
+        title: "Download Unavailable",
+        description: err?.message || "Error opening resume download file.",
         variant: "destructive",
-        duration: 2000,
+        duration: 3000,
       });
     }
   };
@@ -79,3 +75,5 @@ export function useResumePage() {
     handlers: { ...handlers, handleSubmit, handleDelete, handleDownload },
   };
 }
+
+export default useResumePage;

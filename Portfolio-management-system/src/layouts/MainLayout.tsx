@@ -8,6 +8,7 @@ import { getNavItems } from "./navbar/config";
 import DynamicNavbar from "./navbar/navbar";
 import Header from "./header/Header";
 import Footer from "./footer/Footer";
+import { UniversalTaskQueue } from "../components/common/taskQueue/UniversalTaskQueue";
 
 const { cn } = utils.tailwindUtils;
 
@@ -65,6 +66,7 @@ function Mainlayout({ children }: MainlayoutProps) {
           )}
         </main>
       </div>
+      <UniversalTaskQueue />
     </div>
   );
 }

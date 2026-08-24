@@ -85,7 +85,12 @@ const generateService = (
   name: string,
   description: string,
   jobUrl: string | undefined,
+  designType: 'latex' | 'pdf' | 'image' | 'modern' | 'ats' = 'latex',
+  latexCode: string | undefined,
+  designFileUrl: string | undefined,
   createdBy: Types.ObjectId,
+  targetRole?: string,
+  selectedProjectIds?: string[],
 ) => {
   return asyncCommonWrapper(async () => {
     // 1. Fetch user/developer profile details
@@ -106,6 +111,8 @@ const generateService = (
     // 3. Call Gemini AI helper to select items and generate LaTeX
     const aiResult = await generateResumeAI({
       jobDescription: description,
+      targetRole: targetRole || name,
+      selectedProjectIds,
       developerProfile: {
         name: user.name,
         email: user.email,
@@ -126,23 +133,32 @@ const generateService = (
     const servicesUsed = aiResult.selectedServiceIds.map((id) => new Types.ObjectId(id));
     const technologiesUsed = aiResult.selectedTechnologyIds.map((id) => new Types.ObjectId(id));
 
-    // Create the resume document in DB
+    // Create the resume document in DB with complete field metadata
+    const newResumeId = new Types.ObjectId();
+    const resumeUrl = `http://localhost:3000/api/resume/download/pdf/${newResumeId}`;
+    const resumeFormatUrl = designFileUrl || `http://localhost:3000/api/resume/download/tex/${newResumeId}`;
+
     const resumeData = {
+      _id: newResumeId,
       name,
+      description,
+      targetRole: targetRole || name,
+      designType,
+      designFileUrl,
       projectCount: projectsUsed.length,
       serviceCount: servicesUsed.length,
       technologyCount: technologiesUsed.length,
       projectsUsed,
       servicesUsed,
       technologiesUsed,
-      resumeUrl: 'http://localhost:3000/api/v1/resume/download/placeholder.pdf', // Placeholder
-      resumeFormatUrl: 'http://localhost:3000/api/v1/resume/download/placeholder.tex', // Placeholder
+      resumeUrl,
+      resumeFormatUrl,
       jobUrl,
       isActive: true,
-      latexCode: aiResult.latexCode,
+      latexCode: latexCode || aiResult.latexCode,
     };
 
-    const result = await models.resume.repo.create(resumeData, createdBy);
+    const result = await models.resume.repo.create(resumeData as any, createdBy);
     return commonResponse.success(
       result,
       MESSAGES_COMMON_UTIL.createdSuccessfully('Resume'),

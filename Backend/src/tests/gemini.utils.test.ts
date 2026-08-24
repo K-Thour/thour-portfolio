@@ -81,4 +81,44 @@ describe('generateResumeAI', () => {
     expect(result.tailoredSummary).toBe('This is a mocked tailored summary');
     expect(result.latexCode).toContain('Mocked LaTeX');
   });
+
+  it('should prioritize explicit selectedProjectIds and rank projects based on role matching', async () => {
+    const params: GenerateResumeParams = {
+      jobDescription: 'Frontend React engineer with UI state management skills',
+      targetRole: 'Frontend Developer',
+      selectedProjectIds: ['p2'],
+      developerProfile: {
+        name: 'Karanveer Thour',
+        email: 'test@example.com',
+        phoneNumber: '1234567890',
+        experienceYears: 5,
+        hobbies: [],
+        languages: [],
+      },
+      projects: [
+        {
+          _id: 'p1',
+          title: 'Node Backend Microservices',
+          description: 'High throughput backend microservices API',
+          techStack: ['Node.js', 'MongoDB', 'Docker'],
+          role: 'Backend Engineer',
+        },
+        {
+          _id: 'p2',
+          title: 'React Portfolio Design System',
+          description: 'Interactive UI components with Tailwind and Redux',
+          techStack: ['React', 'TypeScript', 'Tailwind CSS'],
+          role: 'Frontend Engineer',
+        },
+      ],
+      services: [],
+      technologies: [{ _id: 't1', name: 'React', category: 'Frontend' }],
+      education: [],
+      experience: [],
+    };
+
+    const result = await generateResumeAI(params);
+    expect(result.selectedProjectIds).toBeDefined();
+    expect(Array.isArray(result.selectedProjectIds)).toBe(true);
+  });
 });

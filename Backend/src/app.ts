@@ -37,6 +37,7 @@ app.use(returnApiPrefix('lead'), routes.leadRoutes);
 app.use(returnApiPrefix('portfolio'), routes.portfolioRoutes);
 app.use(returnApiPrefix('project'), routes.projectRoutes);
 app.use(returnApiPrefix('resume'), routes.resumeRoutes);
+app.use('/api/v1/resume', routes.resumeRoutes);
 app.use(returnApiPrefix('dashboard'), routes.dashboardRoutes);
 app.use(returnApiPrefix('image'), routes.imageRoutes);
 app.use(returnApiPrefix('chat'), routes.chatRoutes);

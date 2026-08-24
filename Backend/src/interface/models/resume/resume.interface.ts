@@ -1,8 +1,14 @@
 import { Types } from 'mongoose';
 import { ICommonModel } from '../../common/common.interface';
 
+export type ResumeDesignType = 'latex' | 'pdf' | 'image' | 'modern' | 'ats';
+
 export interface IResume {
   name: string;
+  description?: string;
+  targetRole?: string;
+  designType?: ResumeDesignType;
+  designFileUrl?: string;
   projectCount: number;
   serviceCount: number;
   technologyCount: number;
@@ -26,6 +32,10 @@ export interface IResumeModel extends IResume, ICommonModel {
 
 export interface createResumeInput {
   name: string;
+  description?: string;
+  targetRole?: string;
+  designType?: ResumeDesignType;
+  designFileUrl?: string;
   projectCount: number;
   serviceCount: number;
   technologyCount: number;
@@ -35,6 +45,8 @@ export interface createResumeInput {
   resumeUrl: string;
   resumeFormatUrl?: string;
   jobUrl?: string;
+  latexCode?: string;
+  isActive?: boolean;
 }
 
 export default IResumeModel;

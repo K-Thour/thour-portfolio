@@ -237,6 +237,11 @@ export const generateResumeAI = async (data: {
   name: string;
   description: string;
   jobLink?: string;
+  targetRole?: string;
+  selectedProjectIds?: string[];
+  designType?: string;
+  latexCode?: string;
+  designFileUrl?: string;
 }) => {
   const response = await apiClient.post("/resume/generate", data);
   return unwrap(response);

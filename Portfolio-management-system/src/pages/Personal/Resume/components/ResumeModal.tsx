@@ -13,8 +13,8 @@ export function ResumeModal({ isOpen, onClose, onSubmit }: ResumeModalProps) {
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      size="md"
-      title="Generate New Resume"
+      size="xl"
+      title="AI Resume Builder & Tailor"
     >
       <ResumeForm onSubmit={onSubmit} onCancel={onClose} />
     </Modal>

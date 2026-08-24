@@ -1,6 +1,10 @@
 import express from 'express';
 import validate from '../middlewares/validate.middleware';
-import { resumeCreateSchema, resumeUpdateSchema } from '../validations/resume.validations';
+import {
+  resumeCreateSchema,
+  resumeGenerateSchema,
+  resumeUpdateSchema,
+} from '../validations/resume.validations';
 import controllers from '../controllers';
 import authMiddleware from '../middlewares/auth.middleware';
 const resumeRoutes = express.Router();
@@ -164,7 +168,12 @@ resumeRoutes.post(
   validate(resumeCreateSchema),
   controllers.resumeControllers.create,
 );
-resumeRoutes.post('/generate', authMiddleware, controllers.resumeControllers.generate);
+resumeRoutes.post(
+  '/generate',
+  authMiddleware,
+  validate(resumeGenerateSchema),
+  controllers.resumeControllers.generate,
+);
 resumeRoutes.patch(
   '/update/:id',
   authMiddleware,
@@ -173,6 +182,11 @@ resumeRoutes.patch(
 );
 resumeRoutes.delete('/soft-delete/:id', authMiddleware, controllers.resumeControllers.softDelete);
 resumeRoutes.delete('/delete/:id', authMiddleware, controllers.resumeControllers.deleteOne);
+resumeRoutes.get('/download/word/:id', controllers.resumeControllers.downloadWord);
+resumeRoutes.get('/download/json/:id', controllers.resumeControllers.downloadJson);
+resumeRoutes.get('/download/pdf/:id', controllers.resumeControllers.downloadPdf);
+resumeRoutes.get('/download/tex/:id', controllers.resumeControllers.downloadTex);
+resumeRoutes.get('/download/:filename', controllers.resumeControllers.downloadFile);
 resumeRoutes.get('/get', controllers.resumeControllers.get);
 resumeRoutes.get('/get/:id', controllers.resumeControllers.getOne);
 

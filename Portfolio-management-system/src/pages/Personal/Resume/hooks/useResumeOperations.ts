@@ -47,14 +47,21 @@ export function useResumeOperations() {
           name: formData.name,
           description: formData.description,
           jobLink: formData.jobLink,
+          targetRole: formData.targetRole,
+          selectedProjectIds: formData.selectedProjectIds,
+          designType: formData.designType || "ats",
+          latexCode: formData.latexCode,
+          designFileUrl: formData.designUrl,
         });
         const newResume: Resume = {
           id: response._id,
           name: response.name,
-          description: response.description || "",
-          jobLink: response.jobUrl || "",
-          designType: response.designType || "latex",
-          latexCode: response.latexCode || "",
+          description: response.description || formData.description || "",
+          jobLink: response.jobUrl || formData.jobLink || "",
+          targetRole: response.targetRole || formData.targetRole,
+          selectedProjectIds: response.projectsUsed || formData.selectedProjectIds,
+          designType: response.designType || formData.designType || "ats",
+          latexCode: response.latexCode || formData.latexCode || "",
           status: "completed",
           createdAt: response.createdAt,
           updatedAt: response.updatedAt,
@@ -85,7 +92,11 @@ export function useResumeOperations() {
   }, []);
 
   const downloadResume = useCallback((resume: Resume) => {
-    if (resume.generatedFileUrl) window.open(resume.generatedFileUrl, "_blank");
+    if (resume.generatedFileUrl) {
+      window.open(resume.generatedFileUrl, "_blank");
+    } else {
+      throw new Error("Resume download link is not available yet.");
+    }
   }, []);
 
   const toggleResumeDeleting = useCallback(
@@ -95,6 +106,22 @@ export function useResumeOperations() {
     [setDeletingId],
   );
 
+  const addResume = useCallback((createdResume: any) => {
+    const newResume: Resume = {
+      id: createdResume._id,
+      name: createdResume.name,
+      description: createdResume.description || "",
+      jobLink: createdResume.jobUrl || "",
+      designType: createdResume.designType || "latex",
+      latexCode: createdResume.latexCode || "",
+      status: "completed",
+      createdAt: createdResume.createdAt,
+      updatedAt: createdResume.updatedAt,
+      generatedFileUrl: createdResume.resumeUrl,
+    };
+    setResumes((prev) => [newResume, ...prev.filter((r) => r.id !== newResume.id)]);
+  }, []);
+
   return {
     resumes,
     loading,
@@ -102,6 +129,8 @@ export function useResumeOperations() {
     toggleResumeDeleting,
     setDeletingId,
     createResume,
+    addResume,
+    refreshResumes: loadResumes,
     deleteResume,
     downloadResume,
   };

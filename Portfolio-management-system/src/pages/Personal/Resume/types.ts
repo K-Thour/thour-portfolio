@@ -1,10 +1,12 @@
-export type ResumeDesignType = "image" | "pdf" | "latex" | null;
+export type ResumeDesignType = "modern" | "ats" | "latex" | null;
 
 export interface Resume {
   id: string;
   name: string;
   description: string;
   jobLink: string;
+  targetRole?: string;
+  selectedProjectIds?: string[];
   designType: ResumeDesignType;
   designFile?: string;
   designUrl?: string;
@@ -19,6 +21,8 @@ export interface ResumeFormData {
   name: string;
   description: string;
   jobLink: string;
+  targetRole?: string;
+  selectedProjectIds?: string[];
   designType: ResumeDesignType;
   designFile?: File;
   designUrl?: string;

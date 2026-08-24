@@ -3,6 +3,7 @@ import themeReducer from "./slices/theme.slice";
 import pageEnableReducer from "./slices/pageEnable.slice";
 import resumeReducer from "./slices/resume.slice";
 import settingsReducer from "./slices/settings.slice";
+import taskQueueReducer from "./slices/taskQueue.slice";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
@@ -28,6 +29,7 @@ export const store = configureStore({
     pageEnable: pageEnableReducer,
     resume: resumeReducer,
     settings: persistedSettingsReducer,
+    taskQueue: taskQueueReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

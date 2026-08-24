@@ -85,6 +85,8 @@ describe("useResumeOperations", () => {
         name: "Tailored Resume",
         description: "Desc",
         jobLink: "http://job.com",
+        targetRole: "Full Stack Engineer",
+        selectedProjectIds: ["p1", "p2"],
         designType: "latex",
       });
     });
@@ -93,6 +95,11 @@ describe("useResumeOperations", () => {
       name: "Tailored Resume",
       description: "Desc",
       jobLink: "http://job.com",
+      targetRole: "Full Stack Engineer",
+      selectedProjectIds: ["p1", "p2"],
+      designType: "latex",
+      latexCode: undefined,
+      designFileUrl: undefined,
     });
     expect(newResume).toBeDefined();
     expect(result.current.resumes).toHaveLength(1);

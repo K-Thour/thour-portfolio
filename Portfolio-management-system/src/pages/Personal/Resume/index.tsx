@@ -37,10 +37,30 @@ export function ResumePage() {
   // Handle confirmed download with selected format
   const handleConfirmDownload = (format: DownloadFormat) => {
     if (downloadResume) {
-      console.log(`Downloading ${downloadResume.name} as ${format}`);
-      // TODO: Implement actual download logic based on format
-      // For now, call the existing handler
-      handlers.handleDownload(downloadResume);
+      const resumeId = downloadResume._id || downloadResume.id;
+      const apiBase = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
+
+      let downloadUrl = `${apiBase}/resume/download/pdf/${resumeId}`;
+      let fileExt = "pdf";
+
+      if (format === "docx") {
+        downloadUrl = `${apiBase}/resume/download/word/${resumeId}`;
+        fileExt = "doc";
+      } else if (format === "json") {
+        downloadUrl = `${apiBase}/resume/download/json/${resumeId}`;
+        fileExt = "json";
+      } else if (format === "pdf") {
+        downloadUrl = `${apiBase}/resume/download/pdf/${resumeId}`;
+        fileExt = "pdf";
+      }
+
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.target = "_blank";
+      link.download = `${(downloadResume.name || "resume").replace(/\s+/g, "_")}.${fileExt}`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
     setDownloadResume(null);
   };
@@ -97,6 +117,9 @@ export function ResumePage() {
         previewData={{
           name: downloadResume?.name,
           summary: downloadResume?.description,
+          experienceCount: downloadResume?.projectCount || 1,
+          educationCount: 1,
+          skillsCount: downloadResume?.technologyCount || 14,
         }}
       />
     </div>

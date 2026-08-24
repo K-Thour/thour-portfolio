@@ -7,6 +7,21 @@ const resumeSchema = new Schema<IResumeModel>(
       type: String,
       required: true,
     },
+    description: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    designType: {
+      type: String,
+      enum: ['latex', 'pdf', 'image', 'modern'],
+      default: 'latex',
+      required: false,
+    },
+    designFileUrl: {
+      type: String,
+      required: false,
+    },
     projectCount: {
       type: Number,
       required: true,
