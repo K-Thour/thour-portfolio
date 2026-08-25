@@ -1,6 +1,7 @@
 import type { ResumeFormData } from "../../../types";
 import { FileTypeToggle } from "./FileTypeToggle";
 import { FileUploadDropzone } from "./FileUploadDropzone";
+import { ImageUploadDropzone } from "./ImageUploadDropzone";
 import { LatexInput } from "./LatexInput";
 
 interface Props {
@@ -21,12 +22,9 @@ export function DesignInput({ formData, errors, isDark, updateField }: Props) {
       : "bg-white border-blue-300/50 text-gray-900 focus:ring-blue-500"
   }`;
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      updateField("designFile", file);
-      updateField("designUrl", URL.createObjectURL(file));
-    }
+  const handleFileChange = (file?: File, previewUrl?: string) => {
+    updateField("designFile", file);
+    updateField("designUrl", previewUrl || "");
   };
 
   if (designType === "image" || designType === "pdf") {
@@ -52,11 +50,18 @@ export function DesignInput({ formData, errors, isDark, updateField }: Props) {
             className={inputClass}
             placeholder={`https://example.com/design.${designType === "image" ? "png" : "pdf"}`}
           />
+        ) : designType === "image" ? (
+          <ImageUploadDropzone
+            file={designFile}
+            previewUrl={designUrl}
+            isDark={isDark}
+            onFileChange={handleFileChange}
+          />
         ) : (
           <FileUploadDropzone
             fileName={designFile?.name}
+            file={designFile}
             filePreviewUrl={designUrl}
-            isImage={designType === "image"}
             isDark={isDark}
             onFileChange={handleFileChange}
           />
@@ -78,3 +83,4 @@ export function DesignInput({ formData, errors, isDark, updateField }: Props) {
 
   return null;
 }
+

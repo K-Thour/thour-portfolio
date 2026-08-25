@@ -1,9 +1,9 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import themeReducer from "../../../store/slices/theme.slice";
-import taskQueueReducer, { addTask, type TaskItem } from "../../../store/slices/taskQueue.slice";
+import taskQueueReducer, { type TaskItem } from "../../../store/slices/taskQueue.slice";
 import { UniversalTaskQueue } from "./UniversalTaskQueue";
 
 function createMockStore(preloadedState?: any) {

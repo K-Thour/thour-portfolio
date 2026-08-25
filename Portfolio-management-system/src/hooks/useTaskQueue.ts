@@ -32,9 +32,12 @@ export function useTaskQueue() {
         name: string;
         description: string;
         jobLink?: string;
-        designType?: string;
+        targetRole?: string;
+        selectedProjectIds?: string[];
+        designType?: string | null;
         latexCode?: string;
         designUrl?: string;
+        designFile?: File;
       },
       onSuccess?: (createdResume: any) => void,
     ) => {
@@ -78,6 +81,8 @@ export function useTaskQueue() {
           name: formData.name,
           description: formData.description,
           jobLink: formData.jobLink,
+          targetRole: formData.targetRole,
+          selectedProjectIds: formData.selectedProjectIds,
           designType: formData.designType || "latex",
           latexCode: formData.latexCode,
           designFileUrl: formData.designUrl,

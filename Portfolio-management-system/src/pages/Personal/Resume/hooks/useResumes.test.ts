@@ -20,7 +20,7 @@ function createWrapper() {
     } as any,
   });
   return ({ children }: { children: React.ReactNode }) =>
-    React.createElement(Provider, { store }, children);
+    React.createElement(Provider, { store, children });
 }
 
 describe("useResumes hook", () => {

@@ -1,7 +1,8 @@
-export type ResumeDesignType = "modern" | "ats" | "latex" | null;
+export type ResumeDesignType = "modern" | "ats" | "latex" | "pdf" | "image" | null;
 
 export interface Resume {
   id: string;
+  _id?: string;
   name: string;
   description: string;
   jobLink: string;
@@ -15,6 +16,9 @@ export interface Resume {
   createdAt: string;
   updatedAt: string;
   generatedFileUrl?: string;
+  projectCount?: number;
+  serviceCount?: number;
+  technologyCount?: number;
 }
 
 export interface ResumeFormData {
@@ -34,3 +38,4 @@ export interface ResumeFormProps {
   onCancel: () => void;
   initialData?: ResumeFormData | null;
 }
+

@@ -13,7 +13,6 @@ export function useResumes() {
     loading,
     deletingId,
     toggleResumeDeleting,
-    createResume,
     addResume,
     refreshResumes,
     deleteResume,

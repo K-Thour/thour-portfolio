@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useMemo } from "react";
-import { Briefcase, FolderGit2, Check, Sparkles, SlidersHorizontal, RefreshCw } from "lucide-react";
+import { useEffect, useState, useMemo } from "react";
+import { Briefcase, FolderGit2, Check, Sparkles, RefreshCw } from "lucide-react";
 import { fetchProjects } from "../../../../../../services/api";
 
 interface ProjectItem {

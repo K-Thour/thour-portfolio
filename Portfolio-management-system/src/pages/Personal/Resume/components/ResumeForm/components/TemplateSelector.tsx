@@ -1,4 +1,3 @@
-import React from "react";
 import { FileCode, Layout, FileCheck, Code, Check } from "lucide-react";
 import type { ResumeDesignType } from "../../../types";
 

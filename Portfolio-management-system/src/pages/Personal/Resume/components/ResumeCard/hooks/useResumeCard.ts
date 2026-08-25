@@ -39,7 +39,13 @@ export function useResumeCard(resume: Resume, isDark: boolean) {
   const designIcons: Record<
     Exclude<ResumeDesignType, null>,
     typeof FileText
-  > = { image: ImageIcon, pdf: FileText, latex: FileCode };
+  > = {
+    image: ImageIcon,
+    pdf: FileText,
+    latex: FileCode,
+    modern: FileText,
+    ats: FileText,
+  };
   const DesignIcon = resume.designType
     ? designIcons[resume.designType]
     : FileText;
