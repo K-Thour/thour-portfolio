@@ -102,7 +102,7 @@ export function JobLinkInput({
           }`}
         >
           <Briefcase className="w-4 h-4 text-blue-500" />
-          Target Job Posting Link
+          Target Job Posting Link (Optional)
         </label>
         {platformInfo && (
           <span

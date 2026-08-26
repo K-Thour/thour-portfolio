@@ -12,10 +12,14 @@ const resumeSchema = new Schema<IResumeModel>(
       required: false,
       default: '',
     },
+    targetRole: {
+      type: String,
+      required: false,
+    },
     designType: {
       type: String,
-      enum: ['latex', 'pdf', 'image', 'modern'],
-      default: 'latex',
+      enum: ['latex', 'pdf', 'image', 'modern', 'ats'],
+      default: 'ats',
       required: false,
     },
     designFileUrl: {

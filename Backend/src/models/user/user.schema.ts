@@ -7,7 +7,6 @@ const userSchema = new mongoose.Schema<IUserModel>(
     _id: {
       type: mongoose.Schema.Types.ObjectId,
       default: () => new mongoose.Types.ObjectId('60d5ec4934d47d2b2c8b4567'),
-      unique: true,
     },
     name: {
       type: String,

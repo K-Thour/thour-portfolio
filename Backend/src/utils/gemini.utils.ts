@@ -61,7 +61,7 @@ export const verifyGeminiConnection = async (): Promise<boolean> => {
     return false;
   }
 
-  const modelsToTry = ['gemini-3.7-flash', 'gemini-3.5-flash', 'gemini-3.6-flash'];
+  const modelsToTry = ['gemini-3.6-flash'];
 
   for (const modelName of modelsToTry) {
     try {
@@ -74,8 +74,8 @@ export const verifyGeminiConnection = async (): Promise<boolean> => {
         );
         return true;
       }
-    } catch {
-      // try next model
+    } catch (pingErr: any) {
+      console.warn(`⚠️  [Gemini AI] Ping test failed for model "${modelName}":`, pingErr?.message || pingErr);
     }
   }
 
@@ -100,7 +100,7 @@ export const generateChatResponseAI = async (params: GenerateChatParams): Promis
     };
   }
 
-  const modelsToTry = ['gemini-3.7-flash', 'gemini-3.5-flash', 'gemini-3.6-flash'];
+  const modelsToTry = ['gemini-3.6-flash'];
 
   for (const modelName of modelsToTry) {
     try {
@@ -139,8 +139,8 @@ export const generateChatResponseAI = async (params: GenerateChatParams): Promis
         };
       }
     } catch (modelErr: any) {
-      console.warn(
-        `[Gemini AI] Model ${modelName} unavailable (${modelErr?.message?.slice(0, 80)}), trying alternative...`,
+      console.error(
+        `❌ [Gemini AI Chat Error] Model "${modelName}" error:\n  Message: ${modelErr?.message || modelErr}\n  Status: ${modelErr?.status || 'N/A'}\n  StatusText: ${modelErr?.statusText || 'N/A'}`,
       );
     }
   }
@@ -349,7 +349,7 @@ ${p.description || 'Engineered scalable system architecture with responsive user
     return buildFallbackResponse();
   }
 
-  const modelsToTry = ['gemini-3.7-flash', 'gemini-3.5-flash', 'gemini-3.6-flash'];
+  const modelsToTry = ['gemini-3.6-flash'];
 
   const prompt = `
 You are an expert technical resume strategist and ATS optimization specialist.
@@ -437,7 +437,9 @@ Return ONLY a valid JSON object matching this schema:
         };
       }
     } catch (modelErr: any) {
-      console.warn(`[Gemini Resume AI] Model ${modelName} failed (${modelErr?.message?.slice(0, 80)}), trying alternative...`);
+      console.error(
+        `❌ [Gemini Resume AI Error] Model "${modelName}" failed with error:\n  Message: ${modelErr?.message || modelErr}\n  Status: ${modelErr?.status || 'N/A'}\n  StatusText: ${modelErr?.statusText || 'N/A'}\n  Details: ${JSON.stringify(modelErr?.errorDetails || modelErr?.cause || {})}`,
+      );
     }
   }
 

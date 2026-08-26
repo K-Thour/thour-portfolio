@@ -32,9 +32,7 @@ export function useResumeForm(initialData?: ResumeFormData | null) {
     if (!formData.description.trim()) {
       newErrors.description = "Summary or focus area is required";
     }
-    if (!formData.jobLink.trim()) {
-      newErrors.jobLink = "Job posting link is required";
-    } else if (!/^https?:\/\/.+/i.test(formData.jobLink)) {
+    if (formData.jobLink?.trim() && !/^https?:\/\/.+/i.test(formData.jobLink.trim())) {
       newErrors.jobLink = "Please enter a valid URL (e.g., https://...)";
     }
 

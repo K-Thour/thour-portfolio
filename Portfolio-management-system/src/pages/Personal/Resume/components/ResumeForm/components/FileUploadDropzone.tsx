@@ -12,7 +12,6 @@ interface FileUploadDropzoneProps {
 export function FileUploadDropzone({
   fileName,
   file,
-  filePreviewUrl: _filePreviewUrl,
   isDark,
   onFileChange,
 }: FileUploadDropzoneProps) {
