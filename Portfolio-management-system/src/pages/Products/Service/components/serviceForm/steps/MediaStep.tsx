@@ -79,8 +79,9 @@ export const MediaStep: React.FC<MediaStepProps> = ({ form, isDark }) => {
     setPhotoUploading(true);
     try {
       const res = await uploadImage(croppedBase64);
-      form.setFieldValue("photoUrl", res.url);
-      field.handleChange(res.url);
+      const url = res?.url || croppedBase64;
+      form.setFieldValue("photoUrl", url);
+      field.handleChange(url);
     } catch (err) {
       console.error("Failed to upload service photo:", err);
     } finally {
@@ -104,8 +105,9 @@ export const MediaStep: React.FC<MediaStepProps> = ({ form, isDark }) => {
     setIconUploading(true);
     try {
       const res = await uploadImage(croppedBase64);
-      form.setFieldValue("iconUrl", res.url);
-      field.handleChange(res.url);
+      const url = res?.url || croppedBase64;
+      form.setFieldValue("iconUrl", url);
+      field.handleChange(url);
     } catch (err) {
       console.error("Failed to upload service icon:", err);
     } finally {

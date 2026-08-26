@@ -77,6 +77,7 @@ interface ExperienceFormWizardProps {
   initialData?: Partial<ExperienceFormData>;
   isDark: boolean;
   isEditing?: boolean;
+  isLoading?: boolean;
 }
 
 export const ExperienceFormWizard: React.FC<ExperienceFormWizardProps> = ({
@@ -86,6 +87,7 @@ export const ExperienceFormWizard: React.FC<ExperienceFormWizardProps> = ({
   initialData,
   isDark,
   isEditing = false,
+  isLoading = false,
 }) => {
   const {
     currentStep,
@@ -240,6 +242,8 @@ export const ExperienceFormWizard: React.FC<ExperienceFormWizardProps> = ({
           totalSteps={steps.length}
           isDark={isDark}
           submitText={isEditing ? "Save Changes" : "Add Experience"}
+          isLoading={isLoading}
+          loadingText={isEditing ? "Saving..." : "Adding..."}
           onBack={handleBack}
           onNext={handleNext}
           onSubmit={handleSubmit}

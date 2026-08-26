@@ -40,6 +40,15 @@ export function ProjectCard({
               >
                 {project.title}
               </h3>
+              {project.subtitle && (
+                <p
+                  className={`text-sm mb-2 font-medium ${
+                    isDark ? "text-red-400/90" : "text-blue-600"
+                  }`}
+                >
+                  {project.subtitle}
+                </p>
+              )}
               <div className="flex items-center gap-3">
                 <span
                   className={`text-sm px-3 py-1 rounded-full ${

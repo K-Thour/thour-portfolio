@@ -1,14 +1,20 @@
 import { ContactCard } from "./ContactCard";
 import type { ContactsGridProps } from "../types";
+import PageLoadingSkeleton from "../../../../components/common/loading/PageLoadingSkeleton";
 
 export function ContactsGrid({
   contacts,
   isDark,
+  isLoading = false,
   onView,
   onEdit,
   onDelete,
   onSetActive,
 }: ContactsGridProps) {
+  if (isLoading) {
+    return <PageLoadingSkeleton count={4} type="grid" />;
+  }
+
   if (contacts.length === 0) {
     return (
       <div

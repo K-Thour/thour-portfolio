@@ -5,6 +5,7 @@ import type { RootState } from "../../../../store/store";
 
 export function ServiceModal({
   isOpen,
+  isLoading = false,
   onClose,
   editingService,
   onSubmit,
@@ -17,6 +18,7 @@ export function ServiceModal({
   return (
     <ServiceFormWizard
       isOpen={isOpen}
+      isLoading={isLoading}
       onClose={onClose}
       onSubmit={onSubmit}
       initialData={editingService || undefined}

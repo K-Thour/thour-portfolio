@@ -6,6 +6,7 @@ import { useChangeStatus } from "../hooks/useChangeStatus";
 export function ChangeStatusModal({
   lead,
   isOpen,
+  isLoading = false,
   onClose,
   isDark,
   onConfirm,
@@ -39,7 +40,7 @@ export function ChangeStatusModal({
   return (
     <Modal
       isOpen={isOpen}
-      onClose={handleClose}
+      onClose={isLoading ? () => {} : handleClose}
       title="Change Lead Status"
       size="sm"
     >
@@ -59,6 +60,7 @@ export function ChangeStatusModal({
         <ActionButtons
           isDark={isDark}
           canConfirm={canConfirm}
+          isLoading={isLoading}
           onCancel={handleClose}
           onConfirm={handleConfirm}
         />

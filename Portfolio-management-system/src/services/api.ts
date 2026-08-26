@@ -297,11 +297,20 @@ export const fetchDashboard = async () => {
 };
 
 // ─── IMAGE UPLOAD API ─────────────────────────────────────────────────────────
-export const uploadImage = async (base64Image: string) => {
+export const uploadImage = async (
+  base64Image: string,
+): Promise<{ url: string; publicId?: string }> => {
   const response = await apiClient.post("/image/upload", {
     image: base64Image,
   });
-  return unwrap(response);
+  const data = unwrap(response);
+  if (typeof data === "string") {
+    return { url: data, publicId: "" };
+  }
+  return {
+    url: data?.url || data?.secure_url || data || "",
+    publicId: data?.publicId || data?.public_id || "",
+  };
 };
 
 // ─── FORGOT PASSWORD API ──────────────────────────────────────────────────────

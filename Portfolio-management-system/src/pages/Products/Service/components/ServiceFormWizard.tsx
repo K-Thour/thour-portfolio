@@ -93,6 +93,7 @@ interface ServiceFormWizardProps {
   initialData?: Service;
   isDark: boolean;
   isEditing?: boolean;
+  isLoading?: boolean;
 }
 
 export const ServiceFormWizard: React.FC<ServiceFormWizardProps> = ({
@@ -102,6 +103,7 @@ export const ServiceFormWizard: React.FC<ServiceFormWizardProps> = ({
   initialData,
   isDark,
   isEditing = false,
+  isLoading = false,
 }) => {
   const {
     currentStep,
@@ -261,6 +263,8 @@ export const ServiceFormWizard: React.FC<ServiceFormWizardProps> = ({
           totalSteps={steps.length}
           isDark={isDark}
           submitText={isEditing ? "Save Changes" : "Add Service"}
+          isLoading={isLoading}
+          loadingText={isEditing ? "Saving..." : "Adding..."}
           onBack={handleBack}
           onNext={handleNext}
           onSubmit={handleSubmit}

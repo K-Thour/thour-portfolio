@@ -5,6 +5,7 @@ import type { RootState } from "../../../../store/store";
 
 export function ProfileModal({
   isOpen,
+  isLoading = false,
   onClose,
   onSubmit,
   initialData,
@@ -17,6 +18,7 @@ export function ProfileModal({
   return (
     <ProfileFormWizard
       isOpen={isOpen}
+      isLoading={isLoading}
       onClose={onClose}
       onSubmit={onSubmit}
       initialData={initialData}

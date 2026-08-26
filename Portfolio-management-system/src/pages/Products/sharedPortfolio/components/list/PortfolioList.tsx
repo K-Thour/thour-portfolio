@@ -3,11 +3,13 @@ import type { PortfolioListProps } from "../../types";
 import { ListHeader } from "./ListHeader";
 import { PortfolioCard } from "../card/PortfolioCard";
 import { EmptyState } from "./EmptyState";
+import PageLoadingSkeleton from "../../../../../components/common/loading/PageLoadingSkeleton";
 
 export function PortfolioList({
   portfolios,
   allProjects,
   isDark,
+  isLoading = false,
   copiedId,
   onEdit,
   onDelete,
@@ -20,7 +22,11 @@ export function PortfolioList({
       className={`p-6 rounded-2xl border ${isDark ? "bg-slate-800/50 border-red-500/20" : "bg-linear-to-br from-white to-blue-50 border-blue-300/40 shadow-md"}`}
     >
       <ListHeader isDark={isDark} count={portfolios.length} />
-      {portfolios.length === 0 ? (
+      {isLoading ? (
+        <div className="mt-4">
+          <PageLoadingSkeleton count={3} type="card" />
+        </div>
+      ) : portfolios.length === 0 ? (
         <EmptyState isDark={isDark} />
       ) : (
         <div className="space-y-4">

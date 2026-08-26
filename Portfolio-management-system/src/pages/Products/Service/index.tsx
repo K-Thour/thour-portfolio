@@ -12,6 +12,7 @@ function ServicePage() {
 
   const {
     services,
+    loading: isLoading,
     isModalOpen,
     editingService,
     isDeleteDialogOpen,
@@ -24,6 +25,7 @@ function ServicePage() {
 
       <ServiceList
         services={services}
+        isLoading={isLoading}
         onEdit={handlers.handleEdit}
         onDelete={handlers.handleDeleteClick}
         onToggleActive={handlers.toggleActive}
@@ -31,6 +33,7 @@ function ServicePage() {
 
       <ServiceModal
         isOpen={isModalOpen}
+        isLoading={isLoading}
         onClose={handlers.handleCloseModal}
         editingService={editingService}
         onSubmit={handlers.handleSubmit}
@@ -38,6 +41,7 @@ function ServicePage() {
 
       <DeleteConfirmModal
         isOpen={isDeleteDialogOpen}
+        isLoading={isLoading}
         onConfirm={handlers.handleDeleteConfirm}
         onCancel={handlers.handleDeleteCancel}
         isDark={isDark}

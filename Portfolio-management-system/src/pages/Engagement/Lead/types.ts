@@ -38,6 +38,7 @@ export interface LeadsFiltersProps {
 export interface LeadsTableProps {
   leads: Lead[];
   isDark: boolean;
+  isLoading?: boolean;
   onView: (lead: Lead) => void;
   onOpenChangeStatus: (lead: Lead) => void;
 }
@@ -66,6 +67,7 @@ export interface LeadViewModalProps {
 export interface ChangeStatusModalProps {
   lead: Lead | null;
   isOpen: boolean;
+  isLoading?: boolean;
   onClose: () => void;
   isDark: boolean;
   onConfirm: (leadId: number, newStatus: LeadStatus, reason?: string) => void;

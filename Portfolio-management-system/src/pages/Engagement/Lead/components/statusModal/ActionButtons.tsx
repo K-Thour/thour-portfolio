@@ -1,8 +1,10 @@
+import { Loader2 } from "lucide-react";
 import { navBtn } from "../../utils/leadsUtils";
 
 interface ActionButtonsProps {
   isDark: boolean;
   canConfirm: boolean;
+  isLoading?: boolean;
   onCancel: () => void;
   onConfirm: () => void;
 }
@@ -10,20 +12,32 @@ interface ActionButtonsProps {
 export function ActionButtons({
   isDark,
   canConfirm,
+  isLoading = false,
   onCancel,
   onConfirm,
 }: ActionButtonsProps) {
   return (
     <div className="flex justify-between items-center rounded-xl">
-      <button onClick={onCancel} className={navBtn(isDark, "secondary")}>
+      <button
+        onClick={onCancel}
+        disabled={isLoading}
+        className={`${navBtn(isDark, "secondary")} disabled:opacity-50`}
+      >
         Cancel
       </button>
       <button
         onClick={onConfirm}
-        disabled={!canConfirm}
-        className={`${navBtn(isDark, "primary")} disabled:opacity-50 disabled:cursor-not-allowed`}
+        disabled={!canConfirm || isLoading}
+        className={`${navBtn(isDark, "primary")} flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed`}
       >
-        Update Status
+        {isLoading ? (
+          <>
+            <Loader2 className="w-4 h-4 animate-spin" />
+            <span>Updating...</span>
+          </>
+        ) : (
+          "Update Status"
+        )}
       </button>
     </div>
   );

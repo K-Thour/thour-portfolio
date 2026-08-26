@@ -2,16 +2,22 @@ import { EducationCard } from "./EducationCard";
 import type { EducationTimelineProps } from "../types";
 import { useAppSelector } from "../../../../hooks/useRedux";
 import utils from "../../../../utils";
+import PageLoadingSkeleton from "../../../../components/common/loading/PageLoadingSkeleton";
 
 const { cn } = utils.tailwindUtils;
 
 export function EducationTimeline({
   educationList,
+  isLoading = false,
   onEdit,
   onDelete,
 }: EducationTimelineProps) {
   const theme = useAppSelector((state) => state.theme.theme);
   const isDark = theme === "dark";
+
+  if (isLoading) {
+    return <PageLoadingSkeleton count={3} type="card" />;
+  }
 
   if (educationList.length === 0) {
     return (

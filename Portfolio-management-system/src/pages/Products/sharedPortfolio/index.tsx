@@ -16,6 +16,8 @@ function ShareProjectsPortfolio() {
   const {
     portfolios,
     allProjects,
+    isLoadingPortfolios,
+    isLoadingProjects,
     isModalOpen,
     editingPortfolio,
     formData,
@@ -74,6 +76,7 @@ function ShareProjectsPortfolio() {
         portfolios={portfolios}
         allProjects={allProjects}
         isDark={isDark}
+        isLoading={isLoadingPortfolios && portfolios.length === 0}
         copiedId={copiedId}
         onEdit={openModal}
         onDelete={deletePortfolio}
@@ -85,6 +88,8 @@ function ShareProjectsPortfolio() {
         editingPortfolio={editingPortfolio}
         formData={formData}
         allProjects={allProjects}
+        isLoading={isLoadingPortfolios}
+        isLoadingProjects={isLoadingProjects}
         onClose={closeModal}
         onSubmit={handleSubmit}
         onNameChange={(name) => setFormData((prev) => ({ ...prev, name }))}
@@ -92,6 +97,8 @@ function ShareProjectsPortfolio() {
       />
       <ConfirmModal
         isOpen={deleteConfirmOpen}
+        isLoading={isLoadingPortfolios}
+        loadingText="Deleting..."
         onConfirm={() => {
           if (portfolioToDelete) {
             removePortfolio(portfolioToDelete);

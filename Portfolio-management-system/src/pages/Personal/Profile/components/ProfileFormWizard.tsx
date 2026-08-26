@@ -92,6 +92,7 @@ interface ProfileFormWizardProps {
   initialData?: Partial<ProfileFormData>;
   isDark: boolean;
   isEditing?: boolean;
+  isLoading?: boolean;
 }
 
 export const ProfileFormWizard: React.FC<ProfileFormWizardProps> = ({
@@ -100,7 +101,8 @@ export const ProfileFormWizard: React.FC<ProfileFormWizardProps> = ({
   onSubmit,
   initialData,
   isDark,
-  isEditing = true,
+  isEditing = false,
+  isLoading = false,
 }) => {
   const {
     currentStep,
@@ -262,6 +264,8 @@ export const ProfileFormWizard: React.FC<ProfileFormWizardProps> = ({
           totalSteps={steps.length}
           isDark={isDark}
           submitText="Save Changes"
+          isLoading={isLoading}
+          loadingText="Saving..."
           onBack={handleBack}
           onNext={handleNext}
           onSubmit={handleSubmit}

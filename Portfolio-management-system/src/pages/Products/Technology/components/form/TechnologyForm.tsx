@@ -8,12 +8,14 @@ interface TechnologyFormProps {
   onSubmit: (data: Omit<Technology, "id">) => void;
   onCancel: () => void;
   initialData?: Technology;
+  isLoading?: boolean;
 }
 
 export function TechnologyForm({
   onSubmit,
   onCancel,
   initialData,
+  isLoading = false,
 }: TechnologyFormProps) {
   const [errors, setErrors] = useState<Record<string, string | undefined>>({});
   const [iconType, setIconType] = useState<"emoji" | "url" | "image">(
@@ -34,46 +36,41 @@ export function TechnologyForm({
     "Language",
     "Framework",
     "Database",
-    "DevOps",
-    "Cloud",
+    "Cloud & DevOps",
+    "Mobile",
+    "Testing",
+    "Other",
   ];
   const iconOptions = [
     "⚛️",
-    "▲",
     "📘",
-    "🟢",
     "🐍",
-    "🐘",
-    "☁️",
-    "🔥",
+    "🟢",
     "⚡",
-    "🎨",
-    "🔧",
-    "📱",
+    "🔥",
+    "🐘",
+    "🐬",
+    "🍃",
+    "🐳",
+    "☁️",
+    "🦀",
+    "☕",
     "🎯",
-    "💻",
+    "💎",
     "🚀",
-    "⭐",
   ];
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
-    if (!formData.name.trim()) newErrors.name = "Technology name is required";
+    if (!formData.name.trim()) newErrors.name = "Name is required";
     if (!formData.category) newErrors.category = "Category is required";
 
-    // Validate icon based on type
-    if (iconType === "url") {
-      if (!formData.iconUrl.trim()) {
-        newErrors.icon = "Icon URL is required";
-      } else if (!/^https?:\/\/.+/.test(formData.iconUrl.trim())) {
-        newErrors.icon = "Please enter a valid URL";
-      }
-    } else if (iconType === "image") {
-      if (!formData.iconImage.trim()) {
-        newErrors.icon = "Icon image URL is required";
-      } else if (!/^https?:\/\/.+/.test(formData.iconImage.trim())) {
-        newErrors.icon = "Please enter a valid URL";
-      }
+    if (iconType === "emoji" && !formData.icon) {
+      newErrors.icon = "Please select an emoji icon";
+    } else if (iconType === "url" && !formData.iconUrl?.trim()) {
+      newErrors.icon = "Please enter an image URL";
+    } else if (iconType === "image" && !formData.iconImage) {
+      newErrors.icon = "Please upload an image";
     }
 
     setErrors(newErrors);
@@ -122,6 +119,7 @@ export function TechnologyForm({
         onSubmit={handleSubmit}
         onCancel={onCancel}
         isEditing={!!initialData}
+        isLoading={isLoading}
       />
     </div>
   );

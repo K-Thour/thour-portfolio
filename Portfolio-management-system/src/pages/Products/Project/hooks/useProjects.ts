@@ -29,11 +29,11 @@ export function useProjects() {
       const mappedData = data.map((p: any) => ({
         id: p._id,
         title: p.title || "",
-        subtitle: p.device || "web",
+        subtitle: p.subtitle || p.device || "",
         category: p.category?._id || p.category || "",
         description: p.description || "",
         longDescription: p.fullDescription || "",
-        image: p.image?.url || "",
+        image: p.image?.url || p.image || "",
         technologies: p.techStack?.map((t: any) => t.name || t) || [],
         features: Array.isArray(p.features) ? [...p.features] : [],
         github: p.githubUrl || "",
@@ -69,6 +69,7 @@ export function useProjects() {
 
     const payload = {
       title: data.title,
+      subtitle: data.subtitle || "",
       category: data.category,
       description: data.description,
       image: {

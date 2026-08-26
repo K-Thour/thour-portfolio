@@ -5,6 +5,7 @@ interface DeleteConfirmModalProps {
   onConfirm: () => void;
   onCancel: () => void;
   isDark: boolean;
+  isLoading?: boolean;
 }
 
 export function DeleteConfirmModal({
@@ -12,12 +13,15 @@ export function DeleteConfirmModal({
   onConfirm,
   onCancel,
   isDark,
+  isLoading = false,
 }: DeleteConfirmModalProps) {
   return (
     <ConfirmModel
       isOpen={isOpen}
       onConfirm={onConfirm}
       onCancel={onCancel}
+      isLoading={isLoading}
+      loadingText="Deleting..."
       title={isDark ? "Delete Service?" : "Remove Service Offering?"}
       message={
         isDark

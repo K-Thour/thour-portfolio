@@ -48,6 +48,7 @@ export interface ProjectHeaderProps {
 
 export interface ProjectListProps {
   projects: Project[];
+  isLoading?: boolean;
   onEdit: (project: Project) => void;
   onDelete: (id: string | number) => void;
   onView: (project: Project) => void;
@@ -55,6 +56,7 @@ export interface ProjectListProps {
 
 export interface ProjectModalProps {
   isOpen: boolean;
+  isLoading?: boolean;
   onClose: () => void;
   editingProject: Project | null;
   onSubmit: (data: ProjectFormData) => void;

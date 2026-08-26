@@ -31,7 +31,7 @@ export function HomeFeaturedProjects() {
         const formatted = data.slice(0, 3).map((p: any) => ({
           id: p._id,
           title: p.title || 'Project',
-          subtitle: p.device || 'Full Stack App',
+          subtitle: p.subtitle || p.device || 'Full Stack App',
           description: p.description || '',
           image: p.image?.url || 'https://via.placeholder.com/800x500',
           tags:

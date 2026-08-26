@@ -1,7 +1,7 @@
 import React from "react";
 import Button from "../../ui/button/Button";
 import utils from "../../../utils/index";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 
 const { cn } = utils.tailwindUtils;
 
@@ -10,6 +10,8 @@ interface WizardFooterProps {
   totalSteps: number;
   isDark: boolean;
   submitText: string;
+  isLoading?: boolean;
+  loadingText?: string;
   onBack: () => void;
   onNext: () => void;
   onSubmit: () => void;
@@ -20,6 +22,8 @@ export const WizardFooter: React.FC<WizardFooterProps> = ({
   totalSteps,
   isDark,
   submitText,
+  isLoading = false,
+  loadingText = "Saving...",
   onBack,
   onNext,
   onSubmit,
@@ -33,7 +37,7 @@ export const WizardFooter: React.FC<WizardFooterProps> = ({
     >
       <Button
         onClick={onBack}
-        disabled={currentStep === 1}
+        disabled={currentStep === 1 || isLoading}
         variant="outline"
         className={cn(
           isDark &&
@@ -47,6 +51,7 @@ export const WizardFooter: React.FC<WizardFooterProps> = ({
       {currentStep < totalSteps ? (
         <Button
           onClick={onNext}
+          disabled={isLoading}
           className={cn(
             "bg-linear-to-r shadow-lg shadow-orange-500/25",
             isDark
@@ -60,14 +65,22 @@ export const WizardFooter: React.FC<WizardFooterProps> = ({
       ) : (
         <Button
           onClick={onSubmit}
+          disabled={isLoading}
           className={cn(
-            "bg-linear-to-r shadow-lg shadow-orange-500/25",
+            "bg-linear-to-r shadow-lg shadow-orange-500/25 flex items-center justify-center gap-2 min-w-[120px]",
             isDark
               ? "from-orange-500 to-red-500 text-white hover:from-orange-600 hover:to-red-600"
               : "bg-blue-500 text-white shadow-lg shadow-blue-500/30 hover:bg-blue-600",
           )}
         >
-          {submitText}
+          {isLoading ? (
+            <>
+              <Loader2 className="w-4 h-4 animate-spin" />
+              <span>{loadingText}</span>
+            </>
+          ) : (
+            submitText
+          )}
         </Button>
       )}
     </div>

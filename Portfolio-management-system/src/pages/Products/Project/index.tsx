@@ -13,6 +13,7 @@ function ProjectPage() {
 
   const {
     projects,
+    isLoading,
     isModalOpen,
     editingProject,
     handlers,
@@ -27,6 +28,7 @@ function ProjectPage() {
 
       <ProjectList
         projects={projects}
+        isLoading={isLoading}
         onEdit={handlers.handleEdit}
         onDelete={handlers.handleDelete}
         onView={handlers.handleView}
@@ -34,12 +36,14 @@ function ProjectPage() {
 
       <ProjectModal
         isOpen={isModalOpen}
+        isLoading={isLoading}
         onClose={handlers.handleCloseModal}
         editingProject={editingProject}
         onSubmit={handlers.handleSubmit}
       />
       <DeleteConfirmModal
         isOpen={isDeleteDialogOpen}
+        isLoading={isLoading}
         onConfirm={handlers.handleDeleteConfirm}
         onCancel={handlers.handleDeleteCancel}
         isDark={isDark}

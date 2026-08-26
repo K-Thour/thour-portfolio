@@ -20,6 +20,7 @@ export interface EducationFormProps {
   onSubmit: (data: EducationFormData) => void;
   onCancel: () => void;
   initialData?: Education | null;
+  isLoading?: boolean;
 }
 
 export interface Education {
@@ -44,6 +45,7 @@ export interface EducationModalsProps {
   isModalOpen: boolean;
   isDeleteModalOpen: boolean;
   editingEducation: Education | null;
+  isLoading?: boolean;
   onCloseModal: () => void;
   onCloseDeleteModal: () => void;
   onSubmit: (data: EducationFormData) => void;
@@ -52,6 +54,7 @@ export interface EducationModalsProps {
 
 export interface EducationTimelineProps {
   educationList: Education[];
+  isLoading?: boolean;
   onEdit: (edu: Education) => void;
   onDelete: (id: number) => void;
 }

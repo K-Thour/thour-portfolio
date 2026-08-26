@@ -7,6 +7,7 @@ import { useEducation } from "./hooks/useEducation";
 function EducationPage() {
   const {
     educationList,
+    loading: isLoading,
     isModalOpen,
     editingEducation,
     isDeleteDialogOpen,
@@ -23,12 +24,14 @@ function EducationPage() {
 
       <EducationTimeline
         educationList={educationList}
+        isLoading={isLoading}
         onEdit={handlers.handleEdit}
         onDelete={handlers.handleDeleteClick}
       />
 
       <EducationModals
         isModalOpen={isModalOpen}
+        isLoading={isLoading}
         isDeleteModalOpen={isDeleteDialogOpen}
         editingEducation={editingEducation}
         onCloseModal={handlers.handleCloseModal}

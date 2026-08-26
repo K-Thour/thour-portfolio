@@ -9,6 +9,7 @@ const imageSchema = z.object({
 
 export const projectCreateSchema = z.object({
   title: z.string().min(1, 'Title is required'),
+  subtitle: z.string().optional(),
   category: z.string().min(1, 'Category is required'),
   description: z.string().min(1, 'Description is required'),
   image: imageSchema,

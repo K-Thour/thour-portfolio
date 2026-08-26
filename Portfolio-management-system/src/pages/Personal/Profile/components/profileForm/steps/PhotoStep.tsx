@@ -36,8 +36,8 @@ export const PhotoStep: React.FC<PhotoStepProps> = ({ form, isDark }) => {
       const res = await uploadImage(croppedBase64);
       field.handleChange({
         type: "url",
-        url: res.url,
-        publicId: res.publicId,
+        url: res?.url || croppedBase64,
+        publicId: res?.publicId || "",
         file: croppedBase64,
       });
     } catch (err) {

@@ -53,6 +53,7 @@ export interface ActiveContactBannerProps {
 export interface ContactsGridProps {
   contacts: Contact[];
   isDark: boolean;
+  isLoading?: boolean;
   onView: (contact: Contact) => void;
   onEdit: (contact: Contact) => void;
   onDelete: (id: number) => void;
@@ -79,6 +80,7 @@ export interface ContactFormProps {
   onSubmit: (data: ContactFormData) => void;
   onCancel: () => void;
   initialData?: Contact | null;
+  isLoading?: boolean;
 }
 
 interface Step {

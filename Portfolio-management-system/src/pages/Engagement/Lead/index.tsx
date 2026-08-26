@@ -12,6 +12,7 @@ function LeadPage() {
   const isDark = theme === "dark";
   const {
     leads,
+    loading,
     searchQuery,
     setSearchQuery,
     statusFilter,
@@ -58,6 +59,7 @@ function LeadPage() {
       <LeadsTable
         leads={leads}
         isDark={isDark}
+        isLoading={loading}
         onView={handleViewLead}
         onOpenChangeStatus={handleOpenChangeStatus}
       />
@@ -73,6 +75,7 @@ function LeadPage() {
       <ChangeStatusModal
         lead={statusChangeLead}
         isOpen={isChangeStatusModalOpen}
+        isLoading={loading}
         onClose={handleCloseChangeStatus}
         isDark={isDark}
         onConfirm={handleStatusChange}

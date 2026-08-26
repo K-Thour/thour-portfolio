@@ -2,12 +2,14 @@ import type { LeadsTableProps } from "../types";
 import { TableContent } from "./TableContent";
 import { PaginationControls, PaginationInfo } from "./pagination";
 import { usePagination } from "../hooks/usePagination";
+import PageLoadingSkeleton from "../../../../components/common/loading/PageLoadingSkeleton";
 
 const ITEMS_PER_PAGE = 5;
 
 export function LeadsTable({
   leads,
   isDark,
+  isLoading = false,
   onView,
   onOpenChangeStatus,
 }: LeadsTableProps) {
@@ -24,6 +26,10 @@ export function LeadsTable({
     goToFirstPage,
     goToLastPage,
   } = usePagination({ data: leads, itemsPerPage: ITEMS_PER_PAGE });
+
+  if (isLoading) {
+    return <PageLoadingSkeleton count={5} type="table" />;
+  }
 
   if (leads.length === 0) {
     return (

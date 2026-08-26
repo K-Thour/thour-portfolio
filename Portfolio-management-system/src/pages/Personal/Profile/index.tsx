@@ -6,9 +6,19 @@ import { HobbiesCard } from "./components/HobbiesCard";
 import { LanguagesCard } from "./components/LanguagesCard";
 import { ProfileModal } from "./components/ProfileModal";
 import { AppBackground } from "../../../components/common/background/AppBackground";
+import PageLoadingSkeleton from "../../../components/common/loading/PageLoadingSkeleton";
 
 export function Profile() {
-  const { profileData, isModalOpen, handlers } = useProfile();
+  const { profileData, loading, isModalOpen, handlers } = useProfile();
+
+  if (loading && !profileData.name) {
+    return (
+      <div className="space-y-6 mx-4">
+        <AppBackground />
+        <PageLoadingSkeleton count={3} type="card" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 mx-4">
@@ -29,6 +39,7 @@ export function Profile() {
 
       <ProfileModal
         isOpen={isModalOpen}
+        isLoading={loading}
         onClose={handlers.handleCloseModal}
         onSubmit={handlers.handleSubmit}
         initialData={profileData}

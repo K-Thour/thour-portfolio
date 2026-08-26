@@ -9,45 +9,97 @@ import { IProjectRepoParams } from '../interface/models/project/projectRepo.inte
 import { uploadBase64ImagesInObject, deleteFromCloudinary } from '../utils/cloudinary.utils';
 
 const resolveRefs = async (data: Partial<IProjectModel>) => {
-  if (
-    data.category &&
-    typeof data.category === 'string' &&
-    !Types.ObjectId.isValid(data.category)
-  ) {
-    let service = await models.service.repo.getOne({
-      filter: [{ name: { $regex: new RegExp(`^${data.category}$`, 'i') } as any }], // eslint-disable-line @typescript-eslint/no-explicit-any
-    });
-    if (!service) {
-      service = await models.service.repo.create(
-        {
-          name: data.category,
-          decription: `${data.category} services`,
-          technologies: [],
-          iconUrl: { publicId: 'service', url: 'https://placehold.co/100' },
-          mainImageUrl: { publicId: 'service', url: 'https://placehold.co/600' },
-          imagesUrl: [],
-        },
-        new Types.ObjectId('60d5ec4934d47d2b2c8b4567'),
-      );
+  const category = (data as any).category; // eslint-disable-line @typescript-eslint/no-explicit-any
+  if (category) {
+    if (typeof category === 'string') {
+      if (Types.ObjectId.isValid(category)) {
+        data.category = new Types.ObjectId(category);
+      } else {
+        const catName = category.trim();
+        let service = await models.service.repo.getOne({
+          filter: [{ name: { $regex: new RegExp(`^${catName}$`, 'i') } as any }], // eslint-disable-line @typescript-eslint/no-explicit-any
+        });
+        if (!service) {
+          service = await models.service.repo.create(
+            {
+              name: catName,
+              decription: `${catName} services`,
+              technologies: [],
+              iconUrl: { publicId: 'service', url: 'https://placehold.co/100' },
+              mainImageUrl: { publicId: 'service', url: 'https://placehold.co/600' },
+              imagesUrl: [],
+            },
+            new Types.ObjectId('60d5ec4934d47d2b2c8b4567'),
+          );
+        }
+        data.category = service._id;
+      }
+    } else if (typeof category === 'object' && ('_id' in category || 'id' in category)) {
+      const catId = category._id || category.id;
+      if (Types.ObjectId.isValid(catId)) {
+        data.category = new Types.ObjectId(catId);
+      }
     }
-    data.category = service._id;
   }
 
-  if (data.techStack && Array.isArray(data.techStack)) {
+  const rawImage = (data as any).image; // eslint-disable-line @typescript-eslint/no-explicit-any
+  if (rawImage) {
+    if (typeof rawImage === 'string') {
+      data.image = {
+        publicId: 'project-main',
+        url: rawImage,
+      };
+    } else if (typeof rawImage === 'object') {
+      data.image = {
+        publicId: rawImage.publicId || 'project-main',
+        url: rawImage.url || '',
+      };
+    }
+  }
+
+  const rawTechStack = (data as any).techStack; // eslint-disable-line @typescript-eslint/no-explicit-any
+  if (rawTechStack && Array.isArray(rawTechStack)) {
     const resolvedIds: Types.ObjectId[] = [];
-    for (const item of data.techStack) {
+    for (const item of rawTechStack) {
       if (typeof item === 'string') {
         if (Types.ObjectId.isValid(item)) {
           resolvedIds.push(new Types.ObjectId(item));
         } else {
+          const techName = item.trim();
           let tech = await models.technology.repo.getOne({
-            filter: [{ name: { $regex: new RegExp(`^${item}$`, 'i') } as any }], // eslint-disable-line @typescript-eslint/no-explicit-any
+            filter: [{ name: { $regex: new RegExp(`^${techName}$`, 'i') } as any }], // eslint-disable-line @typescript-eslint/no-explicit-any
           });
           if (!tech) {
             tech = await models.technology.repo.create(
               {
-                name: item,
-                description: `${item} technology`,
+                name: techName,
+                description: `${techName} technology`,
+                category: 'Development',
+                iconUrl: { publicId: 'tech', url: 'https://placehold.co/100' },
+                isActive: true,
+              },
+              new Types.ObjectId('60d5ec4934d47d2b2c8b4567'),
+            );
+          }
+          resolvedIds.push(tech._id);
+        }
+      } else if (item instanceof Types.ObjectId) {
+        resolvedIds.push(item);
+      } else if (item && typeof item === 'object') {
+        const idVal = item._id || item.id;
+        const nameVal = item.name || item.title;
+        if (idVal && Types.ObjectId.isValid(idVal)) {
+          resolvedIds.push(new Types.ObjectId(idVal));
+        } else if (nameVal && typeof nameVal === 'string') {
+          const techName = nameVal.trim();
+          let tech = await models.technology.repo.getOne({
+            filter: [{ name: { $regex: new RegExp(`^${techName}$`, 'i') } as any }], // eslint-disable-line @typescript-eslint/no-explicit-any
+          });
+          if (!tech) {
+            tech = await models.technology.repo.create(
+              {
+                name: techName,
+                description: `${techName} technology`,
                 category: 'Development',
                 iconUrl: { publicId: 'tech', url: 'https://placehold.co/100' },
                 isActive: true,
@@ -157,14 +209,18 @@ const getService = (params: IProjectRepoParams) => {
         { path: 'techStack', select: 'name iconUrl category' },
       ],
       select:
-        'title category description image device year client fullDescription features role outcome workingUrl githubUrl screenshots projectMetric projectTestimonial techStack isDeleted isActive deletedBy createdBy updatedBy deletedAt',
+        'title subtitle category description image device year client fullDescription features role outcome workingUrl githubUrl screenshots projectMetric projectTestimonial techStack isDeleted isActive deletedBy createdBy updatedBy deletedAt',
     };
     const result = await models.project.repo.get(paramsWithPopulate);
-    // Ensure features is always an array
-    const normalizedResult = result.map((project: IProjectModel) => ({
-      ...project,
-      features: Array.isArray(project.features) ? project.features : [],
-    }));
+    // Ensure subtitle and features are always normalized
+    const normalizedResult = result.map((project: any) => {
+      const doc = project.toObject ? project.toObject() : project;
+      return {
+        ...doc,
+        subtitle: doc.subtitle || '',
+        features: Array.isArray(doc.features) ? doc.features : [],
+      };
+    });
     return commonResponse.success(
       normalizedResult,
       MESSAGES_COMMON_UTIL.fetchedSuccessfully('Project'),
@@ -183,18 +239,28 @@ const getOneService = (params?: IProjectRepoParams) => {
         { path: 'techStack', select: 'name iconUrl category' },
       ],
       select:
-        'title category description image device year client fullDescription features role outcome workingUrl githubUrl screenshots projectMetric projectTestimonial techStack isDeleted isActive deletedBy createdBy updatedBy deletedAt',
+        'title subtitle category description image device year client fullDescription features role outcome workingUrl githubUrl screenshots projectMetric projectTestimonial techStack isDeleted isActive deletedBy createdBy updatedBy deletedAt',
     };
     const result = await models.project.repo.getOne(paramsWithPopulate);
-    // Ensure features is always an array
-    if (result && !Array.isArray(result.features)) {
-      result.features = [];
+    if (!result) {
+      return commonResponse.success(
+        null,
+        MESSAGES_COMMON_UTIL.fetchedSuccessfully('Project'),
+        STATUS_CODE.OK,
+        0,
+      );
     }
+    const doc = (result as any).toObject ? (result as any).toObject() : result;
+    const normalized = {
+      ...doc,
+      subtitle: doc.subtitle || '',
+      features: Array.isArray(doc.features) ? doc.features : [],
+    };
     return commonResponse.success(
-      result,
+      normalized,
       MESSAGES_COMMON_UTIL.fetchedSuccessfully('Project'),
       STATUS_CODE.OK,
-      result ? 1 : 0,
+      1,
     );
   });
 };

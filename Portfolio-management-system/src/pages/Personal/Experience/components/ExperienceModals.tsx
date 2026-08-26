@@ -8,6 +8,7 @@ interface ExperienceModalsProps {
   isWizardOpen: boolean;
   deleteModalOpen: boolean;
   isDark: boolean;
+  isLoading?: boolean;
   editingId: string | null;
   editingExperience: Experience | null;
   onCloseWizard: () => void;
@@ -20,6 +21,7 @@ export const ExperienceModals: React.FC<ExperienceModalsProps> = ({
   isWizardOpen,
   deleteModalOpen,
   isDark,
+  isLoading = false,
   editingId,
   editingExperience,
   onCloseWizard,
@@ -31,6 +33,7 @@ export const ExperienceModals: React.FC<ExperienceModalsProps> = ({
     <>
       <ExperienceFormWizard
         isOpen={isWizardOpen}
+        isLoading={isLoading}
         onClose={onCloseWizard}
         onSubmit={onSubmitExperience}
         initialData={editingExperience || undefined}
@@ -40,6 +43,8 @@ export const ExperienceModals: React.FC<ExperienceModalsProps> = ({
 
       <ConfirmModal
         isOpen={deleteModalOpen}
+        isLoading={isLoading}
+        loadingText="Deleting..."
         onCancel={onCancelDelete}
         onConfirm={onConfirmDelete}
         title="Delete Experience"

@@ -14,6 +14,7 @@ export function ContactForm({
   onSubmit,
   onCancel,
   initialData,
+  isLoading = false,
 }: ContactFormProps) {
   const { theme } = useAppSelector((store: RootState) => store.theme);
   const isDark = theme === "dark";
@@ -70,6 +71,7 @@ export function ContactForm({
         currentStep={currentStep}
         isDark={isDark}
         isEditing={!!initialData}
+        isLoading={isLoading}
         onCancel={onCancel}
         onPrevious={goToPrevious}
         onNext={handleNext}

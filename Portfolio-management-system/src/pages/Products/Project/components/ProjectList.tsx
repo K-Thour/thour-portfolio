@@ -2,17 +2,23 @@ import { ProjectCard } from "./ProjectCard";
 import type { ProjectListProps } from "./types";
 import { useAppSelector } from "../../../../hooks/useRedux";
 import utils from "../../../../utils";
+import PageLoadingSkeleton from "../../../../components/common/loading/PageLoadingSkeleton";
 
 const { cn } = utils.tailwindUtils;
 
 export function ProjectList({
   projects,
+  isLoading = false,
   onEdit,
   onDelete,
   onView,
 }: ProjectListProps) {
   const theme = useAppSelector((state) => state.theme.theme);
   const isDark = theme === "dark";
+
+  if (isLoading) {
+    return <PageLoadingSkeleton count={3} type="card" />;
+  }
 
   if (projects.length === 0) {
     return (

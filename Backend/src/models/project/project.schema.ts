@@ -10,6 +10,9 @@ const projectSchema = new Schema<IProjectModel>(
       type: String,
       required: true,
     },
+    subtitle: {
+      type: String,
+    },
     category: {
       type: Types.ObjectId,
       ref: 'Service',

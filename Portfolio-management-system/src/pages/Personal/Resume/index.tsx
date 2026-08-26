@@ -7,6 +7,7 @@ import { EmptyResumeState } from "./components/EmptyResumeState";
 import { ResumeModal } from "./components/ResumeModal";
 import Footer from "../../../layouts/footer/Footer";
 import ConfirmModal from "../../../components/common/confirmModel/confirmModel";
+import PageLoadingSkeleton from "../../../components/common/loading/PageLoadingSkeleton";
 import ConfirmDownloadModal, {
   type DownloadFormat,
 } from "../../../components/common/confirmModel/ConfirmDownloadModal";
@@ -16,7 +17,7 @@ import type { Resume } from "./types";
 export function ResumePage() {
   const theme = useAppSelector((state) => state.theme.theme);
   const isDark = theme === "dark";
-  const { resumes, isModalOpen, handlers } = useResumePage();
+  const { resumes, loading, isModalOpen, handlers } = useResumePage();
   const { deletingId, toggleResumeDeleting } = useResumeOperations();
 
   // Download modal state
@@ -78,7 +79,9 @@ export function ResumePage() {
           resumeLimit={resumes.length}
         />
         <div className="mt-6">
-          {resumes.length === 0 ? (
+          {loading && resumes.length === 0 ? (
+            <PageLoadingSkeleton count={3} type="card" />
+          ) : resumes.length === 0 ? (
             <EmptyResumeState
               isDark={isDark}
               onAddResume={handlers.handleOpenModal}
@@ -101,6 +104,8 @@ export function ResumePage() {
       <Footer />
       <ConfirmModal
         isOpen={deletingId !== null}
+        isLoading={loading}
+        loadingText="Deleting..."
         onConfirm={onConfirmDelete}
         onCancel={() => toggleResumeDeleting(deletingId as string)}
         title="Delete Resume"

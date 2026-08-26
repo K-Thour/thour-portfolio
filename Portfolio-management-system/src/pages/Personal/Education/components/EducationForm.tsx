@@ -4,6 +4,7 @@ import { DetailsStep } from "./steps/DetailsStep";
 import { AchievementsStep } from "./steps/AchievementsStep";
 import { useEducationForm } from "../hooks/useEducationForm";
 import { useAppSelector } from "../../../../hooks/useRedux";
+import { Loader2 } from "lucide-react";
 import type { EducationFormProps } from "../types";
 import { steps } from "../constraints/constraints";
 import { navBtn } from "../utils/utils";
@@ -12,6 +13,7 @@ export function EducationForm({
   onSubmit,
   onCancel,
   initialData,
+  isLoading = false,
 }: EducationFormProps) {
   const { theme } = useAppSelector((state) => state.theme);
   const isDark = theme === "dark";
@@ -69,6 +71,7 @@ export function EducationForm({
       <div className="flex items-center justify-between mt-8 pt-6 border-t border-inherit">
         <button
           type="button"
+          disabled={isLoading}
           onClick={currentStep === 1 ? onCancel : handlePrevious}
           className={navBtn(isDark, "secondary")}
         >
@@ -76,10 +79,20 @@ export function EducationForm({
         </button>
         <button
           type="button"
+          disabled={isLoading}
           onClick={handleNext}
-          className={navBtn(isDark, "primary")}
+          className={`${navBtn(isDark, "primary")} flex items-center justify-center gap-2`}
         >
-          {currentStep === 3 ? "Submit" : "Next"}
+          {isLoading ? (
+            <>
+              <Loader2 className="w-4 h-4 animate-spin" />
+              <span>Saving...</span>
+            </>
+          ) : currentStep === 3 ? (
+            "Submit"
+          ) : (
+            "Next"
+          )}
         </button>
       </div>
     </div>

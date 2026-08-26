@@ -5,6 +5,7 @@ import type { RootState } from "../../../../store/store";
 
 export function ProjectModal({
   isOpen,
+  isLoading = false,
   onClose,
   editingProject,
   onSubmit,
@@ -18,6 +19,7 @@ export function ProjectModal({
     <ProjectFormWizard
       key={editingProject ? String(editingProject.id) : "new"}
       isOpen={isOpen}
+      isLoading={isLoading}
       onClose={onClose}
       onSubmit={onSubmit}
       initialData={editingProject || undefined}

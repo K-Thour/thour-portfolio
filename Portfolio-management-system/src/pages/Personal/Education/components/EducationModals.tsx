@@ -7,6 +7,7 @@ export function EducationModals({
   isModalOpen,
   isDeleteModalOpen,
   editingEducation,
+  isLoading = false,
   onCloseModal,
   onCloseDeleteModal,
   onSubmit,
@@ -16,7 +17,7 @@ export function EducationModals({
     <>
       <Modal
         isOpen={isModalOpen}
-        onClose={onCloseModal}
+        onClose={isLoading ? () => {} : onCloseModal}
         title={editingEducation ? "Edit Education" : "Add Education"}
         size="lg"
       >
@@ -24,10 +25,13 @@ export function EducationModals({
           onSubmit={onSubmit}
           onCancel={onCloseModal}
           initialData={editingEducation}
+          isLoading={isLoading}
         />
       </Modal>
       <ConfirmModal
         isOpen={isDeleteModalOpen}
+        isLoading={isLoading}
+        loadingText="Deleting..."
         onConfirm={onConfirmDelete}
         onCancel={onCloseDeleteModal}
         title="Delete Education"

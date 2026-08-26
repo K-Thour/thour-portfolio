@@ -4,6 +4,7 @@ import { TechnologyForm } from "./components/form/TechnologyForm";
 import { TechnologyHeader } from "./components/header";
 import { TechnologyList } from "./components/list";
 import ConfirmModal from "../../../components/common/confirmModel/confirmModel";
+import PageLoadingSkeleton from "../../../components/common/loading/PageLoadingSkeleton";
 import type { Technology } from "./types";
 import {
   fetchTechnologies,
@@ -154,10 +155,8 @@ export function Technologies() {
   return (
     <div className="space-y-6">
       <TechnologyHeader onAdd={handleAdd} />
-      {loading ? (
-        <div className="text-center p-12 text-slate-500">
-          Loading technologies...
-        </div>
+      {loading && technologies.length === 0 ? (
+        <PageLoadingSkeleton count={8} type="grid" />
       ) : (
         <TechnologyList
           technologies={technologies}
@@ -170,14 +169,17 @@ export function Technologies() {
       <Modal
         isOpen={isModalOpen}
         onClose={() => {
-          setIsModalOpen(false);
-          setEditingTech(undefined);
+          if (!loading) {
+            setIsModalOpen(false);
+            setEditingTech(undefined);
+          }
         }}
         title={editingTech ? "Edit Technology" : "Add Technology"}
         size="md"
       >
         <TechnologyForm
           onSubmit={handleSubmit}
+          isLoading={loading}
           onCancel={() => {
             setIsModalOpen(false);
             setEditingTech(undefined);
@@ -188,6 +190,8 @@ export function Technologies() {
 
       <ConfirmModal
         isOpen={!!deleteId}
+        isLoading={loading}
+        loadingText="Deleting..."
         onCancel={() => setDeleteId(undefined)}
         title="Delete Technology"
         message="Are you sure you want to delete this technology?"

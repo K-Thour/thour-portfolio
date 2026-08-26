@@ -4,6 +4,7 @@ import { EDeviceType } from '../../common/common.enum';
 
 export interface IProject {
   title: string;
+  subtitle?: string;
   category: Types.ObjectId;
   description: string;
   image: IImageData;
@@ -33,6 +34,7 @@ export interface IProjectModel extends IProject, ICommonModel {
 
 export interface createProjectInput {
   title: string;
+  subtitle?: string;
   category: Types.ObjectId;
   description: string;
   image: IImageData;

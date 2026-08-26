@@ -89,6 +89,7 @@ export interface ProfileHeaderProps {
 
 export interface ProfileModalProps {
   isOpen: boolean;
+  isLoading?: boolean;
   onClose: () => void;
   onSubmit: (data: ProfileData) => void;
   initialData: ProfileData;

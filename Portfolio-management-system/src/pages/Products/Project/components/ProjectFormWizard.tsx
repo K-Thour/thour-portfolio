@@ -81,6 +81,7 @@ interface ProjectFormWizardProps {
   initialData?: Project;
   isDark: boolean;
   isEditing?: boolean;
+  isLoading?: boolean;
 }
 
 export const ProjectFormWizard: React.FC<ProjectFormWizardProps> = ({
@@ -90,6 +91,7 @@ export const ProjectFormWizard: React.FC<ProjectFormWizardProps> = ({
   initialData,
   isDark,
   isEditing = false,
+  isLoading = false,
 }) => {
   const {
     currentStep,
@@ -285,6 +287,8 @@ export const ProjectFormWizard: React.FC<ProjectFormWizardProps> = ({
           totalSteps={steps.length}
           isDark={isDark}
           submitText={isEditing ? "Save Changes" : "Add Project"}
+          isLoading={isLoading}
+          loadingText={isEditing ? "Saving..." : "Adding..."}
           onBack={handleBack}
           onNext={handleNext}
           onSubmit={handleSubmit}

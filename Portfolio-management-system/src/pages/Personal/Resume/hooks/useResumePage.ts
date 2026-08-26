@@ -4,7 +4,7 @@ import type { ResumeFormData, Resume } from "../types";
 
 export function useResumePage() {
   const { toast } = useToast();
-  const { resumes, isModalOpen, handlers } = useResumes();
+  const { resumes, loading, isModalOpen, handlers } = useResumes();
 
   const handleSubmit = async (data: ResumeFormData) => {
     try {
@@ -71,6 +71,7 @@ export function useResumePage() {
 
   return {
     resumes,
+    loading,
     isModalOpen,
     handlers: { ...handlers, handleSubmit, handleDelete, handleDownload },
   };

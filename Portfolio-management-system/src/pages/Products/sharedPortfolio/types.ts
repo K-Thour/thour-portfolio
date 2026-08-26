@@ -22,6 +22,7 @@ export interface PortfolioListProps {
   portfolios: Portfolio[];
   allProjects: { id: string; title: string; category: string }[];
   isDark: boolean;
+  isLoading?: boolean;
   copiedId: string | null;
   onEdit: (portfolio: Portfolio) => void;
   onDelete: (id: string) => void;
@@ -49,6 +50,7 @@ export interface ListHeaderProps {
 export interface ModalActionsProps {
   isDark: boolean;
   isEditing: boolean;
+  isLoading?: boolean;
   onCancel: () => void;
 }
 
@@ -80,6 +82,7 @@ export interface PortfolioModalProps {
   editingPortfolio: Portfolio | null;
   formData: FormData;
   allProjects: Project[];
+  isLoading?: boolean;
   isLoadingProjects?: boolean;
   onClose: () => void;
   onSubmit: (e: React.FormEvent) => void;

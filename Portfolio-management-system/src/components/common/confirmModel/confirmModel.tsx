@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "motion/react";
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, Loader2 } from "lucide-react";
 import { useAppSelector } from "../../../hooks/useRedux";
 import { useEffect } from "react";
 
@@ -11,6 +11,8 @@ interface ConfirmDialogProps {
   message: string;
   confirmText?: string;
   cancelText?: string;
+  isLoading?: boolean;
+  loadingText?: string;
 }
 
 function ConfirmModal({
@@ -21,6 +23,8 @@ function ConfirmModal({
   message,
   confirmText = "Delete",
   cancelText = "Cancel",
+  isLoading = false,
+  loadingText = "Deleting...",
 }: ConfirmDialogProps) {
   const { theme } = useAppSelector((state) => state.theme);
   const isDark = theme === "dark";
@@ -55,7 +59,7 @@ function ConfirmModal({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={onCancel}
+            onClick={isLoading ? undefined : onCancel}
             className="fixed inset-0 bg-black/70 backdrop-blur-sm z-60 w-full h-full"
           />
 
@@ -114,8 +118,10 @@ function ConfirmModal({
                 {/* Buttons */}
                 <div className="flex gap-3">
                   <button
+                    type="button"
                     onClick={onCancel}
-                    className={`flex-1 px-4 py-3 rounded-xl font-medium transition-all hover:scale-105 ${
+                    disabled={isLoading}
+                    className={`flex-1 px-4 py-3 rounded-xl font-medium transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 ${
                       isDark
                         ? "bg-slate-700/50 text-white hover:bg-slate-700"
                         : "bg-gray-100 text-gray-900 hover:bg-gray-200"
@@ -124,10 +130,19 @@ function ConfirmModal({
                     {cancelText}
                   </button>
                   <button
+                    type="button"
                     onClick={onConfirm}
-                    className="flex-1 px-4 py-3 rounded-xl font-medium transition-all hover:scale-105 bg-linear-to-r from-red-600 to-red-500 text-white hover:shadow-lg hover:shadow-red-500/50"
+                    disabled={isLoading}
+                    className="flex-1 px-4 py-3 rounded-xl font-medium transition-all hover:scale-105 disabled:opacity-75 disabled:cursor-not-allowed disabled:hover:scale-100 bg-linear-to-r from-red-600 to-red-500 text-white hover:shadow-lg hover:shadow-red-500/50 flex items-center justify-center gap-2"
                   >
-                    {confirmText}
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <span>{loadingText}</span>
+                      </>
+                    ) : (
+                      <span>{confirmText}</span>
+                    )}
                   </button>
                 </div>
 

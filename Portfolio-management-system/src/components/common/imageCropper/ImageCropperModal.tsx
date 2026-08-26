@@ -139,9 +139,27 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
 
     if (!ctx) return;
 
-    // Canvas size should match the ORIGINAL crop size
-    canvas.width = Math.floor(completedCrop.width * scaleX);
-    canvas.height = Math.floor(completedCrop.height * scaleY);
+    // Calculate raw cropped dimensions from natural image
+    const rawWidth = Math.max(1, Math.floor(completedCrop.width * scaleX));
+    const rawHeight = Math.max(1, Math.floor(completedCrop.height * scaleY));
+
+    // Cap maximum resolution to prevent multi-megabyte payloads while preserving crisp high-DPI detail
+    const MAX_DIM = circular ? 800 : 1600;
+    let targetWidth = rawWidth;
+    let targetHeight = rawHeight;
+
+    if (targetWidth > MAX_DIM || targetHeight > MAX_DIM) {
+      if (targetWidth >= targetHeight) {
+        targetHeight = Math.round((targetHeight * MAX_DIM) / targetWidth);
+        targetWidth = MAX_DIM;
+      } else {
+        targetWidth = Math.round((targetWidth * MAX_DIM) / targetHeight);
+        targetHeight = MAX_DIM;
+      }
+    }
+
+    canvas.width = targetWidth;
+    canvas.height = targetHeight;
 
     // High quality rendering
     ctx.imageSmoothingEnabled = true;
@@ -161,7 +179,7 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
       ctx.clip();
     }
 
-    // Draw cropped image in ORIGINAL resolution
+    // Draw cropped image into bounded canvas
     ctx.drawImage(
       image,
       completedCrop.x * scaleX,
@@ -174,8 +192,17 @@ export const ImageCropperModal: React.FC<ImageCropperModalProps> = ({
       canvas.height,
     );
 
-    // Export with maximum JPEG quality
-    const base64Image = canvas.toDataURL("image/jpeg", 1.0);
+    // Export with optimized format and compression (WebP / JPEG 0.88 for instant upload performance)
+    let base64Image: string;
+    if (circular) {
+      // Circular crops require alpha channel transparency
+      base64Image = canvas.toDataURL("image/webp", 0.9);
+      if (!base64Image.startsWith("data:image/webp")) {
+        base64Image = canvas.toDataURL("image/png");
+      }
+    } else {
+      base64Image = canvas.toDataURL("image/jpeg", 0.88);
+    }
 
     onCropComplete(base64Image);
     onClose();

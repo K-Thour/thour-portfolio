@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-
-import { Upload, Link2, Loader2 } from "lucide-react";
+import { Upload, Link2, Loader2, CheckCircle2, RefreshCw, X } from "lucide-react";
 import { motion } from "motion/react";
+import { useStore } from "@tanstack/react-form";
 import utils from "../../../../../../utils";
 import { projectBasicInfoSchema } from "../../../../../../validations/project";
 import { ImageCropperModal } from "../../../../../../components/common/imageCropper/ImageCropperModal";
@@ -24,8 +24,13 @@ export const BasicInfoStep: React.FC<BasicInfoStepProps> = ({
   const [cropperOpen, setCropperOpen] = useState(false);
   const [srcImage, setSrcImage] = useState("");
   const [uploading, setUploading] = useState(false);
-  const [imageType, setImageType] = useState<"url" | "file">("url");
+  const [imageType, setImageType] = useState<"url" | "file">("file");
   const { toast } = useToast();
+
+  const currentFormImage = useStore(
+    form.store,
+    (state: any) => state.values?.image || "",
+  );
 
   const handleImageFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -43,12 +48,16 @@ export const BasicInfoStep: React.FC<BasicInfoStepProps> = ({
     setUploading(true);
     try {
       const res = await uploadImage(croppedBase64);
-      field.handleChange(res.url);
+      const url = res?.url || croppedBase64;
+      if (field && typeof field.handleChange === "function") {
+        field.handleChange(url);
+      }
+      form.setFieldValue("image", url);
       toast({
         title: "Image Uploaded",
         description: "Image uploaded successfully",
         variant: "success",
-        duration: 5000,
+        duration: 3000,
       });
     } catch (err) {
       console.error("Failed to upload image:", err);
@@ -56,7 +65,7 @@ export const BasicInfoStep: React.FC<BasicInfoStepProps> = ({
         title: "Error",
         description: "Failed to upload image",
         variant: "destructive",
-        duration: 5000,
+        duration: 3000,
       });
     } finally {
       setUploading(false);
@@ -232,14 +241,14 @@ export const BasicInfoStep: React.FC<BasicInfoStepProps> = ({
 
       <form.Field name="image">
         {(field: any) => {
-          const imageVal = field.state.value || "";
+          const imageVal = field.state.value || currentFormImage || "";
           const hasError =
             field.state.meta.isTouched && field.state.meta.errors.length > 0;
 
           return (
             <div className="space-y-4 relative">
               {uploading && (
-                <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center z-20 rounded-xl">
+                <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-20 rounded-xl">
                   <div className="flex flex-col items-center gap-2">
                     <Loader2
                       className={cn(
@@ -271,23 +280,6 @@ export const BasicInfoStep: React.FC<BasicInfoStepProps> = ({
               <div className="flex gap-3 mb-4">
                 <button
                   type="button"
-                  onClick={() => setImageType("url")}
-                  className={cn(
-                    "flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl border-2 font-medium transition-all",
-                    imageType === "url"
-                      ? isDark
-                        ? "border-red-500 bg-red-500/20 text-white"
-                        : "border-blue-500 bg-blue-100 text-gray-900"
-                      : isDark
-                        ? "border-slate-700 text-gray-400 hover:border-red-500/50"
-                        : "border-gray-300 text-gray-600 hover:border-blue-400",
-                  )}
-                >
-                  <Link2 className="w-5 h-5" />
-                  Image URL
-                </button>
-                <button
-                  type="button"
                   onClick={() => setImageType("file")}
                   className={cn(
                     "flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl border-2 font-medium transition-all",
@@ -303,87 +295,156 @@ export const BasicInfoStep: React.FC<BasicInfoStepProps> = ({
                   <Upload className="w-5 h-5" />
                   Upload Image
                 </button>
+                <button
+                  type="button"
+                  onClick={() => setImageType("url")}
+                  className={cn(
+                    "flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl border-2 font-medium transition-all",
+                    imageType === "url"
+                      ? isDark
+                        ? "border-red-500 bg-red-500/20 text-white"
+                        : "border-blue-500 bg-blue-100 text-gray-900"
+                      : isDark
+                        ? "border-slate-700 text-gray-400 hover:border-red-500/50"
+                        : "border-gray-300 text-gray-600 hover:border-blue-400",
+                  )}
+                >
+                  <Link2 className="w-5 h-5" />
+                  Image URL
+                </button>
               </div>
 
-              {imageType === "url" ? (
+              {imageType === "file" ? (
                 <div>
-                  <input
-                    type="url"
-                    value={imageVal}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    className={cn(
-                      "w-full px-4 py-3 rounded-xl border bg-transparent focus:outline-none focus:ring-2 focus:ring-red-500 transition-all",
-                      isDark
-                        ? "bg-slate-900/50 border-red-500/20 text-white focus:ring-red-500"
-                        : "bg-white border-blue-300/50 text-gray-900 focus:ring-blue-500 focus:ring-blue-500",
-                      hasError ? "border-red-500" : "",
-                    )}
-                    placeholder="https://example.com/project-image.jpg"
-                  />
-                  {imageVal && (
+                  {imageVal ? (
                     <div
                       className={cn(
-                        "mt-3 p-4 rounded-xl border",
+                        "p-4 rounded-xl border flex flex-col sm:flex-row items-center justify-between gap-4 transition-all",
                         isDark
-                          ? "bg-slate-900/50 border-red-500/20"
-                          : "bg-gray-50 border-gray-300",
+                          ? "bg-slate-900/60 border-slate-700"
+                          : "bg-gray-50 border-gray-200 shadow-xs",
                       )}
                     >
+                      <div className="flex items-center gap-4 min-w-0 w-full sm:w-auto flex-1">
+                        <div className="w-20 h-20 rounded-lg overflow-hidden border border-slate-700 bg-black/40 shrink-0 flex items-center justify-center">
+                          <img
+                            src={imageVal}
+                            alt="Project Preview"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-2">
+                            <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+                            <p
+                              className={cn(
+                                "text-sm font-semibold truncate",
+                                isDark ? "text-slate-200" : "text-slate-800",
+                              )}
+                            >
+                              Image Attached
+                            </p>
+                          </div>
+                          <p
+                            className={cn(
+                              "text-xs truncate mt-1 max-w-[280px] font-mono",
+                              isDark ? "text-slate-400" : "text-slate-500",
+                            )}
+                          >
+                            {imageVal}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2 shrink-0 w-full sm:w-auto justify-end">
+                        <label
+                          className={cn(
+                            "px-3 py-2 rounded-lg border text-xs flex items-center gap-1.5 font-medium transition-all cursor-pointer",
+                            isDark
+                              ? "bg-slate-800 border-slate-700 text-slate-200 hover:bg-slate-700"
+                              : "bg-white border-slate-200 text-slate-700 hover:bg-gray-100",
+                          )}
+                        >
+                          <RefreshCw className="w-3.5 h-3.5" />
+                          Change
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageFileChange}
+                            className="hidden"
+                          />
+                        </label>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            field.handleChange("");
+                            form.setFieldValue("image", "");
+                          }}
+                          className="px-3 py-2 rounded-lg border border-red-500/30 bg-red-500/10 text-red-400 hover:bg-red-500/20 text-xs font-medium transition-all flex items-center gap-1"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                          Remove
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <label
+                      className={cn(
+                        "block w-full cursor-pointer border-2 border-dashed rounded-xl p-8 text-center transition-all bg-transparent",
+                        isDark
+                          ? "border-red-500/20 hover:border-red-500/50 bg-slate-900/50"
+                          : "border-blue-300/50 hover:border-blue-500/70 bg-gray-50",
+                      )}
+                    >
+                      <Upload
+                        className={cn(
+                          "w-12 h-12 mx-auto mb-3",
+                          isDark ? "text-gray-400" : "text-gray-500",
+                        )}
+                      />
                       <p
                         className={cn(
-                          "text-xs mb-2",
-                          isDark ? "text-gray-400" : "text-gray-600",
+                          "text-sm mb-1 font-medium",
+                          isDark ? "text-gray-300" : "text-gray-700",
                         )}
                       >
-                        Preview:
+                        Click to upload project photo
                       </p>
-                      <img
-                        src={imageVal}
-                        alt="Project preview"
-                        className="max-h-48 object-cover rounded-xl mx-auto"
+                      <p
+                        className={cn(
+                          "text-xs",
+                          isDark ? "text-gray-500" : "text-gray-500",
+                        )}
+                      >
+                        PNG, JPG, WEBP (max 5MB)
+                      </p>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageFileChange}
+                        className="hidden"
                       />
-                    </div>
+                    </label>
                   )}
                 </div>
               ) : (
                 <div>
-                  <label
+                  <input
+                    type="url"
+                    value={imageVal}
+                    onChange={(e) => {
+                      field.handleChange(e.target.value);
+                      form.setFieldValue("image", e.target.value);
+                    }}
                     className={cn(
-                      "block w-full cursor-pointer border-2 border-dashed rounded-xl p-8 text-center transition-all bg-transparent",
+                      "w-full px-4 py-3 rounded-xl border bg-transparent focus:outline-none focus:ring-2 focus:ring-red-500 transition-all",
                       isDark
-                        ? "border-red-500/20 hover:border-red-500/50 bg-slate-900/50"
-                        : "border-blue-300/50 hover:border-blue-500/70 bg-gray-50",
+                        ? "bg-slate-900/50 border-red-500/20 text-white focus:ring-red-500"
+                        : "bg-white border-blue-300/50 text-gray-900 focus:ring-blue-500",
+                      hasError ? "border-red-500" : "",
                     )}
-                  >
-                    <Upload
-                      className={cn(
-                        "w-12 h-12 mx-auto mb-3",
-                        isDark ? "text-gray-400" : "text-gray-500",
-                      )}
-                    />
-                    <p
-                      className={cn(
-                        "text-sm mb-1",
-                        isDark ? "text-gray-300" : "text-gray-700",
-                      )}
-                    >
-                      Click to upload project photo
-                    </p>
-                    <p
-                      className={cn(
-                        "text-xs",
-                        isDark ? "text-gray-500" : "text-gray-500",
-                      )}
-                    >
-                      PNG, JPG, WEBP (max 5MB)
-                    </p>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageFileChange}
-                      className="hidden"
-                    />
-                  </label>
+                    placeholder="https://example.com/project-image.jpg"
+                  />
                   {imageVal && (
                     <div
                       className={cn(

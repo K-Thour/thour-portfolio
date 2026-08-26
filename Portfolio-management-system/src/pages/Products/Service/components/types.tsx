@@ -114,6 +114,7 @@ export interface ServiceCardProps {
 
 export interface ServiceListProps {
   services: Service[];
+  isLoading?: boolean;
   onEdit: (service: Service) => void;
   onDelete: (id: number) => void;
   onToggleActive: (id: number) => void;
@@ -121,6 +122,7 @@ export interface ServiceListProps {
 
 export interface ServiceModalProps {
   isOpen: boolean;
+  isLoading?: boolean;
   onClose: () => void;
   editingService: Service | null;
   onSubmit: (data: Omit<Service, "id" | "active">) => void;

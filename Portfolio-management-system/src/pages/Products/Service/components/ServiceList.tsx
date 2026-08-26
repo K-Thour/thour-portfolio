@@ -2,17 +2,23 @@ import { ServiceCard } from "./ServiceCard";
 import type { ServiceListProps } from "./types";
 import { useAppSelector } from "../../../../hooks/useRedux";
 import utils from "../../../../utils";
+import PageLoadingSkeleton from "../../../../components/common/loading/PageLoadingSkeleton";
 
 const { cn } = utils.tailwindUtils;
 
 export function ServiceList({
   services,
+  isLoading = false,
   onEdit,
   onDelete,
   onToggleActive,
 }: ServiceListProps) {
   const theme = useAppSelector((state) => state.theme.theme);
   const isDark = theme === "dark";
+
+  if (isLoading) {
+    return <PageLoadingSkeleton count={6} type="grid" />;
+  }
 
   if (services.length === 0) {
     return (

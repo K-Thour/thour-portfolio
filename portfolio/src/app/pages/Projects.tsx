@@ -30,7 +30,7 @@ export function Projects() {
         const formattedProjects = data.map((p: any) => ({
           id: p._id,
           title: p.title || '',
-          subtitle: p.device || 'Project',
+          subtitle: p.subtitle || p.device || 'Project',
           description: p.description || '',
           image: p.image?.url || 'https://via.placeholder.com/1080',
           tags:

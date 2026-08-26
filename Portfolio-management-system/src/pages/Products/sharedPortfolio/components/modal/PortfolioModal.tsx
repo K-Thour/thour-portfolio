@@ -12,6 +12,7 @@ export function PortfolioModal({
   editingPortfolio,
   formData,
   allProjects,
+  isLoading = false,
   onClose,
   onSubmit,
   onNameChange,
@@ -21,7 +22,7 @@ export function PortfolioModal({
   return (
     <Modal
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={isLoading ? () => {} : onClose}
       title={editingPortfolio ? "Edit Portfolio" : "Create Portfolio"}
       className={cn(
         "bg-black/60 backdrop-blur-sm",
@@ -43,6 +44,7 @@ export function PortfolioModal({
         <ModalActions
           isDark={isDark}
           isEditing={!!editingPortfolio}
+          isLoading={isLoading}
           onCancel={onClose}
         />
       </form>

@@ -16,6 +16,7 @@ function ContactPage() {
 
   const {
     contacts,
+    loading,
     activeContact,
     isModalOpen,
     editingContact,
@@ -46,6 +47,7 @@ function ContactPage() {
       <ContactsGrid
         contacts={contacts}
         isDark={isDark}
+        isLoading={loading}
         onView={handleView}
         onEdit={handleEdit}
         onDelete={handleDeleteClick}
@@ -54,7 +56,7 @@ function ContactPage() {
 
       <Modal
         isOpen={isModalOpen}
-        onClose={handleCloseModal}
+        onClose={loading ? () => {} : handleCloseModal}
         title={editingContact ? "Edit Contact Information" : "Add New Contact"}
         size="lg"
       >
@@ -62,6 +64,7 @@ function ContactPage() {
           onSubmit={handleSubmit}
           onCancel={handleCloseModal}
           initialData={editingContact}
+          isLoading={loading}
         />
       </Modal>
 
@@ -73,6 +76,8 @@ function ContactPage() {
 
       <ConfirmModal
         isOpen={isDeleteDialogOpen}
+        isLoading={loading}
+        loadingText="Deleting..."
         onConfirm={handleDeleteConfirm}
         onCancel={handleDeleteCancel}
         title={isDark ? "Delete Contact?" : "Remove Contact Information?"}

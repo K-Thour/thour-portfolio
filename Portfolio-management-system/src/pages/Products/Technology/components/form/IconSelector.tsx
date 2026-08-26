@@ -54,7 +54,8 @@ export function IconSelector({
     setUploading(true);
     try {
       const res = await uploadImage(croppedBase64);
-      onFormDataChange({ ...formData, iconImage: res.url });
+      const url = res?.url || croppedBase64;
+      onFormDataChange({ ...formData, iconImage: url });
     } catch (err) {
       console.error("Failed to upload logo image:", err);
     } finally {

@@ -6,6 +6,7 @@ import { ExperienceModals } from "./components/ExperienceModals";
 import { ExperienceHeader } from "./components/ExperienceHeader";
 import { ExperienceTimeline } from "./components/ExperienceTimeline";
 import { EmptyExperienceState } from "./components/EmptyExperienceState";
+import PageLoadingSkeleton from "../../../components/common/loading/PageLoadingSkeleton";
 import type { ExperienceFormData } from "../../../validations/experienceSchema";
 import utils from "../../../utils/index";
 import {
@@ -99,32 +100,33 @@ export const ExperiencePage: React.FC = () => {
         await updateExperience(editingId, payload);
         toast({
           title: "Experience Updated",
-          description: `Successfully updated ${data.jobTitle} at ${data.company}`,
+          description: `Successfully updated experience at ${data.company}`,
           variant: "success",
           duration: 3000,
         });
       } else {
         await createExperience(payload);
         toast({
-          title: "Experience Added",
-          description: `Successfully added ${data.jobTitle} at ${data.company}`,
+          title: "Experience Created",
+          description: `Successfully added experience at ${data.company}`,
           variant: "success",
           duration: 3000,
         });
       }
       await loadExperiences();
+      setIsWizardOpen(false);
+      setEditingId(null);
     } catch (err) {
       console.error("Failed to save experience:", err);
       toast({
-        title: "Error",
-        description: "Failed to save experience records.",
+        title: "Save Failed",
+        description: "Error saving experience. Check console.",
         variant: "destructive",
         duration: 3000,
       });
     } finally {
       setLoading(false);
     }
-    handleCloseWizard();
   };
 
   const handleDeleteClick = (id: string) => {
@@ -137,18 +139,21 @@ export const ExperiencePage: React.FC = () => {
     setLoading(true);
     try {
       await deleteExperience(deletingId);
-      const expToDelete = experiences.find((e) => e.id === deletingId);
-      setExperiences((prev) => prev.filter((exp) => exp.id !== deletingId));
       toast({
         title: "Experience Deleted",
-        description: expToDelete
-          ? `Deleted ${expToDelete.jobTitle} at ${expToDelete.company}`
-          : "Experience deleted",
+        description: "Successfully removed experience record.",
         variant: "warning",
         duration: 3000,
       });
+      await loadExperiences();
     } catch (err) {
       console.error("Failed to delete experience:", err);
+      toast({
+        title: "Delete Failed",
+        description: "Error deleting experience. Check console.",
+        variant: "destructive",
+        duration: 3000,
+      });
     } finally {
       setLoading(false);
     }
@@ -170,10 +175,8 @@ export const ExperiencePage: React.FC = () => {
       <ExperienceHeader isDark={isDark} onAddExperience={handleAddExperience} />
 
       <div className={cn("flex-1")}>
-        {loading ? (
-          <div className="text-center p-12 text-slate-500">
-            Loading experiences...
-          </div>
+        {loading && experiences.length === 0 ? (
+          <PageLoadingSkeleton count={3} type="card" />
         ) : experiences.length === 0 ? (
           <EmptyExperienceState
             isDark={isDark}
@@ -193,6 +196,7 @@ export const ExperiencePage: React.FC = () => {
         isWizardOpen={isWizardOpen}
         deleteModalOpen={deleteModalOpen}
         isDark={isDark}
+        isLoading={loading}
         editingId={editingId}
         editingExperience={editingExperience || null}
         onCloseWizard={handleCloseWizard}

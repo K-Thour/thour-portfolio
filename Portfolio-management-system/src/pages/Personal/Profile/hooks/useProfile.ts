@@ -108,6 +108,7 @@ export function useProfile() {
         : [],
     };
 
+    setLoading(true);
     try {
       await updateCurrentUser(payload);
       window.dispatchEvent(
@@ -129,6 +130,8 @@ export function useProfile() {
         variant: "destructive",
         duration: 3000,
       });
+    } finally {
+      setLoading(false);
     }
   };
 
