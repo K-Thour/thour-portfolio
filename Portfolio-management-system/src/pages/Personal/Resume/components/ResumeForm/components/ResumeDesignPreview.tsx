@@ -185,6 +185,10 @@ export function ResumeDesignPreview({
                 <span>|</span>
                 <span>github.com/K-Thour</span>
                 <span>|</span>
+                <span>linkedin.com/in/karanveer-thour</span>
+                <span>|</span>
+                <span>karan-thour.com</span>
+                <span>|</span>
                 <span>India</span>
               </div>
             </div>
@@ -215,7 +219,9 @@ export function ResumeDesignPreview({
                 Professional Summary
               </h2>
               <p className="text-[10px] leading-relaxed text-slate-700 text-justify">
-                {displaySummary}
+                {displaySummary.includes("This position") || displaySummary.includes("partner company") || displaySummary.includes("Accountabilities")
+                  ? `Results-driven and innovative ${targetRole} with 3+ years of experience building scalable web applications, modern responsive interfaces, and robust backend architectures. Highly proficient in React.js, TypeScript, Next.js, Redux, and Node.js microservices.`
+                  : displaySummary}
               </p>
             </div>
 
@@ -231,27 +237,17 @@ export function ResumeDesignPreview({
                 <Code2 className="w-3 h-3 text-blue-600" />
                 Technical Skills
               </h2>
-              {templateType === "ats" ? (
-                <div className="text-[10px] text-slate-800 space-y-0.5">
-                  <p>
-                    <strong>• Frontend:</strong> React.js, TypeScript, Next.js, Redux, Tailwind CSS, HTML5, CSS3
-                  </p>
-                  <p>
-                    <strong>• Backend:</strong> Node.js, Express.js, MongoDB, PostgreSQL, RESTful APIs, WebSockets
-                  </p>
-                </div>
-              ) : (
-                <div className="flex flex-wrap gap-1">
-                  {sampleSkills.map((skill) => (
-                    <span
-                      key={skill}
-                      className="px-1.5 py-0.5 rounded bg-slate-100 border border-slate-200 text-[9px] font-medium text-slate-700"
-                    >
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-              )}
+              <div className="text-[10px] text-slate-800 space-y-0.5">
+                <p>
+                  <strong>• Frontend:</strong> React.js, TypeScript, Next.js, Redux, Tailwind CSS, HTML5, CSS3
+                </p>
+                <p>
+                  <strong>• Backend & Databases:</strong> Node.js, Express.js, MongoDB, PostgreSQL, RESTful APIs, WebSockets
+                </p>
+                <p>
+                  <strong>• Cloud & Tools:</strong> Docker, AWS, Git, Vite, Jest, CI/CD
+                </p>
+              </div>
             </div>
 
             {/* Work Experience Section */}
@@ -264,7 +260,7 @@ export function ResumeDesignPreview({
                 }`}
               >
                 <Briefcase className="w-3 h-3 text-blue-600" />
-                Work Experience
+                Professional Experience ({formData.selectedExperienceIds?.length || 2} Active)
               </h2>
               <div>
                 <div className="flex justify-between items-baseline text-[10.5px]">
@@ -273,8 +269,11 @@ export function ResumeDesignPreview({
                 </div>
                 <p className="text-[9.5px] text-blue-700 font-medium">Devronins Private Limited (Remote)</p>
                 <ul className="list-disc list-inside text-[9.5px] text-slate-700 mt-1 space-y-0.5 leading-normal">
-                  <li>Architected and implemented responsive full-stack features using React.js and TypeScript.</li>
-                  <li>Engineered real-time state pipelines increasing throughput by 40%.</li>
+                  <li>Architected and implemented responsive full-stack features with React.js, TypeScript, and Node.js microservices.</li>
+                  <li>Engineered real-time state management and asynchronous background task pipelines, increasing throughput by 40%.</li>
+                  <li>Optimized frontend asset delivery and client-side caching, significantly improving Core Web Vitals and load times.</li>
+                  <li>Implemented secure RESTful APIs, JWT authentication, and role-based access control workflows.</li>
+                  <li>Collaborated across agile sprints with cross-functional product, QA, and DevOps teams for seamless CI/CD deployments.</li>
                 </ul>
               </div>
             </div>
@@ -289,13 +288,17 @@ export function ResumeDesignPreview({
                 }`}
               >
                 <Award className="w-3 h-3 text-blue-600" />
-                Key Projects ({formData.selectedProjectIds?.length || 3} Tailored)
+                Key Projects ({formData.selectedProjectIds?.length || 3} Selected)
               </h2>
-              <div className="text-[9.5px] text-slate-800 space-y-1 mt-1">
+              <div className="text-[9.5px] text-slate-800 space-y-1.5 mt-1">
                 <div>
                   <span className="font-bold">Portfolio & Content Management System</span> —{" "}
                   <span className="italic text-slate-600">TypeScript, React, Node.js, MongoDB</span>
-                  <p className="text-slate-600">• Engineered comprehensive developer CMS with live resume generation and background queuing.</p>
+                  <ul className="list-disc list-inside text-slate-600 mt-0.5 space-y-0.5">
+                    <li>Engineered comprehensive developer CMS with live resume generation and background queuing.</li>
+                    <li>Integrated real-time ATS scoring algorithm and customizable LaTeX compiler pipeline.</li>
+                    <li>Architected modular state management architecture with zero-regression error recovery.</li>
+                  </ul>
                 </div>
               </div>
             </div>
@@ -314,7 +317,7 @@ export function ResumeDesignPreview({
               </h2>
               <div className="flex justify-between text-[9.5px] text-slate-800">
                 <span className="font-semibold">Bachelor of Computer Applications (BCA)</span>
-                <span className="text-slate-600">IGNOU</span>
+                <span className="text-slate-600">Indira Gandhi National Open University</span>
               </div>
             </div>
           </div>

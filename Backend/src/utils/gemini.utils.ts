@@ -9,6 +9,7 @@ export interface GenerateResumeParams {
   jobDescription: string;
   targetRole?: string;
   selectedProjectIds?: string[];
+  selectedExperienceIds?: string[];
   developerProfile: {
     name: string;
     email: string;
@@ -26,6 +27,7 @@ export interface GenerateResumeParams {
 
 export interface AIResumeResponse {
   selectedProjectIds: string[];
+  selectedExperienceIds?: string[];
   selectedServiceIds: string[];
   selectedTechnologyIds: string[];
   tailoredSummary: string;
@@ -256,9 +258,30 @@ export const generateResumeAI = async (params: GenerateResumeParams): Promise<AI
 
   const rankedProjects = getRankedProjects();
 
+  // Sort experience: stillWorking first, then dateOfJoining desc
+  const sortedExperiences = [...safeExperience].sort((a, b) => {
+    if (a.stillWorking && !b.stillWorking) return -1;
+    if (!a.stillWorking && b.stillWorking) return 1;
+    const dateA = new Date(a.dateOfJoining).getTime() || 0;
+    const dateB = new Date(b.dateOfJoining).getTime() || 0;
+    return dateB - dateA;
+  });
+
+  const getRankedExperiences = () => {
+    if (params.selectedExperienceIds && params.selectedExperienceIds.length > 0) {
+      const explicit = safeExperience.filter((e) => params.selectedExperienceIds!.includes(e.id));
+      const remaining = sortedExperiences.filter((e) => !params.selectedExperienceIds!.includes(e.id));
+      return [...explicit, ...remaining];
+    }
+    return sortedExperiences;
+  };
+
+  const rankedExperiences = getRankedExperiences();
+
   // High quality deterministic fallback matching ATS standards
   const buildFallbackResponse = (): AIResumeResponse => {
     const selectedProjectIds = rankedProjects.slice(0, 3).map((p) => p.id).filter(Boolean);
+    const selectedExperienceIds = rankedExperiences.slice(0, 2).map((e) => e.id).filter(Boolean);
     const selectedServiceIds = safeServices.slice(0, 2).map((s) => s.id).filter(Boolean);
     const selectedTechnologyIds = safeTechnologies.slice(0, 14).map((t) => t.id).filter(Boolean);
     const techNames = safeTechnologies.slice(0, 14).map((t) => t.name).join(', ') || 'TypeScript, React.js, Node.js, Next.js, Redux, Tailwind CSS, MongoDB, Docker';
@@ -267,18 +290,23 @@ export const generateResumeAI = async (params: GenerateResumeParams): Promise<AI
     rankedProjects.slice(0, 4).forEach((p) => {
       const bullets: string[] = [];
       if (p.description) bullets.push(p.description);
-      if (p.features?.length) bullets.push(...p.features.slice(0, 2));
+      if (p.features?.length) bullets.push(...p.features.slice(0, 3));
       else if (p.fullDescription && p.fullDescription !== p.description) bullets.push(p.fullDescription.slice(0, 120));
       if (p.outcome) bullets.push(`Impact: ${p.outcome}`);
-      projectHighlights[p.id] = bullets.slice(0, 2);
+      while (bullets.length < 3) {
+        bullets.push(`Engineered modular, high-performance architecture with automated testing and continuous integration.`);
+      }
+      projectHighlights[p.id] = bullets.slice(0, 5);
     });
 
     const experienceHighlights: Record<string, string[]> = {};
-    safeExperience.forEach((e) => {
+    rankedExperiences.forEach((e) => {
       experienceHighlights[e.id] = [
         'Architected and implemented responsive full-stack features using React.js, TypeScript, and Node.js microservices.',
         'Engineered real-time state management and asynchronous background task pipelines, increasing throughput by 40%.',
         'Optimized frontend asset delivery and client-side caching, significantly improving Core Web Vitals and load times.',
+        'Implemented robust JWT authentication, role-based access control (RBAC), and end-to-end input validation.',
+        'Collaborated closely with cross-functional agile teams, participating in sprint reviews, CI/CD automation, and unit testing.',
       ];
     });
 
@@ -306,11 +334,12 @@ export const generateResumeAI = async (params: GenerateResumeParams): Promise<AI
     \\textbf{\\Huge \\scshape ${devName}} \\\\ \\vspace{1pt}
     \\small ${devPhone} $|$ \\href{mailto:${devEmail}}{\\underline{${devEmail}}} $|$ 
     \\href{https://karan-thour.com}{\\underline{karan-thour.com}} $|$
-    \\href{https://github.com/K-Thour}{\\underline{github.com/K-Thour}}
+    \\href{https://github.com/K-Thour}{\\underline{github.com/K-Thour}} $|$
+    India
 \\end{center}
 
 \\section{Professional Summary}
-Results-driven and innovative ${targetRole} with extensive experience in architecting scalable web applications, responsive user interfaces, and robust backend workflows. Highly proficient in modern JavaScript/TypeScript ecosystems, RESTful architecture, and cloud deployment pipelines.
+Results-driven and innovative ${targetRole} with ${devExpYears}+ years of experience building scalable web applications, modern responsive interfaces, and robust backend architectures. Adept at full-stack engineering with modern JavaScript/TypeScript ecosystems, RESTful architecture, and cloud deployment pipelines.
 
 \\section{Technical Skills}
 \\textbf{Core Technologies:} ${techNames}
@@ -322,6 +351,8 @@ Results-driven and innovative ${targetRole} with extensive experience in archite
     \\item Architected and implemented responsive full-stack features using React.js, TypeScript, and Node.js microservices.
     \\item Engineered real-time state management and asynchronous background task pipelines, increasing throughput by 40\\%.
     \\item Optimized frontend asset delivery and client-side caching, significantly improving Core Web Vitals and load times.
+    \\item Implemented robust JWT authentication, role-based access control, and end-to-end data validation.
+    \\item Collaborated in Agile ceremonies, continuous integration pipelines, and automated test coverage.
 \\end{itemize}
 
 \\section{Key Projects}
@@ -335,9 +366,10 @@ ${p.description || 'Engineered scalable system architecture with responsive user
 
     return {
       selectedProjectIds,
+      selectedExperienceIds,
       selectedServiceIds,
       selectedTechnologyIds,
-      tailoredSummary: `Results-driven and innovative ${targetRole} with proven expertise in developing high-performance web applications, robust backend workflows, and scalable architectures tailored for this position.`,
+      tailoredSummary: `Results-driven and innovative ${targetRole} with ${devExpYears}+ years of experience in developing high-performance web applications, robust backend workflows, and scalable architectures tailored for this position.`,
       latexCode: fallbackLatex,
       projectHighlights,
       experienceHighlights,
@@ -360,13 +392,16 @@ Target Role:
 ${targetRole}
 """
 
-Target Job Description:
+Target Job Description (for keyword alignment only - DO NOT copy this job posting text into the resume summary):
 """
 ${params.jobDescription}
 """
 
 User Explicitly Selected Project IDs (if any, give these highest priority):
 ${JSON.stringify(params.selectedProjectIds || [])}
+
+User Explicitly Selected Experience IDs (if any, give these highest priority):
+${JSON.stringify(params.selectedExperienceIds || [])}
 
 Developer Profile:
 - Name: ${devName}
@@ -375,10 +410,10 @@ Developer Profile:
 - Total Years of Experience: ${devExpYears}
 
 Available Work Experience Records from Database:
-${JSON.stringify(safeExperience)}
+${JSON.stringify(rankedExperiences)}
 
-Available Education Records from Database:
-${JSON.stringify(safeEducation)}
+Available Education Records from Database (omit school level education 10th/12th):
+${JSON.stringify(safeEducation.filter((e) => !['10th', '12th', 'matriculation', 'seniorsecondary'].includes(e.level.toLowerCase())))}
 
 Available Projects from Database (Ranked by relevance):
 ${JSON.stringify(rankedProjects)}
@@ -387,26 +422,26 @@ Available Technologies from Database:
 ${JSON.stringify(safeTechnologies)}
 
 Instructions:
-1. Select the top 3-4 most relevant project IDs that align best with the target role "${targetRole}" and the job description.
-2. Select the top 12-14 most relevant technology IDs matching the job stack.
-3. Write an impactful, ATS-optimized 3-4 sentence professional summary tailored to "${targetRole}".
-4. For each selected project, write 2 concise, action-verb engineering bullet points (focus on architecture, key features, performance, security, or outcomes).
-5. For each experience record, write 3 quantified, professional bullet points tailored to the job keywords.
-6. Generate a clean, single-page compilation-ready LaTeX resume.
+1. Select the top 3-5 most relevant project IDs that align best with the target role "${targetRole}" and the job description.
+2. Select the top 2 latest/most relevant experience IDs.
+3. Select the top 12-14 most relevant technology IDs matching the job stack.
+4. Write an impactful, ATS-optimized 3-4 sentence candidate summary/introduction about ${devName} for "${targetRole}" (DO NOT output the job posting requirements/benefits).
+5. For each selected project, write 3-5 concise, action-verb engineering bullet points (focus on architecture, key features, performance, security, or outcomes).
+6. For each experience record, write exactly 5 quantified, professional bullet points tailored to the job keywords.
+7. Generate a clean, single-page compilation-ready LaTeX resume.
 
 Return ONLY a valid JSON object matching this schema:
 {
-  "selectedProjectIds": ["array of at least 3 project ID strings"],
+  "selectedProjectIds": ["array of project ID strings"],
+  "selectedExperienceIds": ["array of 2 experience ID strings"],
   "selectedServiceIds": ["array of service ID strings"],
   "selectedTechnologyIds": ["array of technology ID strings"],
-  "tailoredSummary": "string",
+  "tailoredSummary": "string describing candidate",
   "projectHighlights": {
-    "project_id_1": ["bullet point 1", "bullet point 2"],
-    "project_id_2": ["bullet point 1", "bullet point 2"],
-    "project_id_3": ["bullet point 1", "bullet point 2"]
+    "project_id_1": ["bullet 1", "bullet 2", "bullet 3", "bullet 4", "bullet 5"]
   },
   "experienceHighlights": {
-    "exp_id_1": ["bullet point 1", "bullet point 2", "bullet point 3"]
+    "exp_id_1": ["bullet 1", "bullet 2", "bullet 3", "bullet 4", "bullet 5"]
   },
   "latexCode": "string"
 }
@@ -428,6 +463,7 @@ Return ONLY a valid JSON object matching this schema:
         const parsed = JSON.parse(responseText);
         return {
           selectedProjectIds: Array.isArray(parsed.selectedProjectIds) && parsed.selectedProjectIds.length > 0 ? parsed.selectedProjectIds : rankedProjects.slice(0, 3).map((p) => p.id),
+          selectedExperienceIds: Array.isArray(parsed.selectedExperienceIds) && parsed.selectedExperienceIds.length > 0 ? parsed.selectedExperienceIds : rankedExperiences.slice(0, 2).map((e) => e.id),
           selectedServiceIds: Array.isArray(parsed.selectedServiceIds) ? parsed.selectedServiceIds : [],
           selectedTechnologyIds: Array.isArray(parsed.selectedTechnologyIds) ? parsed.selectedTechnologyIds : [],
           tailoredSummary: parsed.tailoredSummary || '',

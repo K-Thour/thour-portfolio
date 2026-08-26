@@ -239,6 +239,7 @@ export const generateResumeAI = async (data: {
   jobLink?: string;
   targetRole?: string;
   selectedProjectIds?: string[];
+  selectedExperienceIds?: string[];
   designType?: string;
   latexCode?: string;
   designFileUrl?: string;

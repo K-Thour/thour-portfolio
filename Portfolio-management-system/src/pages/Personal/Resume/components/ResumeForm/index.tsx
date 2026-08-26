@@ -7,6 +7,7 @@ import { Eye, Edit3 } from "lucide-react";
 import { useResumeForm } from "../../hooks/useResumeForm";
 import { BasicInfoFields } from "./components/BasicInfoFields";
 import { ProjectRoleSelector } from "./components/ProjectRoleSelector";
+import { ExperienceSelector } from "./components/ExperienceSelector";
 import { TemplateSelector } from "./components/TemplateSelector";
 import { LatexUploadEditor } from "./components/LatexUploadEditor";
 import { ResumeDesignPreview } from "./components/ResumeDesignPreview";
@@ -105,6 +106,23 @@ export function ResumeForm({
               isDark={isDark}
               onRoleChange={(role) => updateField("targetRole", role)}
               onProjectsChange={(projectIds) => updateField("selectedProjectIds", projectIds)}
+            />
+          </div>
+
+          {/* Section 3: Work Experience Selector */}
+          <div
+            className={`p-4 rounded-xl border ${
+              isDark
+                ? "bg-slate-900/40 border-slate-800"
+                : "bg-slate-50/60 border-slate-200"
+            }`}
+          >
+            <ExperienceSelector
+              selectedExperienceIds={formData.selectedExperienceIds || []}
+              isDark={isDark}
+              onExperiencesChange={(experienceIds) =>
+                updateField("selectedExperienceIds", experienceIds)
+              }
             />
           </div>
 

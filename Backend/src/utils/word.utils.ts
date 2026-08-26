@@ -44,6 +44,11 @@ export const generateResumeWordDocument = (data: ResumePdfData, res: Response): 
   );
   const toolsSkills = allSkills.filter((s) => !frontendSkills.includes(s) && !backendSkills.includes(s));
 
+  const devGithub = data.developerGithub || 'github.com/K-Thour';
+  const devLinkedin = data.developerLinkedin || 'linkedin.com/in/karanveer-thour';
+  const devWebsite = data.developerWebsite || 'karan-thour.com';
+  const devAddress = data.developerAddress || 'India';
+
   const expHtml = (data.experience || [])
     .map(
       (exp) => `
@@ -58,11 +63,16 @@ export const generateResumeWordDocument = (data: ResumePdfData, res: Response): 
           </tr>
         </table>
         <ul style="margin: 4px 0 0 18px; padding: 0; color: #334155; font-size: 10pt;">
-          ${(exp.bullets || [
-            'Architected and implemented responsive full-stack features with React.js, TypeScript, and Node.js microservices.',
-            'Engineered real-time state management and asynchronous background task pipelines, increasing throughput by 40%.',
-            'Optimized frontend asset delivery and client caching, significantly improving Core Web Vitals and load times.',
-          ])
+          ${(exp.bullets && exp.bullets.length > 0
+            ? exp.bullets
+            : [
+                'Architected and implemented responsive full-stack features with React.js, TypeScript, and Node.js microservices.',
+                'Engineered real-time state management and asynchronous background task pipelines, increasing throughput by 40%.',
+                'Optimized frontend asset delivery and client-side caching, significantly improving Core Web Vitals and load times.',
+                'Implemented secure RESTful APIs, JWT authentication, and role-based access control workflows.',
+                'Collaborated across agile sprints with cross-functional product, QA, and DevOps teams to ensure seamless CI/CD deployments.',
+              ]
+          )
             .map((b) => `<li style="margin-bottom: 3px; text-align: justify;">${b}</li>`)
             .join('')}
         </ul>
@@ -70,9 +80,23 @@ export const generateResumeWordDocument = (data: ResumePdfData, res: Response): 
     )
     .join('');
 
-  const projHtml = (data.projects || []).slice(0, 3)
+  const projHtml = (data.projects || [])
     .map(
-      (p) => `
+      (p) => {
+        const bullets: string[] = [];
+        if (p.description) bullets.push(p.description);
+        if (p.features && p.features.length > 0) {
+          p.features.forEach((f) => {
+            if (f && f !== p.description && !bullets.includes(f)) {
+              bullets.push(f);
+            }
+          });
+        }
+        if (p.outcome && p.outcome.trim().length > 0) {
+          bullets.push(`Impact: ${p.outcome.trim()}`);
+        }
+
+        return `
       <div style="margin-bottom: 10px;">
         <table style="width: 100%; border: none;">
           <tr>
@@ -86,13 +110,12 @@ export const generateResumeWordDocument = (data: ResumePdfData, res: Response): 
             : ''
         }
         <ul style="margin: 3px 0 0 18px; padding: 0; color: #334155; font-size: 9.5pt;">
-          ${p.description ? `<li style="margin-bottom: 3px; text-align: justify;">${p.description}</li>` : ''}
-          ${(p.features || [])
-            .slice(0, 2)
+          ${bullets.slice(0, 5)
             .map((f) => `<li style="margin-bottom: 3px; text-align: justify;">${f}</li>`)
             .join('')}
         </ul>
-      </div>`,
+      </div>`;
+      },
     )
     .join('');
 
@@ -105,6 +128,15 @@ export const generateResumeWordDocument = (data: ResumePdfData, res: Response): 
       </div>`,
     )
     .join('');
+
+  const contactLine = [
+    devPhone,
+    devEmail,
+    devGithub.replace(/^https?:\/\//, ''),
+    devLinkedin.replace(/^https?:\/\//, ''),
+    devWebsite.replace(/^https?:\/\//, ''),
+    devAddress,
+  ].filter(Boolean).join(' &nbsp;|&nbsp; ');
 
   const docContent = `
 <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
@@ -153,7 +185,7 @@ export const generateResumeWordDocument = (data: ResumePdfData, res: Response): 
 <body>
   <h1>${devName}</h1>
   <div class="title">${resumeTitle.toUpperCase()}</div>
-  <div class="contact">${devPhone} &nbsp;|&nbsp; ${devEmail} &nbsp;|&nbsp; github.com/K-Thour &nbsp;|&nbsp; karan-thour.com &nbsp;|&nbsp; India</div>
+  <div class="contact">${contactLine}</div>
 
   <div class="section-title">Professional Summary</div>
   <p style="text-align: justify; margin: 0 0 8px 0;">${summary}</p>

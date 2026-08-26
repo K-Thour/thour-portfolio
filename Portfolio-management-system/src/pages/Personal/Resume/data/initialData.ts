@@ -33,6 +33,7 @@ export const initialFormData: ResumeFormData = {
   jobLink: "",
   targetRole: "Full Stack Software Engineer",
   selectedProjectIds: [],
+  selectedExperienceIds: [],
   designType: "ats",
   designFile: undefined,
   designUrl: "",

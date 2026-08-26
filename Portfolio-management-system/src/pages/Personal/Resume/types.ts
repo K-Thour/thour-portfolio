@@ -8,6 +8,7 @@ export interface Resume {
   jobLink: string;
   targetRole?: string;
   selectedProjectIds?: string[];
+  selectedExperienceIds?: string[];
   designType: ResumeDesignType;
   designFile?: string;
   designUrl?: string;
@@ -27,6 +28,7 @@ export interface ResumeFormData {
   jobLink: string;
   targetRole?: string;
   selectedProjectIds?: string[];
+  selectedExperienceIds?: string[];
   designType: ResumeDesignType;
   designFile?: File;
   designUrl?: string;

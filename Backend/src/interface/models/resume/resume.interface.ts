@@ -12,6 +12,7 @@ export interface IResume {
   projectCount: number;
   serviceCount: number;
   technologyCount: number;
+  experiencesUsed?: Types.ObjectId[];
   projectsUsed: Types.ObjectId[];
   servicesUsed: Types.ObjectId[];
   technologiesUsed: Types.ObjectId[];
@@ -39,6 +40,9 @@ export interface createResumeInput {
   projectCount: number;
   serviceCount: number;
   technologyCount: number;
+  selectedExperienceIds?: string[];
+  selectedProjectIds?: string[];
+  experiencesUsed?: Types.ObjectId[];
   projectsUsed: Types.ObjectId[];
   servicesUsed: Types.ObjectId[];
   technologiesUsed: Types.ObjectId[];

@@ -91,6 +91,7 @@ const generateService = (
   createdBy: Types.ObjectId,
   targetRole?: string,
   selectedProjectIds?: string[],
+  selectedExperienceIds?: string[],
 ) => {
   return asyncCommonWrapper(async () => {
     // 1. Fetch user/developer profile details
@@ -113,6 +114,7 @@ const generateService = (
       jobDescription: description,
       targetRole: targetRole || name,
       selectedProjectIds,
+      selectedExperienceIds,
       developerProfile: {
         name: user.name,
         email: user.email,
@@ -132,6 +134,7 @@ const generateService = (
     const projectsUsed = aiResult.selectedProjectIds.map((id) => new Types.ObjectId(id));
     const servicesUsed = aiResult.selectedServiceIds.map((id) => new Types.ObjectId(id));
     const technologiesUsed = aiResult.selectedTechnologyIds.map((id) => new Types.ObjectId(id));
+    const experiencesUsed = (aiResult.selectedExperienceIds || []).map((id) => new Types.ObjectId(id));
 
     // Create the resume document in DB with complete field metadata
     const newResumeId = new Types.ObjectId();
@@ -148,6 +151,7 @@ const generateService = (
       projectCount: projectsUsed.length,
       serviceCount: servicesUsed.length,
       technologyCount: technologiesUsed.length,
+      experiencesUsed,
       projectsUsed,
       servicesUsed,
       technologiesUsed,

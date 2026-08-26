@@ -55,7 +55,17 @@ const getOne = async (req: Request, res: Response) => {
 
 const generate = async (req: Request, res: Response) => {
   const userId = new Types.ObjectId(req.userId);
-  const { name, description, jobLink, designType, latexCode, designFileUrl, targetRole, selectedProjectIds } = req.body;
+  const {
+    name,
+    description,
+    jobLink,
+    designType,
+    latexCode,
+    designFileUrl,
+    targetRole,
+    selectedProjectIds,
+    selectedExperienceIds,
+  } = req.body;
   const result = await services.resumeServices.generateService(
     name,
     description,
@@ -66,6 +76,7 @@ const generate = async (req: Request, res: Response) => {
     userId,
     targetRole,
     selectedProjectIds,
+    selectedExperienceIds,
   );
   res.status(result.statusCode).json(result);
 };
@@ -124,8 +135,23 @@ const prepareResumeData = async (resumeIdOrFilename: string): Promise<ResumePdfD
     return `${ed.level ? ed.level.toUpperCase() : 'Degree'} — ${degreeName}`;
   };
 
+  // Higher Education Filter: Filter out 10th and 12th school education when higher degrees exist
+  const higherEducation = education.filter((ed: any) => {
+    const lvl = (ed.level || '').toLowerCase();
+    const deg = (ed.degree || '').toLowerCase();
+    return (
+      !['10th', '12th', 'matriculation', 'seniorsecondary'].includes(lvl) &&
+      !deg.includes('matriculation') &&
+      !deg.includes('senior secondary') &&
+      !deg.includes('10th') &&
+      !deg.includes('12th')
+    );
+  });
+
+  const filteredEducation = higherEducation.length > 0 ? higherEducation : education;
+
   // Sort education in reverse chronological order (Graduation / BCA first)
-  const sortedEducation = [...education].sort((a: any, b: any) => {
+  const sortedEducation = [...filteredEducation].sort((a: any, b: any) => {
     const isGradA = a.level?.toLowerCase() === 'graduation' || (a.degree && a.degree.toLowerCase().includes('bachelor'));
     const isGradB = b.level?.toLowerCase() === 'graduation' || (b.degree && b.degree.toLowerCase().includes('bachelor'));
     if (isGradA && !isGradB) return -1;
@@ -151,14 +177,14 @@ const prepareResumeData = async (resumeIdOrFilename: string): Promise<ResumePdfD
   });
 
   scoredTechnologies.sort((a, b) => b.score - a.score);
-  // Pick only top 10-14 relevant technologies matching the job (excluding irrelevant tool names)
+  // Pick only top 10-14 relevant technologies matching the job
   const tailoredTechnologies = (
     scoredTechnologies.filter((st) => st.score > 0).length >= 8
       ? scoredTechnologies.filter((st) => st.score > 0).slice(0, 14)
       : scoredTechnologies.slice(0, 12)
   ).map((st) => st.tech.name);
 
-  // 2. Role-Tailored Projects Filter
+  // 2. Role-Tailored Projects Filter (>3 projects support)
   const selectedProjIds = (resume?.projectsUsed || []).map((id: any) => id.toString());
   const scoredProjects = projects.map((p: any) => {
     let score = 0;
@@ -190,39 +216,57 @@ const prepareResumeData = async (resumeIdOrFilename: string): Promise<ResumePdfD
 
   scoredProjects.sort((a, b) => b.score - a.score);
 
-  // Take the top 3 best-matching projects from database
-  const targetProjectCount = Math.min(projects.length, Math.max(3, scoredProjects.length >= 3 ? 3 : scoredProjects.length));
-  const topProjects = scoredProjects.slice(0, targetProjectCount);
+  // If user explicitly picked projects, include all of them. Otherwise take top 3 best matching.
+  const chosenProjects =
+    selectedProjIds.length > 0
+      ? scoredProjects.filter((sp) => selectedProjIds.includes(sp.project._id.toString()))
+      : scoredProjects.slice(0, Math.min(projects.length, Math.max(3, scoredProjects.length >= 3 ? 3 : scoredProjects.length)));
 
-  // 3. Role-Tailored Experience
-  const relevantExperience = experience.map((e: any) => {
+  // 3. Role-Tailored Experience (Auto 2 Latest / User Selected, 5 Points Each)
+  const selectedExpIds = (resume?.experiencesUsed || []).map((id: any) => id.toString());
+  
+  // Sort experience: stillWorking first, then dateOfJoining desc
+  const sortedExp = [...experience].sort((a: any, b: any) => {
+    if (a.stillWorking && !b.stillWorking) return -1;
+    if (!a.stillWorking && b.stillWorking) return 1;
+    const dateA = new Date(a.dateOfJoining).getTime() || 0;
+    const dateB = new Date(b.dateOfJoining).getTime() || 0;
+    return dateB - dateA;
+  });
+
+  const chosenExp =
+    selectedExpIds.length > 0
+      ? experience.filter((e: any) => selectedExpIds.includes(e._id.toString()))
+      : sortedExp.slice(0, 2);
+
+  const relevantExperience = chosenExp.map((e: any) => {
     const expBullets: string[] = [];
     if (e.description) {
       const parts = e.description
         .split(/(?<=[.!?])\s+/)
         .filter((s: string) => s.trim().length > 10);
-      if (parts.length > 1) {
-        expBullets.push(...parts);
-      } else {
-        expBullets.push(
-          e.description,
-          'Architected and implemented responsive full-stack features with React.js, TypeScript, and Node.js microservices.',
-          'Engineered real-time state management and asynchronous background task pipelines, increasing throughput by 40%.',
-        );
-      }
-    } else {
-      expBullets.push(
-        'Architected and implemented responsive full-stack web features using React.js, TypeScript, and Node.js microservices.',
-        'Engineered real-time state management and asynchronous background task pipelines, increasing throughput by 40%.',
-        'Optimized frontend asset delivery and client-side caching, significantly improving Core Web Vitals and load times.',
-      );
+      expBullets.push(...parts);
     }
+
+    const defaultExpPoints = [
+      'Architected and implemented responsive full-stack features with React.js, TypeScript, and Node.js microservices.',
+      'Engineered real-time state management and asynchronous background task pipelines, increasing throughput by 40%.',
+      'Optimized frontend asset delivery and client-side caching, significantly improving Core Web Vitals and load times.',
+      'Implemented secure RESTful APIs, JWT authentication, and role-based access control workflows.',
+      'Collaborated across agile sprints with cross-functional product, QA, and DevOps teams to ensure seamless CI/CD deployments.',
+    ];
+
+    defaultExpPoints.forEach((point) => {
+      if (expBullets.length < 5 && !expBullets.includes(point)) {
+        expBullets.push(point);
+      }
+    });
 
     return {
       position: e.position,
       companyName: e.companyName,
       duration: formatExpDuration(e.dateOfJoining, e.dateOfLeaving, Boolean(e.stillWorking)),
-      bullets: expBullets.slice(0, 3),
+      bullets: expBullets.slice(0, 5),
       description: e.description || '',
     };
   });
@@ -233,23 +277,35 @@ const prepareResumeData = async (resumeIdOrFilename: string): Promise<ResumePdfD
     developerName: user?.name || 'Karanveer Thour',
     developerEmail: user?.email || 'karanveerthour76@gmail.com',
     developerPhone: user?.phoneNumber || '+91 8847009521',
+    developerGithub: user?.GitHubURL || 'https://github.com/K-Thour',
+    developerLinkedin: user?.LinkedInURL || 'https://linkedin.com/in/karanveer-thour',
+    developerWebsite: 'https://karan-thour.com',
+    developerAddress: 'India',
     technologies: tailoredTechnologies,
-    projects: topProjects.map(({ project: p, resolvedStack }) => {
+    projects: chosenProjects.map(({ project: p, resolvedStack }) => {
       const bulletList: string[] = [];
+
+      if (p.description) {
+        bulletList.push(p.description);
+      }
 
       if (p.features && Array.isArray(p.features) && p.features.length > 0) {
         p.features.forEach((feat: string) => {
-          if (feat && feat.trim().length > 10) {
+          if (feat && feat.trim().length > 10 && !bulletList.includes(feat.trim())) {
             bulletList.push(feat.trim());
           }
         });
       }
 
-      if (bulletList.length === 0 && p.fullDescription && p.fullDescription !== p.description) {
+      if (bulletList.length < 3 && p.fullDescription && p.fullDescription !== p.description) {
         const sentences = p.fullDescription
           .split(/(?<=[.!?])\s+/)
           .filter((s: string) => s.trim().length > 15);
-        bulletList.push(...sentences);
+        sentences.forEach((s: string) => {
+          if (!bulletList.includes(s.trim())) {
+            bulletList.push(s.trim());
+          }
+        });
       }
 
       if (p.outcome && p.outcome.trim().length > 0) {
@@ -263,7 +319,7 @@ const prepareResumeData = async (resumeIdOrFilename: string): Promise<ResumePdfD
         role: p.role || 'Full Stack Engineer',
         description: mainDescription,
         fullDescription: p.fullDescription || '',
-        features: bulletList.slice(0, 2),
+        features: bulletList.slice(0, 5),
         outcome: p.outcome || '',
         workingUrl: p.workingUrl || '',
         githubUrl: p.githubUrl || '',

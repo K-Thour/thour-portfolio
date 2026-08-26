@@ -38,6 +38,12 @@ const resumeSchema = new Schema<IResumeModel>(
       type: Number,
       required: true,
     },
+    experiencesUsed: {
+      type: [Schema.Types.ObjectId],
+      ref: 'Experience',
+      required: false,
+      default: [],
+    },
     projectsUsed: {
       type: [Schema.Types.ObjectId],
       ref: 'Project',

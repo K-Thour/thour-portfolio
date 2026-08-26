@@ -35,18 +35,37 @@ export interface ResumePdfData {
   developerName?: string;
   developerEmail?: string;
   developerPhone?: string;
+  developerGithub?: string;
+  developerLinkedin?: string;
+  developerWebsite?: string;
+  developerAddress?: string;
   technologies?: string[];
   projects?: ProjectDetail[];
   experience?: ExperienceDetail[];
   education?: EducationDetail[];
 }
 
-export const buildProfessionalSummary = (text: string | undefined, title: string): string => {
-  if (text && text.trim().length > 30 && !text.includes('Role Description') && !text.includes('Compensation')) {
+export const buildProfessionalSummary = (text: string | undefined, title: string, devName?: string): string => {
+  const isJobPostingText =
+    text &&
+    (text.includes('This position') ||
+      text.includes('partner company') ||
+      text.includes('looking for') ||
+      text.includes('Accountabilities') ||
+      text.includes('Requirements') ||
+      text.includes('Benefits') ||
+      text.includes('Role Description') ||
+      text.includes('Compensation') ||
+      text.includes('Jobgether') ||
+      text.includes('Equal-opportunity'));
+
+  if (text && text.trim().length > 30 && !isJobPostingText && !text.includes('Requirements:')) {
     return text.trim();
   }
-  const roleTitle = title || 'React.js / Full-Stack Developer';
-  return `Results-driven and innovative ${roleTitle} with extensive experience in architecting scalable web applications, responsive user interfaces, and robust client-side workflows. Highly proficient in React.js, TypeScript, Next.js, Redux, and modern CSS architectures, with demonstrated expertise in integrating RESTful APIs and real-time WebSocket communication. Adept at optimizing web performance, ensuring cross-browser compatibility, and collaborating with cross-functional teams in agile environments to deliver high-quality, user-centric software products.`;
+
+  const roleTitle = title || 'React.js / Full-Stack Software Engineer';
+  const name = devName || 'Results-driven and innovative developer';
+  return `Results-driven and innovative ${roleTitle} with hands-on experience in architecting scalable web applications, responsive user interfaces, and robust client-side workflows. Highly proficient in React.js, TypeScript, Next.js, Redux, Node.js, and modern CSS frameworks, with proven expertise in RESTful API integration, real-time state management, and performance optimization. Adept at delivering clean, maintainable code within agile cross-functional teams to build high-impact, user-centric software solutions.`;
 };
 
 export const generateResumePdfStream = (data: ResumePdfData, res: Response): void => {
@@ -63,8 +82,12 @@ export const generateResumePdfStream = (data: ResumePdfData, res: Response): voi
   const devName = data.developerName || 'Karanveer Thour';
   const devEmail = data.developerEmail || 'karanveerthour76@gmail.com';
   const devPhone = data.developerPhone || '+91 8847009521';
+  const devGithub = data.developerGithub || 'github.com/K-Thour';
+  const devLinkedin = data.developerLinkedin || 'linkedin.com/in/karanveer-thour';
+  const devWebsite = data.developerWebsite || 'karan-thour.com';
+  const devAddress = data.developerAddress || 'India';
   const resumeTitle = data.name || 'React.js Developer';
-  const summary = buildProfessionalSummary(data.description, resumeTitle);
+  const summary = buildProfessionalSummary(data.description, resumeTitle, devName);
 
   res.setHeader('Content-Type', 'application/pdf');
   res.setHeader(
@@ -79,37 +102,43 @@ export const generateResumePdfStream = (data: ResumePdfData, res: Response): voi
 
   // --- HEADER ---
   doc.fontSize(20).font('Helvetica-Bold').fillColor('#0f172a').text(devName, { align: 'center' });
-  doc.moveDown(0.12);
+  doc.moveDown(0.1);
   doc.fontSize(10.5).font('Helvetica-Bold').fillColor('#2563eb').text(resumeTitle.toUpperCase(), { align: 'center' });
-  doc.moveDown(0.2);
+  doc.moveDown(0.18);
+
+  const contactParts = [
+    devPhone,
+    devEmail,
+    devGithub.replace(/^https?:\/\//, ''),
+    devLinkedin.replace(/^https?:\/\//, ''),
+    devWebsite.replace(/^https?:\/\//, ''),
+    devAddress,
+  ].filter(Boolean);
 
   doc
-    .fontSize(8.5)
+    .fontSize(8)
     .font('Helvetica')
     .fillColor('#475569')
-    .text(
-      `${devPhone}   |   ${devEmail}   |   github.com/K-Thour   |   karan-thour.com   |   India`,
-      { align: 'center' },
-    );
+    .text(contactParts.join('   |   '), { align: 'center' });
 
-  doc.moveDown(0.25);
+  doc.moveDown(0.2);
   doc.strokeColor('#cbd5e1').lineWidth(0.8).moveTo(leftMargin, doc.y).lineTo(leftMargin + contentWidth, doc.y).stroke();
-  doc.moveDown(0.35);
+  doc.moveDown(0.25);
 
   const drawSectionHeading = (title: string) => {
-    doc.moveDown(0.25);
-    doc.fontSize(9.8).font('Helvetica-Bold').fillColor('#0f172a').text(title.toUpperCase());
+    doc.moveDown(0.2);
+    doc.fontSize(9.5).font('Helvetica-Bold').fillColor('#0f172a').text(title.toUpperCase());
     doc.strokeColor('#2563eb').lineWidth(1.2).moveTo(leftMargin, doc.y + 1).lineTo(leftMargin + contentWidth, doc.y + 1).stroke();
-    doc.moveDown(0.28);
+    doc.moveDown(0.22);
   };
 
   // --- PROFESSIONAL SUMMARY ---
   drawSectionHeading('Professional Summary');
-  doc.fontSize(8.7).font('Helvetica').fillColor('#334155').text(summary, {
-    lineGap: 1.8,
+  doc.fontSize(8.5).font('Helvetica').fillColor('#334155').text(summary, {
+    lineGap: 1.6,
     align: 'justify',
   });
-  doc.moveDown(0.25);
+  doc.moveDown(0.15);
 
   // --- TECHNICAL SKILLS ---
   drawSectionHeading('Technical Skills');
@@ -148,17 +177,17 @@ export const generateResumePdfStream = (data: ResumePdfData, res: Response): voi
   );
   const toolsSkills = allSkills.filter((s) => !frontendSkills.includes(s) && !backendSkills.includes(s));
 
-  doc.fontSize(8.7).font('Helvetica-Bold').fillColor('#0f172a').text('•  Frontend Technologies: ', { continued: true });
-  doc.font('Helvetica').fillColor('#334155').text(frontendSkills.join(', ') || 'React.js, TypeScript, Next.js, Redux, Tailwind CSS, HTML5, CSS3', { lineGap: 1.5 });
+  doc.fontSize(8.5).font('Helvetica-Bold').fillColor('#0f172a').text('•  Frontend Technologies: ', { continued: true });
+  doc.font('Helvetica').fillColor('#334155').text(frontendSkills.join(', ') || 'React.js, TypeScript, Next.js, Redux, Tailwind CSS, HTML5, CSS3', { lineGap: 1.4 });
 
-  doc.fontSize(8.7).font('Helvetica-Bold').fillColor('#0f172a').text('•  Backend & Databases: ', { continued: true });
-  doc.font('Helvetica').fillColor('#334155').text(backendSkills.join(', ') || 'Node.js, Express.js, MongoDB, PostgreSQL, RESTful APIs, WebSockets', { lineGap: 1.5 });
+  doc.fontSize(8.5).font('Helvetica-Bold').fillColor('#0f172a').text('•  Backend & Databases: ', { continued: true });
+  doc.font('Helvetica').fillColor('#334155').text(backendSkills.join(', ') || 'Node.js, Express.js, MongoDB, PostgreSQL, RESTful APIs, WebSockets', { lineGap: 1.4 });
 
   if (toolsSkills.length > 0) {
-    doc.fontSize(8.7).font('Helvetica-Bold').fillColor('#0f172a').text('•  Developer Tools & Cloud: ', { continued: true });
-    doc.font('Helvetica').fillColor('#334155').text(toolsSkills.join(', '), { lineGap: 1.5 });
+    doc.fontSize(8.5).font('Helvetica-Bold').fillColor('#0f172a').text('•  Developer Tools & Cloud: ', { continued: true });
+    doc.font('Helvetica').fillColor('#334155').text(toolsSkills.join(', '), { lineGap: 1.4 });
   }
-  doc.moveDown(0.25);
+  doc.moveDown(0.15);
 
   // --- PROFESSIONAL EXPERIENCE ---
   drawSectionHeading('Professional Experience');
@@ -170,45 +199,52 @@ export const generateResumePdfStream = (data: ResumePdfData, res: Response): voi
           companyName: 'Devronins Private Limited',
           duration: 'Feb 2025 — Present',
           bullets: [
-            'Architected and implemented responsive full-stack web features using React.js, TypeScript, and Node.js microservices.',
+            'Architected and implemented responsive full-stack features with React.js, TypeScript, and Node.js microservices.',
             'Engineered real-time state management and asynchronous background task pipelines, increasing throughput by 40%.',
             'Optimized frontend asset delivery and client-side caching, significantly improving Core Web Vitals and load times.',
+            'Implemented secure RESTful APIs, JWT authentication, and role-based access control workflows.',
+            'Collaborated across agile sprints with cross-functional product, QA, and DevOps teams to ensure seamless CI/CD deployments.',
           ],
         },
       ];
 
   expList.forEach((exp) => {
-    doc.fontSize(9.3).font('Helvetica-Bold').fillColor('#0f172a').text(exp.position, { continued: true });
-    doc.fontSize(9).font('Helvetica-Bold').fillColor('#2563eb').text(`  |  ${exp.companyName}`, { continued: true });
+    doc.fontSize(9).font('Helvetica-Bold').fillColor('#0f172a').text(exp.position, { continued: true });
+    doc.fontSize(8.8).font('Helvetica-Bold').fillColor('#2563eb').text(`  |  ${exp.companyName}`, { continued: true });
     const rightText = exp.duration || 'Feb 2025 — Present';
-    doc.fontSize(8.3).font('Helvetica-Oblique').fillColor('#64748b').text(`   (${rightText})`);
+    doc.fontSize(8).font('Helvetica-Oblique').fillColor('#64748b').text(`   (${rightText})`);
 
-    doc.moveDown(0.12);
+    doc.moveDown(0.08);
 
-    const bullets = exp.bullets || [
-      'Developed modular, accessible UI components with TypeScript and React adhering to strict design standards.',
-      'Implemented robust validation, error handling, and API integration workflows across core features.',
-    ];
+    const bullets = exp.bullets && exp.bullets.length > 0
+      ? exp.bullets
+      : [
+          'Architected and implemented responsive full-stack features with React.js, TypeScript, and Node.js microservices.',
+          'Engineered real-time state management and asynchronous background task pipelines, increasing throughput by 40%.',
+          'Optimized frontend asset delivery and client-side caching, significantly improving Core Web Vitals and load times.',
+          'Implemented secure RESTful APIs, JWT authentication, and role-based access control workflows.',
+          'Collaborated across agile sprints with cross-functional product, QA, and DevOps teams to ensure seamless CI/CD deployments.',
+        ];
 
     bullets.forEach((bullet) => {
-      doc.fontSize(8.5).font('Helvetica').fillColor('#334155').text(`•   ${bullet}`, {
+      doc.fontSize(8.2).font('Helvetica').fillColor('#334155').text(`•   ${bullet}`, {
         indent: 8,
-        lineGap: 1.5,
+        lineGap: 1.3,
         align: 'justify',
       });
     });
 
-    doc.moveDown(0.2);
+    doc.moveDown(0.14);
   });
 
-  // --- KEY PROJECTS (Minimum 3 Projects from Database) ---
+  // --- KEY PROJECTS (Up to 5 Points Each) ---
   drawSectionHeading('Key Projects');
-  const projList: ProjectDetail[] = (data.projects || []).slice(0, 3);
+  const projList: ProjectDetail[] = data.projects || [];
 
   projList.forEach((proj) => {
-    doc.fontSize(9.3).font('Helvetica-Bold').fillColor('#0f172a').text(proj.title, { continued: true });
+    doc.fontSize(9).font('Helvetica-Bold').fillColor('#0f172a').text(proj.title, { continued: true });
     if (proj.role) {
-      doc.fontSize(8.3).font('Helvetica').fillColor('#475569').text(`  —  ${proj.role}`);
+      doc.fontSize(8).font('Helvetica').fillColor('#475569').text(`  —  ${proj.role}`);
     } else {
       doc.text('');
     }
@@ -218,35 +254,36 @@ export const generateResumePdfStream = (data: ResumePdfData, res: Response): voi
         .filter((t) => typeof t === 'string' && !/^[0-9a-fA-F]{24}$/.test(t))
         .join(', ');
       if (cleanStack) {
-        doc.moveDown(0.06);
-        doc.fontSize(8).font('Helvetica-Bold').fillColor('#2563eb').text('Technologies: ', { continued: true });
+        doc.moveDown(0.04);
+        doc.fontSize(7.8).font('Helvetica-Bold').fillColor('#2563eb').text('Technologies: ', { continued: true });
         doc.font('Helvetica-Oblique').fillColor('#475569').text(cleanStack);
       }
     }
 
-    doc.moveDown(0.08);
+    doc.moveDown(0.06);
 
-    if (proj.description) {
-      doc.fontSize(8.5).font('Helvetica').fillColor('#334155').text(`•   ${proj.description}`, {
-        indent: 8,
-        lineGap: 1.4,
-        align: 'justify',
-      });
-    }
-
+    const projectBullets: string[] = [];
+    if (proj.description) projectBullets.push(proj.description);
     if (proj.features && proj.features.length > 0) {
-      proj.features.slice(0, 2).forEach((feat) => {
-        if (feat && feat !== proj.description) {
-          doc.fontSize(8.5).font('Helvetica').fillColor('#334155').text(`•   ${feat}`, {
-            indent: 8,
-            lineGap: 1.4,
-            align: 'justify',
-          });
+      proj.features.forEach((feat) => {
+        if (feat && feat !== proj.description && !projectBullets.includes(feat)) {
+          projectBullets.push(feat);
         }
       });
     }
+    if (proj.outcome && proj.outcome.trim().length > 0) {
+      projectBullets.push(`Impact: ${proj.outcome.trim()}`);
+    }
 
-    doc.moveDown(0.18);
+    projectBullets.slice(0, 5).forEach((bullet) => {
+      doc.fontSize(8.2).font('Helvetica').fillColor('#334155').text(`•   ${bullet}`, {
+        indent: 8,
+        lineGap: 1.3,
+        align: 'justify',
+      });
+    });
+
+    doc.moveDown(0.14);
   });
 
   // --- EDUCATION ---
@@ -262,13 +299,13 @@ export const generateResumePdfStream = (data: ResumePdfData, res: Response): voi
       ];
 
   eduList.forEach((edu) => {
-    doc.fontSize(8.8).font('Helvetica-Bold').fillColor('#0f172a').text(edu.degree, { continued: true });
-    doc.fontSize(8.5).font('Helvetica').fillColor('#475569').text(`   —   ${edu.institution}`);
+    doc.fontSize(8.5).font('Helvetica-Bold').fillColor('#0f172a').text(edu.degree, { continued: true });
+    doc.fontSize(8.2).font('Helvetica').fillColor('#475569').text(`   —   ${edu.institution}`);
     if (edu.details) {
-      doc.moveDown(0.06);
-      doc.fontSize(8).font('Helvetica').fillColor('#64748b').text(edu.details, { indent: 8 });
+      doc.moveDown(0.04);
+      doc.fontSize(7.8).font('Helvetica').fillColor('#64748b').text(edu.details, { indent: 8 });
     }
-    doc.moveDown(0.1);
+    doc.moveDown(0.08);
   });
 
   doc.end();
