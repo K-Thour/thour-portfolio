@@ -56,25 +56,65 @@ export const buildProfessionalSummary = (
   title: string,
   _devName?: string,
 ): string => {
-  const isJobPostingText =
-    text &&
-    (text.includes('This position') ||
-      text.includes('partner company') ||
-      text.includes('looking for') ||
-      text.includes('Accountabilities') ||
-      text.includes('Requirements') ||
-      text.includes('Benefits') ||
-      text.includes('Role Description') ||
-      text.includes('Compensation') ||
-      text.includes('Jobgether') ||
-      text.includes('Equal-opportunity'));
+  const roleTitle = title || 'React.js / Full-Stack Software Engineer';
+  const defaultSummary = `Results-driven and innovative ${roleTitle} with 3+ years of experience building scalable web applications, modern responsive interfaces, and robust backend architectures. Highly proficient in React.js, TypeScript, Next.js, Redux, Node.js, and modern CSS frameworks, with proven expertise in RESTful API integration, real-time state management, and performance optimization. Adept at delivering clean, maintainable code within agile cross-functional teams to build high-impact, user-centric software solutions.`;
 
-  if (text && text.trim().length > 30 && !isJobPostingText && !text.includes('Requirements:')) {
-    return text.trim();
+  if (!text || typeof text !== 'string') {
+    return defaultSummary;
   }
 
-  const roleTitle = title || 'React.js / Full-Stack Software Engineer';
-  return `Results-driven and innovative ${roleTitle} with hands-on experience in architecting scalable web applications, responsive user interfaces, and robust client-side workflows. Highly proficient in React.js, TypeScript, Next.js, Redux, Node.js, and modern CSS frameworks, with proven expertise in RESTful API integration, real-time state management, and performance optimization. Adept at delivering clean, maintainable code within agile cross-functional teams to build high-impact, user-centric software solutions.`;
+  const trimmed = text.trim();
+  const lower = trimmed.toLowerCase();
+
+  // If text contains ANY company job description keywords, it is a job posting, NOT a candidate summary!
+  const isJobPosting = [
+    'about the role',
+    'about the job',
+    'about us',
+    'we are seeking',
+    'we are looking',
+    'looking for a',
+    'ideal candidate',
+    'responsibilities',
+    'key responsibilities',
+    'accountabilities',
+    'requirements',
+    'qualifications',
+    'preferred qualifications',
+    'job types',
+    'application question',
+    'work location',
+    'share resume',
+    'contact at',
+    'equal-opportunity',
+    'benefits',
+    'compensation',
+    'jobgether',
+    'partner company',
+    'this position',
+    'you will collaborate',
+    'candidate should',
+    'in person',
+    'full-time',
+    'part-time',
+    'contract',
+    'apply',
+    'hiring',
+    'sector 82',
+    'mohali',
+  ].some((phrase) => lower.includes(phrase));
+
+  // If it is a job posting or excessively long raw text, discard it and return the clean tailored candidate summary
+  if (isJobPosting || trimmed.length > 500) {
+    return defaultSummary;
+  }
+
+  // If it's a valid candidate summary of reasonable length
+  if (trimmed.length >= 30) {
+    return trimmed;
+  }
+
+  return defaultSummary;
 };
 
 export const generateResumePdfStream = (data: ResumePdfData, res: Response): void => {

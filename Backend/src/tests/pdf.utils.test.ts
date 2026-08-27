@@ -17,11 +17,12 @@ describe('pdf.utils', () => {
 
     it('should fallback to default summary when text contains job posting markers', () => {
       const summary = buildProfessionalSummary(
-        'This position is open at partner company. Requirements: React.',
-        'Full Stack Software Engineer',
+        'About the Role: We are seeking a skilled React.js Developer to join our product engineering team. Key Responsibilities: Develop web apps.',
+        'React JS Developer',
       );
       expect(summary).toContain('Results-driven and innovative');
-      expect(summary).toContain('Full Stack Software Engineer');
+      expect(summary).toContain('React JS Developer');
+      expect(summary).not.toContain('About the Role');
     });
   });
 

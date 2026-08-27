@@ -12,6 +12,11 @@ const resumeSchema = new Schema<IResumeModel>(
       required: false,
       default: '',
     },
+    summary: {
+      type: String,
+      required: false,
+      default: '',
+    },
     targetRole: {
       type: String,
       required: false,

@@ -183,9 +183,6 @@ export function ResumeDesignPreview({
     formData.targetRole ||
     "Full Stack Software Engineer";
   const targetRole = formData.targetRole || "Full Stack Software Engineer";
-  const displaySummary =
-    formData.description.trim() ||
-    `Results-driven and innovative ${targetRole} with extensive experience in architecting scalable web applications, responsive user interfaces, and robust backend workflows. Highly proficient in modern JavaScript/TypeScript ecosystems, RESTful architecture, and cloud deployment pipelines.`;
 
   // Filter projects based on selectedProjectIds or fallback
   const selectedProjIds = formData.selectedProjectIds || [];
@@ -598,11 +595,39 @@ export function ResumeDesignPreview({
                 Professional Summary
               </h2>
               <p className="text-[10px] leading-relaxed text-slate-700 text-justify">
-                {displaySummary.includes("This position") ||
-                displaySummary.includes("partner company") ||
-                displaySummary.includes("Accountabilities")
-                  ? `Results-driven and innovative ${targetRole} with 3+ years of experience building scalable web applications, modern responsive interfaces, and robust backend architectures. Highly proficient in React.js, TypeScript, Next.js, Redux, and Node.js microservices.`
-                  : displaySummary}
+                {(() => {
+                  const defaultCandSummary = `Results-driven and innovative ${targetRole} with 3+ years of experience building scalable web applications, modern responsive interfaces, and robust backend architectures. Highly proficient in React.js, TypeScript, Next.js, Redux, and Node.js microservices with proven expertise in RESTful architecture, real-time state management, and performance optimization.`;
+                  const trimmed = formData.description?.trim() || "";
+                  const lower = trimmed.toLowerCase();
+                  const isJobPosting =
+                    trimmed.length > 400 ||
+                    [
+                      "about the role",
+                      "about the job",
+                      "about us",
+                      "we are seeking",
+                      "we are looking",
+                      "looking for",
+                      "ideal candidate",
+                      "responsibilities",
+                      "requirements",
+                      "qualifications",
+                      "job types",
+                      "work location",
+                      "share resume",
+                      "contact at",
+                      "equal-opportunity",
+                      "benefits",
+                      "partner company",
+                      "this position",
+                      "candidate should",
+                    ].some((phrase) => lower.includes(phrase));
+
+                  if (isJobPosting || trimmed.length < 30) {
+                    return defaultCandSummary;
+                  }
+                  return trimmed;
+                })()}
               </p>
             </div>
 

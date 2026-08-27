@@ -168,6 +168,7 @@ const generateService = (
       _id: newResumeId,
       name,
       description,
+      summary: aiResult.tailoredSummary || '',
       targetRole: targetRole || name,
       designType,
       designFileUrl,

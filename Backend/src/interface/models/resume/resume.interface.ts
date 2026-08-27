@@ -6,6 +6,7 @@ export type ResumeDesignType = 'latex' | 'pdf' | 'image' | 'modern' | 'ats';
 export interface IResume {
   name: string;
   description?: string;
+  summary?: string;
   targetRole?: string;
   designType?: ResumeDesignType;
   designFileUrl?: string;
@@ -34,6 +35,7 @@ export interface IResumeModel extends IResume, ICommonModel {
 export interface createResumeInput {
   name: string;
   description?: string;
+  summary?: string;
   targetRole?: string;
   designType?: ResumeDesignType;
   designFileUrl?: string;

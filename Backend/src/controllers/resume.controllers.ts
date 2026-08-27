@@ -422,7 +422,7 @@ const prepareResumeData = async (resumeIdOrFilename: string): Promise<ResumePdfD
 
   return {
     name: resume?.name || 'React.js Developer Resume',
-    description: resume?.description,
+    description: (resume as any)?.summary || '',
     developerName: user?.name || 'Karanveer Thour',
     developerEmail: contact?.email || user?.email || 'karanveerthour76@gmail.com',
     developerPhone: contact?.phone || user?.phoneNumber || '+91 8847009521',
