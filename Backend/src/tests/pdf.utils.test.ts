@@ -33,6 +33,7 @@ describe('pdf.utils', () => {
         developerPhone: '+91 8847009521',
         developerGithub: 'github.com/K-Thour',
         developerLinkedin: 'linkedin.com/in/karanveer-thour',
+        developerAddress: 'Khanna, Punjab, India',
         description: 'Passionate full stack developer with experience in React and Node.',
         technologies: ['React.js', 'TypeScript', 'Node.js', 'MongoDB', 'AWS'],
         experience: [

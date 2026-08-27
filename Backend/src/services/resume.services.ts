@@ -104,6 +104,12 @@ const generateService = (
     }
 
     // 2. Fetch all database assets
+    const contact =
+      (await models.contact.repo.getOne({ filter: [{ isActive: true, isDeleted: false }] })) ||
+      (await models.contact.repo.getOne({ filter: [{ isDeleted: false }] }));
+    const formattedAddress = contact
+      ? [contact.city, contact.state, contact.country].filter(Boolean).map((s: string) => s.trim()).join(', ')
+      : 'India';
     const projects = await models.project.repo.get({ filter: [{ isDeleted: false }] });
     const servicesList = await models.service.repo.get({ filter: [{ isDeleted: false }] });
     const technologies = await models.technology.repo.get({ filter: [{ isDeleted: false }] });
@@ -119,9 +125,10 @@ const generateService = (
       selectedExperienceIds,
       developerProfile: {
         name: user.name,
-        email: user.email,
-        phoneNumber: user.phoneNumber,
+        email: contact?.email || user.email,
+        phoneNumber: contact?.phone || user.phoneNumber,
         experienceYears: user.experience,
+        address: formattedAddress,
         hobbies: user.hobbies || [],
         languages: user.languages || [],
       },

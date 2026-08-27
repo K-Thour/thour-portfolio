@@ -16,6 +16,7 @@ export interface GenerateResumeParams {
     email: string;
     phoneNumber: string;
     experienceYears: number;
+    address?: string;
     hobbies: string[];
     languages: any[];
   };
@@ -159,6 +160,7 @@ export const generateResumeAI = async (params: GenerateResumeParams): Promise<AI
   const devName = params.developerProfile?.name || 'Karanveer Thour';
   const devEmail = params.developerProfile?.email || 'karanveerthour76@gmail.com';
   const devPhone = params.developerProfile?.phoneNumber || '+91 8847009521';
+  const devAddress = params.developerProfile?.address || 'India';
   const devExpYears = params.developerProfile?.experienceYears || 3;
   const targetRole = params.targetRole || 'Full Stack Software Engineer';
 
@@ -375,9 +377,8 @@ export const generateResumeAI = async (params: GenerateResumeParams): Promise<AI
 \\begin{center}
     \\textbf{\\Huge \\scshape ${devName}} \\\\ \\vspace{1pt}
     \\small ${devPhone} $|$ \\href{mailto:${devEmail}}{\\underline{${devEmail}}} $|$ 
-    \\href{https://karan-thour.com}{\\underline{karan-thour.com}} $|$
     \\href{https://github.com/K-Thour}{\\underline{github.com/K-Thour}} $|$
-    India
+    ${devAddress}
 \\end{center}
 
 \\section{Professional Summary}
@@ -454,6 +455,7 @@ Developer Profile:
 - Name: ${devName}
 - Email: ${devEmail}
 - Phone: ${devPhone}
+- Location / Address: ${devAddress}
 - Total Years of Experience: ${devExpYears}
 
 Available Work Experience Records from Database:

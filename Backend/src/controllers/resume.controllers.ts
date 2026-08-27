@@ -100,6 +100,9 @@ const prepareResumeData = async (resumeIdOrFilename: string): Promise<ResumePdfD
   }
 
   // Fetch live collections from database
+  const contact =
+    (await models.contact.repo.getOne({ filter: [{ isActive: true, isDeleted: false }] })) ||
+    (await models.contact.repo.getOne({ filter: [{ isDeleted: false }] }));
   const projects = await models.project.repo.get({ filter: [{ isDeleted: false }] });
   const experience = await models.experience.repo.get({ filter: [{ isDeleted: false }] });
   const education = await models.education.repo.get({ filter: [{ isDeleted: false }] });
@@ -307,16 +310,20 @@ const prepareResumeData = async (resumeIdOrFilename: string): Promise<ResumePdfD
       ? user.languages.map((l: any) => ({ name: l.name, proficiency: l.level || 'Fluent' }))
       : defaultLanguages;
 
+  const formattedAddress = contact
+    ? [contact.city, contact.state, contact.country].filter(Boolean).map((s: string) => s.trim()).join(', ')
+    : 'India';
+
   return {
     name: resume?.name || 'React.js Developer Resume',
     description: resume?.description,
     developerName: user?.name || 'Karanveer Thour',
-    developerEmail: user?.email || 'karanveerthour76@gmail.com',
-    developerPhone: user?.phoneNumber || '+91 8847009521',
-    developerGithub: user?.GitHubURL || 'https://github.com/K-Thour',
-    developerLinkedin: user?.LinkedInURL || 'https://linkedin.com/in/karanveer-thour',
-    developerWebsite: envConstant.PORTFOLIO_WEB_BASE_URL || 'https://karanveer-thour.vercel.app',
-    developerAddress: 'India',
+    developerEmail: contact?.email || user?.email || 'karanveerthour76@gmail.com',
+    developerPhone: contact?.phone || user?.phoneNumber || '+91 8847009521',
+    developerGithub: contact?.github || user?.GitHubURL || 'https://github.com/K-Thour',
+    developerLinkedin: contact?.linkedin || user?.LinkedInURL || 'https://linkedin.com/in/karanveer-thour',
+    developerWebsite: contact?.website || envConstant.PORTFOLIO_WEB_BASE_URL || 'https://karanveer-thour.vercel.app',
+    developerAddress: formattedAddress || 'India',
     technologies: tailoredTechnologies,
     projects: chosenProjects.map(({ project: p, resolvedStack }) => {
       const bulletList: string[] = [];

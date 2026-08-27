@@ -12,7 +12,7 @@ import {
   Layers,
 } from "lucide-react";
 import type { ResumeFormData } from "../../../types";
-import { fetchProjects, fetchExperiences, fetchTechnologies } from "../../../../../../services/api";
+import { fetchProjects, fetchExperiences, fetchTechnologies, fetchContacts } from "../../../../../../services/api";
 import envConstraints from "../../../../../../constraints/env.constraints";
 
 interface ResumeDesignPreviewProps {
@@ -45,6 +45,19 @@ interface TechData {
   category?: string;
 }
 
+interface ContactData {
+  id?: string;
+  city?: string;
+  state?: string;
+  country?: string;
+  phone?: string;
+  email?: string;
+  github?: string;
+  linkedin?: string;
+  website?: string;
+  isActive?: boolean;
+}
+
 export function ResumeDesignPreview({
   formData,
   isDark,
@@ -54,15 +67,17 @@ export function ResumeDesignPreview({
   const [allProjects, setAllProjects] = useState<ProjectData[]>([]);
   const [allExperiences, setAllExperiences] = useState<ExperienceData[]>([]);
   const [allTechnologies, setAllTechnologies] = useState<TechData[]>([]);
+  const [activeContact, setActiveContact] = useState<ContactData | null>(null);
 
   useEffect(() => {
     let isMounted = true;
     const load = async () => {
       try {
-        const [projData, expData, techData] = await Promise.allSettled([
+        const [projData, expData, techData, contactData] = await Promise.allSettled([
           fetchProjects(),
           fetchExperiences(),
           fetchTechnologies(),
+          fetchContacts(),
         ]);
 
         if (isMounted && projData.status === "fulfilled" && Array.isArray(projData.value)) {
@@ -107,6 +122,24 @@ export function ResumeDesignPreview({
             category: t.category,
           }));
           setAllTechnologies(mappedTech);
+        }
+
+        if (isMounted && contactData.status === "fulfilled" && Array.isArray(contactData.value)) {
+          const active = contactData.value.find((c: any) => c.isActive && !c.isDeleted) || contactData.value[0];
+          if (active) {
+            setActiveContact({
+              id: active._id || active.id,
+              city: active.city,
+              state: active.state,
+              country: active.country,
+              phone: active.phone,
+              email: active.email,
+              github: active.github,
+              linkedin: active.linkedin,
+              website: active.website,
+              isActive: active.isActive,
+            });
+          }
         }
       } catch (err) {
         console.error("Failed to load data for live preview:", err);
@@ -363,17 +396,24 @@ export function ResumeDesignPreview({
                 {displayName}
               </p>
               <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-[10px] text-slate-600 mt-1.5">
-                <span>+91 8847009521</span>
+                <span>{activeContact?.phone || "+91 8847009521"}</span>
                 <span>|</span>
-                <span>karanveerthour76@gmail.com</span>
+                <span>{activeContact?.email || "karanveerthour76@gmail.com"}</span>
                 <span>|</span>
-                <span>github.com/K-Thour</span>
+                <span>{(activeContact?.github || "github.com/K-Thour").replace(/^https?:\/\//, '')}</span>
                 <span>|</span>
-                <span>linkedin.com/in/karanveer-thour</span>
+                <span>{(activeContact?.linkedin || "linkedin.com/in/karanveer-thour").replace(/^https?:\/\//, '')}</span>
                 <span>|</span>
-                <span>{envConstraints.PORTFOLIO_WEB_BASE_URL.replace(/^https?:\/\//, '')}</span>
+                <span>{(activeContact?.website || envConstraints.PORTFOLIO_WEB_BASE_URL).replace(/^https?:\/\//, '')}</span>
                 <span>|</span>
-                <span>India</span>
+                <span>
+                  {activeContact
+                    ? [activeContact.city, activeContact.state, activeContact.country]
+                        .filter(Boolean)
+                        .map((s) => s.trim())
+                        .join(", ")
+                    : "Khanna, Punjab, India"}
+                </span>
               </div>
             </div>
 
