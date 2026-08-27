@@ -43,6 +43,8 @@ describe("useResumes hook", () => {
       refreshResumes: vi.fn(),
       deleteResume: deleteResumeMock,
       downloadResume: downloadResumeMock,
+      toggleActiveResume: vi.fn(),
+      togglingActiveId: null,
     });
   });
 

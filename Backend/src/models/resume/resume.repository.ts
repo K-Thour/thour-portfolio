@@ -43,6 +43,13 @@ const deleteOne = (id: string): Promise<IResumeModel | null> => {
   return commonRepository.findByIdAndDelete(id, resumeModel);
 };
 
+const deactivateOthers = async (exceptId: string): Promise<void> => {
+  const query = Types.ObjectId.isValid(exceptId)
+    ? { _id: { $ne: new Types.ObjectId(exceptId) }, isDeleted: false }
+    : { isDeleted: false };
+  await resumeModel.updateMany(query, { isActive: false });
+};
+
 const resumeRepository: IResumeRepo = {
   get,
   getOne,
@@ -50,6 +57,7 @@ const resumeRepository: IResumeRepo = {
   update,
   softDelete,
   deleteOne,
+  deactivateOthers,
 };
 
 export default resumeRepository;

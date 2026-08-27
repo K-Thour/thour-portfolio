@@ -3,6 +3,7 @@ import type { Resume, ResumeFormData } from "../types";
 import {
   fetchResumes,
   deleteResume as deleteResumeApi,
+  updateResume,
   generateResumeAI,
 } from "../../../../services/api";
 
@@ -12,6 +13,7 @@ export function useResumeOperations() {
   const [resumes, setResumes] = useState<Resume[]>([]);
   const [loading, setLoading] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [togglingActiveId, setTogglingActiveId] = useState<string | null>(null);
 
   const loadResumes = useCallback(async () => {
     setLoading(true);
@@ -22,9 +24,21 @@ export function useResumeOperations() {
         name: r.name,
         description: r.description || "",
         jobLink: r.jobUrl || "",
-        designType: r.designType || "latex",
+        targetRole: r.targetRole,
+        selectedProjectIds: Array.isArray(r.projectsUsed)
+          ? r.projectsUsed.map((p: any) =>
+              p?._id ? p._id.toString() : p.toString(),
+            )
+          : [],
+        selectedExperienceIds: Array.isArray(r.experiencesUsed)
+          ? r.experiencesUsed.map((e: any) =>
+              e?._id ? e._id.toString() : e.toString(),
+            )
+          : [],
+        designType: r.designType || "ats",
         latexCode: r.latexCode || "",
-        status: r.isActive ? "completed" : "pending",
+        isActive: Boolean(r.isActive),
+        status: "completed",
         createdAt: r.createdAt,
         updatedAt: r.updatedAt,
         generatedFileUrl: r.resumeUrl,
@@ -36,6 +50,37 @@ export function useResumeOperations() {
       setLoading(false);
     }
   }, []);
+
+  const toggleActiveResume = useCallback(
+    async (resume: Resume) => {
+      const nextActive = !resume.isActive;
+      const targetId = resume.id;
+      setTogglingActiveId(targetId);
+
+      // Optimistic update: set target to nextActive, and if nextActive is true, set all others to false
+      setResumes((prev) =>
+        prev.map((r) => {
+          if (r.id === targetId) {
+            return { ...r, isActive: nextActive };
+          }
+          if (nextActive) {
+            return { ...r, isActive: false };
+          }
+          return r;
+        }),
+      );
+
+      try {
+        await updateResume(targetId, { isActive: nextActive });
+      } catch (err) {
+        console.error("Failed to toggle resume active status:", err);
+        await loadResumes();
+      } finally {
+        setTogglingActiveId(null);
+      }
+    },
+    [loadResumes],
+  );
 
   useEffect(() => {
     loadResumes();
@@ -157,5 +202,7 @@ export function useResumeOperations() {
     refreshResumes: loadResumes,
     deleteResume,
     downloadResume,
+    toggleActiveResume,
+    togglingActiveId,
   };
 }

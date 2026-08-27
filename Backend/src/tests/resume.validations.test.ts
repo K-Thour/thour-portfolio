@@ -1,4 +1,8 @@
-import { resumeCreateSchema, resumeGenerateSchema } from '../validations/resume.validations';
+import {
+  resumeCreateSchema,
+  resumeGenerateSchema,
+  resumeUpdateSchema,
+} from '../validations/resume.validations';
 
 describe('Resume Validations', () => {
   describe('resumeGenerateSchema', () => {
@@ -103,10 +107,34 @@ describe('Resume Validations', () => {
         resumeUrl: 'http://localhost:3000/api/resume/download/pdf/123',
         designType: 'ats',
         jobUrl: '',
+        isActive: true,
       };
 
       const result = resumeCreateSchema.safeParse(payload);
       expect(result.success).toBe(true);
+    });
+  });
+
+  describe('resumeUpdateSchema', () => {
+    it('should validate successfully with isActive: true', () => {
+      const result = resumeUpdateSchema.safeParse({ isActive: true });
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data.isActive).toBe(true);
+      }
+    });
+
+    it('should validate successfully with isActive: false', () => {
+      const result = resumeUpdateSchema.safeParse({ isActive: false });
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data.isActive).toBe(false);
+      }
+    });
+
+    it('should fail when an empty object is provided', () => {
+      const result = resumeUpdateSchema.safeParse({});
+      expect(result.success).toBe(false);
     });
   });
 });

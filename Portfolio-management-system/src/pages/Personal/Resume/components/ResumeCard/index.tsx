@@ -9,13 +9,20 @@ export function ResumeCard({
   isDark,
   onDownload,
   onDelete,
+  onRegenerate,
+  onToggleActive,
+  isRegenerating = false,
 }: ResumeCardProps) {
   const { DesignIcon } = useResumeCard(resume, isDark);
   return (
     <div
       className={`rounded-2xl border p-6 transition-all hover:shadow-lg ${isDark ? "bg-slate-900/50 border-red-500/20 hover:border-red-500/40" : "bg-white border-gray-200 hover:border-blue-300"}`}
     >
-      <CardHeader resume={resume} isDark={isDark} />
+      <CardHeader
+        resume={resume}
+        isDark={isDark}
+        onToggleActive={onToggleActive}
+      />
       <p
         className={`text-sm mb-4 line-clamp-2 ${isDark ? "text-gray-300" : "text-gray-600"}`}
       >
@@ -52,6 +59,8 @@ export function ResumeCard({
           isDark={isDark}
           onDownload={onDownload}
           onDelete={onDelete}
+          onRegenerate={onRegenerate}
+          isRegenerating={isRegenerating}
         />
       </div>
     </div>

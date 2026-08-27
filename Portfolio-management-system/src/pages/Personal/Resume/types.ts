@@ -19,6 +19,7 @@ export interface Resume {
   designFile?: string;
   designUrl?: string;
   latexCode?: string;
+  isActive?: boolean;
   status: "pending" | "generating" | "completed" | "failed";
   createdAt: string;
   updatedAt: string;

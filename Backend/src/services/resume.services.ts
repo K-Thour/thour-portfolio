@@ -22,6 +22,9 @@ const createService = (data: createResumeInput, createdBy: Types.ObjectId) => {
 
 const updateService = (id: string, data: Partial<IResumeModel>, updatedBy: Types.ObjectId) => {
   return asyncCommonWrapper(async () => {
+    if (data.isActive === true) {
+      await models.resume.repo.deactivateOthers(id);
+    }
     const result = await models.resume.repo.update(id, data, updatedBy);
     return commonResponse.success(
       result,
@@ -186,6 +189,7 @@ const generateService = (
       latexCode: latexCode || aiResult.latexCode,
     };
 
+    await models.resume.repo.deactivateOthers(newResumeId.toString());
     const result = await models.resume.repo.create(resumeData as any, createdBy);
     return commonResponse.success(
       result,

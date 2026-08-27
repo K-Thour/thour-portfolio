@@ -16,6 +16,8 @@ export const resumeCreateSchema = z.object({
   resumeFormatUrl: z.string().url().optional(),
   jobUrl: z.string().url('Please provide a valid URL').optional().or(z.literal('')).or(z.null()),
   latexCode: z.string().optional(),
+  summary: z.string().optional(),
+  isActive: z.boolean().optional(),
 });
 
 export const resumeGenerateSchema = z.object({

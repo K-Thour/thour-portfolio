@@ -4,7 +4,14 @@ import type { ResumeFormData, Resume } from "../types";
 
 export function useResumePage() {
   const { toast } = useToast();
-  const { resumes, loading, isModalOpen, handlers } = useResumes();
+  const {
+    resumes,
+    loading,
+    isModalOpen,
+    regeneratingId,
+    togglingActiveId,
+    handlers,
+  } = useResumes();
 
   const handleSubmit = async (data: ResumeFormData) => {
     try {
@@ -22,6 +29,49 @@ export function useResumePage() {
         description: err?.message || "Failed to start background task.",
         variant: "destructive",
         duration: 4000,
+      });
+    }
+  };
+
+  const handleRegenerate = async (resume: Resume) => {
+    try {
+      toast({
+        title: "Regeneration Queued",
+        description: `Regenerating "${resume.name}" with fresh AI tailoring.`,
+        variant: "default",
+        duration: 3500,
+      });
+      await handlers.handleRegenerate(resume);
+    } catch (err: any) {
+      console.error("Failed to regenerate resume:", err);
+      toast({
+        title: "Regeneration Failed",
+        description: err?.message || "Failed to queue regeneration task.",
+        variant: "destructive",
+        duration: 4000,
+      });
+    }
+  };
+
+  const handleToggleActive = async (resume: Resume) => {
+    try {
+      const willBeActive = !resume.isActive;
+      await handlers.handleToggleActive(resume);
+      toast({
+        title: willBeActive ? "Resume Activated" : "Resume Deactivated",
+        description: willBeActive
+          ? `"${resume.name}" is now the active primary resume.`
+          : `"${resume.name}" has been deactivated.`,
+        variant: willBeActive ? "success" : "default",
+        duration: 3000,
+      });
+    } catch (err: any) {
+      console.error("Failed to toggle active status:", err);
+      toast({
+        title: "Update Failed",
+        description: err?.message || "Failed to update active status.",
+        variant: "destructive",
+        duration: 3000,
       });
     }
   };
@@ -75,7 +125,16 @@ export function useResumePage() {
     resumes,
     loading,
     isModalOpen,
-    handlers: { ...handlers, handleSubmit, handleDelete, handleDownload },
+    regeneratingId,
+    togglingActiveId,
+    handlers: {
+      ...handlers,
+      handleSubmit,
+      handleDelete,
+      handleDownload,
+      handleRegenerate,
+      handleToggleActive,
+    },
   };
 }
 

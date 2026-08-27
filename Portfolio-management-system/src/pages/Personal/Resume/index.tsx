@@ -18,7 +18,8 @@ import envConstraints from "../../../constraints/env.constraints";
 export function ResumePage() {
   const theme = useAppSelector((state) => state.theme.theme);
   const isDark = theme === "dark";
-  const { resumes, loading, isModalOpen, handlers } = useResumePage();
+  const { resumes, loading, isModalOpen, regeneratingId, handlers } =
+    useResumePage();
   const { deletingId, toggleResumeDeleting } = useResumeOperations();
 
   // Download modal state
@@ -93,6 +94,9 @@ export function ResumePage() {
               isDark={isDark}
               onDownload={handleDownloadClick}
               onDelete={toggleResumeDeleting}
+              onRegenerate={handlers.handleRegenerate}
+              onToggleActive={handlers.handleToggleActive}
+              regeneratingId={regeneratingId}
             />
           )}
         </div>

@@ -5,6 +5,9 @@ export interface ResumeCardProps {
   isDark: boolean;
   onDownload: (resume: Resume) => void;
   onDelete: (id: string) => void;
+  onRegenerate?: (resume: Resume) => void;
+  onToggleActive?: (resume: Resume) => void;
+  isRegenerating?: boolean;
 }
 
 export interface ResumeHeaderProps {
@@ -23,4 +26,7 @@ export interface ResumeListProps {
   isDark: boolean;
   onDownload: (resume: Resume) => void;
   onDelete: (id: string) => void;
+  onRegenerate?: (resume: Resume) => void;
+  onToggleActive?: (resume: Resume) => void;
+  regeneratingId?: string | null;
 }

@@ -4,12 +4,14 @@ import { useResumeOperations } from "./useResumeOperations";
 import {
   fetchResumes,
   deleteResume as deleteResumeApi,
+  updateResume as updateResumeApi,
   generateResumeAI,
 } from "../../../../services/api";
 
 vi.mock("../../../../services/api", () => ({
   fetchResumes: vi.fn(),
   deleteResume: vi.fn(),
+  updateResume: vi.fn(),
   generateResumeAI: vi.fn(),
 }));
 
@@ -50,8 +52,12 @@ describe("useResumeOperations", () => {
       name: "React Developer",
       description: "React Resume",
       jobLink: "http://example.com/job",
+      targetRole: undefined,
+      selectedProjectIds: [],
+      selectedExperienceIds: [],
       designType: "latex",
       latexCode: "LaTeX",
+      isActive: true,
       status: "completed",
       createdAt: "2026-06-16T12:00:00Z",
       updatedAt: "2026-06-16T12:00:00Z",
@@ -132,5 +138,41 @@ describe("useResumeOperations", () => {
 
     expect(deleteResumeApi).toHaveBeenCalledWith("1");
     expect(result.current.resumes).toHaveLength(0);
+  });
+
+  it("should toggle active state and ensure only one resume is active", async () => {
+    const mockResumesList = [
+      {
+        _id: "1",
+        name: "Resume 1",
+        isActive: true,
+      },
+      {
+        _id: "2",
+        name: "Resume 2",
+        isActive: false,
+      },
+    ];
+    vi.mocked(fetchResumes).mockResolvedValueOnce(mockResumesList);
+    vi.mocked(updateResumeApi).mockResolvedValueOnce({} as any);
+
+    const { result } = renderHook(() => useResumeOperations());
+
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+
+    expect(result.current.resumes[0].isActive).toBe(true);
+    expect(result.current.resumes[1].isActive).toBe(false);
+
+    // Toggle Resume 2 to active
+    await act(async () => {
+      await result.current.toggleActiveResume(result.current.resumes[1]);
+    });
+
+    expect(updateResumeApi).toHaveBeenCalledWith("2", { isActive: true });
+    // Optimistic state: Resume 2 active, Resume 1 inactive
+    expect(result.current.resumes[1].isActive).toBe(true);
+    expect(result.current.resumes[0].isActive).toBe(false);
   });
 });

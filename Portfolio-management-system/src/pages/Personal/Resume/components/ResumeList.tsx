@@ -6,6 +6,9 @@ export function ResumeList({
   isDark,
   onDownload,
   onDelete,
+  onRegenerate,
+  onToggleActive,
+  regeneratingId,
 }: ResumeListProps) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -15,7 +18,10 @@ export function ResumeList({
           resume={resume}
           isDark={isDark}
           onDownload={onDownload}
-          onDelete={() => onDelete(resume.id)}
+          onDelete={onDelete}
+          onRegenerate={onRegenerate}
+          onToggleActive={onToggleActive}
+          isRegenerating={regeneratingId === resume.id}
         />
       ))}
     </div>

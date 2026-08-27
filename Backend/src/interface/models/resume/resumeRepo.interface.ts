@@ -2,7 +2,9 @@ import { IBaseRepo, IBaseRepoParams } from '../common/baseRepo.interface';
 import { ICommonResponse } from '../../common/common.interface';
 import IResumeModel from './resume.interface';
 
-export type IResumeRepo = IBaseRepo<IResumeModel>;
+export interface IResumeRepo extends IBaseRepo<IResumeModel> {
+  deactivateOthers(exceptId: string): Promise<void>;
+}
 
 export type IResumeRepoParams = IBaseRepoParams<IResumeModel>;
 
