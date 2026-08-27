@@ -4,17 +4,9 @@ import { JobLinkInput } from "./JobLinkInput";
 
 describe("JobLinkInput component", () => {
   it("renders input field with label and placeholder", () => {
-    render(
-      <JobLinkInput
-        value=""
-        isDark={false}
-        onChange={vi.fn()}
-      />,
-    );
+    render(<JobLinkInput value="" isDark={false} onChange={vi.fn()} />);
     expect(screen.getByLabelText(/target job posting link/i)).toBeDefined();
-    expect(
-      screen.getByPlaceholderText(/linkedin.com\/jobs/i),
-    ).toBeDefined();
+    expect(screen.getByPlaceholderText(/linkedin.com\/jobs/i)).toBeDefined();
   });
 
   it("detects LinkedIn domain and displays badge", () => {
@@ -42,13 +34,7 @@ describe("JobLinkInput component", () => {
 
   it("calls onChange when typing", () => {
     const onChangeMock = vi.fn();
-    render(
-      <JobLinkInput
-        value=""
-        isDark={false}
-        onChange={onChangeMock}
-      />,
-    );
+    render(<JobLinkInput value="" isDark={false} onChange={onChangeMock} />);
     const input = screen.getByRole("textbox");
     fireEvent.change(input, { target: { value: "https://indeed.com/job/1" } });
     expect(onChangeMock).toHaveBeenCalledWith("https://indeed.com/job/1");

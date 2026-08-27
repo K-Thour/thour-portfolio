@@ -83,4 +83,3 @@ export function DesignInput({ formData, errors, isDark, updateField }: Props) {
 
   return null;
 }
-

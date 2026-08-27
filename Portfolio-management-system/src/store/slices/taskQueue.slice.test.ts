@@ -40,7 +40,11 @@ describe("taskQueueSlice", () => {
     };
     const state = taskQueueReducer(
       stateWithTask,
-      updateTaskProgress({ id: "task_1", progress: 65, stageText: "Compiling LaTeX..." }),
+      updateTaskProgress({
+        id: "task_1",
+        progress: 65,
+        stageText: "Compiling LaTeX...",
+      }),
     );
     expect(state.tasks[0].progress).toBe(65);
     expect(state.tasks[0].stageText).toBe("Compiling LaTeX...");
@@ -82,11 +86,17 @@ describe("taskQueueSlice", () => {
       isOpen: true,
     };
 
-    const stateAfterRemove = taskQueueReducer(stateWithMultiple, removeTask("task_1"));
+    const stateAfterRemove = taskQueueReducer(
+      stateWithMultiple,
+      removeTask("task_1"),
+    );
     expect(stateAfterRemove.tasks).toHaveLength(1);
     expect(stateAfterRemove.tasks[0].id).toBe("task_2");
 
-    const stateAfterClear = taskQueueReducer(stateWithMultiple, clearCompleted());
+    const stateAfterClear = taskQueueReducer(
+      stateWithMultiple,
+      clearCompleted(),
+    );
     expect(stateAfterClear.tasks).toHaveLength(1);
     expect(stateAfterClear.tasks[0].id).toBe("task_2");
   });

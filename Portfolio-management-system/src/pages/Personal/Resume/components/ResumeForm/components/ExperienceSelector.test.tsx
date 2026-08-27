@@ -48,7 +48,9 @@ describe("ExperienceSelector component", () => {
     expect(screen.getByText(/Auto \(2 Latest Experiences\)/i)).toBeDefined();
 
     await waitFor(() => {
-      expect(screen.getByText("Associate Full Stack Web Developer")).toBeDefined();
+      expect(
+        screen.getByText("Associate Full Stack Web Developer"),
+      ).toBeDefined();
       expect(screen.getByText("Frontend Engineer Intern")).toBeDefined();
     });
   });
@@ -65,7 +67,9 @@ describe("ExperienceSelector component", () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText("Associate Full Stack Web Developer")).toBeDefined();
+      expect(
+        screen.getByText("Associate Full Stack Web Developer"),
+      ).toBeDefined();
     });
 
     fireEvent.click(screen.getByText("Associate Full Stack Web Developer"));

@@ -20,7 +20,10 @@ export function FileUploadDropzone({
 
   const handleProcessFile = (selectedFile: File) => {
     if (!selectedFile) return;
-    if (selectedFile.type !== "application/pdf" && !selectedFile.name.endsWith(".pdf")) {
+    if (
+      selectedFile.type !== "application/pdf" &&
+      !selectedFile.name.endsWith(".pdf")
+    ) {
       alert("Please upload a valid PDF document (.pdf)");
       return;
     }
@@ -48,7 +51,9 @@ export function FileUploadDropzone({
   };
 
   const displayName = fileName || file?.name;
-  const displaySize = file ? `${(file.size / 1024).toFixed(1)} KB` : "PDF Document";
+  const displaySize = file
+    ? `${(file.size / 1024).toFixed(1)} KB`
+    : "PDF Document";
 
   return (
     <div className="space-y-2">

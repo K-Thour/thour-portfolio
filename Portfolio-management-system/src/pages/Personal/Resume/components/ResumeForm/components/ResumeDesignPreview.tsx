@@ -12,7 +12,12 @@ import {
   Layers,
 } from "lucide-react";
 import type { ResumeFormData } from "../../../types";
-import { fetchProjects, fetchExperiences, fetchTechnologies, fetchContacts } from "../../../../../../services/api";
+import {
+  fetchProjects,
+  fetchExperiences,
+  fetchTechnologies,
+  fetchContacts,
+} from "../../../../../../services/api";
 import envConstraints from "../../../../../../constraints/env.constraints";
 
 interface ResumeDesignPreviewProps {
@@ -73,14 +78,19 @@ export function ResumeDesignPreview({
     let isMounted = true;
     const load = async () => {
       try {
-        const [projData, expData, techData, contactData] = await Promise.allSettled([
-          fetchProjects(),
-          fetchExperiences(),
-          fetchTechnologies(),
-          fetchContacts(),
-        ]);
+        const [projData, expData, techData, contactData] =
+          await Promise.allSettled([
+            fetchProjects(),
+            fetchExperiences(),
+            fetchTechnologies(),
+            fetchContacts(),
+          ]);
 
-        if (isMounted && projData.status === "fulfilled" && Array.isArray(projData.value)) {
+        if (
+          isMounted &&
+          projData.status === "fulfilled" &&
+          Array.isArray(projData.value)
+        ) {
           const mapped: ProjectData[] = projData.value.map((p: any) => ({
             id: p._id || p.id,
             title: p.title || "Untitled Project",
@@ -88,13 +98,19 @@ export function ResumeDesignPreview({
             description: p.description || p.fullDescription || "",
             features: Array.isArray(p.features) ? p.features : [],
             techStack: Array.isArray(p.techStack)
-              ? p.techStack.map((t: any) => (typeof t === "string" ? t : t.name || ""))
+              ? p.techStack.map((t: any) =>
+                  typeof t === "string" ? t : t.name || "",
+                )
               : [],
           }));
           setAllProjects(mapped);
         }
 
-        if (isMounted && expData.status === "fulfilled" && Array.isArray(expData.value)) {
+        if (
+          isMounted &&
+          expData.status === "fulfilled" &&
+          Array.isArray(expData.value)
+        ) {
           const mappedExp: ExperienceData[] = expData.value.map((e: any) => ({
             id: e._id || e.id,
             position: e.position || "Software Engineer",
@@ -115,7 +131,11 @@ export function ResumeDesignPreview({
           setAllExperiences(mappedExp);
         }
 
-        if (isMounted && techData.status === "fulfilled" && Array.isArray(techData.value)) {
+        if (
+          isMounted &&
+          techData.status === "fulfilled" &&
+          Array.isArray(techData.value)
+        ) {
           const mappedTech: TechData[] = techData.value.map((t: any) => ({
             id: t._id || t.id,
             name: t.name || "Tech",
@@ -124,8 +144,14 @@ export function ResumeDesignPreview({
           setAllTechnologies(mappedTech);
         }
 
-        if (isMounted && contactData.status === "fulfilled" && Array.isArray(contactData.value)) {
-          const active = contactData.value.find((c: any) => c.isActive && !c.isDeleted) || contactData.value[0];
+        if (
+          isMounted &&
+          contactData.status === "fulfilled" &&
+          Array.isArray(contactData.value)
+        ) {
+          const active =
+            contactData.value.find((c: any) => c.isActive && !c.isDeleted) ||
+            contactData.value[0];
           if (active) {
             setActiveContact({
               id: active._id || active.id,
@@ -152,7 +178,10 @@ export function ResumeDesignPreview({
   }, []);
 
   const templateType = formData.designType || "ats";
-  const displayName = formData.name.trim() || formData.targetRole || "Full Stack Software Engineer";
+  const displayName =
+    formData.name.trim() ||
+    formData.targetRole ||
+    "Full Stack Software Engineer";
   const targetRole = formData.targetRole || "Full Stack Software Engineer";
   const displaySummary =
     formData.description.trim() ||
@@ -162,24 +191,25 @@ export function ResumeDesignPreview({
   const selectedProjIds = formData.selectedProjectIds || [];
   const displayProjects =
     selectedProjIds.length > 0 && allProjects.length > 0
-      ? selectedProjIds
+      ? (selectedProjIds
           .map((id) => allProjects.find((p) => p.id === id))
-          .filter(Boolean) as ProjectData[]
+          .filter(Boolean) as ProjectData[])
       : allProjects.slice(0, 3);
 
   // Filter experiences based on selectedExperienceIds or fallback
   const selectedExpIds = formData.selectedExperienceIds || [];
   const displayExperiences =
     selectedExpIds.length > 0 && allExperiences.length > 0
-      ? selectedExpIds
+      ? (selectedExpIds
           .map((id) => allExperiences.find((e) => e.id === id))
-          .filter(Boolean) as ExperienceData[]
+          .filter(Boolean) as ExperienceData[])
       : allExperiences.slice(0, 2);
 
   // Role + Job Description + Job Link Dynamic Technology Ranking
   const categorizedTechnologies = useMemo(() => {
     const roleLower = (targetRole || "").toLowerCase();
-    const descLower = `${formData.description || ""} ${formData.jobLink || ""}`.toLowerCase();
+    const descLower =
+      `${formData.description || ""} ${formData.jobLink || ""}`.toLowerCase();
 
     const techList =
       allTechnologies.length > 0
@@ -210,18 +240,67 @@ export function ResumeDesignPreview({
       const tLower = t.toLowerCase();
       if (descLower.includes(tLower)) score += 30;
 
-      if (roleLower.includes("front") || roleLower.includes("react") || roleLower.includes("ui")) {
-        if (["react", "next", "type", "java", "html", "css", "tail", "redux", "ui"].some((k) => tLower.includes(k))) {
+      if (
+        roleLower.includes("front") ||
+        roleLower.includes("react") ||
+        roleLower.includes("ui")
+      ) {
+        if (
+          [
+            "react",
+            "next",
+            "type",
+            "java",
+            "html",
+            "css",
+            "tail",
+            "redux",
+            "ui",
+          ].some((k) => tLower.includes(k))
+        ) {
           score += 20;
         }
       }
-      if (roleLower.includes("back") || roleLower.includes("node") || roleLower.includes("cloud")) {
-        if (["node", "express", "python", "mongo", "postgre", "nest", "sql", "api", "socket", "docker", "aws"].some((k) => tLower.includes(k))) {
+      if (
+        roleLower.includes("back") ||
+        roleLower.includes("node") ||
+        roleLower.includes("cloud")
+      ) {
+        if (
+          [
+            "node",
+            "express",
+            "python",
+            "mongo",
+            "postgre",
+            "nest",
+            "sql",
+            "api",
+            "socket",
+            "docker",
+            "aws",
+          ].some((k) => tLower.includes(k))
+        ) {
           score += 20;
         }
       }
       if (roleLower.includes("full") || roleLower.includes("engineer")) {
-        if (["react", "next", "type", "java", "node", "express", "mongo", "postgre", "tail", "redux", "docker", "aws"].some((k) => tLower.includes(k))) {
+        if (
+          [
+            "react",
+            "next",
+            "type",
+            "java",
+            "node",
+            "express",
+            "mongo",
+            "postgre",
+            "tail",
+            "redux",
+            "docker",
+            "aws",
+          ].some((k) => tLower.includes(k))
+        ) {
           score += 15;
         }
       }
@@ -232,30 +311,64 @@ export function ResumeDesignPreview({
     const topTechs = scored.slice(0, 16).map((st) => st.name);
 
     const frontend = topTechs.filter((s) =>
-      ["react", "next", "type", "java", "html", "css", "tail", "redux", "boot", "front", "ui"].some((k) =>
-        s.toLowerCase().includes(k)
-      )
+      [
+        "react",
+        "next",
+        "type",
+        "java",
+        "html",
+        "css",
+        "tail",
+        "redux",
+        "boot",
+        "front",
+        "ui",
+      ].some((k) => s.toLowerCase().includes(k)),
     );
     const backend = topTechs.filter((s) =>
-      ["node", "express", "python", "mongo", "postgre", "nest", "sql", "django", "api", "socket", "back"].some((k) =>
-        s.toLowerCase().includes(k)
-      )
+      [
+        "node",
+        "express",
+        "python",
+        "mongo",
+        "postgre",
+        "nest",
+        "sql",
+        "django",
+        "api",
+        "socket",
+        "back",
+      ].some((k) => s.toLowerCase().includes(k)),
     );
-    const tools = topTechs.filter((s) => !frontend.includes(s) && !backend.includes(s));
+    const tools = topTechs.filter(
+      (s) => !frontend.includes(s) && !backend.includes(s),
+    );
 
     return {
-      frontend: frontend.join(", ") || "React.js, TypeScript, Next.js, Redux, Tailwind CSS, HTML5, CSS3",
-      backend: backend.join(", ") || "Node.js, Express.js, MongoDB, PostgreSQL, RESTful APIs, WebSockets",
-      tools: tools.length > 0 ? tools.join(", ") : "Docker, AWS, Git, Vite, CI/CD",
+      frontend:
+        frontend.join(", ") ||
+        "React.js, TypeScript, Next.js, Redux, Tailwind CSS, HTML5, CSS3",
+      backend:
+        backend.join(", ") ||
+        "Node.js, Express.js, MongoDB, PostgreSQL, RESTful APIs, WebSockets",
+      tools:
+        tools.length > 0 ? tools.join(", ") : "Docker, AWS, Git, Vite, CI/CD",
     };
   }, [allTechnologies, targetRole, formData.description, formData.jobLink]);
 
-  const formatDuration = (joining?: string, leaving?: string, stillWorking?: boolean) => {
+  const formatDuration = (
+    joining?: string,
+    leaving?: string,
+    stillWorking?: boolean,
+  ) => {
     const formatDate = (d?: string) => {
       if (!d) return "";
       const dt = new Date(d);
       if (isNaN(dt.getTime())) return d.split("T")[0];
-      return dt.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+      return dt.toLocaleDateString("en-US", {
+        month: "short",
+        year: "numeric",
+      });
     };
     const start = formatDate(joining) || "Feb 2025";
     const end = stillWorking ? "Present" : formatDate(leaving) || "Present";
@@ -331,7 +444,9 @@ export function ResumeDesignPreview({
               onClick={() => setZoom((z) => Math.max(80, z - 10))}
               disabled={zoom <= 80}
               className={`p-1 rounded transition-colors disabled:opacity-30 ${
-                isDark ? "hover:bg-slate-800 text-slate-400" : "hover:bg-slate-100 text-slate-600"
+                isDark
+                  ? "hover:bg-slate-800 text-slate-400"
+                  : "hover:bg-slate-100 text-slate-600"
               }`}
               title="Zoom out"
             >
@@ -345,7 +460,9 @@ export function ResumeDesignPreview({
               onClick={() => setZoom((z) => Math.min(120, z + 10))}
               disabled={zoom >= 120}
               className={`p-1 rounded transition-colors disabled:opacity-30 ${
-                isDark ? "hover:bg-slate-800 text-slate-400" : "hover:bg-slate-100 text-slate-600"
+                isDark
+                  ? "hover:bg-slate-800 text-slate-400"
+                  : "hover:bg-slate-100 text-slate-600"
               }`}
               title="Zoom in"
             >
@@ -363,7 +480,10 @@ export function ResumeDesignPreview({
           </div>
         ) : (
           <div
-            style={{ transform: `scale(${zoom / 100})`, transformOrigin: "top center" }}
+            style={{
+              transform: `scale(${zoom / 100})`,
+              transformOrigin: "top center",
+            }}
             className={`w-full max-w-md bg-white text-slate-900 rounded-lg shadow-xl p-6 border transition-all duration-300 ${
               templateType === "latex"
                 ? "font-serif border-slate-300"
@@ -398,37 +518,55 @@ export function ResumeDesignPreview({
               <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-[9.5px] text-slate-600 mt-1.5">
                 <span>{activeContact?.phone || "+91 8847009521"}</span>
                 <span>|</span>
-                <span>{activeContact?.email || "karanveerthour76@gmail.com"}</span>
+                <span>
+                  {activeContact?.email || "karanveerthour76@gmail.com"}
+                </span>
                 <span>|</span>
                 <span>
                   {(() => {
                     const raw = activeContact?.github || "github.com/K-Thour";
-                    const clean = raw.replace(/^https?:\/\//, '').replace(/\/+$/, '');
-                    return clean.startsWith('www.') ? clean : `www.${clean}`;
+                    const clean = raw
+                      .replace(/^https?:\/\//, "")
+                      .replace(/\/+$/, "");
+                    return clean.startsWith("www.") ? clean : `www.${clean}`;
                   })()}
                 </span>
                 <span>|</span>
                 <span>
                   {(() => {
-                    const raw = activeContact?.linkedin || "linkedin.com/in/karanveer-thour";
-                    const clean = raw.replace(/^https?:\/\//, '').replace(/\/+$/, '');
-                    return clean.startsWith('www.') ? clean : `www.${clean}`;
+                    const raw =
+                      activeContact?.linkedin ||
+                      "linkedin.com/in/karanveer-thour";
+                    const clean = raw
+                      .replace(/^https?:\/\//, "")
+                      .replace(/\/+$/, "");
+                    return clean.startsWith("www.") ? clean : `www.${clean}`;
                   })()}
                 </span>
                 <span>|</span>
                 <span>
                   {(() => {
-                    const raw = activeContact?.website || envConstraints.PORTFOLIO_WEB_BASE_URL;
-                    const clean = raw.replace(/^https?:\/\//, '').replace(/\/+$/, '');
-                    return clean.startsWith('www.') ? clean : `www.${clean}`;
+                    const raw =
+                      activeContact?.website ||
+                      envConstraints.PORTFOLIO_WEB_BASE_URL;
+                    const clean = raw
+                      .replace(/^https?:\/\//, "")
+                      .replace(/\/+$/, "");
+                    return clean.startsWith("www.") ? clean : `www.${clean}`;
                   })()}
                 </span>
               </div>
               <div className="text-[9.5px] text-slate-600 text-center mt-1 font-medium">
                 {activeContact
-                  ? [activeContact.city, activeContact.state, activeContact.country]
-                      .filter(Boolean)
-                      .map((s) => s.trim().replace(/\b\w/g, (c) => c.toUpperCase()))
+                  ? [
+                      activeContact.city,
+                      activeContact.state,
+                      activeContact.country,
+                    ]
+                      .filter((s): s is string => Boolean(s))
+                      .map((s) =>
+                        s.trim().replace(/\b\w/g, (c) => c.toUpperCase()),
+                      )
                       .join(", ")
                   : "Khanna, Punjab, India"}
               </div>
@@ -460,7 +598,9 @@ export function ResumeDesignPreview({
                 Professional Summary
               </h2>
               <p className="text-[10px] leading-relaxed text-slate-700 text-justify">
-                {displaySummary.includes("This position") || displaySummary.includes("partner company") || displaySummary.includes("Accountabilities")
+                {displaySummary.includes("This position") ||
+                displaySummary.includes("partner company") ||
+                displaySummary.includes("Accountabilities")
                   ? `Results-driven and innovative ${targetRole} with 3+ years of experience building scalable web applications, modern responsive interfaces, and robust backend architectures. Highly proficient in React.js, TypeScript, Next.js, Redux, and Node.js microservices.`
                   : displaySummary}
               </p>
@@ -480,14 +620,17 @@ export function ResumeDesignPreview({
               </h2>
               <div className="text-[10px] text-slate-800 space-y-1">
                 <p>
-                  <strong>• Frontend Technologies:</strong> {categorizedTechnologies.frontend}
+                  <strong>• Frontend Technologies:</strong>{" "}
+                  {categorizedTechnologies.frontend}
                 </p>
                 <p>
-                  <strong>• Backend & Databases:</strong> {categorizedTechnologies.backend}
+                  <strong>• Backend & Databases:</strong>{" "}
+                  {categorizedTechnologies.backend}
                 </p>
                 {categorizedTechnologies.tools && (
                   <p>
-                    <strong>• Developer Tools & Cloud:</strong> {categorizedTechnologies.tools}
+                    <strong>• Developer Tools & Cloud:</strong>{" "}
+                    {categorizedTechnologies.tools}
                   </p>
                 )}
               </div>
@@ -503,30 +646,49 @@ export function ResumeDesignPreview({
                 }`}
               >
                 <Briefcase className="w-3 h-3 text-blue-600" />
-                Professional Experience ({displayExperiences.length || 2} Selected)
+                Professional Experience ({displayExperiences.length || 2}{" "}
+                Selected)
               </h2>
               <div className="space-y-3">
                 {displayExperiences.length > 0 ? (
                   displayExperiences.map((exp) => (
                     <div key={exp.id}>
                       <div className="flex justify-between items-baseline text-[10.5px]">
-                        <span className="font-bold text-slate-900">{exp.position}</span>
+                        <span className="font-bold text-slate-900">
+                          {exp.position}
+                        </span>
                         <span className="text-[9.5px] text-slate-600 font-mono">
-                          {formatDuration(exp.dateOfJoining, exp.dateOfLeaving, exp.stillWorking)}
+                          {formatDuration(
+                            exp.dateOfJoining,
+                            exp.dateOfLeaving,
+                            exp.stillWorking,
+                          )}
                         </span>
                       </div>
-                      <p className="text-[9.5px] text-blue-700 font-medium">{exp.companyName}</p>
+                      <p className="text-[9.5px] text-blue-700 font-medium">
+                        {exp.companyName}
+                      </p>
                       <ul className="list-disc list-inside text-[9.5px] text-slate-700 mt-1 space-y-0.5 leading-normal">
                         {exp.description ? (
                           exp.description
                             .split(/(?<=[.!?])\s+/)
                             .filter((s) => s.trim().length > 10)
                             .slice(0, 4)
-                            .map((bullet, bIdx) => <li key={bIdx}>{bullet.trim()}</li>)
+                            .map((bullet, bIdx) => (
+                              <li key={bIdx}>{bullet.trim()}</li>
+                            ))
                         ) : (
                           <>
-                            <li>Architected and implemented responsive full-stack features with React.js, TypeScript, and Node.js microservices.</li>
-                            <li>Engineered real-time state management and asynchronous background task pipelines, increasing throughput by 40%.</li>
+                            <li>
+                              Architected and implemented responsive full-stack
+                              features with React.js, TypeScript, and Node.js
+                              microservices.
+                            </li>
+                            <li>
+                              Engineered real-time state management and
+                              asynchronous background task pipelines, increasing
+                              throughput by 40%.
+                            </li>
                           </>
                         )}
                       </ul>
@@ -535,10 +697,16 @@ export function ResumeDesignPreview({
                 ) : (
                   <div>
                     <div className="flex justify-between items-baseline text-[10.5px]">
-                      <span className="font-bold text-slate-900">Associate Full Stack Web Developer</span>
-                      <span className="text-[9.5px] text-slate-600 font-mono">Feb 2025 – Present</span>
+                      <span className="font-bold text-slate-900">
+                        Associate Full Stack Web Developer
+                      </span>
+                      <span className="text-[9.5px] text-slate-600 font-mono">
+                        Feb 2025 – Present
+                      </span>
                     </div>
-                    <p className="text-[9.5px] text-blue-700 font-medium">Devronins Private Limited</p>
+                    <p className="text-[9.5px] text-blue-700 font-medium">
+                      Devronins Private Limited
+                    </p>
                   </div>
                 )}
               </div>
@@ -562,25 +730,45 @@ export function ResumeDesignPreview({
                     <div key={p.id}>
                       <span className="font-bold">{p.title}</span> —{" "}
                       <span className="italic text-slate-600">
-                        {p.techStack.slice(0, 4).join(", ") || "React, TypeScript, Node.js"}
+                        {p.techStack.slice(0, 4).join(", ") ||
+                          "React, TypeScript, Node.js"}
                       </span>
                       <ul className="list-disc list-inside text-slate-600 mt-0.5 space-y-0.5">
-                        <li>{p.description || "High-performance full-stack web application with responsive UI."}</li>
+                        <li>
+                          {p.description ||
+                            "High-performance full-stack web application with responsive UI."}
+                        </li>
                         {p.features && p.features.length > 0 ? (
-                          p.features.slice(0, 2).map((feat, fIdx) => <li key={fIdx}>{feat}</li>)
+                          p.features
+                            .slice(0, 2)
+                            .map((feat, fIdx) => <li key={fIdx}>{feat}</li>)
                         ) : (
-                          <li>Architected modular state management and secure RESTful APIs.</li>
+                          <li>
+                            Architected modular state management and secure
+                            RESTful APIs.
+                          </li>
                         )}
                       </ul>
                     </div>
                   ))
                 ) : (
                   <div>
-                    <span className="font-bold">Portfolio & Content Management System</span> —{" "}
-                    <span className="italic text-slate-600">TypeScript, React, Node.js, MongoDB</span>
+                    <span className="font-bold">
+                      Portfolio & Content Management System
+                    </span>{" "}
+                    —{" "}
+                    <span className="italic text-slate-600">
+                      TypeScript, React, Node.js, MongoDB
+                    </span>
                     <ul className="list-disc list-inside text-slate-600 mt-0.5 space-y-0.5">
-                      <li>Engineered comprehensive developer CMS with live resume generation and background queuing.</li>
-                      <li>Integrated real-time ATS scoring algorithm and customizable LaTeX compiler pipeline.</li>
+                      <li>
+                        Engineered comprehensive developer CMS with live resume
+                        generation and background queuing.
+                      </li>
+                      <li>
+                        Integrated real-time ATS scoring algorithm and
+                        customizable LaTeX compiler pipeline.
+                      </li>
                     </ul>
                   </div>
                 )}
@@ -600,8 +788,12 @@ export function ResumeDesignPreview({
                 Education & Credentials
               </h2>
               <div className="flex justify-between text-[9.5px] text-slate-800">
-                <span className="font-semibold">Bachelor of Computer Applications (BCA)</span>
-                <span className="text-slate-600">Indira Gandhi National Open University</span>
+                <span className="font-semibold">
+                  Bachelor of Computer Applications (BCA)
+                </span>
+                <span className="text-slate-600">
+                  Indira Gandhi National Open University
+                </span>
               </div>
             </div>
 
@@ -619,7 +811,9 @@ export function ResumeDesignPreview({
               </h2>
               <div className="text-[9.5px] text-slate-800">
                 <p>
-                  <strong>• Languages:</strong> Punjabi (Mother tongue) &nbsp;|&nbsp; Hindi (Conversationally fluent) &nbsp;|&nbsp; English (Business knowledge)
+                  <strong>• Languages:</strong> Punjabi (Mother tongue)
+                  &nbsp;|&nbsp; Hindi (Conversationally fluent) &nbsp;|&nbsp;
+                  English (Business knowledge)
                 </p>
               </div>
             </div>

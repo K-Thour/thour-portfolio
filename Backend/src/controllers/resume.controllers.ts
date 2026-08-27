@@ -156,8 +156,12 @@ const prepareResumeData = async (resumeIdOrFilename: string): Promise<ResumePdfD
 
   // Sort education in reverse chronological order (Graduation / BCA first)
   const sortedEducation = [...filteredEducation].sort((a: any, b: any) => {
-    const isGradA = a.level?.toLowerCase() === 'graduation' || (a.degree && a.degree.toLowerCase().includes('bachelor'));
-    const isGradB = b.level?.toLowerCase() === 'graduation' || (b.degree && b.degree.toLowerCase().includes('bachelor'));
+    const isGradA =
+      a.level?.toLowerCase() === 'graduation' ||
+      (a.degree && a.degree.toLowerCase().includes('bachelor'));
+    const isGradB =
+      b.level?.toLowerCase() === 'graduation' ||
+      (b.degree && b.degree.toLowerCase().includes('bachelor'));
     if (isGradA && !isGradB) return -1;
     if (!isGradA && isGradB) return 1;
     return 0;
@@ -173,7 +177,8 @@ const prepareResumeData = async (resumeIdOrFilename: string): Promise<ResumePdfD
   // 1. Role-Tailored Technologies Filter (prioritizing AI & Database selected technologies)
   const selectedTechIds = (resume?.technologiesUsed || []).map((id: any) => id.toString());
   const roleText = `${resume?.targetRole || resume?.name || ''}`.toLowerCase();
-  const fullContextText = `${resume?.name || ''} ${resume?.description || ''} ${resume?.jobUrl || ''}`.toLowerCase();
+  const fullContextText =
+    `${resume?.name || ''} ${resume?.description || ''} ${resume?.jobUrl || ''}`.toLowerCase();
 
   const scoredTechnologies = technologies.map((t: any) => {
     let score = 0;
@@ -184,17 +189,85 @@ const prepareResumeData = async (resumeIdOrFilename: string): Promise<ResumePdfD
     if (fullContextText.includes(tNameLower)) score += 20;
 
     // Role-specific heuristics
-    if (roleText.includes('front') || roleText.includes('react') || roleText.includes('ui') || roleText.includes('web')) {
-      if (['react', 'next', 'type', 'java', 'html', 'css', 'tail', 'redux', 'boot', 'front', 'ui'].some((k) => tNameLower.includes(k))) score += 15;
+    if (
+      roleText.includes('front') ||
+      roleText.includes('react') ||
+      roleText.includes('ui') ||
+      roleText.includes('web')
+    ) {
+      if (
+        [
+          'react',
+          'next',
+          'type',
+          'java',
+          'html',
+          'css',
+          'tail',
+          'redux',
+          'boot',
+          'front',
+          'ui',
+        ].some((k) => tNameLower.includes(k))
+      )
+        score += 15;
     }
-    if (roleText.includes('back') || roleText.includes('node') || roleText.includes('cloud') || roleText.includes('api')) {
-      if (['node', 'express', 'python', 'mongo', 'postgre', 'nest', 'sql', 'django', 'api', 'socket', 'docker', 'aws', 'back'].some((k) => tNameLower.includes(k))) score += 15;
+    if (
+      roleText.includes('back') ||
+      roleText.includes('node') ||
+      roleText.includes('cloud') ||
+      roleText.includes('api')
+    ) {
+      if (
+        [
+          'node',
+          'express',
+          'python',
+          'mongo',
+          'postgre',
+          'nest',
+          'sql',
+          'django',
+          'api',
+          'socket',
+          'docker',
+          'aws',
+          'back',
+        ].some((k) => tNameLower.includes(k))
+      )
+        score += 15;
     }
-    if (roleText.includes('full') || roleText.includes('engineer') || roleText.includes('developer')) {
-      if (['react', 'next', 'type', 'java', 'node', 'express', 'mongo', 'postgre', 'tail', 'redux', 'git', 'docker', 'aws'].some((k) => tNameLower.includes(k))) score += 12;
+    if (
+      roleText.includes('full') ||
+      roleText.includes('engineer') ||
+      roleText.includes('developer')
+    ) {
+      if (
+        [
+          'react',
+          'next',
+          'type',
+          'java',
+          'node',
+          'express',
+          'mongo',
+          'postgre',
+          'tail',
+          'redux',
+          'git',
+          'docker',
+          'aws',
+        ].some((k) => tNameLower.includes(k))
+      )
+        score += 12;
     }
     if (roleText.includes('ai') || roleText.includes('ml') || roleText.includes('data')) {
-      if (['python', 'ai', 'gemini', 'openai', 'llm', 'ml', 'tensor', 'torch'].some((k) => tNameLower.includes(k))) score += 20;
+      if (
+        ['python', 'ai', 'gemini', 'openai', 'llm', 'ml', 'tensor', 'torch'].some((k) =>
+          tNameLower.includes(k),
+        )
+      )
+        score += 20;
     }
 
     return { tech: t, score };
@@ -215,7 +288,8 @@ const prepareResumeData = async (resumeIdOrFilename: string): Promise<ResumePdfD
     const pId = p._id.toString();
     if (selectedProjIds.includes(pId)) score += 10;
 
-    const pText = `${p.title} ${p.description} ${p.fullDescription || ''} ${(p.features || []).join(' ')}`.toLowerCase();
+    const pText =
+      `${p.title} ${p.description} ${p.fullDescription || ''} ${(p.features || []).join(' ')}`.toLowerCase();
     keywords.forEach((kw) => {
       if (pText.includes(kw)) score += 2;
     });
@@ -223,7 +297,10 @@ const prepareResumeData = async (resumeIdOrFilename: string): Promise<ResumePdfD
     const stackNames = (p.techStack || [])
       .map((item: any) => {
         const id = item?._id?.toString() || item?.toString() || '';
-        return techMap.get(id) || (typeof item === 'string' && !/^[0-9a-fA-F]{24}$/.test(item) ? item : null);
+        return (
+          techMap.get(id) ||
+          (typeof item === 'string' && !/^[0-9a-fA-F]{24}$/.test(item) ? item : null)
+        );
       })
       .filter(Boolean);
 
@@ -243,14 +320,20 @@ const prepareResumeData = async (resumeIdOrFilename: string): Promise<ResumePdfD
   // If user explicitly picked projects, include all of them. Otherwise take top 3 best matching.
   const chosenProjects =
     selectedProjIds.length > 0
-      ? selectedProjIds
+      ? (selectedProjIds
           .map((id: string) => scoredProjects.find((sp) => sp.project._id.toString() === id))
-          .filter(Boolean) as typeof scoredProjects
-      : scoredProjects.slice(0, Math.min(projects.length, Math.max(3, scoredProjects.length >= 3 ? 3 : scoredProjects.length)));
+          .filter(Boolean) as typeof scoredProjects)
+      : scoredProjects.slice(
+          0,
+          Math.min(
+            projects.length,
+            Math.max(3, scoredProjects.length >= 3 ? 3 : scoredProjects.length),
+          ),
+        );
 
   // 3. Role-Tailored Experience (Auto 2 Latest / User Selected, 5 Points Each)
   const selectedExpIds = (resume?.experiencesUsed || []).map((id: any) => id.toString());
-  
+
   // Sort experience: stillWorking first, then dateOfJoining desc
   const sortedExp = [...experience].sort((a: any, b: any) => {
     if (a.stillWorking && !b.stillWorking) return -1;
@@ -312,7 +395,10 @@ const prepareResumeData = async (resumeIdOrFilename: string): Promise<ResumePdfD
 
   const formatDisplayUrl = (url?: string): string => {
     if (!url) return '';
-    let clean = url.trim().replace(/^https?:\/\//i, '').replace(/\/+$/, '');
+    let clean = url
+      .trim()
+      .replace(/^https?:\/\//i, '')
+      .replace(/\/+$/, '');
     if (!clean) return '';
     if (!clean.startsWith('www.')) {
       clean = `www.${clean}`;
@@ -341,8 +427,12 @@ const prepareResumeData = async (resumeIdOrFilename: string): Promise<ResumePdfD
     developerEmail: contact?.email || user?.email || 'karanveerthour76@gmail.com',
     developerPhone: contact?.phone || user?.phoneNumber || '+91 8847009521',
     developerGithub: formatDisplayUrl(contact?.github || user?.GitHubURL || 'github.com/K-Thour'),
-    developerLinkedin: formatDisplayUrl(contact?.linkedin || user?.LinkedInURL || 'linkedin.com/in/karanveer-thour'),
-    developerWebsite: formatDisplayUrl(contact?.website || envConstant.PORTFOLIO_WEB_BASE_URL || 'thour-portfolio.netlify.app'),
+    developerLinkedin: formatDisplayUrl(
+      contact?.linkedin || user?.LinkedInURL || 'linkedin.com/in/karanveer-thour',
+    ),
+    developerWebsite: formatDisplayUrl(
+      contact?.website || envConstant.PORTFOLIO_WEB_BASE_URL || 'thour-portfolio.netlify.app',
+    ),
     developerAddress: formattedAddress || 'India',
     technologies: tailoredTechnologies,
     projects: chosenProjects.map(({ project: p, resolvedStack }) => {
@@ -375,7 +465,10 @@ const prepareResumeData = async (resumeIdOrFilename: string): Promise<ResumePdfD
         bulletList.push(`Impact: ${p.outcome.trim()}`);
       }
 
-      const mainDescription = p.description || p.fullDescription || `Full-featured ${p.title} engineered for high performance and responsiveness.`;
+      const mainDescription =
+        p.description ||
+        p.fullDescription ||
+        `Full-featured ${p.title} engineered for high performance and responsiveness.`;
 
       return {
         title: p.title,
@@ -392,8 +485,12 @@ const prepareResumeData = async (resumeIdOrFilename: string): Promise<ResumePdfD
     experience: relevantExperience,
     education: sortedEducation.map((ed: any) => {
       let details = '';
-      if (ed.level?.toLowerCase() === 'graduation' || (ed.degree && ed.degree.toLowerCase().includes('bachelor'))) {
-        details = 'Core Coursework: Data Structures, Algorithms, Web Engineering, Database Management Systems';
+      if (
+        ed.level?.toLowerCase() === 'graduation' ||
+        (ed.degree && ed.degree.toLowerCase().includes('bachelor'))
+      ) {
+        details =
+          'Core Coursework: Data Structures, Algorithms, Web Engineering, Database Management Systems';
       }
       return {
         degree: formatEduDegree(ed),
@@ -467,7 +564,9 @@ const downloadTex = async (req: Request, res: Response) => {
       });
     }
 
-    const latex = resume?.latexCode || `\\documentclass[11pt]{article}\n\\begin{document}\n\\section{Resume}\nGenerated Resume Document\n\\end{document}`;
+    const latex =
+      resume?.latexCode ||
+      `\\documentclass[11pt]{article}\n\\begin{document}\n\\section{Resume}\nGenerated Resume Document\n\\end{document}`;
     const safeName = (resume?.name || 'resume').replace(/[^a-zA-Z0-9-_]/g, '_');
     res.setHeader('Content-Type', 'text/plain; charset=utf-8');
     res.setHeader('Content-Disposition', `attachment; filename="${safeName}.tex"`);

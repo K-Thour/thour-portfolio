@@ -15,7 +15,10 @@ describe("useResumeForm", () => {
 
     act(() => {
       result.current.updateField("name", "Software Engineer");
-      result.current.updateField("description", "Experienced Full Stack Developer");
+      result.current.updateField(
+        "description",
+        "Experienced Full Stack Developer",
+      );
       result.current.updateField("jobLink", "");
       result.current.updateField("designType", "ats");
     });
@@ -36,8 +39,14 @@ describe("useResumeForm", () => {
 
     act(() => {
       result.current.updateField("name", "React Developer");
-      result.current.updateField("description", "Specialized in React & Next.js");
-      result.current.updateField("jobLink", "https://www.linkedin.com/jobs/view/12345");
+      result.current.updateField(
+        "description",
+        "Specialized in React & Next.js",
+      );
+      result.current.updateField(
+        "jobLink",
+        "https://www.linkedin.com/jobs/view/12345",
+      );
       result.current.updateField("designType", "ats");
     });
 
@@ -55,7 +64,10 @@ describe("useResumeForm", () => {
 
     act(() => {
       result.current.updateField("name", "React Developer");
-      result.current.updateField("description", "Specialized in React & Next.js");
+      result.current.updateField(
+        "description",
+        "Specialized in React & Next.js",
+      );
       result.current.updateField("jobLink", "invalid-url");
     });
 
@@ -65,7 +77,9 @@ describe("useResumeForm", () => {
     });
 
     expect(isValid).toBe(false);
-    expect(result.current.errors.jobLink).toBe("Please enter a valid URL (e.g., https://...)");
+    expect(result.current.errors.jobLink).toBe(
+      "Please enter a valid URL (e.g., https://...)",
+    );
   });
 
   it("fails validation when name or description are missing", () => {
@@ -83,7 +97,9 @@ describe("useResumeForm", () => {
 
     expect(isValid).toBe(false);
     expect(result.current.errors.name).toBe("Resume title is required");
-    expect(result.current.errors.description).toBe("Summary or focus area is required");
+    expect(result.current.errors.description).toBe(
+      "Summary or focus area is required",
+    );
   });
 
   it("requires latexCode when designType is latex", () => {
@@ -102,6 +118,8 @@ describe("useResumeForm", () => {
     });
 
     expect(isValid).toBe(false);
-    expect(result.current.errors.latexCode).toBe("LaTeX code is required for LaTeX template");
+    expect(result.current.errors.latexCode).toBe(
+      "LaTeX code is required for LaTeX template",
+    );
   });
 });

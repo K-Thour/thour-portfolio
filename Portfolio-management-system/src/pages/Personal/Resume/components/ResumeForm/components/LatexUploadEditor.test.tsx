@@ -5,27 +5,23 @@ import { LatexUploadEditor } from "./LatexUploadEditor";
 describe("LatexUploadEditor component", () => {
   it("renders textarea and upload dropzone", () => {
     render(
-      <LatexUploadEditor
-        latexCode=""
-        isDark={false}
-        onChange={vi.fn()}
-      />,
+      <LatexUploadEditor latexCode="" isDark={false} onChange={vi.fn()} />,
     );
-    expect(screen.getByPlaceholderText(/paste or write your latex code/i)).toBeDefined();
+    expect(
+      screen.getByPlaceholderText(/paste or write your latex code/i),
+    ).toBeDefined();
     expect(screen.getByText(/upload \.tex or \.txt file/i)).toBeDefined();
   });
 
   it("calls onChange when typing in textarea", () => {
     const onChangeMock = vi.fn();
     render(
-      <LatexUploadEditor
-        latexCode=""
-        isDark={false}
-        onChange={onChangeMock}
-      />,
+      <LatexUploadEditor latexCode="" isDark={false} onChange={onChangeMock} />,
     );
     const textarea = screen.getByRole("textbox");
-    fireEvent.change(textarea, { target: { value: "\\documentclass{article}" } });
+    fireEvent.change(textarea, {
+      target: { value: "\\documentclass{article}" },
+    });
     expect(onChangeMock).toHaveBeenCalledWith("\\documentclass{article}");
   });
 

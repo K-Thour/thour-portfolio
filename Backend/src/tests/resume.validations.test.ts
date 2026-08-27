@@ -1,7 +1,4 @@
-import {
-  resumeCreateSchema,
-  resumeGenerateSchema,
-} from '../validations/resume.validations';
+import { resumeCreateSchema, resumeGenerateSchema } from '../validations/resume.validations';
 
 describe('Resume Validations', () => {
   describe('resumeGenerateSchema', () => {

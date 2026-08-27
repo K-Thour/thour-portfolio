@@ -49,7 +49,9 @@ export function useResumePage() {
   const handleDownload = (resume: Resume) => {
     try {
       if (!resume.generatedFileUrl) {
-        throw new Error("Resume file is not ready yet. Please wait for generation to complete.");
+        throw new Error(
+          "Resume file is not ready yet. Please wait for generation to complete.",
+        );
       }
       handlers.handleDownload(resume);
       toast({

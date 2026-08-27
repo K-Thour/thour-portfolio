@@ -24,21 +24,24 @@ export function TemplateSelector({
     {
       id: "ats",
       title: "ATS Standard / Minimalist",
-      description: "Clean single-column layout engineered for maximum ATS parser scores.",
+      description:
+        "Clean single-column layout engineered for maximum ATS parser scores.",
       icon: FileCheck,
       badge: "Highest ATS Score",
     },
     {
       id: "modern",
       title: "Modern Professional",
-      description: "Balanced typography and clean section accents for human & ATS screening.",
+      description:
+        "Balanced typography and clean section accents for human & ATS screening.",
       icon: Layout,
       badge: "Professional",
     },
     {
       id: "latex",
       title: "LaTeX Academic / Tech",
-      description: "Computer Modern formal serif structure with Overleaf LaTeX syntax support.",
+      description:
+        "Computer Modern formal serif structure with Overleaf LaTeX syntax support.",
       icon: FileCode,
       badge: "Overleaf / Tech",
     },

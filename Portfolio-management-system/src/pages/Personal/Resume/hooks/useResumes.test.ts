@@ -47,7 +47,9 @@ describe("useResumes hook", () => {
   });
 
   it("handles opening and closing the modal", () => {
-    const { result } = renderHook(() => useResumes(), { wrapper: createWrapper() });
+    const { result } = renderHook(() => useResumes(), {
+      wrapper: createWrapper(),
+    });
     expect(result.current.isModalOpen).toBe(false);
 
     act(() => {
@@ -62,7 +64,9 @@ describe("useResumes hook", () => {
   });
 
   it("submits passed form data and closes modal immediately", async () => {
-    const { result } = renderHook(() => useResumes(), { wrapper: createWrapper() });
+    const { result } = renderHook(() => useResumes(), {
+      wrapper: createWrapper(),
+    });
 
     act(() => {
       result.current.handlers.handleOpenModal();

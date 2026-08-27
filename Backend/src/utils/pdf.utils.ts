@@ -51,7 +51,11 @@ export interface ResumePdfData {
   languages?: LanguageDetail[];
 }
 
-export const buildProfessionalSummary = (text: string | undefined, title: string, devName?: string): string => {
+export const buildProfessionalSummary = (
+  text: string | undefined,
+  title: string,
+  _devName?: string,
+): string => {
   const isJobPostingText =
     text &&
     (text.includes('This position') ||
@@ -70,7 +74,6 @@ export const buildProfessionalSummary = (text: string | undefined, title: string
   }
 
   const roleTitle = title || 'React.js / Full-Stack Software Engineer';
-  const name = devName || 'Results-driven and innovative developer';
   return `Results-driven and innovative ${roleTitle} with hands-on experience in architecting scalable web applications, responsive user interfaces, and robust client-side workflows. Highly proficient in React.js, TypeScript, Next.js, Redux, Node.js, and modern CSS frameworks, with proven expertise in RESTful API integration, real-time state management, and performance optimization. Adept at delivering clean, maintainable code within agile cross-functional teams to build high-impact, user-centric software solutions.`;
 };
 
@@ -109,12 +112,19 @@ export const generateResumePdfStream = (data: ResumePdfData, res: Response): voi
   // --- HEADER ---
   doc.fontSize(22).font('Helvetica-Bold').fillColor('#0f172a').text(devName, { align: 'center' });
   doc.moveDown(0.16);
-  doc.fontSize(11).font('Helvetica-Bold').fillColor('#2563eb').text(resumeTitle.toUpperCase(), { align: 'center' });
+  doc
+    .fontSize(11)
+    .font('Helvetica-Bold')
+    .fillColor('#2563eb')
+    .text(resumeTitle.toUpperCase(), { align: 'center' });
   doc.moveDown(0.26);
 
   const formatDisplayUrl = (url?: string): string => {
     if (!url) return '';
-    let clean = url.trim().replace(/^https?:\/\//i, '').replace(/\/+$/, '');
+    let clean = url
+      .trim()
+      .replace(/^https?:\/\//i, '')
+      .replace(/\/+$/, '');
     if (!clean) return '';
     if (!clean.startsWith('www.')) {
       clean = `www.${clean}`;
@@ -161,13 +171,23 @@ export const generateResumePdfStream = (data: ResumePdfData, res: Response): voi
   }
 
   doc.moveDown(0.28);
-  doc.strokeColor('#cbd5e1').lineWidth(0.8).moveTo(leftMargin, doc.y).lineTo(leftMargin + contentWidth, doc.y).stroke();
+  doc
+    .strokeColor('#cbd5e1')
+    .lineWidth(0.8)
+    .moveTo(leftMargin, doc.y)
+    .lineTo(leftMargin + contentWidth, doc.y)
+    .stroke();
   doc.moveDown(0.28);
 
   const drawSectionHeading = (title: string) => {
     doc.moveDown(0.42);
     doc.fontSize(9.5).font('Helvetica-Bold').fillColor('#0f172a').text(title.toUpperCase());
-    doc.strokeColor('#2563eb').lineWidth(1.2).moveTo(leftMargin, doc.y + 1).lineTo(leftMargin + contentWidth, doc.y + 1).stroke();
+    doc
+      .strokeColor('#2563eb')
+      .lineWidth(1.2)
+      .moveTo(leftMargin, doc.y + 1)
+      .lineTo(leftMargin + contentWidth, doc.y + 1)
+      .stroke();
     doc.moveDown(0.28);
   };
 
@@ -205,25 +225,63 @@ export const generateResumePdfStream = (data: ResumePdfData, res: Response): voi
       ];
 
   const frontendSkills = allSkills.filter((s) =>
-    ['react', 'next', 'type', 'java', 'html', 'css', 'tail', 'redux', 'boot', 'front', 'ui'].some((k) =>
-      s.toLowerCase().includes(k),
+    ['react', 'next', 'type', 'java', 'html', 'css', 'tail', 'redux', 'boot', 'front', 'ui'].some(
+      (k) => s.toLowerCase().includes(k),
     ),
   );
   const backendSkills = allSkills.filter((s) =>
-    ['node', 'express', 'python', 'mongo', 'postgre', 'nest', 'sql', 'django', 'api', 'socket', 'back'].some((k) =>
-      s.toLowerCase().includes(k),
-    ),
+    [
+      'node',
+      'express',
+      'python',
+      'mongo',
+      'postgre',
+      'nest',
+      'sql',
+      'django',
+      'api',
+      'socket',
+      'back',
+    ].some((k) => s.toLowerCase().includes(k)),
   );
-  const toolsSkills = allSkills.filter((s) => !frontendSkills.includes(s) && !backendSkills.includes(s));
+  const toolsSkills = allSkills.filter(
+    (s) => !frontendSkills.includes(s) && !backendSkills.includes(s),
+  );
 
-  doc.fontSize(8.5).font('Helvetica-Bold').fillColor('#0f172a').text('•  Frontend Technologies: ', { continued: true });
-  doc.font('Helvetica').fillColor('#334155').text(frontendSkills.join(', ') || 'React.js, TypeScript, Next.js, Redux, Tailwind CSS, HTML5, CSS3', { lineGap: 1.8 });
+  doc
+    .fontSize(8.5)
+    .font('Helvetica-Bold')
+    .fillColor('#0f172a')
+    .text('•  Frontend Technologies: ', { continued: true });
+  doc
+    .font('Helvetica')
+    .fillColor('#334155')
+    .text(
+      frontendSkills.join(', ') ||
+        'React.js, TypeScript, Next.js, Redux, Tailwind CSS, HTML5, CSS3',
+      { lineGap: 1.8 },
+    );
 
-  doc.fontSize(8.5).font('Helvetica-Bold').fillColor('#0f172a').text('•  Backend & Databases: ', { continued: true });
-  doc.font('Helvetica').fillColor('#334155').text(backendSkills.join(', ') || 'Node.js, Express.js, MongoDB, PostgreSQL, RESTful APIs, WebSockets', { lineGap: 1.8 });
+  doc
+    .fontSize(8.5)
+    .font('Helvetica-Bold')
+    .fillColor('#0f172a')
+    .text('•  Backend & Databases: ', { continued: true });
+  doc
+    .font('Helvetica')
+    .fillColor('#334155')
+    .text(
+      backendSkills.join(', ') ||
+        'Node.js, Express.js, MongoDB, PostgreSQL, RESTful APIs, WebSockets',
+      { lineGap: 1.8 },
+    );
 
   if (toolsSkills.length > 0) {
-    doc.fontSize(8.5).font('Helvetica-Bold').fillColor('#0f172a').text('•  Developer Tools & Cloud: ', { continued: true });
+    doc
+      .fontSize(8.5)
+      .font('Helvetica-Bold')
+      .fillColor('#0f172a')
+      .text('•  Developer Tools & Cloud: ', { continued: true });
     doc.font('Helvetica').fillColor('#334155').text(toolsSkills.join(', '), { lineGap: 1.8 });
   }
   doc.moveDown(0.25);
@@ -248,22 +306,31 @@ export const generateResumePdfStream = (data: ResumePdfData, res: Response): voi
       ];
 
   expList.forEach((exp) => {
-    doc.fontSize(9).font('Helvetica-Bold').fillColor('#0f172a').text(exp.position, { continued: true });
-    doc.fontSize(8.8).font('Helvetica-Bold').fillColor('#2563eb').text(`  |  ${exp.companyName}`, { continued: true });
+    doc
+      .fontSize(9)
+      .font('Helvetica-Bold')
+      .fillColor('#0f172a')
+      .text(exp.position, { continued: true });
+    doc
+      .fontSize(8.8)
+      .font('Helvetica-Bold')
+      .fillColor('#2563eb')
+      .text(`  |  ${exp.companyName}`, { continued: true });
     const rightText = exp.duration || 'Feb 2025 — Present';
     doc.fontSize(8).font('Helvetica-Oblique').fillColor('#64748b').text(`   (${rightText})`);
 
     doc.moveDown(0.12);
 
-    const bullets = exp.bullets && exp.bullets.length > 0
-      ? exp.bullets
-      : [
-          'Architected and implemented responsive full-stack features with React.js, TypeScript, and Node.js microservices.',
-          'Engineered real-time state management and asynchronous background task pipelines, increasing throughput by 40%.',
-          'Optimized frontend asset delivery and client-side caching, significantly improving Core Web Vitals and load times.',
-          'Implemented secure RESTful APIs, JWT authentication, and role-based access control workflows.',
-          'Collaborated across agile sprints with cross-functional product, QA, and DevOps teams to ensure seamless CI/CD deployments.',
-        ];
+    const bullets =
+      exp.bullets && exp.bullets.length > 0
+        ? exp.bullets
+        : [
+            'Architected and implemented responsive full-stack features with React.js, TypeScript, and Node.js microservices.',
+            'Engineered real-time state management and asynchronous background task pipelines, increasing throughput by 40%.',
+            'Optimized frontend asset delivery and client-side caching, significantly improving Core Web Vitals and load times.',
+            'Implemented secure RESTful APIs, JWT authentication, and role-based access control workflows.',
+            'Collaborated across agile sprints with cross-functional product, QA, and DevOps teams to ensure seamless CI/CD deployments.',
+          ];
 
     bullets.forEach((bullet) => {
       doc.fontSize(8.2).font('Helvetica').fillColor('#334155').text(`•   ${bullet}`, {
@@ -281,7 +348,11 @@ export const generateResumePdfStream = (data: ResumePdfData, res: Response): voi
   const projList: ProjectDetail[] = data.projects || [];
 
   projList.forEach((proj) => {
-    doc.fontSize(9).font('Helvetica-Bold').fillColor('#0f172a').text(proj.title, { continued: true });
+    doc
+      .fontSize(9)
+      .font('Helvetica-Bold')
+      .fillColor('#0f172a')
+      .text(proj.title, { continued: true });
     if (proj.role) {
       doc.fontSize(8).font('Helvetica').fillColor('#475569').text(`  —  ${proj.role}`);
     } else {
@@ -294,7 +365,11 @@ export const generateResumePdfStream = (data: ResumePdfData, res: Response): voi
         .join(', ');
       if (cleanStack) {
         doc.moveDown(0.06);
-        doc.fontSize(7.8).font('Helvetica-Bold').fillColor('#2563eb').text('Technologies: ', { continued: true });
+        doc
+          .fontSize(7.8)
+          .font('Helvetica-Bold')
+          .fillColor('#2563eb')
+          .text('Technologies: ', { continued: true });
         doc.font('Helvetica-Oblique').fillColor('#475569').text(cleanStack);
       }
     }
@@ -338,11 +413,19 @@ export const generateResumePdfStream = (data: ResumePdfData, res: Response): voi
       ];
 
   eduList.forEach((edu) => {
-    doc.fontSize(8.5).font('Helvetica-Bold').fillColor('#0f172a').text(edu.degree, { continued: true });
+    doc
+      .fontSize(8.5)
+      .font('Helvetica-Bold')
+      .fillColor('#0f172a')
+      .text(edu.degree, { continued: true });
     doc.fontSize(8.2).font('Helvetica').fillColor('#475569').text(`   —   ${edu.institution}`);
     if (edu.details) {
       doc.moveDown(0.06);
-      doc.fontSize(7.8).font('Helvetica').fillColor('#64748b').text(edu.details, { indent: 8, lineGap: 1.6 });
+      doc
+        .fontSize(7.8)
+        .font('Helvetica')
+        .fillColor('#64748b')
+        .text(edu.details, { indent: 8, lineGap: 1.6 });
     }
     doc.moveDown(0.2);
   });
@@ -358,7 +441,11 @@ export const generateResumePdfStream = (data: ResumePdfData, res: Response): voi
       ];
 
   const langItems = langList.map((l) => `${l.name} (${l.proficiency})`).join('   |   ');
-  doc.fontSize(8.5).font('Helvetica-Bold').fillColor('#0f172a').text('•  Languages: ', { continued: true });
+  doc
+    .fontSize(8.5)
+    .font('Helvetica-Bold')
+    .fillColor('#0f172a')
+    .text('•  Languages: ', { continued: true });
   doc.font('Helvetica').fillColor('#334155').text(langItems, { lineGap: 1.8 });
   doc.moveDown(0.2);
 

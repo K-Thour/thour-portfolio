@@ -105,7 +105,9 @@ export function ResumeForm({
               selectedProjectIds={formData.selectedProjectIds || []}
               isDark={isDark}
               onRoleChange={(role) => updateField("targetRole", role)}
-              onProjectsChange={(projectIds) => updateField("selectedProjectIds", projectIds)}
+              onProjectsChange={(projectIds) =>
+                updateField("selectedProjectIds", projectIds)
+              }
             />
           </div>
 
@@ -156,7 +158,9 @@ export function ResumeForm({
                     onChange={(code) => updateField("latexCode", code)}
                   />
                   {errors.latexCode && (
-                    <p className="text-xs text-red-500 mt-1">{errors.latexCode}</p>
+                    <p className="text-xs text-red-500 mt-1">
+                      {errors.latexCode}
+                    </p>
                   )}
                 </motion.div>
               )}

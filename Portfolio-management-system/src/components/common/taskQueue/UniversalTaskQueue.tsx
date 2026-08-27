@@ -79,9 +79,7 @@ export function UniversalTaskQueue() {
                 : "bg-emerald-500/20 text-emerald-600 dark:text-emerald-400"
             }`}
           >
-            {activeTasksCount > 0
-              ? `${tasks[0]?.progress || 0}%`
-              : "Done"}
+            {activeTasksCount > 0 ? `${tasks[0]?.progress || 0}%` : "Done"}
           </span>
         </motion.button>
       )}
@@ -190,7 +188,8 @@ export function UniversalTaskQueue() {
             {!minimized && (
               <div className="max-h-[360px] overflow-y-auto p-3 space-y-2.5">
                 {tasks.map((task) => {
-                  const isRunning = task.status === "running" || task.status === "pending";
+                  const isRunning =
+                    task.status === "running" || task.status === "pending";
                   const isSuccess = task.status === "completed";
                   const isError = task.status === "failed";
 

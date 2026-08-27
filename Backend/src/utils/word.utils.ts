@@ -33,16 +33,28 @@ export const generateResumeWordDocument = (data: ResumePdfData, res: Response): 
       ];
 
   const frontendSkills = allSkills.filter((s) =>
-    ['react', 'next', 'type', 'java', 'html', 'css', 'tail', 'redux', 'boot', 'front', 'ui'].some((k) =>
-      s.toLowerCase().includes(k),
+    ['react', 'next', 'type', 'java', 'html', 'css', 'tail', 'redux', 'boot', 'front', 'ui'].some(
+      (k) => s.toLowerCase().includes(k),
     ),
   );
   const backendSkills = allSkills.filter((s) =>
-    ['node', 'express', 'python', 'mongo', 'postgre', 'nest', 'sql', 'django', 'api', 'socket', 'back'].some((k) =>
-      s.toLowerCase().includes(k),
-    ),
+    [
+      'node',
+      'express',
+      'python',
+      'mongo',
+      'postgre',
+      'nest',
+      'sql',
+      'django',
+      'api',
+      'socket',
+      'back',
+    ].some((k) => s.toLowerCase().includes(k)),
   );
-  const toolsSkills = allSkills.filter((s) => !frontendSkills.includes(s) && !backendSkills.includes(s));
+  const toolsSkills = allSkills.filter(
+    (s) => !frontendSkills.includes(s) && !backendSkills.includes(s),
+  );
 
   const devGithub = data.developerGithub || 'github.com/K-Thour';
   const devLinkedin = data.developerLinkedin || 'linkedin.com/in/karanveer-thour';
@@ -81,22 +93,21 @@ export const generateResumeWordDocument = (data: ResumePdfData, res: Response): 
     .join('');
 
   const projHtml = (data.projects || [])
-    .map(
-      (p) => {
-        const bullets: string[] = [];
-        if (p.description) bullets.push(p.description);
-        if (p.features && p.features.length > 0) {
-          p.features.forEach((f) => {
-            if (f && f !== p.description && !bullets.includes(f)) {
-              bullets.push(f);
-            }
-          });
-        }
-        if (p.outcome && p.outcome.trim().length > 0) {
-          bullets.push(`Impact: ${p.outcome.trim()}`);
-        }
+    .map((p) => {
+      const bullets: string[] = [];
+      if (p.description) bullets.push(p.description);
+      if (p.features && p.features.length > 0) {
+        p.features.forEach((f) => {
+          if (f && f !== p.description && !bullets.includes(f)) {
+            bullets.push(f);
+          }
+        });
+      }
+      if (p.outcome && p.outcome.trim().length > 0) {
+        bullets.push(`Impact: ${p.outcome.trim()}`);
+      }
 
-        return `
+      return `
       <div style="margin-bottom: 10px;">
         <table style="width: 100%; border: none;">
           <tr>
@@ -110,13 +121,13 @@ export const generateResumeWordDocument = (data: ResumePdfData, res: Response): 
             : ''
         }
         <ul style="margin: 3px 0 0 18px; padding: 0; color: #334155; font-size: 9.5pt;">
-          ${bullets.slice(0, 5)
+          ${bullets
+            .slice(0, 5)
             .map((f) => `<li style="margin-bottom: 3px; text-align: justify;">${f}</li>`)
             .join('')}
         </ul>
       </div>`;
-      },
-    )
+    })
     .join('');
 
   const eduHtml = (data.education || [])
@@ -136,7 +147,9 @@ export const generateResumeWordDocument = (data: ResumePdfData, res: Response): 
     devLinkedin.replace(/^https?:\/\//, ''),
     devWebsite.replace(/^https?:\/\//, ''),
     devAddress,
-  ].filter(Boolean).join(' &nbsp;|&nbsp; ');
+  ]
+    .filter(Boolean)
+    .join(' &nbsp;|&nbsp; ');
 
   const docContent = `
 <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>

@@ -108,7 +108,10 @@ const generateService = (
       (await models.contact.repo.getOne({ filter: [{ isActive: true, isDeleted: false }] })) ||
       (await models.contact.repo.getOne({ filter: [{ isDeleted: false }] }));
     const formattedAddress = contact
-      ? [contact.city, contact.state, contact.country].filter(Boolean).map((s: string) => s.trim()).join(', ')
+      ? [contact.city, contact.state, contact.country]
+          .filter(Boolean)
+          .map((s: string) => s.trim())
+          .join(', ')
       : 'India';
     const projects = await models.project.repo.get({ filter: [{ isDeleted: false }] });
     const servicesList = await models.service.repo.get({ filter: [{ isDeleted: false }] });
@@ -148,7 +151,7 @@ const generateService = (
     const effectiveExperienceIds =
       selectedExperienceIds && selectedExperienceIds.length > 0
         ? selectedExperienceIds
-        : (aiResult.selectedExperienceIds || []);
+        : aiResult.selectedExperienceIds || [];
 
     const projectsUsed = effectiveProjectIds.map((id) => new Types.ObjectId(id));
     const servicesUsed = aiResult.selectedServiceIds.map((id) => new Types.ObjectId(id));
@@ -158,7 +161,8 @@ const generateService = (
     // Create the resume document in DB with dynamic environment API base URL
     const newResumeId = new Types.ObjectId();
     const resumeUrl = `${envConstant.API_BASE_URL}/resume/download/pdf/${newResumeId}`;
-    const resumeFormatUrl = designFileUrl || `${envConstant.API_BASE_URL}/resume/download/tex/${newResumeId}`;
+    const resumeFormatUrl =
+      designFileUrl || `${envConstant.API_BASE_URL}/resume/download/tex/${newResumeId}`;
 
     const resumeData = {
       _id: newResumeId,

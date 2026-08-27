@@ -15,7 +15,9 @@ import { generateResumeAI } from "../services/api";
 
 export function useTaskQueue() {
   const dispatch = useAppDispatch();
-  const taskQueueState = useAppSelector((state: RootState) => state.taskQueue) || {
+  const taskQueueState = useAppSelector(
+    (state: RootState) => state.taskQueue,
+  ) || {
     tasks: [],
     isOpen: false,
   };
@@ -61,7 +63,8 @@ export function useTaskQueue() {
           updateTaskProgress({
             id: taskId,
             progress: 40,
-            stageText: "Selecting relevant projects, experience & skill stack...",
+            stageText:
+              "Selecting relevant projects, experience & skill stack...",
           }),
         );
       }, 1200);

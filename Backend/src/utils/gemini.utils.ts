@@ -79,7 +79,10 @@ export const verifyGeminiConnection = async (): Promise<boolean> => {
         return true;
       }
     } catch (pingErr: any) {
-      console.warn(`⚠️  [Gemini AI] Ping test failed for model "${modelName}":`, pingErr?.message || pingErr);
+      console.warn(
+        `⚠️  [Gemini AI] Ping test failed for model "${modelName}":`,
+        pingErr?.message || pingErr,
+      );
     }
   }
 
@@ -211,7 +214,7 @@ export const generateResumeAI = async (params: GenerateResumeParams): Promise<AI
   }));
 
   // Intelligent Role & Keyword Scoring for Projects
-  const scoreProject = (p: typeof safeProjects[0]): number => {
+  const scoreProject = (p: (typeof safeProjects)[0]): number => {
     let score = 0;
     const roleLower = (targetRole || '').toLowerCase();
     const descLower = (params.jobDescription || '').toLowerCase();
@@ -221,20 +224,70 @@ export const generateResumeAI = async (params: GenerateResumeParams): Promise<AI
     const techStrings = p.techStack.map((t: any) => String(t).toLowerCase());
 
     // Role-specific heuristics
-    if (roleLower.includes('front') || roleLower.includes('react') || roleLower.includes('ui') || roleLower.includes('next')) {
-      if (techStrings.some((t: string) => ['react', 'next', 'type', 'tail', 'redux', 'css', 'front', 'ui'].some((k) => t.includes(k)))) score += 20;
-      if (projRole.includes('front') || projTitle.includes('front') || projTitle.includes('portfolio') || projTitle.includes('web')) score += 15;
+    if (
+      roleLower.includes('front') ||
+      roleLower.includes('react') ||
+      roleLower.includes('ui') ||
+      roleLower.includes('next')
+    ) {
+      if (
+        techStrings.some((t: string) =>
+          ['react', 'next', 'type', 'tail', 'redux', 'css', 'front', 'ui'].some((k) =>
+            t.includes(k),
+          ),
+        )
+      )
+        score += 20;
+      if (
+        projRole.includes('front') ||
+        projTitle.includes('front') ||
+        projTitle.includes('portfolio') ||
+        projTitle.includes('web')
+      )
+        score += 15;
     }
-    if (roleLower.includes('back') || roleLower.includes('node') || roleLower.includes('cloud') || roleLower.includes('api')) {
-      if (techStrings.some((t: string) => ['node', 'express', 'mongo', 'postgre', 'docker', 'redis', 'api', 'back'].some((k) => t.includes(k)))) score += 20;
-      if (projRole.includes('back') || projTitle.includes('backend') || projTitle.includes('api') || projTitle.includes('management')) score += 15;
+    if (
+      roleLower.includes('back') ||
+      roleLower.includes('node') ||
+      roleLower.includes('cloud') ||
+      roleLower.includes('api')
+    ) {
+      if (
+        techStrings.some((t: string) =>
+          ['node', 'express', 'mongo', 'postgre', 'docker', 'redis', 'api', 'back'].some((k) =>
+            t.includes(k),
+          ),
+        )
+      )
+        score += 20;
+      if (
+        projRole.includes('back') ||
+        projTitle.includes('backend') ||
+        projTitle.includes('api') ||
+        projTitle.includes('management')
+      )
+        score += 15;
     }
-    if (roleLower.includes('full') || roleLower.includes('engineer') || roleLower.includes('developer')) {
+    if (
+      roleLower.includes('full') ||
+      roleLower.includes('engineer') ||
+      roleLower.includes('developer')
+    ) {
       if (techStrings.length >= 3) score += 12;
-      if (projRole.includes('full') || projTitle.includes('management') || projTitle.includes('platform')) score += 12;
+      if (
+        projRole.includes('full') ||
+        projTitle.includes('management') ||
+        projTitle.includes('platform')
+      )
+        score += 12;
     }
     if (roleLower.includes('ai') || roleLower.includes('ml') || roleLower.includes('data')) {
-      if (techStrings.some((t: string) => ['python', 'ai', 'gemini', 'openai', 'llm', 'ml'].some((k) => t.includes(k)))) score += 25;
+      if (
+        techStrings.some((t: string) =>
+          ['python', 'ai', 'gemini', 'openai', 'llm', 'ml'].some((k) => t.includes(k)),
+        )
+      )
+        score += 25;
     }
 
     // Job description keyword overlap
@@ -252,7 +305,8 @@ export const generateResumeAI = async (params: GenerateResumeParams): Promise<AI
   const getRankedProjects = () => {
     if (params.selectedProjectIds && params.selectedProjectIds.length > 0) {
       const explicit = safeProjects.filter((p) => params.selectedProjectIds!.includes(p.id));
-      const remaining = safeProjects.filter((p) => !params.selectedProjectIds!.includes(p.id))
+      const remaining = safeProjects
+        .filter((p) => !params.selectedProjectIds!.includes(p.id))
         .sort((a, b) => scoreProject(b) - scoreProject(a));
       return [...explicit, ...remaining];
     }
@@ -273,7 +327,9 @@ export const generateResumeAI = async (params: GenerateResumeParams): Promise<AI
   const getRankedExperiences = () => {
     if (params.selectedExperienceIds && params.selectedExperienceIds.length > 0) {
       const explicit = safeExperience.filter((e) => params.selectedExperienceIds!.includes(e.id));
-      const remaining = sortedExperiences.filter((e) => !params.selectedExperienceIds!.includes(e.id));
+      const remaining = sortedExperiences.filter(
+        (e) => !params.selectedExperienceIds!.includes(e.id),
+      );
       return [...explicit, ...remaining];
     }
     return sortedExperiences;
@@ -282,7 +338,7 @@ export const generateResumeAI = async (params: GenerateResumeParams): Promise<AI
   const rankedExperiences = getRankedExperiences();
 
   // Intelligent Role, Description & Job Link Technology Scoring
-  const scoreTechnology = (t: typeof safeTechnologies[0]): number => {
+  const scoreTechnology = (t: (typeof safeTechnologies)[0]): number => {
     let score = 0;
     const tNameLower = t.name.toLowerCase();
     const roleLower = (targetRole || '').toLowerCase();
@@ -292,21 +348,92 @@ export const generateResumeAI = async (params: GenerateResumeParams): Promise<AI
     if (descLower.includes(tNameLower)) score += 30;
 
     // 2. Role-specific technology affinities
-    if (roleLower.includes('front') || roleLower.includes('react') || roleLower.includes('ui') || roleLower.includes('web')) {
-      if (['react', 'next', 'type', 'java', 'html', 'css', 'tail', 'redux', 'boot', 'front', 'ui'].some((k) => tNameLower.includes(k))) score += 20;
+    if (
+      roleLower.includes('front') ||
+      roleLower.includes('react') ||
+      roleLower.includes('ui') ||
+      roleLower.includes('web')
+    ) {
+      if (
+        [
+          'react',
+          'next',
+          'type',
+          'java',
+          'html',
+          'css',
+          'tail',
+          'redux',
+          'boot',
+          'front',
+          'ui',
+        ].some((k) => tNameLower.includes(k))
+      )
+        score += 20;
     }
-    if (roleLower.includes('back') || roleLower.includes('node') || roleLower.includes('cloud') || roleLower.includes('api')) {
-      if (['node', 'express', 'python', 'mongo', 'postgre', 'nest', 'sql', 'django', 'api', 'socket', 'docker', 'aws', 'back'].some((k) => tNameLower.includes(k))) score += 20;
+    if (
+      roleLower.includes('back') ||
+      roleLower.includes('node') ||
+      roleLower.includes('cloud') ||
+      roleLower.includes('api')
+    ) {
+      if (
+        [
+          'node',
+          'express',
+          'python',
+          'mongo',
+          'postgre',
+          'nest',
+          'sql',
+          'django',
+          'api',
+          'socket',
+          'docker',
+          'aws',
+          'back',
+        ].some((k) => tNameLower.includes(k))
+      )
+        score += 20;
     }
-    if (roleLower.includes('full') || roleLower.includes('engineer') || roleLower.includes('developer')) {
-      if (['react', 'next', 'type', 'java', 'node', 'express', 'mongo', 'postgre', 'tail', 'redux', 'git', 'docker', 'aws'].some((k) => tNameLower.includes(k))) score += 15;
+    if (
+      roleLower.includes('full') ||
+      roleLower.includes('engineer') ||
+      roleLower.includes('developer')
+    ) {
+      if (
+        [
+          'react',
+          'next',
+          'type',
+          'java',
+          'node',
+          'express',
+          'mongo',
+          'postgre',
+          'tail',
+          'redux',
+          'git',
+          'docker',
+          'aws',
+        ].some((k) => tNameLower.includes(k))
+      )
+        score += 15;
     }
     if (roleLower.includes('ai') || roleLower.includes('ml') || roleLower.includes('data')) {
-      if (['python', 'ai', 'gemini', 'openai', 'llm', 'ml', 'tensor', 'torch'].some((k) => tNameLower.includes(k))) score += 25;
+      if (
+        ['python', 'ai', 'gemini', 'openai', 'llm', 'ml', 'tensor', 'torch'].some((k) =>
+          tNameLower.includes(k),
+        )
+      )
+        score += 25;
     }
 
     // 3. Match with technologies used in top projects
-    const topProjTechs = rankedProjects.slice(0, 3).flatMap((p) => p.techStack).map((x: any) => String(x).toLowerCase());
+    const topProjTechs = rankedProjects
+      .slice(0, 3)
+      .flatMap((p) => p.techStack)
+      .map((x: any) => String(x).toLowerCase());
     if (topProjTechs.some((pt) => pt.includes(tNameLower) || tNameLower.includes(pt))) {
       score += 10;
     }
@@ -314,31 +441,53 @@ export const generateResumeAI = async (params: GenerateResumeParams): Promise<AI
     return score;
   };
 
-  const rankedTechnologies = [...safeTechnologies].sort((a, b) => scoreTechnology(b) - scoreTechnology(a));
+  const rankedTechnologies = [...safeTechnologies].sort(
+    (a, b) => scoreTechnology(b) - scoreTechnology(a),
+  );
 
   // High quality deterministic fallback matching ATS standards
   const buildFallbackResponse = (): AIResumeResponse => {
     const selectedProjectIds =
       params.selectedProjectIds && params.selectedProjectIds.length > 0
         ? params.selectedProjectIds
-        : rankedProjects.slice(0, 3).map((p) => p.id).filter(Boolean);
+        : rankedProjects
+            .slice(0, 3)
+            .map((p) => p.id)
+            .filter(Boolean);
     const selectedExperienceIds =
       params.selectedExperienceIds && params.selectedExperienceIds.length > 0
         ? params.selectedExperienceIds
-        : rankedExperiences.slice(0, 2).map((e) => e.id).filter(Boolean);
-    const selectedServiceIds = safeServices.slice(0, 2).map((s) => s.id).filter(Boolean);
-    const selectedTechnologyIds = rankedTechnologies.slice(0, 14).map((t) => t.id).filter(Boolean);
-    const techNames = rankedTechnologies.slice(0, 14).map((t) => t.name).join(', ') || 'TypeScript, React.js, Node.js, Next.js, Redux, Tailwind CSS, MongoDB, Docker';
+        : rankedExperiences
+            .slice(0, 2)
+            .map((e) => e.id)
+            .filter(Boolean);
+    const selectedServiceIds = safeServices
+      .slice(0, 2)
+      .map((s) => s.id)
+      .filter(Boolean);
+    const selectedTechnologyIds = rankedTechnologies
+      .slice(0, 14)
+      .map((t) => t.id)
+      .filter(Boolean);
+    const techNames =
+      rankedTechnologies
+        .slice(0, 14)
+        .map((t) => t.name)
+        .join(', ') ||
+      'TypeScript, React.js, Node.js, Next.js, Redux, Tailwind CSS, MongoDB, Docker';
 
     const projectHighlights: Record<string, string[]> = {};
     rankedProjects.slice(0, 4).forEach((p) => {
       const bullets: string[] = [];
       if (p.description) bullets.push(p.description);
       if (p.features?.length) bullets.push(...p.features.slice(0, 3));
-      else if (p.fullDescription && p.fullDescription !== p.description) bullets.push(p.fullDescription.slice(0, 120));
+      else if (p.fullDescription && p.fullDescription !== p.description)
+        bullets.push(p.fullDescription.slice(0, 120));
       if (p.outcome) bullets.push(`Impact: ${p.outcome}`);
       while (bullets.length < 3) {
-        bullets.push(`Engineered modular, high-performance architecture with automated testing and continuous integration.`);
+        bullets.push(
+          `Engineered modular, high-performance architecture with automated testing and continuous integration.`,
+        );
       }
       projectHighlights[p.id] = bullets.slice(0, 5);
     });
@@ -401,8 +550,15 @@ Results-driven and innovative ${targetRole} with ${devExpYears}+ years of experi
 \\end{itemize}
 
 \\section{Key Projects}
-${rankedProjects.slice(0, 3).map((p) => `\\textbf{${p.title}} \\hfill \\textit{${Array.isArray(p.techStack) ? p.techStack.join(', ') : 'TypeScript'}}\\\\
-${p.description || 'Engineered scalable system architecture with responsive user interfaces and optimized API endpoints.'}`).join('\\\\\n\\vspace{2pt}\n')}
+${rankedProjects
+  .slice(0, 3)
+  .map(
+    (
+      p,
+    ) => `\\textbf{${p.title}} \\hfill \\textit{${Array.isArray(p.techStack) ? p.techStack.join(', ') : 'TypeScript'}}\\\\
+${p.description || 'Engineered scalable system architecture with responsive user interfaces and optimized API endpoints.'}`,
+  )
+  .join('\\\\\n\\vspace{2pt}\n')}
 
 \\section{Education}
 \\textbf{Bachelor of Computer Applications (BCA)} \\hfill \\textit{Indira Gandhi National Open University}
@@ -510,7 +666,10 @@ Return ONLY a valid JSON object matching this schema:
       const result = await model.generateContent(prompt);
       let responseText = result.response.text();
       if (responseText) {
-        responseText = responseText.replace(/^```json\s*/i, '').replace(/\s*```$/i, '').trim();
+        responseText = responseText
+          .replace(/^```json\s*/i, '')
+          .replace(/\s*```$/i, '')
+          .trim();
         const parsed = JSON.parse(responseText);
         return {
           selectedProjectIds:
@@ -522,11 +681,16 @@ Return ONLY a valid JSON object matching this schema:
           selectedExperienceIds:
             params.selectedExperienceIds && params.selectedExperienceIds.length > 0
               ? params.selectedExperienceIds
-              : Array.isArray(parsed.selectedExperienceIds) && parsed.selectedExperienceIds.length > 0
+              : Array.isArray(parsed.selectedExperienceIds) &&
+                  parsed.selectedExperienceIds.length > 0
                 ? parsed.selectedExperienceIds
                 : rankedExperiences.slice(0, 2).map((e) => e.id),
-          selectedServiceIds: Array.isArray(parsed.selectedServiceIds) ? parsed.selectedServiceIds : [],
-          selectedTechnologyIds: Array.isArray(parsed.selectedTechnologyIds) ? parsed.selectedTechnologyIds : [],
+          selectedServiceIds: Array.isArray(parsed.selectedServiceIds)
+            ? parsed.selectedServiceIds
+            : [],
+          selectedTechnologyIds: Array.isArray(parsed.selectedTechnologyIds)
+            ? parsed.selectedTechnologyIds
+            : [],
           tailoredSummary: parsed.tailoredSummary || '',
           latexCode: parsed.latexCode || '',
           projectHighlights: parsed.projectHighlights || {},

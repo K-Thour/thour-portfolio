@@ -1,15 +1,25 @@
-import { generateResumePdfStream, buildProfessionalSummary, ResumePdfData } from '../utils/pdf.utils';
+import {
+  generateResumePdfStream,
+  buildProfessionalSummary,
+  ResumePdfData,
+} from '../utils/pdf.utils';
 import { Response } from 'express';
 
 describe('pdf.utils', () => {
   describe('buildProfessionalSummary', () => {
     it('should return custom text when clean description provided', () => {
-      const summary = buildProfessionalSummary('Passionate software engineer building web systems.', 'Engineer');
+      const summary = buildProfessionalSummary(
+        'Passionate software engineer building web systems.',
+        'Engineer',
+      );
       expect(summary).toBe('Passionate software engineer building web systems.');
     });
 
     it('should fallback to default summary when text contains job posting markers', () => {
-      const summary = buildProfessionalSummary('This position is open at partner company. Requirements: React.', 'Full Stack Software Engineer');
+      const summary = buildProfessionalSummary(
+        'This position is open at partner company. Requirements: React.',
+        'Full Stack Software Engineer',
+      );
       expect(summary).toContain('Results-driven and innovative');
       expect(summary).toContain('Full Stack Software Engineer');
     });

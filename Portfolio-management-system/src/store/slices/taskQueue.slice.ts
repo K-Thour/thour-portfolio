@@ -1,7 +1,11 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 export type TaskStatus = "pending" | "running" | "completed" | "failed";
-export type TaskType = "resume_generation" | "image_upload" | "portfolio_export" | "general";
+export type TaskType =
+  | "resume_generation"
+  | "image_upload"
+  | "portfolio_export"
+  | "general";
 
 export interface TaskItem {
   id: string;
@@ -33,7 +37,10 @@ export const taskQueueSlice = createSlice({
   reducers: {
     addTask: (state, action: PayloadAction<TaskItem>) => {
       // Prepend so latest task is at the top
-      state.tasks = [action.payload, ...state.tasks.filter((t) => t.id !== action.payload.id)];
+      state.tasks = [
+        action.payload,
+        ...state.tasks.filter((t) => t.id !== action.payload.id),
+      ];
       state.isOpen = true; // Auto-open manager when a new task starts
     },
     updateTaskProgress: (
@@ -95,10 +102,13 @@ export const taskQueueSlice = createSlice({
       state.tasks = state.tasks.filter((t) => t.id !== action.payload);
     },
     clearCompleted: (state) => {
-      state.tasks = state.tasks.filter((t) => t.status === "running" || t.status === "pending");
+      state.tasks = state.tasks.filter(
+        (t) => t.status === "running" || t.status === "pending",
+      );
     },
     toggleTaskManager: (state, action: PayloadAction<boolean | undefined>) => {
-      state.isOpen = action.payload !== undefined ? action.payload : !state.isOpen;
+      state.isOpen =
+        action.payload !== undefined ? action.payload : !state.isOpen;
     },
   },
 });

@@ -1,5 +1,12 @@
 import React, { useRef } from "react";
-import { Upload, FileCode, CheckCircle2, RotateCcw, Copy, Check } from "lucide-react";
+import {
+  Upload,
+  FileCode,
+  CheckCircle2,
+  RotateCcw,
+  Copy,
+  Check,
+} from "lucide-react";
 import { useState } from "react";
 
 interface LatexUploadEditorProps {
@@ -182,7 +189,9 @@ export function LatexUploadEditor({
         <div className="flex items-center gap-3">
           <div
             className={`w-9 h-9 rounded-lg flex items-center justify-center ${
-              isDark ? "bg-blue-950/60 text-blue-400" : "bg-blue-100 text-blue-600"
+              isDark
+                ? "bg-blue-950/60 text-blue-400"
+                : "bg-blue-100 text-blue-600"
             }`}
           >
             <Upload className="w-4 h-4" />

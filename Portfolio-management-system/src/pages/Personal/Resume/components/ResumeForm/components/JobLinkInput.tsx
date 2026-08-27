@@ -1,5 +1,11 @@
 import React, { useMemo } from "react";
-import { Link2, ExternalLink, CheckCircle2, AlertCircle, Briefcase } from "lucide-react";
+import {
+  Link2,
+  ExternalLink,
+  CheckCircle2,
+  AlertCircle,
+  Briefcase,
+} from "lucide-react";
 
 interface JobLinkInputProps {
   value: string;
@@ -157,11 +163,10 @@ export function JobLinkInput({
         </p>
       ) : (
         <p
-          className={`text-xs ${
-            isDark ? "text-slate-400" : "text-slate-500"
-          }`}
+          className={`text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}
         >
-          Paste the job URL. The AI will extract requirements to tailor your resume.
+          Paste the job URL. The AI will extract requirements to tailor your
+          resume.
         </p>
       )}
     </div>

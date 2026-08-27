@@ -1,5 +1,11 @@
 import React, { useRef, useState } from "react";
-import { Image as ImageIcon, Upload, X, CheckCircle2, RefreshCw } from "lucide-react";
+import {
+  Image as ImageIcon,
+  Upload,
+  X,
+  CheckCircle2,
+  RefreshCw,
+} from "lucide-react";
 
 interface ImageUploadDropzoneProps {
   file?: File;
@@ -96,7 +102,9 @@ export function ImageUploadDropzone({
                   isDark ? "text-slate-400" : "text-slate-500"
                 }`}
               >
-                {file ? `${(file.size / 1024).toFixed(1)} KB` : "Attached Image"}
+                {file
+                  ? `${(file.size / 1024).toFixed(1)} KB`
+                  : "Attached Image"}
               </p>
               <span className="inline-flex items-center gap-1 text-[10px] text-emerald-500 font-medium mt-0.5">
                 <CheckCircle2 className="w-3 h-3" /> Ready for AI parsing
@@ -148,7 +156,9 @@ export function ImageUploadDropzone({
         >
           <div
             className={`w-10 h-10 mx-auto mb-2 rounded-full flex items-center justify-center ${
-              isDark ? "bg-blue-950/60 text-blue-400" : "bg-blue-100 text-blue-600"
+              isDark
+                ? "bg-blue-950/60 text-blue-400"
+                : "bg-blue-100 text-blue-600"
             }`}
           >
             <Upload className="w-5 h-5" />

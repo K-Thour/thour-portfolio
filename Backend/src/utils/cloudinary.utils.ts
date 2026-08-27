@@ -93,9 +93,7 @@ export const uploadBase64ImagesInObject = async (
   }
 
   if (Array.isArray(obj)) {
-    const results = await Promise.all(
-      obj.map((item) => uploadBase64ImagesInObject(item, folder)),
-    );
+    const results = await Promise.all(obj.map((item) => uploadBase64ImagesInObject(item, folder)));
     for (let i = 0; i < results.length; i++) {
       obj[i] = results[i];
     }
@@ -116,4 +114,3 @@ export const uploadBase64ImagesInObject = async (
   );
   return updatedObj;
 };
-

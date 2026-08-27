@@ -62,8 +62,10 @@ export function useResumeOperations() {
           description: response.description || formData.description || "",
           jobLink: response.jobUrl || formData.jobLink || "",
           targetRole: response.targetRole || formData.targetRole,
-          selectedProjectIds: response.projectsUsed || formData.selectedProjectIds,
-          selectedExperienceIds: response.experiencesUsed || formData.selectedExperienceIds,
+          selectedProjectIds:
+            response.projectsUsed || formData.selectedProjectIds,
+          selectedExperienceIds:
+            response.experiencesUsed || formData.selectedExperienceIds,
           designType: response.designType || formData.designType || "ats",
           latexCode: response.latexCode || formData.latexCode || "",
           status: "completed",
@@ -99,13 +101,19 @@ export function useResumeOperations() {
     let targetUrl = resume.generatedFileUrl;
     if (targetUrl) {
       if (targetUrl.includes("localhost:3000/api")) {
-        targetUrl = targetUrl.replace("http://localhost:3000/api", envConstraints.API_BASE_URL);
+        targetUrl = targetUrl.replace(
+          "http://localhost:3000/api",
+          envConstraints.API_BASE_URL,
+        );
       }
       window.open(targetUrl, "_blank");
     } else {
       const resumeId = resume.id || (resume as any)._id;
       if (resumeId) {
-        window.open(`${envConstraints.API_BASE_URL}/resume/download/pdf/${resumeId}`, "_blank");
+        window.open(
+          `${envConstraints.API_BASE_URL}/resume/download/pdf/${resumeId}`,
+          "_blank",
+        );
       } else {
         throw new Error("Resume download link is not available yet.");
       }
@@ -132,7 +140,10 @@ export function useResumeOperations() {
       updatedAt: createdResume.updatedAt,
       generatedFileUrl: createdResume.resumeUrl,
     };
-    setResumes((prev) => [newResume, ...prev.filter((r) => r.id !== newResume.id)]);
+    setResumes((prev) => [
+      newResume,
+      ...prev.filter((r) => r.id !== newResume.id),
+    ]);
   }, []);
 
   return {

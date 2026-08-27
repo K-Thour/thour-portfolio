@@ -1,5 +1,12 @@
 import { useEffect, useState, useMemo } from "react";
-import { History, Check, Sparkles, RefreshCw, Calendar, Building2 } from "lucide-react";
+import {
+  History,
+  Check,
+  Sparkles,
+  RefreshCw,
+  Calendar,
+  Building2,
+} from "lucide-react";
 import { fetchExperiences } from "../../../../../../services/api";
 
 export interface ExperienceItem {
@@ -25,7 +32,9 @@ export function ExperienceSelector({
 }: ExperienceSelectorProps) {
   const [experiences, setExperiences] = useState<ExperienceItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isManualMode, setIsManualMode] = useState(selectedExperienceIds.length > 0);
+  const [isManualMode, setIsManualMode] = useState(
+    selectedExperienceIds.length > 0,
+  );
 
   useEffect(() => {
     let isMounted = true;
@@ -73,11 +82,16 @@ export function ExperienceSelector({
     return sortedExperiences.slice(0, 2).map((e) => e.id);
   }, [sortedExperiences]);
 
-  const activeSelectedIds = isManualMode ? selectedExperienceIds : autoSelectedIds;
+  const activeSelectedIds = isManualMode
+    ? selectedExperienceIds
+    : autoSelectedIds;
 
   const toggleExperience = (id: string) => {
     setIsManualMode(true);
-    const baseList = selectedExperienceIds.length > 0 ? selectedExperienceIds : autoSelectedIds;
+    const baseList =
+      selectedExperienceIds.length > 0
+        ? selectedExperienceIds
+        : autoSelectedIds;
     if (baseList.includes(id)) {
       const next = baseList.filter((eId) => eId !== id);
       onExperiencesChange(next);
@@ -92,12 +106,19 @@ export function ExperienceSelector({
     onExperiencesChange([]);
   };
 
-  const formatDuration = (joining?: string, leaving?: string, stillWorking?: boolean) => {
+  const formatDuration = (
+    joining?: string,
+    leaving?: string,
+    stillWorking?: boolean,
+  ) => {
     const formatDate = (d?: string) => {
       if (!d) return "";
       const dt = new Date(d);
       if (isNaN(dt.getTime())) return d.split("T")[0];
-      return dt.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+      return dt.toLocaleDateString("en-US", {
+        month: "short",
+        year: "numeric",
+      });
     };
     const start = formatDate(joining) || "Feb 2025";
     const end = stillWorking ? "Present" : formatDate(leaving) || "Present";
@@ -116,7 +137,9 @@ export function ExperienceSelector({
           Work Experience Selection
           <span
             className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${
-              isDark ? "bg-blue-900/60 text-blue-300" : "bg-blue-100 text-blue-700"
+              isDark
+                ? "bg-blue-900/60 text-blue-300"
+                : "bg-blue-100 text-blue-700"
             }`}
           >
             {activeSelectedIds.length} Selected (Min 5 Points Each)
@@ -141,9 +164,13 @@ export function ExperienceSelector({
       </div>
 
       {isLoading ? (
-        <div className="p-3 text-center text-xs text-slate-500">Loading work experiences...</div>
+        <div className="p-3 text-center text-xs text-slate-500">
+          Loading work experiences...
+        </div>
       ) : sortedExperiences.length === 0 ? (
-        <div className="p-3 text-center text-xs text-slate-500">No database experiences found.</div>
+        <div className="p-3 text-center text-xs text-slate-500">
+          No database experiences found.
+        </div>
       ) : (
         <div className="grid grid-cols-1 gap-2 max-h-40 overflow-y-auto pr-1">
           {sortedExperiences.map((exp) => {
@@ -164,7 +191,9 @@ export function ExperienceSelector({
               >
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className="font-semibold text-xs truncate">{exp.position}</span>
+                    <span className="font-semibold text-xs truncate">
+                      {exp.position}
+                    </span>
                     {exp.stillWorking && (
                       <span className="text-[9px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-500 font-medium">
                         Current
@@ -178,7 +207,11 @@ export function ExperienceSelector({
                     </span>
                     <span className="flex items-center gap-1">
                       <Calendar className="w-2.5 h-2.5" />
-                      {formatDuration(exp.dateOfJoining, exp.dateOfLeaving, exp.stillWorking)}
+                      {formatDuration(
+                        exp.dateOfJoining,
+                        exp.dateOfLeaving,
+                        exp.stillWorking,
+                      )}
                     </span>
                   </div>
                 </div>

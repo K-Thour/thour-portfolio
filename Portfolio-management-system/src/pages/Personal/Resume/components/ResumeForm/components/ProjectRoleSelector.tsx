@@ -1,5 +1,11 @@
 import { useEffect, useState, useMemo } from "react";
-import { Briefcase, FolderGit2, Check, Sparkles, RefreshCw } from "lucide-react";
+import {
+  Briefcase,
+  FolderGit2,
+  Check,
+  Sparkles,
+  RefreshCw,
+} from "lucide-react";
 import { fetchProjects } from "../../../../../../services/api";
 
 interface ProjectItem {
@@ -37,7 +43,9 @@ export function ProjectRoleSelector({
 }: ProjectRoleSelectorProps) {
   const [projects, setProjects] = useState<ProjectItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isManualMode, setIsManualMode] = useState(selectedProjectIds.length > 0);
+  const [isManualMode, setIsManualMode] = useState(
+    selectedProjectIds.length > 0,
+  );
 
   useEffect(() => {
     let isMounted = true;
@@ -52,7 +60,9 @@ export function ProjectRoleSelector({
             role: p.role || "Full Stack Engineer",
             description: p.description || p.fullDescription || "",
             technologies: Array.isArray(p.techStack)
-              ? p.techStack.map((t: any) => (typeof t === "string" ? t : t.name || ""))
+              ? p.techStack.map((t: any) =>
+                  typeof t === "string" ? t : t.name || "",
+                )
               : [],
           }));
           setProjects(mapped);
@@ -74,50 +84,100 @@ export function ProjectRoleSelector({
     const roleLower = (targetRole || "").toLowerCase();
     const descLower = (jobDescription || "").toLowerCase();
 
-    return projects.map((p) => {
-      let score = 50; // base score
-      const titleLower = p.title.toLowerCase();
-      const techLower = p.technologies.map((t) => t.toLowerCase());
+    return projects
+      .map((p) => {
+        let score = 50; // base score
+        const titleLower = p.title.toLowerCase();
+        const techLower = p.technologies.map((t) => t.toLowerCase());
 
-      if (roleLower.includes("front") || roleLower.includes("react") || roleLower.includes("ui")) {
-        if (techLower.some((t) => ["react", "next", "type", "tail", "redux", "css", "vue"].some((k) => t.includes(k)))) {
-          score += 30;
+        if (
+          roleLower.includes("front") ||
+          roleLower.includes("react") ||
+          roleLower.includes("ui")
+        ) {
+          if (
+            techLower.some((t) =>
+              ["react", "next", "type", "tail", "redux", "css", "vue"].some(
+                (k) => t.includes(k),
+              ),
+            )
+          ) {
+            score += 30;
+          }
+          if (
+            titleLower.includes("portfolio") ||
+            titleLower.includes("front") ||
+            titleLower.includes("ui")
+          ) {
+            score += 15;
+          }
+        } else if (
+          roleLower.includes("back") ||
+          roleLower.includes("node") ||
+          roleLower.includes("cloud")
+        ) {
+          if (
+            techLower.some((t) =>
+              [
+                "node",
+                "express",
+                "mongo",
+                "postgre",
+                "docker",
+                "redis",
+                "api",
+              ].some((k) => t.includes(k)),
+            )
+          ) {
+            score += 30;
+          }
+          if (
+            titleLower.includes("backend") ||
+            titleLower.includes("api") ||
+            titleLower.includes("management")
+          ) {
+            score += 15;
+          }
+        } else if (roleLower.includes("mobile")) {
+          if (
+            techLower.some((t) =>
+              ["native", "flutter", "mobile", "ios", "android"].some((k) =>
+                t.includes(k),
+              ),
+            )
+          ) {
+            score += 35;
+          }
+        } else if (roleLower.includes("ai") || roleLower.includes("ml")) {
+          if (
+            techLower.some((t) =>
+              ["python", "ai", "gemini", "llm", "openai", "ml"].some((k) =>
+                t.includes(k),
+              ),
+            )
+          ) {
+            score += 40;
+          }
+        } else {
+          // Full stack default
+          if (techLower.length >= 3) score += 20;
         }
-        if (titleLower.includes("portfolio") || titleLower.includes("front") || titleLower.includes("ui")) {
-          score += 15;
-        }
-      } else if (roleLower.includes("back") || roleLower.includes("node") || roleLower.includes("cloud")) {
-        if (techLower.some((t) => ["node", "express", "mongo", "postgre", "docker", "redis", "api"].some((k) => t.includes(k)))) {
-          score += 30;
-        }
-        if (titleLower.includes("backend") || titleLower.includes("api") || titleLower.includes("management")) {
-          score += 15;
-        }
-      } else if (roleLower.includes("mobile")) {
-        if (techLower.some((t) => ["native", "flutter", "mobile", "ios", "android"].some((k) => t.includes(k)))) {
-          score += 35;
-        }
-      } else if (roleLower.includes("ai") || roleLower.includes("ml")) {
-        if (techLower.some((t) => ["python", "ai", "gemini", "llm", "openai", "ml"].some((k) => t.includes(k)))) {
-          score += 40;
-        }
-      } else {
-        // Full stack default
-        if (techLower.length >= 3) score += 20;
-      }
 
-      // Keyword match with job description
-      const keywords = descLower.split(/[\s,.-]+/).filter((w) => w.length > 3);
-      for (const kw of keywords.slice(0, 20)) {
-        if (titleLower.includes(kw)) score += 5;
-        if (techLower.some((t) => t.includes(kw))) score += 5;
-      }
+        // Keyword match with job description
+        const keywords = descLower
+          .split(/[\s,.-]+/)
+          .filter((w) => w.length > 3);
+        for (const kw of keywords.slice(0, 20)) {
+          if (titleLower.includes(kw)) score += 5;
+          if (techLower.some((t) => t.includes(kw))) score += 5;
+        }
 
-      return {
-        ...p,
-        matchScore: Math.min(score, 99),
-      };
-    }).sort((a, b) => b.matchScore - a.matchScore);
+        return {
+          ...p,
+          matchScore: Math.min(score, 99),
+        };
+      })
+      .sort((a, b) => b.matchScore - a.matchScore);
   }, [projects, targetRole, jobDescription]);
 
   // Auto-selection: top 3 scored projects
@@ -210,7 +270,9 @@ export function ProjectRoleSelector({
             Projects for this Resume
             <span
               className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${
-                isDark ? "bg-blue-900/60 text-blue-300" : "bg-blue-100 text-blue-700"
+                isDark
+                  ? "bg-blue-900/60 text-blue-300"
+                  : "bg-blue-100 text-blue-700"
               }`}
             >
               {activeSelectedIds.length} Selected
@@ -235,9 +297,13 @@ export function ProjectRoleSelector({
         </div>
 
         {isLoading ? (
-          <div className="p-3 text-center text-xs text-slate-500">Loading portfolio projects...</div>
+          <div className="p-3 text-center text-xs text-slate-500">
+            Loading portfolio projects...
+          </div>
         ) : scoredProjects.length === 0 ? (
-          <div className="p-3 text-center text-xs text-slate-500">No database projects found.</div>
+          <div className="p-3 text-center text-xs text-slate-500">
+            No database projects found.
+          </div>
         ) : (
           <div className="grid grid-cols-1 gap-2 max-h-48 overflow-y-auto pr-1">
             {scoredProjects.map((p) => {

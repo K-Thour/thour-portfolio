@@ -58,7 +58,14 @@ export const PageLoadingSkeleton: React.FC<PageLoadingSkeletonProps> = ({
           className,
         )}
       >
-        <div className={cn("h-12 border-b", isDark ? "border-slate-700 bg-slate-800/80" : "border-slate-200 bg-slate-50")} />
+        <div
+          className={cn(
+            "h-12 border-b",
+            isDark
+              ? "border-slate-700 bg-slate-800/80"
+              : "border-slate-200 bg-slate-50",
+          )}
+        />
         {Array.from({ length: count }).map((_, i) => (
           <div
             key={i}

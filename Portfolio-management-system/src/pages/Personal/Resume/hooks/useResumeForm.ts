@@ -6,7 +6,9 @@ export function useResumeForm(initialData?: ResumeFormData | null) {
   const [formData, setFormData] = useState<ResumeFormData>(
     initialData || initialFormData,
   );
-  const [errors, setErrors] = useState<Partial<Record<keyof ResumeFormData, string>>>({});
+  const [errors, setErrors] = useState<
+    Partial<Record<keyof ResumeFormData, string>>
+  >({});
 
   const updateField = useCallback(
     <K extends keyof ResumeFormData>(field: K, value: ResumeFormData[K]) => {
@@ -32,7 +34,10 @@ export function useResumeForm(initialData?: ResumeFormData | null) {
     if (!formData.description.trim()) {
       newErrors.description = "Summary or focus area is required";
     }
-    if (formData.jobLink?.trim() && !/^https?:\/\/.+/i.test(formData.jobLink.trim())) {
+    if (
+      formData.jobLink?.trim() &&
+      !/^https?:\/\/.+/i.test(formData.jobLink.trim())
+    ) {
       newErrors.jobLink = "Please enter a valid URL (e.g., https://...)";
     }
 

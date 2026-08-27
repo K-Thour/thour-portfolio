@@ -4,13 +4,10 @@ import { ImageUploadDropzone } from "./ImageUploadDropzone";
 
 describe("ImageUploadDropzone component", () => {
   it("renders upload dropzone when no image is selected", () => {
-    render(
-      <ImageUploadDropzone
-        isDark={false}
-        onFileChange={vi.fn()}
-      />,
-    );
-    expect(screen.getByText(/click or drag & drop resume mockup/i)).toBeDefined();
+    render(<ImageUploadDropzone isDark={false} onFileChange={vi.fn()} />);
+    expect(
+      screen.getByText(/click or drag & drop resume mockup/i),
+    ).toBeDefined();
     expect(screen.getByText(/png, jpg, or webp up to 10mb/i)).toBeDefined();
   });
 

@@ -1,4 +1,10 @@
-export type ResumeDesignType = "modern" | "ats" | "latex" | "pdf" | "image" | null;
+export type ResumeDesignType =
+  | "modern"
+  | "ats"
+  | "latex"
+  | "pdf"
+  | "image"
+  | null;
 
 export interface Resume {
   id: string;
@@ -40,4 +46,3 @@ export interface ResumeFormProps {
   onCancel: () => void;
   initialData?: ResumeFormData | null;
 }
-

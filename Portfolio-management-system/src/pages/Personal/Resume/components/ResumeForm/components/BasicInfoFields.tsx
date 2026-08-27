@@ -14,7 +14,8 @@ export function BasicInfoFields({
       <FormInput
         label={
           <>
-            <FileText className="inline w-4 h-4 mr-1 text-blue-500" /> Resume Title *
+            <FileText className="inline w-4 h-4 mr-1 text-blue-500" /> Resume
+            Title *
           </>
         }
         value={formData.name}
@@ -34,7 +35,8 @@ export function BasicInfoFields({
       <FormInput
         label={
           <>
-            <AlignLeft className="inline w-4 h-4 mr-1 text-blue-500" /> Target Role Summary & Focus *
+            <AlignLeft className="inline w-4 h-4 mr-1 text-blue-500" /> Target
+            Role Summary & Focus *
           </>
         }
         value={formData.description}

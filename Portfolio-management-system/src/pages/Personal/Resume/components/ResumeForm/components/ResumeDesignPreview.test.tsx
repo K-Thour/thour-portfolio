@@ -15,7 +15,9 @@ describe("ResumeDesignPreview component", () => {
   it("renders live preview container with title, education, and languages sections", () => {
     render(<ResumeDesignPreview formData={mockFormData} isDark={false} />);
     expect(screen.getByTestId("resume-design-preview")).toBeDefined();
-    expect(screen.getAllByText("Senior Frontend Engineer").length).toBeGreaterThan(0);
+    expect(
+      screen.getAllByText("Senior Frontend Engineer").length,
+    ).toBeGreaterThan(0);
     expect(screen.getByText("Professional Summary")).toBeDefined();
     expect(screen.getByText("Technical Skills")).toBeDefined();
     expect(screen.getByText("Education & Credentials")).toBeDefined();
@@ -33,7 +35,8 @@ describe("ResumeDesignPreview component", () => {
     const latexFormData: ResumeFormData = {
       ...mockFormData,
       designType: "latex",
-      latexCode: "\\documentclass{article}\n\\begin{document}\nHello\n\\end{document}",
+      latexCode:
+        "\\documentclass{article}\n\\begin{document}\nHello\n\\end{document}",
     };
     render(<ResumeDesignPreview formData={latexFormData} isDark={true} />);
     expect(screen.getByText(/LaTeX Academic/i)).toBeDefined();
