@@ -29,10 +29,12 @@ const DEFAULT_LATEX_TEMPLATE = `\\documentclass[letterpaper,11pt]{article}
 \\begin{document}
 
 \\begin{center}
-    \\textbf{\\Huge \\scshape Karan Thour} \\\\ \\vspace{1pt}
-    \\small +1 (555) 019-2834 $|$ \\href{mailto:karan@example.com}{\\underline{karan@example.com}} $|$ 
-    \\href{https://linkedin.com/in/karan-thour}{\\underline{linkedin.com/in/karan-thour}} $|$
-    \\href{https://github.com/K-Thour}{\\underline{github.com/K-Thour}}
+    \\textbf{\\Huge \\scshape Karanveer Thour} \\\\ \\vspace{1pt}
+    \\small +91 88470-09521 $|$ \\href{mailto:karanveerthour76@gmail.com}{\\underline{karanveerthour76@gmail.com}} $|$ 
+    \\href{https://www.github.com/K-Thour}{\\underline{www.github.com/K-Thour}} $|$
+    \\href{https://www.linkedin.com/in/karanveer-thour}{\\underline{www.linkedin.com/in/karanveer-thour}} $|$
+    \\href{https://www.thour-portfolio.netlify.app}{\\underline{www.thour-portfolio.netlify.app}} \\\\ \\vspace{2pt}
+    Khanna, Punjab, India
 \\end{center}
 
 \\section{Summary}

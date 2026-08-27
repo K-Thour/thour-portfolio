@@ -310,8 +310,28 @@ const prepareResumeData = async (resumeIdOrFilename: string): Promise<ResumePdfD
       ? user.languages.map((l: any) => ({ name: l.name, proficiency: l.level || 'Fluent' }))
       : defaultLanguages;
 
+  const formatDisplayUrl = (url?: string): string => {
+    if (!url) return '';
+    let clean = url.trim().replace(/^https?:\/\//i, '').replace(/\/+$/, '');
+    if (!clean) return '';
+    if (!clean.startsWith('www.')) {
+      clean = `www.${clean}`;
+    }
+    return clean;
+  };
+
+  const formatLocation = (loc?: string): string => {
+    if (!loc) return '';
+    return loc
+      .split(',')
+      .map((part) => part.trim())
+      .filter(Boolean)
+      .map((part) => part.replace(/\b\w/g, (c) => c.toUpperCase()))
+      .join(', ');
+  };
+
   const formattedAddress = contact
-    ? [contact.city, contact.state, contact.country].filter(Boolean).map((s: string) => s.trim()).join(', ')
+    ? formatLocation([contact.city, contact.state, contact.country].filter(Boolean).join(', '))
     : 'India';
 
   return {
@@ -320,9 +340,9 @@ const prepareResumeData = async (resumeIdOrFilename: string): Promise<ResumePdfD
     developerName: user?.name || 'Karanveer Thour',
     developerEmail: contact?.email || user?.email || 'karanveerthour76@gmail.com',
     developerPhone: contact?.phone || user?.phoneNumber || '+91 8847009521',
-    developerGithub: contact?.github || user?.GitHubURL || 'https://github.com/K-Thour',
-    developerLinkedin: contact?.linkedin || user?.LinkedInURL || 'https://linkedin.com/in/karanveer-thour',
-    developerWebsite: contact?.website || envConstant.PORTFOLIO_WEB_BASE_URL || 'https://karanveer-thour.vercel.app',
+    developerGithub: formatDisplayUrl(contact?.github || user?.GitHubURL || 'github.com/K-Thour'),
+    developerLinkedin: formatDisplayUrl(contact?.linkedin || user?.LinkedInURL || 'linkedin.com/in/karanveer-thour'),
+    developerWebsite: formatDisplayUrl(contact?.website || envConstant.PORTFOLIO_WEB_BASE_URL || 'thour-portfolio.netlify.app'),
     developerAddress: formattedAddress || 'India',
     technologies: tailoredTechnologies,
     projects: chosenProjects.map(({ project: p, resolvedStack }) => {

@@ -112,24 +112,57 @@ export const generateResumePdfStream = (data: ResumePdfData, res: Response): voi
   doc.fontSize(11).font('Helvetica-Bold').fillColor('#2563eb').text(resumeTitle.toUpperCase(), { align: 'center' });
   doc.moveDown(0.26);
 
-  const contactParts = [
+  const formatDisplayUrl = (url?: string): string => {
+    if (!url) return '';
+    let clean = url.trim().replace(/^https?:\/\//i, '').replace(/\/+$/, '');
+    if (!clean) return '';
+    if (!clean.startsWith('www.')) {
+      clean = `www.${clean}`;
+    }
+    return clean;
+  };
+
+  const formatLocation = (loc?: string): string => {
+    if (!loc) return '';
+    return loc
+      .split(',')
+      .map((part) => part.trim())
+      .filter(Boolean)
+      .map((part) => part.replace(/\b\w/g, (c) => c.toUpperCase()))
+      .join(', ');
+  };
+
+  const formattedGithub = formatDisplayUrl(devGithub);
+  const formattedLinkedin = formatDisplayUrl(devLinkedin);
+  const formattedWebsite = formatDisplayUrl(devWebsite);
+  const formattedAddress = formatLocation(devAddress);
+
+  const contactLine1 = [
     devPhone,
     devEmail,
-    devGithub.replace(/^https?:\/\//, ''),
-    devLinkedin.replace(/^https?:\/\//, ''),
-    devWebsite.replace(/^https?:\/\//, ''),
-    devAddress,
+    formattedGithub,
+    formattedLinkedin,
+    formattedWebsite,
   ].filter(Boolean);
 
   doc
-    .fontSize(8.2)
+    .fontSize(7.5)
     .font('Helvetica')
     .fillColor('#475569')
-    .text(contactParts.join('   |   '), { align: 'center' });
+    .text(contactLine1.join('   |   '), { align: 'center' });
 
-  doc.moveDown(0.32);
+  if (formattedAddress) {
+    doc.moveDown(0.18);
+    doc
+      .fontSize(7.5)
+      .font('Helvetica')
+      .fillColor('#475569')
+      .text(formattedAddress, { align: 'center' });
+  }
+
+  doc.moveDown(0.28);
   doc.strokeColor('#cbd5e1').lineWidth(0.8).moveTo(leftMargin, doc.y).lineTo(leftMargin + contentWidth, doc.y).stroke();
-  doc.moveDown(0.32);
+  doc.moveDown(0.28);
 
   const drawSectionHeading = (title: string) => {
     doc.moveDown(0.42);

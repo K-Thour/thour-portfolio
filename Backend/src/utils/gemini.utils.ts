@@ -377,7 +377,9 @@ export const generateResumeAI = async (params: GenerateResumeParams): Promise<AI
 \\begin{center}
     \\textbf{\\Huge \\scshape ${devName}} \\\\ \\vspace{1pt}
     \\small ${devPhone} $|$ \\href{mailto:${devEmail}}{\\underline{${devEmail}}} $|$ 
-    \\href{https://github.com/K-Thour}{\\underline{github.com/K-Thour}} $|$
+    \\href{https://www.github.com/K-Thour}{\\underline{www.github.com/K-Thour}} $|$
+    \\href{https://www.linkedin.com/in/karanveer-thour}{\\underline{www.linkedin.com/in/karanveer-thour}} $|$
+    \\href{https://www.thour-portfolio.netlify.app}{\\underline{www.thour-portfolio.netlify.app}} \\\\ \\vspace{2pt}
     ${devAddress}
 \\end{center}
 

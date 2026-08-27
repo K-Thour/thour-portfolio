@@ -395,25 +395,42 @@ export function ResumeDesignPreview({
               >
                 {displayName}
               </p>
-              <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-[10px] text-slate-600 mt-1.5">
+              <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-[9.5px] text-slate-600 mt-1.5">
                 <span>{activeContact?.phone || "+91 8847009521"}</span>
                 <span>|</span>
                 <span>{activeContact?.email || "karanveerthour76@gmail.com"}</span>
                 <span>|</span>
-                <span>{(activeContact?.github || "github.com/K-Thour").replace(/^https?:\/\//, '')}</span>
-                <span>|</span>
-                <span>{(activeContact?.linkedin || "linkedin.com/in/karanveer-thour").replace(/^https?:\/\//, '')}</span>
-                <span>|</span>
-                <span>{(activeContact?.website || envConstraints.PORTFOLIO_WEB_BASE_URL).replace(/^https?:\/\//, '')}</span>
+                <span>
+                  {(() => {
+                    const raw = activeContact?.github || "github.com/K-Thour";
+                    const clean = raw.replace(/^https?:\/\//, '').replace(/\/+$/, '');
+                    return clean.startsWith('www.') ? clean : `www.${clean}`;
+                  })()}
+                </span>
                 <span>|</span>
                 <span>
-                  {activeContact
-                    ? [activeContact.city, activeContact.state, activeContact.country]
-                        .filter(Boolean)
-                        .map((s) => s.trim())
-                        .join(", ")
-                    : "Khanna, Punjab, India"}
+                  {(() => {
+                    const raw = activeContact?.linkedin || "linkedin.com/in/karanveer-thour";
+                    const clean = raw.replace(/^https?:\/\//, '').replace(/\/+$/, '');
+                    return clean.startsWith('www.') ? clean : `www.${clean}`;
+                  })()}
                 </span>
+                <span>|</span>
+                <span>
+                  {(() => {
+                    const raw = activeContact?.website || envConstraints.PORTFOLIO_WEB_BASE_URL;
+                    const clean = raw.replace(/^https?:\/\//, '').replace(/\/+$/, '');
+                    return clean.startsWith('www.') ? clean : `www.${clean}`;
+                  })()}
+                </span>
+              </div>
+              <div className="text-[9.5px] text-slate-600 text-center mt-1 font-medium">
+                {activeContact
+                  ? [activeContact.city, activeContact.state, activeContact.country]
+                      .filter(Boolean)
+                      .map((s) => s.trim().replace(/\b\w/g, (c) => c.toUpperCase()))
+                      .join(", ")
+                  : "Khanna, Punjab, India"}
               </div>
             </div>
 
