@@ -6,6 +6,8 @@ import {
   generateResumeAI,
 } from "../../../../services/api";
 
+import envConstraints from "../../../../constraints/env.constraints";
+
 export function useResumeOperations() {
   const [resumes, setResumes] = useState<Resume[]>([]);
   const [loading, setLoading] = useState(false);
@@ -94,10 +96,19 @@ export function useResumeOperations() {
   }, []);
 
   const downloadResume = useCallback((resume: Resume) => {
-    if (resume.generatedFileUrl) {
-      window.open(resume.generatedFileUrl, "_blank");
+    let targetUrl = resume.generatedFileUrl;
+    if (targetUrl) {
+      if (targetUrl.includes("localhost:3000/api")) {
+        targetUrl = targetUrl.replace("http://localhost:3000/api", envConstraints.API_BASE_URL);
+      }
+      window.open(targetUrl, "_blank");
     } else {
-      throw new Error("Resume download link is not available yet.");
+      const resumeId = resume.id || (resume as any)._id;
+      if (resumeId) {
+        window.open(`${envConstraints.API_BASE_URL}/resume/download/pdf/${resumeId}`, "_blank");
+      } else {
+        throw new Error("Resume download link is not available yet.");
+      }
     }
   }, []);
 

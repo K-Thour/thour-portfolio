@@ -6,6 +6,7 @@ import models from '../models';
 import IResumeModel, { createResumeInput } from '../interface/models/resume/resume.interface';
 import { Types } from 'mongoose';
 import { IResumeRepoParams } from '../interface/models/resume/resumeRepo.interface';
+import envConstant from '../constants/env.constant';
 
 const createService = (data: createResumeInput, createdBy: Types.ObjectId) => {
   return asyncCommonWrapper(async () => {
@@ -112,6 +113,7 @@ const generateService = (
     // 3. Call Gemini AI helper to select items and generate LaTeX
     const aiResult = await generateResumeAI({
       jobDescription: description,
+      jobLink: jobUrl,
       targetRole: targetRole || name,
       selectedProjectIds,
       selectedExperienceIds,
@@ -130,16 +132,26 @@ const generateService = (
       experience,
     });
 
-    // Convert selected string IDs to ObjectIds
-    const projectsUsed = aiResult.selectedProjectIds.map((id) => new Types.ObjectId(id));
+    // Convert selected string IDs to ObjectIds, prioritizing user's explicit selection from frontend
+    const effectiveProjectIds =
+      selectedProjectIds && selectedProjectIds.length > 0
+        ? selectedProjectIds
+        : aiResult.selectedProjectIds;
+
+    const effectiveExperienceIds =
+      selectedExperienceIds && selectedExperienceIds.length > 0
+        ? selectedExperienceIds
+        : (aiResult.selectedExperienceIds || []);
+
+    const projectsUsed = effectiveProjectIds.map((id) => new Types.ObjectId(id));
     const servicesUsed = aiResult.selectedServiceIds.map((id) => new Types.ObjectId(id));
     const technologiesUsed = aiResult.selectedTechnologyIds.map((id) => new Types.ObjectId(id));
-    const experiencesUsed = (aiResult.selectedExperienceIds || []).map((id) => new Types.ObjectId(id));
+    const experiencesUsed = effectiveExperienceIds.map((id) => new Types.ObjectId(id));
 
-    // Create the resume document in DB with complete field metadata
+    // Create the resume document in DB with dynamic environment API base URL
     const newResumeId = new Types.ObjectId();
-    const resumeUrl = `http://localhost:3000/api/resume/download/pdf/${newResumeId}`;
-    const resumeFormatUrl = designFileUrl || `http://localhost:3000/api/resume/download/tex/${newResumeId}`;
+    const resumeUrl = `${envConstant.API_BASE_URL}/resume/download/pdf/${newResumeId}`;
+    const resumeFormatUrl = designFileUrl || `${envConstant.API_BASE_URL}/resume/download/tex/${newResumeId}`;
 
     const resumeData = {
       _id: newResumeId,

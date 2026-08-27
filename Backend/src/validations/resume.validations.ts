@@ -27,6 +27,7 @@ export const resumeGenerateSchema = z.object({
   designFileUrl: z.string().optional(),
   targetRole: z.string().optional(),
   selectedProjectIds: z.array(z.string()).optional(),
+  selectedExperienceIds: z.array(z.string()).optional(),
 });
 
 export const resumeUpdateSchema = resumeCreateSchema

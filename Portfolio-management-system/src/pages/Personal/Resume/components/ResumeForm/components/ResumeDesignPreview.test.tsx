@@ -12,13 +12,15 @@ describe("ResumeDesignPreview component", () => {
     designType: "ats",
   };
 
-  it("renders live preview container with title and summary", () => {
+  it("renders live preview container with title, education, and languages sections", () => {
     render(<ResumeDesignPreview formData={mockFormData} isDark={false} />);
     expect(screen.getByTestId("resume-design-preview")).toBeDefined();
     expect(screen.getAllByText("Senior Frontend Engineer").length).toBeGreaterThan(0);
-    expect(
-      screen.getByText("Expert in building high performance React web apps"),
-    ).toBeDefined();
+    expect(screen.getByText("Professional Summary")).toBeDefined();
+    expect(screen.getByText("Technical Skills")).toBeDefined();
+    expect(screen.getByText("Education & Credentials")).toBeDefined();
+    expect(screen.getByText("Languages")).toBeDefined();
+    expect(screen.getByText(/Punjabi \(Mother tongue\)/i)).toBeDefined();
   });
 
   it("displays target role and ATS scored badge", () => {

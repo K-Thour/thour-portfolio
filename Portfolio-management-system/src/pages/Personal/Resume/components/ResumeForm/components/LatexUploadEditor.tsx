@@ -49,6 +49,9 @@ Senior Full Stack Engineer specializing in scalable cloud applications, high-per
 \\section{Education}
 \\textbf{B.Tech in Computer Science} \\hfill \\textit{First Class Distinction}
 
+\\section{Languages}
+\\textbf{Languages:} Punjabi (Mother tongue) $|$ Hindi (Conversationally fluent) $|$ English (Business knowledge)
+
 \\section{Technical Skills}
 \\textbf{Languages/Frameworks:} TypeScript, React, Next.js, Node.js, Express, Python, TailwindCSS \\\\
 \\textbf{Developer Tools & Cloud:} Git, Docker, Kubernetes, AWS, MongoDB, PostgreSQL, CI/CD Pipelines

@@ -7,6 +7,7 @@ const genAI = new GoogleGenerativeAI(envConstant.GEMINI_API_KEY);
 
 export interface GenerateResumeParams {
   jobDescription: string;
+  jobLink?: string;
   targetRole?: string;
   selectedProjectIds?: string[];
   selectedExperienceIds?: string[];
@@ -278,13 +279,54 @@ export const generateResumeAI = async (params: GenerateResumeParams): Promise<AI
 
   const rankedExperiences = getRankedExperiences();
 
+  // Intelligent Role, Description & Job Link Technology Scoring
+  const scoreTechnology = (t: typeof safeTechnologies[0]): number => {
+    let score = 0;
+    const tNameLower = t.name.toLowerCase();
+    const roleLower = (targetRole || '').toLowerCase();
+    const descLower = `${params.jobDescription || ''} ${params.jobLink || ''}`.toLowerCase();
+
+    // 1. Direct text match in job description or link
+    if (descLower.includes(tNameLower)) score += 30;
+
+    // 2. Role-specific technology affinities
+    if (roleLower.includes('front') || roleLower.includes('react') || roleLower.includes('ui') || roleLower.includes('web')) {
+      if (['react', 'next', 'type', 'java', 'html', 'css', 'tail', 'redux', 'boot', 'front', 'ui'].some((k) => tNameLower.includes(k))) score += 20;
+    }
+    if (roleLower.includes('back') || roleLower.includes('node') || roleLower.includes('cloud') || roleLower.includes('api')) {
+      if (['node', 'express', 'python', 'mongo', 'postgre', 'nest', 'sql', 'django', 'api', 'socket', 'docker', 'aws', 'back'].some((k) => tNameLower.includes(k))) score += 20;
+    }
+    if (roleLower.includes('full') || roleLower.includes('engineer') || roleLower.includes('developer')) {
+      if (['react', 'next', 'type', 'java', 'node', 'express', 'mongo', 'postgre', 'tail', 'redux', 'git', 'docker', 'aws'].some((k) => tNameLower.includes(k))) score += 15;
+    }
+    if (roleLower.includes('ai') || roleLower.includes('ml') || roleLower.includes('data')) {
+      if (['python', 'ai', 'gemini', 'openai', 'llm', 'ml', 'tensor', 'torch'].some((k) => tNameLower.includes(k))) score += 25;
+    }
+
+    // 3. Match with technologies used in top projects
+    const topProjTechs = rankedProjects.slice(0, 3).flatMap((p) => p.techStack).map((x: any) => String(x).toLowerCase());
+    if (topProjTechs.some((pt) => pt.includes(tNameLower) || tNameLower.includes(pt))) {
+      score += 10;
+    }
+
+    return score;
+  };
+
+  const rankedTechnologies = [...safeTechnologies].sort((a, b) => scoreTechnology(b) - scoreTechnology(a));
+
   // High quality deterministic fallback matching ATS standards
   const buildFallbackResponse = (): AIResumeResponse => {
-    const selectedProjectIds = rankedProjects.slice(0, 3).map((p) => p.id).filter(Boolean);
-    const selectedExperienceIds = rankedExperiences.slice(0, 2).map((e) => e.id).filter(Boolean);
+    const selectedProjectIds =
+      params.selectedProjectIds && params.selectedProjectIds.length > 0
+        ? params.selectedProjectIds
+        : rankedProjects.slice(0, 3).map((p) => p.id).filter(Boolean);
+    const selectedExperienceIds =
+      params.selectedExperienceIds && params.selectedExperienceIds.length > 0
+        ? params.selectedExperienceIds
+        : rankedExperiences.slice(0, 2).map((e) => e.id).filter(Boolean);
     const selectedServiceIds = safeServices.slice(0, 2).map((s) => s.id).filter(Boolean);
-    const selectedTechnologyIds = safeTechnologies.slice(0, 14).map((t) => t.id).filter(Boolean);
-    const techNames = safeTechnologies.slice(0, 14).map((t) => t.name).join(', ') || 'TypeScript, React.js, Node.js, Next.js, Redux, Tailwind CSS, MongoDB, Docker';
+    const selectedTechnologyIds = rankedTechnologies.slice(0, 14).map((t) => t.id).filter(Boolean);
+    const techNames = rankedTechnologies.slice(0, 14).map((t) => t.name).join(', ') || 'TypeScript, React.js, Node.js, Next.js, Redux, Tailwind CSS, MongoDB, Docker';
 
     const projectHighlights: Record<string, string[]> = {};
     rankedProjects.slice(0, 4).forEach((p) => {
@@ -397,6 +439,11 @@ Target Job Description (for keyword alignment only - DO NOT copy this job postin
 ${params.jobDescription}
 """
 
+Target Job Posting URL / Link:
+"""
+${params.jobLink || 'None'}
+"""
+
 User Explicitly Selected Project IDs (if any, give these highest priority):
 ${JSON.stringify(params.selectedProjectIds || [])}
 
@@ -418,13 +465,13 @@ ${JSON.stringify(safeEducation.filter((e) => !['10th', '12th', 'matriculation', 
 Available Projects from Database (Ranked by relevance):
 ${JSON.stringify(rankedProjects)}
 
-Available Technologies from Database:
-${JSON.stringify(safeTechnologies)}
+Available Technologies from Database (Ranked by relevance to role & description):
+${JSON.stringify(rankedTechnologies)}
 
 Instructions:
-1. Select the top 3-5 most relevant project IDs that align best with the target role "${targetRole}" and the job description.
+1. Select the top 3-5 most relevant project IDs that align best with the target role "${targetRole}", job description, and job link.
 2. Select the top 2 latest/most relevant experience IDs.
-3. Select the top 12-14 most relevant technology IDs matching the job stack.
+3. Select the top 12-14 most relevant technology IDs from the Database that best match "${targetRole}", description, and tech stack requirements.
 4. Write an impactful, ATS-optimized 3-4 sentence candidate summary/introduction about ${devName} for "${targetRole}" (DO NOT output the job posting requirements/benefits).
 5. For each selected project, write 3-5 concise, action-verb engineering bullet points (focus on architecture, key features, performance, security, or outcomes).
 6. For each experience record, write exactly 5 quantified, professional bullet points tailored to the job keywords.
@@ -462,8 +509,18 @@ Return ONLY a valid JSON object matching this schema:
         responseText = responseText.replace(/^```json\s*/i, '').replace(/\s*```$/i, '').trim();
         const parsed = JSON.parse(responseText);
         return {
-          selectedProjectIds: Array.isArray(parsed.selectedProjectIds) && parsed.selectedProjectIds.length > 0 ? parsed.selectedProjectIds : rankedProjects.slice(0, 3).map((p) => p.id),
-          selectedExperienceIds: Array.isArray(parsed.selectedExperienceIds) && parsed.selectedExperienceIds.length > 0 ? parsed.selectedExperienceIds : rankedExperiences.slice(0, 2).map((e) => e.id),
+          selectedProjectIds:
+            params.selectedProjectIds && params.selectedProjectIds.length > 0
+              ? params.selectedProjectIds
+              : Array.isArray(parsed.selectedProjectIds) && parsed.selectedProjectIds.length > 0
+                ? parsed.selectedProjectIds
+                : rankedProjects.slice(0, 3).map((p) => p.id),
+          selectedExperienceIds:
+            params.selectedExperienceIds && params.selectedExperienceIds.length > 0
+              ? params.selectedExperienceIds
+              : Array.isArray(parsed.selectedExperienceIds) && parsed.selectedExperienceIds.length > 0
+                ? parsed.selectedExperienceIds
+                : rankedExperiences.slice(0, 2).map((e) => e.id),
           selectedServiceIds: Array.isArray(parsed.selectedServiceIds) ? parsed.selectedServiceIds : [],
           selectedTechnologyIds: Array.isArray(parsed.selectedTechnologyIds) ? parsed.selectedTechnologyIds : [],
           tailoredSummary: parsed.tailoredSummary || '',

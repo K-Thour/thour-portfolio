@@ -13,6 +13,7 @@ import ConfirmDownloadModal, {
 } from "../../../components/common/confirmModel/ConfirmDownloadModal";
 import { useResumeOperations } from "./hooks/useResumeOperations";
 import type { Resume } from "./types";
+import envConstraints from "../../../constraints/env.constraints";
 
 export function ResumePage() {
   const theme = useAppSelector((state) => state.theme.theme);
@@ -39,7 +40,7 @@ export function ResumePage() {
   const handleConfirmDownload = (format: DownloadFormat) => {
     if (downloadResume) {
       const resumeId = downloadResume._id || downloadResume.id;
-      const apiBase = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
+      const apiBase = envConstraints.API_BASE_URL;
 
       let downloadUrl = `${apiBase}/resume/download/pdf/${resumeId}`;
       let fileExt = "pdf";

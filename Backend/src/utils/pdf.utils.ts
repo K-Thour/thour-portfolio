@@ -29,6 +29,11 @@ export interface EducationDetail {
   details?: string;
 }
 
+export interface LanguageDetail {
+  name: string;
+  proficiency: string;
+}
+
 export interface ResumePdfData {
   name: string;
   description?: string;
@@ -43,6 +48,7 @@ export interface ResumePdfData {
   projects?: ProjectDetail[];
   experience?: ExperienceDetail[];
   education?: EducationDetail[];
+  languages?: LanguageDetail[];
 }
 
 export const buildProfessionalSummary = (text: string | undefined, title: string, devName?: string): string => {
@@ -101,10 +107,10 @@ export const generateResumePdfStream = (data: ResumePdfData, res: Response): voi
   const contentWidth = 539; // 595.28 - 56
 
   // --- HEADER ---
-  doc.fontSize(20).font('Helvetica-Bold').fillColor('#0f172a').text(devName, { align: 'center' });
-  doc.moveDown(0.1);
-  doc.fontSize(10.5).font('Helvetica-Bold').fillColor('#2563eb').text(resumeTitle.toUpperCase(), { align: 'center' });
-  doc.moveDown(0.18);
+  doc.fontSize(22).font('Helvetica-Bold').fillColor('#0f172a').text(devName, { align: 'center' });
+  doc.moveDown(0.16);
+  doc.fontSize(11).font('Helvetica-Bold').fillColor('#2563eb').text(resumeTitle.toUpperCase(), { align: 'center' });
+  doc.moveDown(0.26);
 
   const contactParts = [
     devPhone,
@@ -116,29 +122,29 @@ export const generateResumePdfStream = (data: ResumePdfData, res: Response): voi
   ].filter(Boolean);
 
   doc
-    .fontSize(8)
+    .fontSize(8.2)
     .font('Helvetica')
     .fillColor('#475569')
     .text(contactParts.join('   |   '), { align: 'center' });
 
-  doc.moveDown(0.2);
+  doc.moveDown(0.32);
   doc.strokeColor('#cbd5e1').lineWidth(0.8).moveTo(leftMargin, doc.y).lineTo(leftMargin + contentWidth, doc.y).stroke();
-  doc.moveDown(0.25);
+  doc.moveDown(0.32);
 
   const drawSectionHeading = (title: string) => {
-    doc.moveDown(0.2);
+    doc.moveDown(0.42);
     doc.fontSize(9.5).font('Helvetica-Bold').fillColor('#0f172a').text(title.toUpperCase());
     doc.strokeColor('#2563eb').lineWidth(1.2).moveTo(leftMargin, doc.y + 1).lineTo(leftMargin + contentWidth, doc.y + 1).stroke();
-    doc.moveDown(0.22);
+    doc.moveDown(0.28);
   };
 
   // --- PROFESSIONAL SUMMARY ---
   drawSectionHeading('Professional Summary');
   doc.fontSize(8.5).font('Helvetica').fillColor('#334155').text(summary, {
-    lineGap: 1.6,
+    lineGap: 2.0,
     align: 'justify',
   });
-  doc.moveDown(0.15);
+  doc.moveDown(0.25);
 
   // --- TECHNICAL SKILLS ---
   drawSectionHeading('Technical Skills');
@@ -178,16 +184,16 @@ export const generateResumePdfStream = (data: ResumePdfData, res: Response): voi
   const toolsSkills = allSkills.filter((s) => !frontendSkills.includes(s) && !backendSkills.includes(s));
 
   doc.fontSize(8.5).font('Helvetica-Bold').fillColor('#0f172a').text('•  Frontend Technologies: ', { continued: true });
-  doc.font('Helvetica').fillColor('#334155').text(frontendSkills.join(', ') || 'React.js, TypeScript, Next.js, Redux, Tailwind CSS, HTML5, CSS3', { lineGap: 1.4 });
+  doc.font('Helvetica').fillColor('#334155').text(frontendSkills.join(', ') || 'React.js, TypeScript, Next.js, Redux, Tailwind CSS, HTML5, CSS3', { lineGap: 1.8 });
 
   doc.fontSize(8.5).font('Helvetica-Bold').fillColor('#0f172a').text('•  Backend & Databases: ', { continued: true });
-  doc.font('Helvetica').fillColor('#334155').text(backendSkills.join(', ') || 'Node.js, Express.js, MongoDB, PostgreSQL, RESTful APIs, WebSockets', { lineGap: 1.4 });
+  doc.font('Helvetica').fillColor('#334155').text(backendSkills.join(', ') || 'Node.js, Express.js, MongoDB, PostgreSQL, RESTful APIs, WebSockets', { lineGap: 1.8 });
 
   if (toolsSkills.length > 0) {
     doc.fontSize(8.5).font('Helvetica-Bold').fillColor('#0f172a').text('•  Developer Tools & Cloud: ', { continued: true });
-    doc.font('Helvetica').fillColor('#334155').text(toolsSkills.join(', '), { lineGap: 1.4 });
+    doc.font('Helvetica').fillColor('#334155').text(toolsSkills.join(', '), { lineGap: 1.8 });
   }
-  doc.moveDown(0.15);
+  doc.moveDown(0.25);
 
   // --- PROFESSIONAL EXPERIENCE ---
   drawSectionHeading('Professional Experience');
@@ -214,7 +220,7 @@ export const generateResumePdfStream = (data: ResumePdfData, res: Response): voi
     const rightText = exp.duration || 'Feb 2025 — Present';
     doc.fontSize(8).font('Helvetica-Oblique').fillColor('#64748b').text(`   (${rightText})`);
 
-    doc.moveDown(0.08);
+    doc.moveDown(0.12);
 
     const bullets = exp.bullets && exp.bullets.length > 0
       ? exp.bullets
@@ -229,12 +235,12 @@ export const generateResumePdfStream = (data: ResumePdfData, res: Response): voi
     bullets.forEach((bullet) => {
       doc.fontSize(8.2).font('Helvetica').fillColor('#334155').text(`•   ${bullet}`, {
         indent: 8,
-        lineGap: 1.3,
+        lineGap: 1.6,
         align: 'justify',
       });
     });
 
-    doc.moveDown(0.14);
+    doc.moveDown(0.24);
   });
 
   // --- KEY PROJECTS (Up to 5 Points Each) ---
@@ -254,13 +260,13 @@ export const generateResumePdfStream = (data: ResumePdfData, res: Response): voi
         .filter((t) => typeof t === 'string' && !/^[0-9a-fA-F]{24}$/.test(t))
         .join(', ');
       if (cleanStack) {
-        doc.moveDown(0.04);
+        doc.moveDown(0.06);
         doc.fontSize(7.8).font('Helvetica-Bold').fillColor('#2563eb').text('Technologies: ', { continued: true });
         doc.font('Helvetica-Oblique').fillColor('#475569').text(cleanStack);
       }
     }
 
-    doc.moveDown(0.06);
+    doc.moveDown(0.08);
 
     const projectBullets: string[] = [];
     if (proj.description) projectBullets.push(proj.description);
@@ -278,12 +284,12 @@ export const generateResumePdfStream = (data: ResumePdfData, res: Response): voi
     projectBullets.slice(0, 5).forEach((bullet) => {
       doc.fontSize(8.2).font('Helvetica').fillColor('#334155').text(`•   ${bullet}`, {
         indent: 8,
-        lineGap: 1.3,
+        lineGap: 1.6,
         align: 'justify',
       });
     });
 
-    doc.moveDown(0.14);
+    doc.moveDown(0.24);
   });
 
   // --- EDUCATION ---
@@ -302,11 +308,26 @@ export const generateResumePdfStream = (data: ResumePdfData, res: Response): voi
     doc.fontSize(8.5).font('Helvetica-Bold').fillColor('#0f172a').text(edu.degree, { continued: true });
     doc.fontSize(8.2).font('Helvetica').fillColor('#475569').text(`   —   ${edu.institution}`);
     if (edu.details) {
-      doc.moveDown(0.04);
-      doc.fontSize(7.8).font('Helvetica').fillColor('#64748b').text(edu.details, { indent: 8 });
+      doc.moveDown(0.06);
+      doc.fontSize(7.8).font('Helvetica').fillColor('#64748b').text(edu.details, { indent: 8, lineGap: 1.6 });
     }
-    doc.moveDown(0.08);
+    doc.moveDown(0.2);
   });
+
+  // --- LANGUAGES ---
+  drawSectionHeading('Languages');
+  const langList: LanguageDetail[] = data.languages?.length
+    ? data.languages
+    : [
+        { name: 'Punjabi', proficiency: 'Mother tongue' },
+        { name: 'Hindi', proficiency: 'Conversationally fluent' },
+        { name: 'English', proficiency: 'Business knowledge' },
+      ];
+
+  const langItems = langList.map((l) => `${l.name} (${l.proficiency})`).join('   |   ');
+  doc.fontSize(8.5).font('Helvetica-Bold').fillColor('#0f172a').text('•  Languages: ', { continued: true });
+  doc.font('Helvetica').fillColor('#334155').text(langItems, { lineGap: 1.8 });
+  doc.moveDown(0.2);
 
   doc.end();
 };

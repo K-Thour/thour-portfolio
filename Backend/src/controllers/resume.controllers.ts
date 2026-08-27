@@ -7,6 +7,7 @@ import models from '../models';
 import { generateResumePdfStream, ResumePdfData } from '../utils/pdf.utils';
 import { generateResumeWordDocument } from '../utils/word.utils';
 import { generateResumeJson } from '../utils/jsonResume.utils';
+import envConstant from '../constants/env.constant';
 
 const create = async (req: Request, res: Response) => {
   const userId = new Types.ObjectId(req.userId);
@@ -166,22 +167,42 @@ const prepareResumeData = async (resumeIdOrFilename: string): Promise<ResumePdfD
     .split(/\s+/)
     .filter((w) => w.length > 2);
 
-  // 1. Role-Tailored Technologies Filter
+  // 1. Role-Tailored Technologies Filter (prioritizing AI & Database selected technologies)
   const selectedTechIds = (resume?.technologiesUsed || []).map((id: any) => id.toString());
+  const roleText = `${resume?.targetRole || resume?.name || ''}`.toLowerCase();
+  const fullContextText = `${resume?.name || ''} ${resume?.description || ''} ${resume?.jobUrl || ''}`.toLowerCase();
+
   const scoredTechnologies = technologies.map((t: any) => {
     let score = 0;
     const tId = t._id.toString();
-    if (selectedTechIds.includes(tId)) score += 10;
-    if (jobText.includes(t.name.toLowerCase())) score += 5;
+    const tNameLower = t.name.toLowerCase();
+
+    if (selectedTechIds.includes(tId)) score += 50;
+    if (fullContextText.includes(tNameLower)) score += 20;
+
+    // Role-specific heuristics
+    if (roleText.includes('front') || roleText.includes('react') || roleText.includes('ui') || roleText.includes('web')) {
+      if (['react', 'next', 'type', 'java', 'html', 'css', 'tail', 'redux', 'boot', 'front', 'ui'].some((k) => tNameLower.includes(k))) score += 15;
+    }
+    if (roleText.includes('back') || roleText.includes('node') || roleText.includes('cloud') || roleText.includes('api')) {
+      if (['node', 'express', 'python', 'mongo', 'postgre', 'nest', 'sql', 'django', 'api', 'socket', 'docker', 'aws', 'back'].some((k) => tNameLower.includes(k))) score += 15;
+    }
+    if (roleText.includes('full') || roleText.includes('engineer') || roleText.includes('developer')) {
+      if (['react', 'next', 'type', 'java', 'node', 'express', 'mongo', 'postgre', 'tail', 'redux', 'git', 'docker', 'aws'].some((k) => tNameLower.includes(k))) score += 12;
+    }
+    if (roleText.includes('ai') || roleText.includes('ml') || roleText.includes('data')) {
+      if (['python', 'ai', 'gemini', 'openai', 'llm', 'ml', 'tensor', 'torch'].some((k) => tNameLower.includes(k))) score += 20;
+    }
+
     return { tech: t, score };
   });
 
   scoredTechnologies.sort((a, b) => b.score - a.score);
-  // Pick only top 10-14 relevant technologies matching the job
+  // Pick only top 12-16 relevant technologies matching the job
   const tailoredTechnologies = (
     scoredTechnologies.filter((st) => st.score > 0).length >= 8
-      ? scoredTechnologies.filter((st) => st.score > 0).slice(0, 14)
-      : scoredTechnologies.slice(0, 12)
+      ? scoredTechnologies.filter((st) => st.score > 0).slice(0, 16)
+      : scoredTechnologies.slice(0, 14)
   ).map((st) => st.tech.name);
 
   // 2. Role-Tailored Projects Filter (>3 projects support)
@@ -219,7 +240,9 @@ const prepareResumeData = async (resumeIdOrFilename: string): Promise<ResumePdfD
   // If user explicitly picked projects, include all of them. Otherwise take top 3 best matching.
   const chosenProjects =
     selectedProjIds.length > 0
-      ? scoredProjects.filter((sp) => selectedProjIds.includes(sp.project._id.toString()))
+      ? selectedProjIds
+          .map((id: string) => scoredProjects.find((sp) => sp.project._id.toString() === id))
+          .filter(Boolean) as typeof scoredProjects
       : scoredProjects.slice(0, Math.min(projects.length, Math.max(3, scoredProjects.length >= 3 ? 3 : scoredProjects.length)));
 
   // 3. Role-Tailored Experience (Auto 2 Latest / User Selected, 5 Points Each)
@@ -236,7 +259,9 @@ const prepareResumeData = async (resumeIdOrFilename: string): Promise<ResumePdfD
 
   const chosenExp =
     selectedExpIds.length > 0
-      ? experience.filter((e: any) => selectedExpIds.includes(e._id.toString()))
+      ? selectedExpIds
+          .map((id: string) => experience.find((e: any) => e._id.toString() === id))
+          .filter(Boolean)
       : sortedExp.slice(0, 2);
 
   const relevantExperience = chosenExp.map((e: any) => {
@@ -271,6 +296,17 @@ const prepareResumeData = async (resumeIdOrFilename: string): Promise<ResumePdfD
     };
   });
 
+  const defaultLanguages = [
+    { name: 'Punjabi', proficiency: 'Mother tongue' },
+    { name: 'Hindi', proficiency: 'Conversationally fluent' },
+    { name: 'English', proficiency: 'Business knowledge' },
+  ];
+
+  const userLanguages =
+    user?.languages && user.languages.length > 0
+      ? user.languages.map((l: any) => ({ name: l.name, proficiency: l.level || 'Fluent' }))
+      : defaultLanguages;
+
   return {
     name: resume?.name || 'React.js Developer Resume',
     description: resume?.description,
@@ -279,7 +315,7 @@ const prepareResumeData = async (resumeIdOrFilename: string): Promise<ResumePdfD
     developerPhone: user?.phoneNumber || '+91 8847009521',
     developerGithub: user?.GitHubURL || 'https://github.com/K-Thour',
     developerLinkedin: user?.LinkedInURL || 'https://linkedin.com/in/karanveer-thour',
-    developerWebsite: 'https://karan-thour.com',
+    developerWebsite: envConstant.PORTFOLIO_WEB_BASE_URL || 'https://karanveer-thour.vercel.app',
     developerAddress: 'India',
     technologies: tailoredTechnologies,
     projects: chosenProjects.map(({ project: p, resolvedStack }) => {
@@ -339,6 +375,7 @@ const prepareResumeData = async (resumeIdOrFilename: string): Promise<ResumePdfD
         details,
       };
     }),
+    languages: userLanguages,
   };
 };
 

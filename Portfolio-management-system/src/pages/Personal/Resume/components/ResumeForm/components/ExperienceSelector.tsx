@@ -77,11 +77,12 @@ export function ExperienceSelector({
 
   const toggleExperience = (id: string) => {
     setIsManualMode(true);
-    if (selectedExperienceIds.includes(id)) {
-      const next = selectedExperienceIds.filter((eId) => eId !== id);
+    const baseList = selectedExperienceIds.length > 0 ? selectedExperienceIds : autoSelectedIds;
+    if (baseList.includes(id)) {
+      const next = baseList.filter((eId) => eId !== id);
       onExperiencesChange(next);
     } else {
-      const next = [...selectedExperienceIds, id];
+      const next = [...baseList, id];
       onExperiencesChange(next);
     }
   };

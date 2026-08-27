@@ -26,4 +26,7 @@ export default {
   SMTP_USER: process.env.SMTP_USER || '',
   SMTP_PASS: process.env.SMTP_PASS || '',
   EMAIL_FROM: process.env.EMAIL_FROM || 'no-reply@portfolio.com',
+  API_BASE_URL: process.env.API_BASE_URL || 'http://localhost:3000/api',
+  PORTFOLIO_WEB_BASE_URL: process.env.PORTFOLIO_WEB_BASE_URL || 'http://localhost:5174',
+  PORTFOLIO_MANAGEMENT_BASE_URL: process.env.PORTFOLIO_MANAGEMENT_BASE_URL || 'http://localhost:5173',
 };
