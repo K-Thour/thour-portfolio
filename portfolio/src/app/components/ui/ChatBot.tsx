@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   X,
@@ -17,8 +17,8 @@ import {
   Mail,
 } from 'lucide-react';
 import { Link } from 'react-router';
-import { useTheme } from '../../context/ThemeContext';
-import { useUser } from '../../context/UserContext';
+import { ThemeContext } from '../../context/ThemeContext';
+import { UserContext } from '../../context/UserContext';
 import { sendChatMessage, type ChatMessage } from '../../../services/api';
 
 interface FormattedMessage {
@@ -31,22 +31,22 @@ interface FormattedMessage {
 const CATEGORIZED_PROMPTS = [
   {
     label: 'Core Tech Stack',
-    query: 'What are your core technical skills and tools?',
+    query: 'What are your core technical skills and architecture strengths?',
     icon: Layers,
   },
   {
     label: 'Featured Projects',
-    query: 'Showcase your best projects with live demos',
+    query: 'Showcase your best production projects with architecture highlights',
     icon: Code2,
   },
   {
     label: 'Work Experience',
-    query: 'Tell me about your software engineering experience',
+    query: 'Tell me about your software engineering experience and impact',
     icon: Briefcase,
   },
   {
     label: 'Hire / Contact Me',
-    query: 'How can I get in touch or hire you for a project?',
+    query: 'How can I get in touch or hire you for a consulting engagement?',
     icon: Mail,
   },
 ];
@@ -56,20 +56,22 @@ const CATEGORIZED_PROMPTS = [
  */
 async function copyToClipboard(text: string): Promise<boolean> {
   try {
-    if (navigator.clipboard && window.isSecureContext) {
+    if (navigator?.clipboard?.writeText) {
       await navigator.clipboard.writeText(text);
       return true;
     }
-    const textArea = document.createElement('textarea');
-    textArea.value = text;
-    textArea.style.position = 'fixed';
-    textArea.style.left = '-999999px';
-    document.body.appendChild(textArea);
-    textArea.focus();
-    textArea.select();
-    const successful = document.execCommand('copy');
-    document.body.removeChild(textArea);
-    return successful;
+    if (typeof document !== 'undefined' && typeof document.execCommand === 'function') {
+      const textArea = document.createElement('textarea');
+      textArea.value = text;
+      textArea.style.position = 'fixed';
+      textArea.style.left = '-9999px';
+      document.body.appendChild(textArea);
+      textArea.select();
+      const successful = document.execCommand('copy');
+      document.body.removeChild(textArea);
+      return successful;
+    }
+    return false;
   } catch (err) {
     console.error('Failed to copy text:', err);
     return false;
@@ -77,19 +79,53 @@ async function copyToClipboard(text: string): Promise<boolean> {
 }
 
 /**
- * Parses markdown with bolding, inline code chips, bullet points, and internal links
+ * Parses markdown inline text with bolding, inline code chips, and plain text
  */
-function MarkdownContent({ text, isDark }: { text: string; isDark: boolean }) {
+function formatInlineText(text: string, isDark: boolean, pIdx: number): React.ReactNode[] {
+  const tokenRegex = /(\*\*[^*]+\*\*|`[^`]+`)/g;
+  const parts = text.split(tokenRegex);
+
+  return parts.map((part, idx) => {
+    if (part.startsWith('**') && part.endsWith('**') && part.length >= 4) {
+      return (
+        <strong key={`b-${pIdx}-${idx}`} className="font-bold opacity-100">
+          {part.slice(2, -2)}
+        </strong>
+      );
+    }
+    if (part.startsWith('`') && part.endsWith('`') && part.length >= 2) {
+      return (
+        <code
+          key={`c-${pIdx}-${idx}`}
+          className={`font-mono text-xs px-1.5 py-0.5 rounded-md ${
+            isDark
+              ? 'bg-white/10 text-emerald-400 border border-white/10'
+              : 'bg-black/5 text-emerald-600 border border-black/5'
+          }`}
+        >
+          {part.slice(1, -1)}
+        </code>
+      );
+    }
+    return part;
+  });
+}
+
+/**
+ * Parses markdown with bolding, inline code chips, bullet points, and internal/external links
+ */
+export function MarkdownContent({ text, isDark }: { text: string; isDark: boolean }) {
   const formatParagraph = (paragraph: string, pIdx: number) => {
     // Process markdown links [label](url)
     const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
-    const parts = [];
+    const parts: React.ReactNode[] = [];
     let lastIndex = 0;
-    let match;
+    let match: RegExpExecArray | null;
 
     while ((match = linkRegex.exec(paragraph)) !== null) {
       if (match.index > lastIndex) {
-        parts.push(paragraph.substring(lastIndex, match.index));
+        const textSegment = paragraph.substring(lastIndex, match.index);
+        parts.push(...formatInlineText(textSegment, isDark, pIdx));
       }
       const label = match[1];
       const url = match[2];
@@ -130,42 +166,13 @@ function MarkdownContent({ text, isDark }: { text: string; isDark: boolean }) {
       lastIndex = match.index + match[0].length;
     }
     if (lastIndex < paragraph.length) {
-      parts.push(paragraph.substring(lastIndex));
+      const remaining = paragraph.substring(lastIndex);
+      parts.push(...formatInlineText(remaining, isDark, pIdx));
     }
-
-    // Now format bold text (**text**) & inline code (`code`) inside string segments
-    const renderedParts = parts.map((part, partIdx) => {
-      if (typeof part !== 'string') return part;
-
-      // Handle bold **text**
-      const boldRegex = /\*\*([^*]+)\*\*/g;
-      const subParts = [];
-      let subLastIdx = 0;
-      let bMatch;
-
-      while ((bMatch = boldRegex.exec(part)) !== null) {
-        if (bMatch.index > subLastIdx) {
-          subParts.push(part.substring(subLastIdx, bMatch.index));
-        }
-        subParts.push(
-          <strong
-            key={`bold-${partIdx}-${bMatch.index}`}
-            className="font-bold text-foreground"
-          >
-            {bMatch[1]}
-          </strong>,
-        );
-        subLastIdx = bMatch.index + bMatch[0].length;
-      }
-      if (subLastIdx < part.length) {
-        subParts.push(part.substring(subLastIdx));
-      }
-      return subParts;
-    });
 
     return (
       <p key={pIdx} className="mb-2 last:mb-0 leading-relaxed">
-        {renderedParts}
+        {parts}
       </p>
     );
   };
@@ -210,14 +217,14 @@ function MarkdownContent({ text, isDark }: { text: string; isDark: boolean }) {
   });
   flushList();
 
-  return <div className="text-sm">{renderedElements}</div>;
+  return <div className="text-sm leading-relaxed">{renderedElements}</div>;
 }
 
 export function ChatBot() {
-  const { theme } = useTheme();
-  const isDark = theme === 'avengers';
-  const { userData } = useUser();
-  const developerName = userData?.name || 'Karanveer Thour';
+  const themeCtx = useContext(ThemeContext);
+  const isDark = themeCtx ? themeCtx.theme === 'avengers' : true;
+  const userCtx = useContext(UserContext);
+  const developerName = userCtx?.userData?.name || 'Karanveer Thour';
 
   const [isOpen, setIsOpen] = useState(false);
   const [inputMessage, setInputMessage] = useState('');
@@ -228,7 +235,8 @@ export function ChatBot() {
     {
       id: 'welcome',
       role: 'model',
-      content: `Hello! 👋 I'm **${developerName}'s AI Assistant**.\n\nI can provide verified insights on **${developerName}'s** full-stack projects, architecture experience, core technical skills, or direct contact links. How may I assist you?`,
+      content: `Hello! 👋 I'm **${developerName}'s AI Assistant**.\n\nI can provide verified insights on **${developerName}'s** architecture experience, ` +
+        `core technical skills, production projects, and direct contact options. How may I assist you?`,
       timestamp: new Date().toLocaleTimeString([], {
         hour: '2-digit',
         minute: '2-digit',
@@ -258,17 +266,20 @@ export function ChatBot() {
     }
   }, [isOpen]);
 
-  // Focus input on open without forcing scroll to bottom
+  // Focus input on open
   useEffect(() => {
     if (isOpen) {
       inputRef.current?.focus();
     }
   }, [isOpen]);
 
-  // When a new message arrives, scroll smoothly to the start/top of that message
+  // When a new message arrives, scroll smoothly
   useEffect(() => {
-    if (messages.length > 1) {
-      latestMessageRef.current?.scrollIntoView({
+    if (
+      messages.length > 1 &&
+      typeof latestMessageRef.current?.scrollIntoView === 'function'
+    ) {
+      latestMessageRef.current.scrollIntoView({
         behavior: 'smooth',
         block: 'start',
       });
@@ -314,7 +325,7 @@ export function ChatBot() {
       const res = await sendChatMessage(textToSend, historyContext);
       const fullReply =
         res.reply ||
-        `I'm sorry, I couldn't process that. Feel free to contact ${developerName} directly!`;
+        `I'm sorry, I couldn't process that. Feel free to connect with ${developerName} directly on /contact!`;
       const modelId = `model-${Date.now()}`;
       const timestamp = new Date().toLocaleTimeString([], {
         hour: '2-digit',
@@ -330,13 +341,12 @@ export function ChatBot() {
           timestamp,
         },
       ]);
-      setLoading(false);
     } catch (err) {
       console.error('Chat error:', err);
       const errorMsg: FormattedMessage = {
         id: `error-${Date.now()}`,
         role: 'model',
-        content: `Sorry, I ran into an issue reaching the AI backend. You can connect with **${developerName}** directly on the **/contact** page!`,
+        content: `Sorry, I encountered an issue reaching the AI backend. You can connect with **${developerName}** directly on the **/contact** page!`,
         timestamp: new Date().toLocaleTimeString([], {
           hour: '2-digit',
           minute: '2-digit',
@@ -377,30 +387,33 @@ export function ChatBot() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            initial={{ opacity: 0, scale: 0.92, y: 24 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            exit={{ opacity: 0, scale: 0.92, y: 24 }}
             transition={{ type: 'spring', damping: 25, stiffness: 350 }}
             className={`w-[380px] sm:w-[440px] max-w-[calc(100vw-24px)] h-[580px] max-h-[85vh] rounded-3xl shadow-2xl flex flex-col overflow-hidden border backdrop-blur-2xl mb-4 will-change-transform ${
               isDark
-                ? 'bg-slate-950/90 border-red-500/30 text-white shadow-red-950/50'
-                : 'bg-white/90 border-blue-200/80 text-slate-800 shadow-blue-500/20'
+                ? 'bg-slate-950/90 border-white/[0.12] text-white shadow-black/60'
+                : 'bg-white/95 border-black/[0.08] text-slate-800 shadow-slate-300/60'
             }`}
           >
+            {/* Top Specular Hairline */}
+            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent pointer-events-none" />
+
             {/* Header */}
             <div
-              className={`px-5 py-4 border-b flex items-center justify-between select-none ${
+              className={`px-5 py-4 border-b flex items-center justify-between select-none relative z-10 ${
                 isDark
-                  ? 'bg-linear-to-r from-slate-950 via-slate-900 to-red-950/50 border-red-500/20'
-                  : 'bg-linear-to-r from-blue-50 via-white to-blue-100/70 border-blue-200/60'
+                  ? 'bg-slate-900/80 border-white/[0.08]'
+                  : 'bg-slate-50/90 border-black/[0.06]'
               }`}
             >
               <div className="flex items-center gap-3">
                 <div
                   className={`w-10 h-10 rounded-2xl flex items-center justify-center shadow-md ${
                     isDark
-                      ? 'bg-linear-to-br from-red-600 to-yellow-500 text-white shadow-red-500/30'
-                      : 'bg-linear-to-br from-blue-600 to-blue-400 text-white shadow-blue-500/30'
+                      ? 'bg-gradient-to-br from-red-600 to-amber-500 text-white shadow-red-950/40'
+                      : 'bg-gradient-to-br from-blue-600 to-indigo-500 text-white shadow-blue-500/20'
                   }`}
                 >
                   {isDark ? (
@@ -419,7 +432,7 @@ export function ChatBot() {
                       Live
                     </span>
                   </div>
-                  <span className="text-[11px] text-muted-foreground opacity-80">
+                  <span className="text-[11px] text-muted-foreground opacity-75">
                     Gemini AI • Verified Portfolio Context
                   </span>
                 </div>
@@ -427,6 +440,7 @@ export function ChatBot() {
 
               <div className="flex items-center gap-1">
                 <button
+                  type="button"
                   onClick={handleClearHistory}
                   title="Reset conversation"
                   aria-label="Clear chat"
@@ -435,6 +449,7 @@ export function ChatBot() {
                   <RotateCcw className="w-4 h-4" />
                 </button>
                 <button
+                  type="button"
                   onClick={() => setIsOpen(false)}
                   title="Close Assistant"
                   aria-label="Close chat"
@@ -467,11 +482,11 @@ export function ChatBot() {
                       className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-0.5 shadow-xs ${
                         isUser
                           ? isDark
-                            ? 'bg-linear-to-r from-red-600 to-red-700 text-white'
-                            : 'bg-linear-to-r from-blue-600 to-blue-700 text-white'
+                            ? 'bg-gradient-to-r from-red-600 to-amber-600 text-white'
+                            : 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white'
                           : isDark
-                            ? 'bg-slate-900 border border-red-500/30 text-red-400'
-                            : 'bg-blue-100 border border-blue-300 text-blue-700'
+                            ? 'bg-slate-900 border border-white/10 text-red-400'
+                            : 'bg-blue-100 border border-blue-200 text-blue-700'
                       }`}
                     >
                       {isUser ? (
@@ -487,11 +502,11 @@ export function ChatBot() {
                         className={`rounded-2xl px-4 py-3 shadow-xs ${
                           isUser
                             ? isDark
-                              ? 'bg-linear-to-r from-red-600 to-red-700 text-white rounded-tr-xs shadow-red-950/30'
-                              : 'bg-linear-to-r from-blue-600 to-blue-700 text-white rounded-tr-xs shadow-blue-200'
+                              ? 'bg-gradient-to-r from-red-600 to-amber-600 text-white rounded-tr-xs shadow-red-950/30'
+                              : 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-tr-xs shadow-blue-200'
                             : isDark
-                              ? 'bg-slate-900/90 border border-red-500/20 text-slate-100 rounded-tl-xs shadow-black/40'
-                              : 'bg-slate-50/90 border border-blue-100 text-slate-800 rounded-tl-xs shadow-slate-100'
+                              ? 'bg-slate-900/90 border border-white/[0.08] text-slate-100 rounded-tl-xs shadow-black/40'
+                              : 'bg-slate-50 border border-black/[0.06] text-slate-800 rounded-tl-xs shadow-slate-100'
                         }`}
                       >
                         <MarkdownContent text={msg.content} isDark={isDark} />
@@ -499,15 +514,17 @@ export function ChatBot() {
 
                       {/* Footer: Timestamp & Copy button */}
                       <div
-                        className={`flex items-center gap-2 mt-1 px-1 text-[10px] opacity-60 ${
+                        className={`flex items-center gap-2 mt-1 px-1 text-[10px] opacity-65 ${
                           isUser ? 'justify-end' : 'justify-between'
                         }`}
                       >
                         {!isUser && (
                           <button
+                            type="button"
                             onClick={() => handleCopy(msg.id, msg.content)}
                             className="inline-flex items-center gap-1 opacity-70 hover:opacity-100 transition-opacity cursor-pointer text-[10px]"
                             title="Copy response"
+                            aria-label={`Copy response ${msg.id}`}
                           >
                             {copiedMessageId === msg.id ? (
                               <>
@@ -541,7 +558,7 @@ export function ChatBot() {
                   <div
                     className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
                       isDark
-                        ? 'bg-slate-900 border border-red-500/30 text-red-400'
+                        ? 'bg-slate-900 border border-white/10 text-red-400'
                         : 'bg-blue-100 text-blue-700'
                     }`}
                   >
@@ -550,8 +567,8 @@ export function ChatBot() {
                   <div
                     className={`rounded-2xl rounded-tl-xs px-4 py-3 border flex items-center gap-1.5 ${
                       isDark
-                        ? 'bg-slate-900/90 border-red-500/20 text-red-400'
-                        : 'bg-slate-50 border-blue-100 text-blue-600'
+                        ? 'bg-slate-900/90 border-white/[0.08] text-red-400'
+                        : 'bg-slate-50 border-black/[0.06] text-blue-600'
                     }`}
                   >
                     <span
@@ -566,7 +583,7 @@ export function ChatBot() {
                       className="w-2 h-2 rounded-full bg-current animate-bounce"
                       style={{ animationDelay: '300ms' }}
                     />
-                    <span className="text-xs font-mono ml-1 opacity-70">
+                    <span className="text-xs font-mono ml-1.5 opacity-80">
                       Synthesizing...
                     </span>
                   </div>
@@ -576,8 +593,8 @@ export function ChatBot() {
 
             {/* Categorized Quick Prompt Chips */}
             {messages.length <= 1 && !loading && (
-              <div className="px-4 sm:px-5 pb-2 pt-1">
-                <p className="text-[11px] font-mono text-muted-foreground uppercase tracking-wider mb-2 opacity-70">
+              <div className="px-4 sm:px-5 pb-3 pt-1">
+                <p className="text-[11px] font-mono text-muted-foreground uppercase tracking-wider mb-2 opacity-75">
                   Suggested Inquiries
                 </p>
                 <div className="grid grid-cols-2 gap-2">
@@ -586,11 +603,12 @@ export function ChatBot() {
                     return (
                       <button
                         key={i}
+                        type="button"
                         onClick={() => handleSend(prompt.query)}
                         className={`text-xs p-2.5 rounded-xl border flex items-center gap-2 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] text-left cursor-pointer shadow-xs ${
                           isDark
-                            ? 'bg-slate-900/80 border-red-500/20 hover:border-red-500/60 text-slate-200 hover:bg-slate-800'
-                            : 'bg-blue-50/80 border-blue-200 hover:border-blue-400 text-blue-900 hover:bg-blue-100/60'
+                            ? 'bg-slate-900/80 border-white/[0.08] hover:border-red-500/50 text-slate-200 hover:bg-slate-805'
+                            : 'bg-blue-50/80 border-black/[0.06] hover:border-blue-400 text-blue-900 hover:bg-blue-100/60'
                         }`}
                       >
                         <IconComponent className="w-3.5 h-3.5 shrink-0 opacity-80" />
@@ -608,8 +626,8 @@ export function ChatBot() {
             <div
               className={`p-3 sm:p-4 border-t flex items-center gap-2.5 ${
                 isDark
-                  ? 'bg-slate-950/90 border-red-500/20'
-                  : 'bg-slate-50/90 border-blue-200/60'
+                  ? 'bg-slate-950/90 border-white/[0.08]'
+                  : 'bg-slate-50/90 border-black/[0.06]'
               }`}
             >
               <input
@@ -621,20 +639,21 @@ export function ChatBot() {
                 maxLength={1000}
                 placeholder={`Ask anything about ${developerName}...`}
                 disabled={loading}
-                className={`flex-1 px-4 py-2.5 rounded-2xl text-sm border focus:outline-none transition-colors shadow-xs ${
+                className={`flex-1 min-h-[44px] px-4 py-2.5 rounded-2xl text-sm border focus:outline-none transition-colors shadow-xs ${
                   isDark
-                    ? 'bg-slate-900 border-slate-700 focus:border-red-500 text-white placeholder-slate-400'
-                    : 'bg-white border-blue-200 focus:border-blue-500 text-slate-900 placeholder-slate-400'
+                    ? 'bg-slate-900 border-white/[0.08] focus:border-red-500 text-white placeholder-slate-500'
+                    : 'bg-white border-black/[0.08] focus:border-blue-500 text-slate-900 placeholder-slate-400'
                 }`}
               />
               <button
+                type="button"
                 onClick={() => handleSend()}
                 disabled={!inputMessage.trim() || loading}
                 aria-label="Send message"
-                className={`p-3 rounded-2xl text-white transition-all duration-200 hover:scale-105 active:scale-95 disabled:opacity-40 disabled:hover:scale-100 cursor-pointer shadow-md ${
+                className={`min-h-[44px] min-w-[44px] p-3 rounded-2xl text-white transition-all duration-200 hover:scale-105 active:scale-95 disabled:opacity-40 disabled:hover:scale-100 cursor-pointer shadow-md flex items-center justify-center ${
                   isDark
-                    ? 'bg-linear-to-r from-red-600 to-yellow-500 shadow-red-500/30'
-                    : 'bg-linear-to-r from-blue-600 to-blue-500 shadow-blue-500/30'
+                    ? 'bg-gradient-to-r from-red-600 to-amber-600 shadow-red-950/40'
+                    : 'bg-gradient-to-r from-blue-600 to-indigo-600 shadow-blue-500/25'
                 }`}
               >
                 <Send className="w-4 h-4" />
@@ -646,20 +665,22 @@ export function ChatBot() {
 
       {/* Floating Trigger Button */}
       <motion.button
+        type="button"
         onClick={() => setIsOpen((prev) => !prev)}
-        whileHover={{ scale: 1.06 }}
-        whileTap={{ scale: 0.94 }}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
         className={`relative flex items-center gap-2.5 px-4 py-3 sm:px-5 sm:py-3.5 rounded-full border shadow-2xl cursor-pointer transition-all duration-300 select-none ${
           isDark
-            ? 'bg-linear-to-r from-slate-900 via-slate-950 to-slate-900 border-red-500/60 text-white shadow-red-600/30 hover:border-red-500 hover:shadow-red-500/40'
-            : 'bg-linear-to-r from-white via-blue-50 to-white border-blue-300 text-blue-700 shadow-blue-500/25 hover:border-blue-400 hover:shadow-blue-500/35'
+            ? 'bg-gradient-to-r from-slate-900 via-slate-950 to-slate-900 border-white/[0.12] text-white shadow-black/50 hover:border-red-500/60'
+            : 'bg-gradient-to-r from-white via-blue-50 to-white border-black/[0.08] text-blue-700 shadow-blue-500/20 hover:border-blue-400'
         }`}
         title={isOpen ? 'Close AI Assistant' : 'Chat with AI Assistant'}
         aria-label="Toggle AI Assistant"
+        aria-expanded={isOpen}
       >
         {/* Pulsing Ambient Halo */}
         <span
-          className={`absolute inset-0 rounded-full animate-ping opacity-25 pointer-events-none ${
+          className={`absolute inset-0 rounded-full animate-ping opacity-20 pointer-events-none ${
             isDark ? 'bg-red-500' : 'bg-blue-400'
           }`}
         />
