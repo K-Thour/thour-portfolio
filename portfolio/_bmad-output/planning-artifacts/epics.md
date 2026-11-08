@@ -132,18 +132,23 @@ So that I can orient myself immediately and transition between pages without vis
 **And** nav links and action buttons respond instantly on pointer-down with `scale: 0.97` tactile feedback.
 **And** on mobile viewports (< 768px), clicking the menu toggle opens a spring-animated drawer with safe-area spacing that can be dismissed or redirected mid-motion without locking input.
 
-### Story 1.2: Dual-Theme Engine Synchronization & System Controls
+### Story 1.2: Dual-Theme Engine Synchronization, Anti-FOUC & Circular Radial View Transition
 
 As a portfolio visitor,
-I want to toggle seamlessly between Avengers Dark mode and Norse Light mode with synchronized ambient effects and scroll progress,
-So that the visual atmosphere adapts to my preference with zero flicker or latency.
+I want to toggle seamlessly between Avengers Dark mode and Norse Light mode with an institutional-grade, zero-flicker Circular Radial View Transition (Telegram/Raycast-style ripple effect) and instant Axe & Shield button availability,
+So that the visual atmosphere adapts to my preference with physical beauty, direct manipulation, and zero latency.
 
 **Acceptance Criteria:**
 
-**Given** the portfolio is loaded in either theme,
-**When** the user clicks the `ThemeToggle` button,
-**Then** the application switches theme tokens smoothly in `ThemeContext` without layout shifts or raw color flashes, persisting the choice in localStorage.
-**And** the theme toggle icon animates using an Apple-grade morphing spring physics curve (`damping: 0.8, response: 0.3s`).
+**Given** the portfolio initializes in any browser session,
+**When** the DOM loads,
+**Then** a synchronous inline `<script>` in the `<head>` of `index.html` resolves `localStorage.getItem('theme')` / `'portfolio-theme'` and synchronizes `.dark`/`.light` on `document.documentElement` before frame 0 paint, eliminating FOUC.
+**And** the navigation chrome and `ThemeToggle` button are rendered at `z-[110]` so they appear immediately without being delayed by intro sequences.
+**When** the user clicks the `ThemeToggle` button or activates it via keyboard (`Enter` or `Space`),
+**Then** the origin coordinates `(x, y)` are computed from the button bounds and expanded to `endRadius` covering the furthest screen corner.
+**And** if View Transitions API is supported and reduced motion is disabled, `document.startViewTransition` executes and animates `clipPath: circle(...)` on `::view-transition-new(root)` using Web Animations API over `720ms` with `cubic-bezier(0.4, 0, 0.2, 1)`.
+**And** the theme toggle icon seamlessly morphs between the Avengers Shield (`<Shield />`) and God of War Axe (`<Axe />`) using an Apple spring curve (`damping: 18, stiffness: 240`).
+**And** if reduced motion is requested or View Transitions are unsupported, `toggleTheme()` applies immediately without visual distortion or re-triggering while a transition is active.
 **And** the `CursorGlow` component tracks pointer movements using hardware-accelerated transforms (`translate3d`) without causing CPU layout thrashing.
 **And** the `ScrollProgress` bar at the top edge tracks scroll position accurately using passive window scroll listeners and smooth scale-x transform.
 

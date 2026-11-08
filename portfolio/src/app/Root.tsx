@@ -15,7 +15,22 @@ function RootLayout() {
   const { pathname } = useLocation();
   const { theme } = useTheme();
   const isDark = theme === 'avengers';
-  const [showGameLoader, setShowGameLoader] = useState(true);
+  const [showGameLoader, setShowGameLoader] = useState(() => {
+    try {
+      return !sessionStorage.getItem('portfolio_intro_seen');
+    } catch {
+      return false;
+    }
+  });
+
+  const handleGameLoaderComplete = () => {
+    setShowGameLoader(false);
+    try {
+      sessionStorage.setItem('portfolio_intro_seen', 'true');
+    } catch {
+      // Storage safety
+    }
+  };
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
@@ -29,7 +44,7 @@ function RootLayout() {
     >
       <AnimatePresence mode="wait">
         {showGameLoader && (
-          <GameLoader onComplete={() => setShowGameLoader(false)} />
+          <GameLoader onComplete={handleGameLoaderComplete} />
         )}
       </AnimatePresence>
 

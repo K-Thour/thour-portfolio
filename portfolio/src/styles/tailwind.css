@@ -2,20 +2,51 @@
 
 @import 'tw-animate-css';
 
-/* Smooth Theme Transitions Engine */
-html,
-body,
-nav,
-header,
-footer,
-section,
-main,
-article,
-aside,
-button,
-input,
-textarea,
-select {
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Circular Radial View Transition Pseudo-Element Overrides */
+::view-transition-group(root) {
+  animation-duration: 0.72s;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+  display: block;
+}
+
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  z-index: 999999;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(root),
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none !important;
+  }
+}
+
+/* Fallback Theme Color Transitions (disabled during active view transition) */
+html:not([data-view-transition]) html,
+html:not([data-view-transition]) body,
+html:not([data-view-transition]) nav,
+html:not([data-view-transition]) header,
+html:not([data-view-transition]) footer,
+html:not([data-view-transition]) section,
+html:not([data-view-transition]) main,
+html:not([data-view-transition]) article,
+html:not([data-view-transition]) aside,
+html:not([data-view-transition]) button,
+html:not([data-view-transition]) input,
+html:not([data-view-transition]) textarea,
+html:not([data-view-transition]) select {
   transition:
     background-color 0.4s cubic-bezier(0.22, 1, 0.36, 1),
     border-color 0.4s cubic-bezier(0.22, 1, 0.36, 1),

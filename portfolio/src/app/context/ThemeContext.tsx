@@ -9,9 +9,14 @@ import React, {
 export type Theme = 'avengers' | 'godofwar';
 
 export const THEME_STORAGE_KEY = 'portfolio-theme';
+export const STANDARD_THEME_STORAGE_KEY = 'theme';
 
 export function getFallbackTheme(): Theme {
   try {
+    const standardSaved = localStorage.getItem(STANDARD_THEME_STORAGE_KEY);
+    if (standardSaved === 'dark') return 'avengers';
+    if (standardSaved === 'light') return 'godofwar';
+
     const saved = localStorage.getItem(THEME_STORAGE_KEY) as Theme | null;
     if (saved === 'avengers' || saved === 'godofwar') {
       return saved;
@@ -43,11 +48,14 @@ function getInitialTheme(): Theme {
 function applyThemeToDOM(theme: Theme) {
   try {
     if (typeof document === 'undefined') return;
+    const isDark = theme === 'avengers';
     document.documentElement.setAttribute('data-theme', theme);
-    if (theme === 'avengers') {
+    if (isDark) {
       document.documentElement.classList.add('dark');
+      document.documentElement.classList.remove('light');
     } else {
       document.documentElement.classList.remove('dark');
+      document.documentElement.classList.add('light');
     }
   } catch (e) {
     // DOM safety
@@ -56,6 +64,7 @@ function applyThemeToDOM(theme: Theme) {
 
 interface ThemeContextType {
   theme: Theme;
+  isDark: boolean;
   toggleTheme: () => void;
   setTheme: (theme: Theme) => void;
 }
@@ -74,6 +83,10 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     setThemeState(newTheme);
     try {
       localStorage.setItem(THEME_STORAGE_KEY, newTheme);
+      localStorage.setItem(
+        STANDARD_THEME_STORAGE_KEY,
+        newTheme === 'avengers' ? 'dark' : 'light',
+      );
     } catch (e) {
       console.warn('Failed to save theme in localStorage:', e);
     }
@@ -108,7 +121,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   }, [theme]);
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme, setTheme }}>
+    <ThemeContext.Provider
+      value={{ theme, isDark: theme === 'avengers', toggleTheme, setTheme }}
+    >
       {children}
     </ThemeContext.Provider>
   );

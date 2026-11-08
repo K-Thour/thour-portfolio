@@ -122,4 +122,54 @@ describe('ThemeToggle', () => {
     const svg = button.querySelector('svg');
     expect(svg?.classList.contains('lucide-shield')).toBe(true);
   });
+
+  it('triggers circular radial view transition when startViewTransition is supported', async () => {
+    vi.mocked(useTheme).mockReturnValue({
+      theme: 'avengers',
+      toggleTheme: toggleThemeMock,
+      setTheme: setThemeMock,
+    });
+
+    const animateMock = vi.fn().mockReturnValue({
+      onfinish: null,
+      oncancel: null,
+    });
+    document.documentElement.animate = animateMock;
+
+    const startViewTransitionMock = vi.fn().mockImplementation((cb: () => void) => {
+      cb();
+      return {
+        ready: Promise.resolve(),
+        finished: Promise.resolve(),
+      };
+    });
+    (document as any).startViewTransition = startViewTransitionMock;
+
+    render(<ThemeToggle />);
+
+    const button = screen.getByRole('button');
+    fireEvent.click(button);
+
+    expect(startViewTransitionMock).toHaveBeenCalledTimes(1);
+    expect(toggleThemeMock).toHaveBeenCalledTimes(1);
+
+    // Allow promise microtasks to settle
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(animateMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        clipPath: expect.arrayContaining([
+          expect.stringContaining('circle(0px at'),
+        ]),
+      }),
+      expect.objectContaining({
+        duration: 720,
+        easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
+        pseudoElement: '::view-transition-new(root)',
+      }),
+    );
+
+    delete (document as any).startViewTransition;
+  });
 });

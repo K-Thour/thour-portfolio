@@ -6,6 +6,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Loading...</title>
 
+    <!-- Synchronous Zero-Flicker Anti-FOUC Script -->
+    <script>
+      (function () {
+        try {
+          var saved = localStorage.getItem('theme') || localStorage.getItem('portfolio-theme');
+          var isDark =
+            saved === 'dark' ||
+            saved === 'avengers' ||
+            (!saved &&
+              window.matchMedia &&
+              window.matchMedia('(prefers-color-scheme: dark)').matches);
+          var theme = isDark ? 'avengers' : 'godofwar';
+          document.documentElement.setAttribute('data-theme', theme);
+          if (isDark) {
+            document.documentElement.classList.add('dark');
+            document.documentElement.classList.remove('light');
+          } else {
+            document.documentElement.classList.remove('dark');
+            document.documentElement.classList.add('light');
+          }
+        } catch (e) {}
+      })();
+    </script>
+
     <!-- SEO Meta Tags -->
     <meta
       name="description"
@@ -61,27 +85,6 @@
     <!-- Performance & Preconnect Hints -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-
-    <script>
-      (function () {
-        try {
-          var saved = localStorage.getItem('portfolio-theme');
-          var theme =
-            saved === 'avengers' || saved === 'godofwar'
-              ? saved
-              : window.matchMedia &&
-                  window.matchMedia('(prefers-color-scheme: dark)').matches
-                ? 'avengers'
-                : 'godofwar';
-          document.documentElement.setAttribute('data-theme', theme);
-          if (theme === 'avengers') {
-            document.documentElement.classList.add('dark');
-          } else {
-            document.documentElement.classList.remove('dark');
-          }
-        } catch (e) {}
-      })();
-    </script>
   </head>
 
   <body>

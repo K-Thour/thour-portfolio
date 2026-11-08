@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { Shield, Axe } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
@@ -5,17 +6,103 @@ import { useTheme } from '../context/ThemeContext';
 export function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
   const shouldReduceMotion = useReducedMotion();
+  const isTransitioningRef = useRef(false);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   const isDark = theme === 'avengers';
 
+  const handleToggle = (
+    e?: React.MouseEvent<HTMLButtonElement> | React.KeyboardEvent<HTMLButtonElement>,
+  ) => {
+    // Prevent re-triggering while a circular radial transition is running
+    if (isTransitioningRef.current) return;
+
+    // Check for reduced motion and View Transitions API support
+    const prefersReducedMotion =
+      shouldReduceMotion ||
+      (typeof window !== 'undefined' &&
+        window.matchMedia?.('(prefers-reduced-motion: reduce)').matches);
+
+    const isViewTransitionSupported =
+      typeof document !== 'undefined' &&
+      typeof (document as any).startViewTransition === 'function' &&
+      !prefersReducedMotion;
+
+    if (!isViewTransitionSupported) {
+      toggleTheme();
+      return;
+    }
+
+    isTransitioningRef.current = true;
+    document.documentElement.setAttribute('data-view-transition', 'true');
+
+    // Compute click or button origin coordinates (x, y)
+    const targetEl = (e?.currentTarget || buttonRef.current) as HTMLElement | null;
+    const rect = targetEl?.getBoundingClientRect();
+    const x = rect ? rect.left + rect.width / 2 : window.innerWidth / 2;
+    const y = rect ? rect.top + rect.height / 2 : 0;
+
+    // Compute maximum radius to furthest screen corner
+    const endRadius = Math.hypot(
+      Math.max(x, window.innerWidth - x),
+      Math.max(y, window.innerHeight - y),
+    );
+
+    try {
+      const transition = (document as any).startViewTransition(() => {
+        toggleTheme();
+      });
+
+      transition.ready
+        .then(() => {
+          const animation = document.documentElement.animate(
+            {
+              clipPath: [
+                `circle(0px at ${x}px ${y}px)`,
+                `circle(${endRadius}px at ${x}px ${y}px)`,
+              ],
+            },
+            {
+              duration: 720,
+              easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
+              pseudoElement: '::view-transition-new(root)',
+            },
+          );
+
+          animation.onfinish = () => {
+            isTransitioningRef.current = false;
+            document.documentElement.removeAttribute('data-view-transition');
+          };
+          animation.oncancel = () => {
+            isTransitioningRef.current = false;
+            document.documentElement.removeAttribute('data-view-transition');
+          };
+        })
+        .catch(() => {
+          isTransitioningRef.current = false;
+          document.documentElement.removeAttribute('data-view-transition');
+        });
+
+      transition.finished.finally(() => {
+        isTransitioningRef.current = false;
+        document.documentElement.removeAttribute('data-view-transition');
+      });
+    } catch {
+      toggleTheme();
+      isTransitioningRef.current = false;
+      document.documentElement.removeAttribute('data-view-transition');
+    }
+  };
+
   return (
     <motion.button
+      ref={buttonRef}
       type="button"
-      onClick={toggleTheme}
+      onClick={handleToggle}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
-          toggleTheme();
+          handleToggle(e);
         }
       }}
       whileTap={shouldReduceMotion ? undefined : { scale: 0.95 }}
