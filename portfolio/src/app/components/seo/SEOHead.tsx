@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { useUser } from '../../context/UserContext';
+import React, { useEffect, useContext } from 'react';
+import { UserContext } from '../../context/UserContext';
 import { useLocation } from 'react-router';
 
 export interface SEOHeadProps {
@@ -21,7 +21,9 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
   canonicalUrl,
   jsonLd,
 }) => {
-  const { userData, loading } = useUser();
+  const userCtx = useContext(UserContext);
+  const userData = userCtx?.userData;
+  const loading = userCtx?.loading ?? false;
   const location = useLocation();
 
   const siteOrigin =

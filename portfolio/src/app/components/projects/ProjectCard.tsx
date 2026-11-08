@@ -1,7 +1,8 @@
-import { motion } from 'motion/react';
-import { ExternalLink, Github } from 'lucide-react';
-import { Link } from 'react-router';
-import { useTheme } from '../../context/ThemeContext';
+import { motion, useReducedMotion } from 'motion/react';
+import { ExternalLink, Github, Sparkles, ArrowRight } from 'lucide-react';
+import { Link, useNavigate } from 'react-router';
+import { useContext, useState } from 'react';
+import { ThemeContext } from '../../context/ThemeContext';
 
 export interface ProjectItem {
   id: string;
@@ -18,134 +19,208 @@ export interface ProjectItem {
 interface ProjectCardProps {
   project: ProjectItem;
   index: number;
-  isInView: boolean;
+  isInView?: boolean;
 }
 
-export function ProjectCard({ project, index, isInView }: ProjectCardProps) {
-  const { theme } = useTheme();
-  const isDark = theme === 'avengers';
+const SMOOTH_EASE = [0.22, 1, 0.36, 1] as const;
+
+export function ProjectCard({ project, index, isInView = true }: ProjectCardProps) {
+  const themeCtx = useContext(ThemeContext);
+  const isDark = themeCtx ? themeCtx.theme === 'avengers' : true;
+  const shouldReduceMotion = useReducedMotion() ?? false;
+  const navigate = useNavigate();
+  const [imgError, setImgError] = useState(false);
+
+  const handleCardClick = (e: React.MouseEvent) => {
+    // If the click happened on an anchor or button, let that element handle it
+    if ((e.target as HTMLElement).closest('a, button')) {
+      return;
+    }
+    navigate(`/projects/${project.id}`);
+  };
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-      transition={{ duration: 0.6, delay: index * 0.1 }}
-      className={`group rounded-2xl overflow-hidden border transition-all duration-300 hover:-translate-y-2 ${
+      data-testid={`project-card-${project.id}`}
+      initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 24 }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduceMotion ? 0 : 24 }}
+      transition={
+        shouldReduceMotion
+          ? { duration: 0 }
+          : { duration: 0.5, delay: index * 0.08, ease: SMOOTH_EASE }
+      }
+      whileHover={
+        shouldReduceMotion
+          ? undefined
+          : { y: -4, scale: 1.01, transition: { type: 'spring', bounce: 0, duration: 0.3 } }
+      }
+      onClick={handleCardClick}
+      className={`group relative rounded-2xl overflow-hidden border backdrop-blur-xl backdrop-saturate-[180%] flex flex-col shadow-lg transition-colors cursor-pointer ${
         isDark
-          ? 'bg-slate-800/50 border-red-500/20 hover:border-red-500/50'
-          : 'bg-gradient-to-br from-white to-blue-50 border-blue-300/40 hover:border-blue-500/60 shadow-lg hover:shadow-xl hover:shadow-blue-500/20'
+          ? 'bg-slate-800/60 border-white/[0.08] hover:border-red-500/40 hover:shadow-red-500/10'
+          : 'bg-white/90 border-black/[0.06] shadow-sm hover:border-blue-400/50 hover:shadow-md hover:shadow-blue-500/10'
       }`}
     >
-      <Link to={`/projects/${project.id}`} className="block">
-        <div
-          className={`relative overflow-hidden h-64 ${
-            isDark ? 'bg-slate-900' : 'bg-blue-50'
-          }`}
-        >
+      {/* Top hairline highlight */}
+      <div
+        aria-hidden="true"
+        className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent z-10"
+      />
+
+      {/* Media Container */}
+      <div className="relative aspect-video overflow-hidden bg-slate-950">
+        {!imgError ? (
           <img
             src={project.image}
             alt={project.title}
             loading="lazy"
-            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+            onError={() => setImgError(true)}
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
+        ) : (
           <div
-            className={`absolute inset-0 via-transparent opacity-60 ${
-              isDark
-                ? 'bg-gradient-to-t from-slate-900 via-slate-900/50'
-                : 'bg-gradient-to-t from-white via-white/50'
-            }`}
-          />
-
-          {/* Status Badge */}
-          <div className="absolute top-4 right-4">
-            <span
-              className={`px-3 py-1 rounded-full text-xs font-medium ${
-                project.status === 'Completed'
-                  ? isDark
-                    ? 'bg-green-500/20 text-green-400 border border-green-500/50'
-                    : 'bg-green-100 text-green-800 border border-green-400/50'
-                  : isDark
-                    ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/50'
-                    : 'bg-yellow-100 text-yellow-800 border border-yellow-400/50'
-              }`}
-            >
-              {project.status === 'Completed'
-                ? isDark
-                  ? 'Completed'
-                  : 'Victory'
-                : isDark
-                  ? 'In Progress'
-                  : 'In Battle'}
-            </span>
-          </div>
-
-          {/* Hover Actions */}
-          <div
-            className={`absolute inset-0 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-end p-4 gap-3 ${
-              isDark
-                ? 'bg-gradient-to-t from-black/80'
-                : 'bg-gradient-to-t from-blue-900/80'
+            className={`w-full h-full flex items-center justify-center ${
+              isDark ? 'bg-slate-800' : 'bg-slate-100'
             }`}
           >
-            <a
-              href={project.link}
-              onClick={(e) => e.stopPropagation()}
-              className={`w-12 h-12 rounded-lg flex items-center justify-center transition-colors ${
-                isDark
-                  ? 'bg-red-600 hover:bg-red-700'
-                  : 'bg-blue-600 hover:bg-blue-700'
+            <span
+              className={`text-4xl font-extrabold tracking-tight ${
+                isDark ? 'text-slate-600' : 'text-slate-300'
               }`}
             >
-              <ExternalLink className="w-5 h-5 text-white" />
-            </a>
-            <a
-              href={project.github}
-              onClick={(e) => e.stopPropagation()}
-              className={`w-12 h-12 rounded-lg flex items-center justify-center transition-colors ${
-                isDark
-                  ? 'bg-slate-700 hover:bg-slate-600'
-                  : 'bg-blue-700 hover:bg-blue-800'
-              }`}
-            >
-              <Github className="w-5 h-5 text-white" />
-            </a>
+              {project.title.slice(0, 2).toUpperCase()}
+            </span>
           </div>
+        )}
+
+        {/* Status Badge */}
+        <div className="absolute top-4 left-4 z-10">
+          <span
+            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-md ${
+              project.status === 'Completed' || project.status === 'Victory'
+                ? isDark
+                  ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                  : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                : isDark
+                  ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30'
+                  : 'bg-yellow-50 text-yellow-700 border border-yellow-200'
+            }`}
+          >
+            <Sparkles className="w-3 h-3" />
+            <span>{project.status || 'Production'}</span>
+          </span>
         </div>
 
-        <div className="p-6">
+        {/* External Hover Actions Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-end p-4 gap-3 z-20">
+          {project.github && project.github !== '#' && (
+            <motion.a
+              href={project.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`View ${project.title} source on GitHub`}
+              onClick={(e) => e.stopPropagation()}
+              whileTap={shouldReduceMotion ? undefined : { scale: 0.97 }}
+              className="min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-full bg-slate-900/90 text-white hover:bg-red-600 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+            >
+              <Github className="w-4 h-4" />
+            </motion.a>
+          )}
+          {project.link && project.link !== '#' && (
+            <motion.a
+              href={project.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`View ${project.title} live demo`}
+              onClick={(e) => e.stopPropagation()}
+              whileTap={shouldReduceMotion ? undefined : { scale: 0.97 }}
+              className="min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-full bg-slate-900/90 text-white hover:bg-blue-600 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+            >
+              <ExternalLink className="w-4 h-4" />
+            </motion.a>
+          )}
+        </div>
+      </div>
+
+      {/* Content Section */}
+      <div className="p-6 sm:p-7 flex-1 flex flex-col justify-between">
+        <div>
           <div
-            className={`text-sm font-medium mb-1 ${
-              isDark ? 'text-red-500' : 'text-blue-600'
+            className={`text-xs font-bold uppercase tracking-widest mb-1.5 ${
+              isDark ? 'text-red-400' : 'text-blue-600'
             }`}
           >
             {project.subtitle}
           </div>
+
           <h3
-            className={`text-2xl font-bold mb-2 ${
-              isDark ? 'text-white' : 'text-gray-900'
+            className={`text-xl sm:text-2xl font-bold tracking-tight mb-2 line-clamp-1 ${
+              isDark ? 'text-white' : 'text-slate-900'
+            }`}
+            style={{ letterSpacing: '-0.01em' }}
+          >
+            <Link
+              to={`/projects/${project.id}`}
+              aria-label={`View case study for ${project.title}`}
+              className="hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 rounded"
+            >
+              {project.title}
+            </Link>
+          </h3>
+
+          {project.description && (
+            <p
+              className={`text-sm leading-relaxed mb-4 line-clamp-2 ${
+                isDark ? 'text-slate-300' : 'text-slate-600'
+              }`}
+            >
+              {project.description}
+            </p>
+          )}
+        </div>
+
+        {/* Tags & Case Study Link */}
+        <div>
+          {project.tags.length > 0 && (
+            <div
+              className={`flex flex-wrap gap-2 pt-4 border-t mb-4 ${
+                isDark ? 'border-white/[0.06]' : 'border-black/[0.06]'
+              }`}
+            >
+              {project.tags.slice(0, 4).map((tag) => (
+                <span
+                  key={tag}
+                  className={`px-2.5 py-1 rounded-md text-xs font-medium ${
+                    isDark
+                      ? 'bg-slate-700/60 text-slate-300'
+                      : 'bg-blue-50 text-blue-700'
+                  }`}
+                >
+                  {tag}
+                </span>
+              ))}
+              {project.tags.length > 4 && (
+                <span
+                  className={`px-2 py-1 rounded-md text-xs font-medium ${
+                    isDark ? 'bg-slate-700/40 text-slate-500' : 'bg-slate-100 text-slate-500'
+                  }`}
+                >
+                  +{project.tags.length - 4}
+                </span>
+              )}
+            </div>
+          )}
+
+          <div
+            className={`flex items-center gap-1.5 text-xs font-bold transition-transform duration-200 group-hover:translate-x-1 ${
+              isDark ? 'text-red-400' : 'text-blue-600'
             }`}
           >
-            {project.title}
-          </h3>
-          <p className={`mb-4 ${isDark ? 'text-gray-400' : 'text-gray-700'}`}>
-            {project.description}
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {project.tags.map((tag) => (
-              <span
-                key={tag}
-                className={`px-3 py-1 rounded-full text-sm border ${
-                  isDark
-                    ? 'bg-slate-900/80 border-red-500/20 text-gray-300'
-                    : 'bg-blue-100 border-blue-300/50 text-gray-800'
-                }`}
-              >
-                {tag}
-              </span>
-            ))}
+            <span>Explore Case Study</span>
+            <ArrowRight className="w-3.5 h-3.5" />
           </div>
         </div>
-      </Link>
+      </div>
     </motion.div>
   );
 }

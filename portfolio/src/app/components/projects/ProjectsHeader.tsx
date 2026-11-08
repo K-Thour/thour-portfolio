@@ -1,52 +1,83 @@
-import { motion } from 'motion/react';
+import { motion, useReducedMotion } from 'motion/react';
 import { Shield, Swords } from 'lucide-react';
-import { useTheme } from '../../context/ThemeContext';
+import { useContext } from 'react';
+import { ThemeContext } from '../../context/ThemeContext';
 
 interface ProjectsHeaderProps {
-  isInView: boolean;
+  isInView?: boolean;
 }
 
-export function ProjectsHeader({ isInView }: ProjectsHeaderProps) {
-  const { theme } = useTheme();
-  const isDark = theme === 'avengers';
+const SMOOTH_EASE = [0.22, 1, 0.36, 1] as const;
+
+export function ProjectsHeader({ isInView = true }: ProjectsHeaderProps) {
+  const themeCtx = useContext(ThemeContext);
+  const isDark = themeCtx ? themeCtx.theme === 'avengers' : true;
+  const shouldReduceMotion = useReducedMotion() ?? false;
 
   return (
-    <div className="text-center mb-16">
+    <div data-testid="projects-header" className="text-center mb-16 relative">
+      {/* Eyebrow Badge */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-        transition={{ duration: 0.6 }}
+        data-testid="projects-header-badge"
+        initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 16 }}
+        animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduceMotion ? 0 : 16 }}
+        transition={
+          shouldReduceMotion
+            ? { duration: 0 }
+            : { duration: 0.5, ease: SMOOTH_EASE }
+        }
         className="flex items-center justify-center gap-2 mb-4"
       >
-        {isDark ? (
-          <Shield className="w-6 h-6 text-red-500" />
-        ) : (
-          <Swords className="w-6 h-6 text-amber-700" />
-        )}
-        <span
-          className={`font-medium uppercase tracking-wider text-sm ${
-            isDark ? 'text-red-500' : 'text-amber-700'
+        <div
+          className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full border backdrop-blur-md text-xs font-semibold uppercase tracking-wider ${
+            isDark
+              ? 'bg-red-500/10 border-red-500/30 text-red-400'
+              : 'bg-blue-500/10 border-blue-500/20 text-blue-700'
           }`}
         >
-          {isDark ? 'Project Showcase' : 'Saga of Triumphs'}
-        </span>
+          {isDark ? (
+            <Shield className="w-4 h-4 text-red-500" />
+          ) : (
+            <Swords className="w-4 h-4 text-blue-600" />
+          )}
+          <span>{isDark ? 'Project Showcase' : 'Saga of Triumphs'}</span>
+        </div>
       </motion.div>
-      <h1
-        className={`text-4xl md:text-5xl font-bold mb-4 ${
-          isDark ? 'text-white' : 'text-gray-900'
+
+      {/* Main Title with Optical Tracking */}
+      <motion.h1
+        initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
+        animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
+        transition={
+          shouldReduceMotion
+            ? { duration: 0 }
+            : { duration: 0.55, delay: 0.08, ease: SMOOTH_EASE }
+        }
+        className={`text-4xl sm:text-5xl md:text-6xl font-extrabold mb-6 tracking-tight ${
+          isDark ? 'text-white' : 'text-slate-900'
         }`}
+        style={{ letterSpacing: '-0.02em' }}
       >
-        {isDark ? 'Featured Work' : 'Legendary Conquests'}
-      </h1>
-      <p
-        className={`text-xl max-w-2xl mx-auto ${
-          isDark ? 'text-gray-400' : 'text-gray-600'
+        {isDark ? 'Featured Work & Case Studies' : 'Legendary Conquests & Builds'}
+      </motion.h1>
+
+      {/* Description */}
+      <motion.p
+        initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
+        animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
+        transition={
+          shouldReduceMotion
+            ? { duration: 0 }
+            : { duration: 0.6, delay: 0.16, ease: SMOOTH_EASE }
+        }
+        className={`text-lg sm:text-xl max-w-2xl mx-auto leading-relaxed ${
+          isDark ? 'text-slate-300' : 'text-slate-600'
         }`}
       >
         {isDark
-          ? 'A collection of recent projects showcasing my technical skills and creative solutions.'
-          : 'Tales of battles won through code, strategy, and unwavering determination.'}
-      </p>
+          ? 'A collection of recent production systems, distributed cloud applications, and interactive digital experiences.'
+          : 'Tales of engineering battles won through rigorous architecture, clean code, and unwavering determination.'}
+      </motion.p>
     </div>
   );
 }
