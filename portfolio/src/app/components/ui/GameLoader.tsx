@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { motion } from 'motion/react';
+import React, { useState, useEffect, useRef, useCallback, useContext } from 'react';
+import { motion, useReducedMotion } from 'motion/react';
 import { Shield, Axe, ChevronRight } from 'lucide-react';
-import { useTheme } from '../../context/ThemeContext';
+import { ThemeContext, getFallbackTheme } from '../../context/ThemeContext';
 
 interface GameLoaderProps {
   onComplete: () => void;
@@ -24,23 +24,34 @@ const NORDIC_TIPS = [
 ];
 
 export const GameLoader: React.FC<GameLoaderProps> = ({ onComplete }) => {
-  const { theme } = useTheme();
+  const context = useContext(ThemeContext);
+  const theme = context?.theme ?? getFallbackTheme();
   const isDark = theme === 'avengers';
+  const motionReduced = useReducedMotion();
+  const shouldReduceMotion =
+    motionReduced ||
+    (typeof window !== 'undefined' && window.matchMedia
+      ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      : false);
 
   const [progress, setProgress] = useState(0);
   const [logIndex, setLogIndex] = useState(0);
   const [isFinished, setIsFinished] = useState(false);
 
   const completedRef = useRef(false);
+  const exitTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const completionTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const handleFinish = () => {
+  const handleFinish = useCallback(() => {
     if (completedRef.current) return;
     completedRef.current = true;
     setIsFinished(true);
-    setTimeout(() => {
+    const exitDelay = shouldReduceMotion ? 200 : 350;
+    if (exitTimerRef.current) clearTimeout(exitTimerRef.current);
+    exitTimerRef.current = setTimeout(() => {
       onComplete();
-    }, 400);
-  };
+    }, exitDelay);
+  }, [onComplete, shouldReduceMotion]);
 
   // Lock body scroll while loader is active
   useEffect(() => {
@@ -52,7 +63,15 @@ export const GameLoader: React.FC<GameLoaderProps> = ({ onComplete }) => {
     };
   }, []);
 
-  // Global click & keyboard shortcut listeners (Click Anywhere, Space, Enter, Escape to skip)
+  // Cleanup timers on unmount
+  useEffect(() => {
+    return () => {
+      if (exitTimerRef.current) clearTimeout(exitTimerRef.current);
+      if (completionTimerRef.current) clearTimeout(completionTimerRef.current);
+    };
+  }, []);
+
+  // Keyboard shortcut listeners (Space, Enter, Escape to skip)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === ' ' || e.key === 'Enter' || e.key === 'Escape') {
@@ -61,27 +80,21 @@ export const GameLoader: React.FC<GameLoaderProps> = ({ onComplete }) => {
       }
     };
 
-    const handleGlobalClick = () => {
-      handleFinish();
-    };
-
     window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('click', handleGlobalClick);
 
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('click', handleGlobalClick);
     };
-  }, []);
+  }, [handleFinish]);
 
   // Smooth 60 FPS progress animation
   useEffect(() => {
     let animationFrameId: number;
     let startTime: number | null = null;
-    const duration = 2200; // Smooth 2.2s progression
+    const duration = shouldReduceMotion ? 600 : 2200;
 
     const step = (timestamp: number) => {
-      if (!startTime) startTime = timestamp;
+      if (startTime === null) startTime = timestamp;
       const elapsed = timestamp - startTime;
       const rawProgress = Math.min(elapsed / duration, 1);
 
@@ -109,9 +122,10 @@ export const GameLoader: React.FC<GameLoaderProps> = ({ onComplete }) => {
       if (rawProgress < 1) {
         animationFrameId = requestAnimationFrame(step);
       } else {
-        setTimeout(() => {
+        if (completionTimerRef.current) clearTimeout(completionTimerRef.current);
+        completionTimerRef.current = setTimeout(() => {
           handleFinish();
-        }, 300);
+        }, shouldReduceMotion ? 100 : 300);
       }
     };
 
@@ -119,15 +133,21 @@ export const GameLoader: React.FC<GameLoaderProps> = ({ onComplete }) => {
 
     return () => {
       cancelAnimationFrame(animationFrameId);
+      if (completionTimerRef.current) clearTimeout(completionTimerRef.current);
     };
-  }, [isDark]);
+  }, [isDark, handleFinish, shouldReduceMotion]);
 
   return (
     <motion.div
       onClick={handleFinish}
-      initial={{ opacity: 1 }}
+      initial={{ opacity: 1, scale: 1 }}
       animate={{ opacity: isFinished ? 0 : 1, scale: isFinished ? 1.05 : 1 }}
-      transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+      exit={{ opacity: 0, scale: 1.05 }}
+      transition={
+        shouldReduceMotion
+          ? { duration: 0.2 }
+          : { type: 'spring', damping: 20, stiffness: 220 }
+      }
       className={`fixed inset-0 z-[100] flex flex-col justify-between p-6 sm:p-10 select-none overflow-hidden cursor-pointer ${
         isDark
           ? 'bg-slate-950 text-white'
@@ -163,7 +183,9 @@ export const GameLoader: React.FC<GameLoaderProps> = ({ onComplete }) => {
       <div className="relative z-10 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div
-            className={`w-3 h-3 rounded-full animate-ping ${
+            className={`w-3 h-3 rounded-full ${
+              shouldReduceMotion ? '' : 'animate-ping'
+            } motion-reduce:animate-none ${
               isDark ? 'bg-red-500' : 'bg-blue-600'
             }`}
           />
@@ -188,21 +210,25 @@ export const GameLoader: React.FC<GameLoaderProps> = ({ onComplete }) => {
         </div>
 
         {/* Skip Button */}
-        <button
+        <motion.button
+          type="button"
           onClick={(e) => {
             e.stopPropagation();
             handleFinish();
           }}
-          className={`flex items-center gap-2 px-4 py-1.5 rounded-lg text-xs font-mono font-bold uppercase tracking-wider transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer border ${
+          whileTap={shouldReduceMotion ? undefined : { scale: 0.96 }}
+          whileHover={shouldReduceMotion ? undefined : { scale: 1.04 }}
+          aria-label="Skip introduction sequence"
+          className={`min-w-[44px] min-h-[44px] flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-xs font-mono font-bold uppercase tracking-wider transition-colors cursor-pointer border outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
             isDark
-              ? 'bg-slate-900/80 border-red-500/30 text-gray-300 hover:text-white hover:border-red-500 hover:bg-red-500/20'
-              : 'bg-white/80 border-blue-300 text-blue-800 hover:bg-blue-600 hover:text-white hover:border-blue-600 shadow-sm'
+              ? 'bg-slate-900/80 border-red-500/30 text-gray-300 hover:text-white hover:border-red-500 hover:bg-red-500/20 focus-visible:ring-red-500'
+              : 'bg-white/80 border-blue-300 text-blue-800 hover:bg-blue-600 hover:text-white hover:border-blue-600 shadow-sm focus-visible:ring-blue-500'
           }`}
         >
           <span>SKIP</span>
           <span className="text-[10px] opacity-60">[ESC]</span>
           <ChevronRight className="w-3.5 h-3.5" />
-        </button>
+        </motion.button>
       </div>
 
       {/* Center Cinematic Game Crest / Reactor */}
@@ -210,7 +236,9 @@ export const GameLoader: React.FC<GameLoaderProps> = ({ onComplete }) => {
         <div className="relative w-44 h-44 sm:w-56 sm:h-56 flex items-center justify-center">
           {/* Outer Rotating Energy Ring */}
           <div
-            className={`absolute inset-0 rounded-full border-2 border-dashed will-change-transform animate-[spin_10s_linear_infinite] ${
+            className={`absolute inset-0 rounded-full border-2 border-dashed will-change-transform ${
+              shouldReduceMotion ? '' : 'animate-[spin_10s_linear_infinite]'
+            } motion-reduce:animate-none ${
               isDark
                 ? 'border-red-500/50 shadow-lg shadow-red-500/20'
                 : 'border-blue-500/50 shadow-lg shadow-blue-500/20'
@@ -219,14 +247,18 @@ export const GameLoader: React.FC<GameLoaderProps> = ({ onComplete }) => {
 
           {/* Middle Counter-Rotating Ring */}
           <div
-            className={`absolute inset-4 rounded-full border-2 border-dotted will-change-transform animate-[spin_6s_linear_infinite_reverse] ${
+            className={`absolute inset-4 rounded-full border-2 border-dotted will-change-transform ${
+              shouldReduceMotion ? '' : 'animate-[spin_6s_linear_infinite_reverse]'
+            } motion-reduce:animate-none ${
               isDark ? 'border-yellow-500/60' : 'border-sky-400/60'
             }`}
           />
 
           {/* Inner Glowing Orbit Track */}
           <div
-            className={`absolute inset-8 rounded-full border-2 will-change-transform animate-[spin_3s_linear_infinite] ${
+            className={`absolute inset-8 rounded-full border-2 will-change-transform ${
+              shouldReduceMotion ? '' : 'animate-[spin_3s_linear_infinite]'
+            } motion-reduce:animate-none ${
               isDark
                 ? 'border-t-red-500 border-r-yellow-500 border-b-transparent border-l-transparent'
                 : 'border-t-blue-600 border-r-sky-400 border-b-transparent border-l-transparent'
@@ -242,9 +274,17 @@ export const GameLoader: React.FC<GameLoaderProps> = ({ onComplete }) => {
             }`}
           >
             {isDark ? (
-              <Shield className="w-10 h-10 sm:w-12 sm:h-12 text-red-500 animate-pulse" />
+              <Shield
+                className={`w-10 h-10 sm:w-12 sm:h-12 text-red-500 ${
+                  shouldReduceMotion ? '' : 'animate-pulse'
+                } motion-reduce:animate-none`}
+              />
             ) : (
-              <Axe className="w-10 h-10 sm:w-12 sm:h-12 text-blue-600 animate-pulse" />
+              <Axe
+                className={`w-10 h-10 sm:w-12 sm:h-12 text-blue-600 ${
+                  shouldReduceMotion ? '' : 'animate-pulse'
+                } motion-reduce:animate-none`}
+              />
             )}
           </div>
         </div>
@@ -300,8 +340,17 @@ export const GameLoader: React.FC<GameLoaderProps> = ({ onComplete }) => {
           </span>
         </div>
 
-        {/* Progress Bar Container */}
+        {/* Accessible Progress Bar Container */}
         <div
+          role="progressbar"
+          aria-valuenow={progress}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-label={
+            isDark
+              ? 'STARK Industries system initialization progress'
+              : 'Valhalla Realm awakening progress'
+          }
           className={`w-full h-3 rounded-full overflow-hidden p-0.5 border ${
             isDark
               ? 'bg-slate-900 border-red-500/30'
@@ -321,7 +370,9 @@ export const GameLoader: React.FC<GameLoaderProps> = ({ onComplete }) => {
         {/* Press Space Prompt */}
         <div className="mt-3 text-center transition-opacity">
           <span
-            className={`text-[11px] font-mono tracking-widest uppercase animate-pulse ${
+            className={`text-[11px] font-mono tracking-widest uppercase ${
+              shouldReduceMotion ? '' : 'animate-pulse'
+            } motion-reduce:animate-none ${
               isDark
                 ? 'text-gray-400 hover:text-white'
                 : 'text-gray-600 hover:text-blue-700'

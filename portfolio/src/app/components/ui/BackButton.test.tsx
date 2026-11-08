@@ -1,12 +1,9 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
+import React from 'react';
 import { BackButton } from './BackButton';
-import { useTheme } from '../../context/ThemeContext';
+import { ThemeContext } from '../../context/ThemeContext';
 import * as ReactRouter from 'react-router';
-
-vi.mock('../../context/ThemeContext', () => ({
-  useTheme: vi.fn(),
-}));
 
 vi.mock('react-router', () => ({
   useNavigate: vi.fn(),
@@ -20,11 +17,11 @@ describe('BackButton component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.mocked(ReactRouter.useNavigate).mockReturnValue(navigateMock);
-    vi.mocked(useTheme).mockReturnValue({
-      theme: 'avengers',
-      toggleTheme: toggleThemeMock,
-      setTheme: setThemeMock,
-    });
+    try {
+      localStorage.clear();
+    } catch {
+      // Ignore
+    }
     // Default history state with history depth
     Object.defineProperty(window, 'history', {
       value: {
@@ -32,6 +29,14 @@ describe('BackButton component', () => {
       },
       writable: true,
     });
+  });
+
+  afterEach(() => {
+    try {
+      localStorage.clear();
+    } catch {
+      // Ignore
+    }
   });
 
   it('renders with default "Back" label and arrow icon', () => {
@@ -85,15 +90,33 @@ describe('BackButton component', () => {
     expect(button.className).toContain('text-slate-400');
   });
 
-  it('applies God of War light theme styling when theme is godofwar', () => {
-    vi.mocked(useTheme).mockReturnValue({
-      theme: 'godofwar',
-      toggleTheme: toggleThemeMock,
-      setTheme: setThemeMock,
-    });
+  it('applies God of War light theme styling when ThemeContext provides godofwar', () => {
+    render(
+      <ThemeContext.Provider
+        value={{
+          theme: 'godofwar',
+          toggleTheme: toggleThemeMock,
+          setTheme: setThemeMock,
+        }}
+      >
+        <BackButton />
+      </ThemeContext.Provider>,
+    );
 
-    render(<BackButton />);
     const button = screen.getByRole('button');
     expect(button.className).toContain('bg-white/80');
+  });
+
+  it('renders with fallback theme when outside ThemeProvider', () => {
+    localStorage.setItem('portfolio-theme', 'godofwar');
+    const { unmount } = render(<BackButton />);
+    const button = screen.getByRole('button');
+    expect(button.className).toContain('bg-white/80');
+    unmount();
+
+    localStorage.removeItem('portfolio-theme');
+    render(<BackButton />);
+    const defaultBtn = screen.getByRole('button');
+    expect(defaultBtn.className).toContain('bg-slate-900/70');
   });
 });

@@ -10,7 +10,7 @@ export type Theme = 'avengers' | 'godofwar';
 
 export const THEME_STORAGE_KEY = 'portfolio-theme';
 
-function getInitialTheme(): Theme {
+export function getFallbackTheme(): Theme {
   try {
     const saved = localStorage.getItem(THEME_STORAGE_KEY) as Theme | null;
     if (saved === 'avengers' || saved === 'godofwar') {
@@ -36,6 +36,10 @@ function getInitialTheme(): Theme {
   return 'avengers';
 }
 
+function getInitialTheme(): Theme {
+  return getFallbackTheme();
+}
+
 function applyThemeToDOM(theme: Theme) {
   try {
     if (typeof document === 'undefined') return;
@@ -56,7 +60,7 @@ interface ThemeContextType {
   setTheme: (theme: Theme) => void;
 }
 
-const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
+export const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   // Synchronous priority initializer - runs before first frame paint

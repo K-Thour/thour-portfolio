@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useNavigate } from 'react-router';
 import { ArrowLeft } from 'lucide-react';
 import { motion } from 'motion/react';
-import { useTheme } from '../../context/ThemeContext';
+import { ThemeContext, getFallbackTheme } from '../../context/ThemeContext';
 
 export interface BackButtonProps {
   /**
@@ -38,7 +38,8 @@ export function BackButton({
   onClick,
 }: BackButtonProps) {
   const navigate = useNavigate();
-  const { theme } = useTheme();
+  const context = useContext(ThemeContext);
+  const theme = context?.theme ?? getFallbackTheme();
   const isDark = theme === 'avengers';
 
   const handleBack = (e: React.MouseEvent<HTMLButtonElement>) => {
