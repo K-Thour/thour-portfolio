@@ -1,7 +1,6 @@
-import { useRef, useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router';
+import { useRef, useEffect, useState, useContext } from 'react';
+import { useParams } from 'react-router';
 import {
-  ArrowLeft,
   CheckCircle2,
   Award,
   TrendingUp,
@@ -9,20 +8,22 @@ import {
   Clock,
   Briefcase,
 } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
-import { useTheme } from '../context/ThemeContext';
+import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
+import { ThemeContext } from '../context/ThemeContext';
 import { ServiceHeader } from '../components/service/ServiceHeader';
 import { ServiceFeatures } from '../components/service/ServiceFeatures';
 import { ServiceProcess } from '../components/service/ServiceProcess';
 import { ServiceDetailSkeleton } from '../components/ui/skeleton';
 import { BackButton } from '../components/ui/BackButton';
 import { fetchServiceById } from '../../services/api';
+import { SEOHead } from '../components/seo/SEOHead';
 
 export function ServiceDetail() {
   const { serviceId } = useParams();
   const ref = useRef<HTMLDivElement>(null);
-  const { theme } = useTheme();
-  const isDark = theme === 'avengers';
+  const themeCtx = useContext(ThemeContext);
+  const isDark = themeCtx ? themeCtx.theme === 'avengers' : true;
+  const shouldReduceMotion = useReducedMotion() ?? false;
 
   const [service, setService] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -35,7 +36,10 @@ export function ServiceDetail() {
 
   useEffect(() => {
     let isMounted = true;
-    if (!serviceId) return;
+    if (!serviceId) {
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     setError(null);
     fetchServiceById(serviceId)
@@ -58,17 +62,23 @@ export function ServiceDetail() {
   return (
     <div
       ref={ref}
+      data-testid="service-detail-page"
       className={`min-h-screen pt-24 pb-20 ${
         isDark
           ? 'bg-gradient-to-b from-slate-950 to-slate-900'
           : 'bg-gradient-to-b from-slate-50 via-blue-50 to-white'
       }`}
     >
+      <SEOHead
+        title={service ? `${service.title || service.name} | Services` : 'Service Offerings'}
+        description={service?.description || 'Professional engineering services, architecture, and consulting.'}
+      />
       <div className="container mx-auto px-6">
         <AnimatePresence mode="wait">
           {loading ? (
             <motion.div
               key="service-detail-skeleton"
+              data-testid="service-skeleton"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -79,18 +89,22 @@ export function ServiceDetail() {
           ) : !service || error ? (
             <motion.div
               key="service-detail-error"
+              data-testid="service-empty"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="text-center py-20"
+              className="text-center py-20 max-w-md mx-auto"
             >
               <h1
-                className={`text-2xl font-bold mb-4 ${
-                  isDark ? 'text-white' : 'text-gray-900'
+                className={`text-3xl font-extrabold mb-4 tracking-tight ${
+                  isDark ? 'text-white' : 'text-slate-900'
                 }`}
+                style={{ letterSpacing: '-0.02em' }}
               >
                 Service Not Found
               </h1>
-              {error && <p className="text-gray-400 mb-6 text-sm">{error}</p>}
+              <p className="text-slate-400 mb-8 text-sm leading-relaxed">
+                {error || 'The requested service offering is currently unavailable or has been archived.'}
+              </p>
               <div className="flex justify-center">
                 <BackButton
                   fallbackPath="/#services"
@@ -101,7 +115,8 @@ export function ServiceDetail() {
           ) : (
             <motion.div
               key="service-detail-content"
-              initial={{ opacity: 0, y: 20 }}
+              data-testid="service-content"
+              initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4 }}
               className="max-w-5xl mx-auto"
@@ -117,22 +132,30 @@ export function ServiceDetail() {
               {/* Header & Hero Image */}
               <ServiceHeader service={service} />
 
-              {/* Long Description */}
+              {/* Long Description / Mission Overview */}
               {service.longDescription &&
                 service.longDescription !== service.description && (
                   <div
-                    className={`mb-12 rounded-2xl p-8 border ${
+                    data-testid="service-long-description"
+                    className={`mb-14 rounded-3xl p-8 sm:p-10 border backdrop-blur-xl backdrop-saturate-[180%] shadow-lg relative overflow-hidden ${
                       isDark
-                        ? 'bg-slate-900/60 border-red-500/20'
-                        : 'bg-white/70 border-blue-200 shadow-lg shadow-blue-500/5'
+                        ? 'bg-slate-900/60 border-white/[0.08]'
+                        : 'bg-white/90 border-black/[0.06] shadow-sm'
                     }`}
                   >
+                    {/* Top hairline */}
+                    <div
+                      aria-hidden="true"
+                      className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent"
+                    />
+
                     <h2
-                      className={`text-2xl font-bold mb-4 ${
-                        isDark ? 'text-white' : 'text-gray-900'
+                      className={`text-2xl font-bold mb-4 tracking-tight ${
+                        isDark ? 'text-white' : 'text-slate-900'
                       }`}
+                      style={{ letterSpacing: '-0.01em' }}
                     >
-                      {isDark ? 'Mission Overview' : 'About This Project'}
+                      {isDark ? 'Scope & Architectural Overview' : 'Service Blueprint'}
                     </h2>
                     <div
                       className={`border-l-4 pl-5 ${
@@ -141,7 +164,7 @@ export function ServiceDetail() {
                     >
                       <p
                         className={`text-base leading-relaxed whitespace-pre-line ${
-                          isDark ? 'text-gray-300' : 'text-gray-700'
+                          isDark ? 'text-slate-300' : 'text-slate-600'
                         }`}
                       >
                         {service.longDescription}
@@ -155,47 +178,59 @@ export function ServiceDetail() {
 
               {/* Key Benefits */}
               {service.benefits && service.benefits.length > 0 && (
-                <div className="mb-12">
+                <div data-testid="service-benefits" className="mb-14">
                   <h2
-                    className={`text-2xl font-bold mb-6 flex items-center gap-2 ${
-                      isDark ? 'text-white' : 'text-gray-900'
+                    className={`text-2xl font-bold mb-6 flex items-center gap-2 tracking-tight ${
+                      isDark ? 'text-white' : 'text-slate-900'
                     }`}
+                    style={{ letterSpacing: '-0.01em' }}
                   >
                     {isDark ? (
-                      <Award className="w-6 h-6 text-red-500" />
+                      <Award className="w-5 h-5 text-red-500" />
                     ) : (
-                      <TrendingUp className="w-6 h-6 text-blue-600" />
+                      <TrendingUp className="w-5 h-5 text-blue-600" />
                     )}
-                    {isDark ? 'Mission Advantages' : 'Key Benefits'}
+                    <span>{isDark ? 'Mission Advantages & Benefits' : 'Key Advantages'}</span>
                   </h2>
-                  <div className="grid md:grid-cols-2 gap-4">
+                  <div className="grid sm:grid-cols-2 gap-4">
                     {service.benefits.map((benefit: string, index: number) => (
                       <motion.div
                         key={benefit}
-                        initial={{ opacity: 0, y: 15 }}
+                        initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 15 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{
                           duration: 0.4,
                           delay: index * 0.04,
                         }}
-                        className={`flex items-start gap-3 p-4 rounded-xl border transition-all hover:scale-[1.02] ${
+                        whileHover={
+                          shouldReduceMotion
+                            ? undefined
+                            : { y: -2, scale: 1.01, transition: { type: 'spring', bounce: 0, duration: 0.25 } }
+                        }
+                        className={`relative p-5 rounded-2xl border backdrop-blur-xl backdrop-saturate-[180%] flex items-start gap-3.5 shadow-sm overflow-hidden ${
                           isDark
-                            ? 'bg-slate-900/40 border-red-500/20 text-white hover:border-red-500/40'
-                            : 'bg-white/60 border-blue-200/60 text-gray-900 hover:border-blue-400/60 shadow-sm hover:shadow-md'
+                            ? 'bg-slate-800/60 border-white/[0.08] hover:border-red-500/30'
+                            : 'bg-white/90 border-black/[0.06] shadow-sm hover:border-blue-300'
                         }`}
                       >
+                        {/* Top hairline */}
+                        <div
+                          aria-hidden="true"
+                          className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent"
+                        />
+
                         <div
                           className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
                             isDark
-                              ? 'bg-red-500/10 text-red-500'
-                              : 'bg-blue-50 text-blue-600'
+                              ? 'bg-red-500/20 text-red-400'
+                              : 'bg-blue-100 text-blue-600'
                           }`}
                         >
                           <CheckCircle2 className="w-4 h-4" />
                         </div>
                         <span
                           className={`text-sm leading-relaxed ${
-                            isDark ? 'text-gray-300' : 'text-gray-700'
+                            isDark ? 'text-slate-200' : 'text-slate-700'
                           }`}
                         >
                           {benefit}
@@ -206,10 +241,11 @@ export function ServiceDetail() {
                 </div>
               )}
 
-              {/* Pricing / Duration / Deliverables */}
+              {/* Commercial Terms: Pricing / Duration / Deliverables */}
               {(hasPricing || hasDuration || hasDeliverables) && (
                 <div
-                  className={`mb-12 grid grid-cols-1 gap-6 ${
+                  data-testid="service-commercial-terms"
+                  className={`mb-14 grid grid-cols-1 gap-6 ${
                     hasPricing && hasDuration && hasDeliverables
                       ? 'md:grid-cols-4'
                       : (hasPricing && hasDeliverables) ||
@@ -222,40 +258,42 @@ export function ServiceDetail() {
                 >
                   {hasPricing && (
                     <motion.div
-                      whileHover={{ y: -6, scale: 1.02 }}
-                      transition={{
-                        type: 'spring',
-                        stiffness: 300,
-                        damping: 20,
-                      }}
-                      className={`p-6 rounded-2xl border text-center transition-all flex flex-col justify-between ${
+                      data-testid="service-pricing-card"
+                      whileHover={shouldReduceMotion ? undefined : { y: -4, scale: 1.02 }}
+                      transition={{ type: 'spring', bounce: 0, duration: 0.3 }}
+                      className={`relative p-7 rounded-2xl border backdrop-blur-xl backdrop-saturate-[180%] text-center flex flex-col justify-between shadow-lg overflow-hidden ${
                         isDark
-                          ? 'bg-slate-900/60 border-red-500/20 hover:border-red-500/40 shadow-lg shadow-red-950/20 hover:shadow-red-500/10'
-                          : 'bg-white/70 border-blue-200 hover:border-blue-400/50 shadow-lg shadow-blue-500/5 hover:shadow-blue-500/10'
+                          ? 'bg-slate-800/60 border-white/[0.08] hover:border-red-500/40 hover:shadow-red-500/10'
+                          : 'bg-white/90 border-black/[0.06] shadow-sm hover:border-blue-400/50 hover:shadow-md'
                       } ${hasPricing && hasDuration && hasDeliverables ? 'md:col-span-1' : ''}`}
                     >
+                      <div
+                        aria-hidden="true"
+                        className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent"
+                      />
                       <div>
                         <div
                           className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 mx-auto ${
                             isDark
-                              ? 'bg-gradient-to-br from-red-600/10 to-yellow-500/10 text-red-500 border border-red-500/20'
+                              ? 'bg-gradient-to-br from-red-600/20 to-yellow-500/20 text-red-400 border border-red-500/20'
                               : 'bg-gradient-to-br from-blue-50 to-blue-100 text-blue-600 border border-blue-200/50'
                           }`}
                         >
                           <CreditCard className="w-6 h-6" />
                         </div>
                         <p
-                          className={`text-xs font-semibold uppercase tracking-widest mb-2 ${
-                            isDark ? 'text-red-500' : 'text-blue-600'
+                          className={`text-xs font-bold uppercase tracking-widest mb-2 ${
+                            isDark ? 'text-red-400' : 'text-blue-600'
                           }`}
                         >
-                          Pricing
+                          Pricing Tier
                         </p>
                       </div>
                       <p
-                        className={`text-xl font-bold tracking-tight capitalize mt-2 ${
-                          isDark ? 'text-white' : 'text-gray-900'
+                        className={`text-2xl font-extrabold tracking-tight capitalize mt-2 ${
+                          isDark ? 'text-white' : 'text-slate-900'
                         }`}
+                        style={{ letterSpacing: '-0.02em' }}
                       >
                         {service.pricing}
                       </p>
@@ -264,40 +302,42 @@ export function ServiceDetail() {
 
                   {hasDuration && (
                     <motion.div
-                      whileHover={{ y: -6, scale: 1.02 }}
-                      transition={{
-                        type: 'spring',
-                        stiffness: 300,
-                        damping: 20,
-                      }}
-                      className={`p-6 rounded-2xl border text-center transition-all flex flex-col justify-between ${
+                      data-testid="service-duration-card"
+                      whileHover={shouldReduceMotion ? undefined : { y: -4, scale: 1.02 }}
+                      transition={{ type: 'spring', bounce: 0, duration: 0.3 }}
+                      className={`relative p-7 rounded-2xl border backdrop-blur-xl backdrop-saturate-[180%] text-center flex flex-col justify-between shadow-lg overflow-hidden ${
                         isDark
-                          ? 'bg-slate-900/60 border-red-500/20 hover:border-red-500/40 shadow-lg shadow-red-950/20 hover:shadow-red-500/10'
-                          : 'bg-white/70 border-blue-200 hover:border-blue-400/50 shadow-lg shadow-blue-500/5 hover:shadow-blue-500/10'
+                          ? 'bg-slate-800/60 border-white/[0.08] hover:border-red-500/40 hover:shadow-red-500/10'
+                          : 'bg-white/90 border-black/[0.06] shadow-sm hover:border-blue-400/50 hover:shadow-md'
                       } ${hasPricing && hasDuration && hasDeliverables ? 'md:col-span-1' : ''}`}
                     >
+                      <div
+                        aria-hidden="true"
+                        className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent"
+                      />
                       <div>
                         <div
                           className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 mx-auto ${
                             isDark
-                              ? 'bg-gradient-to-br from-red-600/10 to-yellow-500/10 text-red-500 border border-red-500/20'
+                              ? 'bg-gradient-to-br from-red-600/20 to-yellow-500/20 text-red-400 border border-red-500/20'
                               : 'bg-gradient-to-br from-blue-50 to-blue-100 text-blue-600 border border-blue-200/50'
                           }`}
                         >
                           <Clock className="w-6 h-6" />
                         </div>
                         <p
-                          className={`text-xs font-semibold uppercase tracking-widest mb-2 ${
-                            isDark ? 'text-red-500' : 'text-blue-600'
+                          className={`text-xs font-bold uppercase tracking-widest mb-2 ${
+                            isDark ? 'text-red-400' : 'text-blue-600'
                           }`}
                         >
-                          Duration
+                          Timeline
                         </p>
                       </div>
                       <p
-                        className={`text-xl font-bold tracking-tight capitalize mt-2 ${
-                          isDark ? 'text-white' : 'text-gray-900'
+                        className={`text-2xl font-extrabold tracking-tight capitalize mt-2 ${
+                          isDark ? 'text-white' : 'text-slate-900'
                         }`}
+                        style={{ letterSpacing: '-0.02em' }}
                       >
                         {service.duration}
                       </p>
@@ -306,16 +346,13 @@ export function ServiceDetail() {
 
                   {hasDeliverables && (
                     <motion.div
-                      whileHover={{ y: -6, scale: 1.02 }}
-                      transition={{
-                        type: 'spring',
-                        stiffness: 300,
-                        damping: 20,
-                      }}
-                      className={`p-6 rounded-2xl border transition-all ${
+                      data-testid="service-deliverables-card"
+                      whileHover={shouldReduceMotion ? undefined : { y: -4, scale: 1.01 }}
+                      transition={{ type: 'spring', bounce: 0, duration: 0.3 }}
+                      className={`relative p-7 rounded-2xl border backdrop-blur-xl backdrop-saturate-[180%] shadow-lg overflow-hidden ${
                         isDark
-                          ? 'bg-slate-900/60 border-red-500/20 hover:border-red-500/40 shadow-lg shadow-red-950/20 hover:shadow-red-500/10'
-                          : 'bg-white/70 border-blue-200 hover:border-blue-400/50 shadow-lg shadow-blue-500/5 hover:shadow-blue-500/10'
+                          ? 'bg-slate-800/60 border-white/[0.08] hover:border-red-500/40 hover:shadow-red-500/10'
+                          : 'bg-white/90 border-black/[0.06] shadow-sm hover:border-blue-400/50 hover:shadow-md'
                       } ${
                         hasPricing && hasDuration && hasDeliverables
                           ? 'md:col-span-2'
@@ -325,35 +362,39 @@ export function ServiceDetail() {
                             : ''
                       }`}
                     >
-                      <div className="flex items-center gap-4 mb-6">
+                      <div
+                        aria-hidden="true"
+                        className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent"
+                      />
+                      <div className="flex items-center gap-3.5 mb-5">
                         <div
-                          className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                          className={`w-11 h-11 rounded-xl flex items-center justify-center ${
                             isDark
-                              ? 'bg-gradient-to-br from-red-600/10 to-yellow-500/10 text-red-500 border border-red-500/20'
+                              ? 'bg-gradient-to-br from-red-600/20 to-yellow-500/20 text-red-400 border border-red-500/20'
                               : 'bg-gradient-to-br from-blue-50 to-blue-100 text-blue-600 border border-blue-200/50'
                           }`}
                         >
-                          <Briefcase className="w-6 h-6" />
+                          <Briefcase className="w-5 h-5" />
                         </div>
                         <p
-                          className={`text-xs font-semibold uppercase tracking-widest ${
-                            isDark ? 'text-red-500' : 'text-blue-600'
+                          className={`text-xs font-bold uppercase tracking-widest ${
+                            isDark ? 'text-red-400' : 'text-blue-600'
                           }`}
                         >
-                          Deliverables
+                          Included Deliverables
                         </p>
                       </div>
-                      <ul className="space-y-2.5">
+                      <ul className="space-y-2">
                         {service.deliverables.map((d: string, i: number) => (
                           <li
                             key={i}
                             className={`text-sm flex items-start gap-2.5 ${
-                              isDark ? 'text-gray-300' : 'text-gray-700'
+                              isDark ? 'text-slate-300' : 'text-slate-700'
                             }`}
                           >
                             <CheckCircle2
                               className={`w-4 h-4 flex-shrink-0 mt-0.5 ${
-                                isDark ? 'text-red-500' : 'text-blue-500'
+                                isDark ? 'text-red-400' : 'text-blue-500'
                               }`}
                             />
                             <span>{d}</span>
@@ -365,7 +406,7 @@ export function ServiceDetail() {
                 </div>
               )}
 
-              {/* CTA */}
+              {/* Consultation Process & CTA */}
               <ServiceProcess service={service} />
             </motion.div>
           )}
