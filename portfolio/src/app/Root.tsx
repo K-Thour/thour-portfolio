@@ -9,6 +9,7 @@ import { GameLoader } from './components/ui/GameLoader';
 import { ChatBot } from './components/ui/ChatBot';
 import { SEOHead } from './components/seo/SEOHead';
 import { ScrollProgress } from './components/ui/ScrollProgress';
+import { Toaster } from 'sonner';
 
 function RootLayout() {
   const { pathname } = useLocation();
@@ -36,6 +37,7 @@ function RootLayout() {
       <ScrollProgress />
       <CursorGlow />
       <Navigation />
+      <Toaster richColors position="bottom-right" theme={isDark ? 'dark' : 'light'} />
       <motion.main
         key={pathname}
         initial={{ opacity: 0, y: 6 }}
