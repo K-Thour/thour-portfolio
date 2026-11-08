@@ -51,7 +51,7 @@ function RootLayout() {
       <SEOHead />
       <ScrollProgress />
       <CursorGlow />
-      <Navigation />
+      {!showGameLoader && <Navigation />}
       <Toaster richColors position="bottom-right" theme={isDark ? 'dark' : 'light'} />
       <motion.main
         key={pathname}
@@ -64,7 +64,7 @@ function RootLayout() {
       >
         <Outlet />
       </motion.main>
-      <ChatBot />
+      {!showGameLoader && <ChatBot />}
     </div>
   );
 }
