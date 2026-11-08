@@ -27,7 +27,7 @@ interface UserContextType {
   loading: boolean;
 }
 
-const UserContext = createContext<UserContextType | undefined>(undefined);
+export const UserContext = createContext<UserContextType | undefined>(undefined);
 
 const FALLBACK_USER: UserData = {
   name: 'Karanveer Thour',
