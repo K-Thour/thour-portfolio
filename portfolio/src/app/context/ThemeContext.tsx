@@ -8,13 +8,20 @@ import React, {
 
 export type Theme = 'avengers' | 'godofwar';
 
-const STORAGE_KEY = 'portfolio-theme';
+export const THEME_STORAGE_KEY = 'portfolio-theme';
 
 function getInitialTheme(): Theme {
   try {
-    const saved = localStorage.getItem(STORAGE_KEY) as Theme | null;
+    const saved = localStorage.getItem(THEME_STORAGE_KEY) as Theme | null;
     if (saved === 'avengers' || saved === 'godofwar') {
       return saved;
+    }
+    if (
+      typeof window !== 'undefined' &&
+      window.matchMedia &&
+      window.matchMedia('(prefers-color-scheme: light)').matches
+    ) {
+      return 'godofwar';
     }
     if (
       typeof window !== 'undefined' &&
@@ -31,6 +38,7 @@ function getInitialTheme(): Theme {
 
 function applyThemeToDOM(theme: Theme) {
   try {
+    if (typeof document === 'undefined') return;
     document.documentElement.setAttribute('data-theme', theme);
     if (theme === 'avengers') {
       document.documentElement.classList.add('dark');
@@ -61,7 +69,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const setTheme = useCallback((newTheme: Theme) => {
     setThemeState(newTheme);
     try {
-      localStorage.setItem(STORAGE_KEY, newTheme);
+      localStorage.setItem(THEME_STORAGE_KEY, newTheme);
     } catch (e) {
       console.warn('Failed to save theme in localStorage:', e);
     }
@@ -75,8 +83,12 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   // Synchronize across multiple open tabs in real time
   useEffect(() => {
     const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === STORAGE_KEY && e.newValue) {
-        if (e.newValue === 'avengers' || e.newValue === 'godofwar') {
+      if (e.key === THEME_STORAGE_KEY) {
+        if (!e.newValue) {
+          const fallback = getInitialTheme();
+          setThemeState(fallback);
+          applyThemeToDOM(fallback);
+        } else if (e.newValue === 'avengers' || e.newValue === 'godofwar') {
           setThemeState(e.newValue);
           applyThemeToDOM(e.newValue);
         }

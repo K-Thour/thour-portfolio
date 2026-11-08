@@ -1,5 +1,6 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
+import { MotionConfig } from 'motion/react';
 import { ThemeToggle } from './ThemeToggle';
 import { useTheme } from '../context/ThemeContext';
 
@@ -8,9 +9,14 @@ vi.mock('../context/ThemeContext', () => ({
 }));
 
 describe('ThemeToggle', () => {
-  it('should render correct icon and call toggleTheme when clicked', () => {
-    const toggleThemeMock = vi.fn();
-    const setThemeMock = vi.fn();
+  const toggleThemeMock = vi.fn();
+  const setThemeMock = vi.fn();
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('renders Avengers shield icon and correct accessibility attributes in dark mode', () => {
     vi.mocked(useTheme).mockReturnValue({
       theme: 'avengers',
       toggleTheme: toggleThemeMock,
@@ -20,9 +26,100 @@ describe('ThemeToggle', () => {
     render(<ThemeToggle />);
 
     const button = screen.getByRole('button');
+    expect(button).toBeDefined();
     expect(button.getAttribute('title')).toBe('Switch to God of War theme');
+    expect(button.getAttribute('aria-label')).toBe('Toggle theme');
+    expect(button.getAttribute('aria-pressed')).toBe('false');
 
+    // Min 44x44px touch targets
+    expect(button.className).toContain('min-w-[44px]');
+    expect(button.className).toContain('min-h-[44px]');
+    expect(button.className).toContain('w-11');
+    expect(button.className).toContain('h-11');
+    expect(button.className).toContain('rounded-full');
+    expect(button.className).toContain('focus-visible:ring-red-500');
+
+    // Shield icon presence
+    const svg = button.querySelector('svg');
+    expect(svg).toBeDefined();
+    expect(svg?.classList.contains('lucide-shield')).toBe(true);
+  });
+
+  it('renders God of War axe icon and correct accessibility attributes in light mode', () => {
+    vi.mocked(useTheme).mockReturnValue({
+      theme: 'godofwar',
+      toggleTheme: toggleThemeMock,
+      setTheme: setThemeMock,
+    });
+
+    render(<ThemeToggle />);
+
+    const button = screen.getByRole('button');
+    expect(button).toBeDefined();
+    expect(button.getAttribute('title')).toBe('Switch to Avengers theme');
+    expect(button.getAttribute('aria-label')).toBe('Toggle theme');
+    expect(button.getAttribute('aria-pressed')).toBe('true');
+    expect(button.className).toContain('focus-visible:ring-blue-500');
+
+    // Axe icon presence
+    const svg = button.querySelector('svg');
+    expect(svg).toBeDefined();
+    expect(svg?.classList.contains('lucide-axe')).toBe(true);
+  });
+
+  it('calls toggleTheme on user click', () => {
+    vi.mocked(useTheme).mockReturnValue({
+      theme: 'avengers',
+      toggleTheme: toggleThemeMock,
+      setTheme: setThemeMock,
+    });
+
+    render(<ThemeToggle />);
+
+    const button = screen.getByRole('button');
     fireEvent.click(button);
+
     expect(toggleThemeMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('supports keyboard navigation and activation directly via Enter and Space keys', () => {
+    vi.mocked(useTheme).mockReturnValue({
+      theme: 'avengers',
+      toggleTheme: toggleThemeMock,
+      setTheme: setThemeMock,
+    });
+
+    render(<ThemeToggle />);
+
+    const button = screen.getByRole('button');
+    button.focus();
+    expect(document.activeElement).toBe(button);
+
+    // Standard button activation via Enter
+    fireEvent.keyDown(button, { key: 'Enter', code: 'Enter' });
+    expect(toggleThemeMock).toHaveBeenCalledTimes(1);
+
+    // Standard button activation via Space
+    fireEvent.keyDown(button, { key: ' ', code: 'Space' });
+    expect(toggleThemeMock).toHaveBeenCalledTimes(2);
+  });
+
+  it('renders without errors when reduced motion is preferred', () => {
+    vi.mocked(useTheme).mockReturnValue({
+      theme: 'avengers',
+      toggleTheme: toggleThemeMock,
+      setTheme: setThemeMock,
+    });
+
+    render(
+      <MotionConfig reducedMotion="always">
+        <ThemeToggle />
+      </MotionConfig>,
+    );
+
+    const button = screen.getByRole('button');
+    expect(button).toBeDefined();
+    const svg = button.querySelector('svg');
+    expect(svg?.classList.contains('lucide-shield')).toBe(true);
   });
 });
