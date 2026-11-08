@@ -1,7 +1,7 @@
 import { motion } from 'motion/react';
 import { useInView } from 'motion/react';
-import { useRef } from 'react';
-import { useTheme } from '../context/ThemeContext';
+import { useRef, useContext } from 'react';
+import { ThemeContext } from '../context/ThemeContext';
 import { AboutHero } from '../components/about/AboutHero';
 import { AboutStats } from '../components/about/AboutStats';
 import { AboutSkills } from '../components/about/AboutSkills';
@@ -10,9 +10,9 @@ import { SEOHead } from '../components/seo/SEOHead';
 
 export function About() {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, amount: 0.3 });
-  const { theme } = useTheme();
-  const isDark = theme === 'avengers';
+  const isInView = useInView(ref, { once: true, amount: 0.1 });
+  const themeCtx = useContext(ThemeContext);
+  const isDark = themeCtx ? themeCtx.theme === 'avengers' : true;
 
   return (
     <div
