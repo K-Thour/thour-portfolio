@@ -4,42 +4,34 @@ import type { Language } from "../types";
 interface LanguageProgressProps {
   lang: Language;
   index: number;
-  isDark: boolean;
+  isDark?: boolean;
 }
 
 export function LanguageProgress({
   lang,
   index,
-  isDark,
 }: LanguageProgressProps) {
   return (
     <div key={index}>
       <div className="flex items-center justify-between mb-2">
-        <span
-          className={`font-medium ${isDark ? "text-white" : "text-gray-900"}`}
-        >
+        <span className="font-medium text-sm text-foreground">
           {lang.name}
         </span>
-        <span
-          className={`text-sm ${isDark ? "text-gray-400" : "text-gray-600"}`}
-        >
+        <span className="text-xs text-muted-foreground">
           {lang.proficiency}%
         </span>
       </div>
-      <div
-        className={`h-2 rounded-full overflow-hidden ${
-          isDark ? "bg-slate-900/50" : "bg-gray-200"
-        }`}
-      >
+      <div className="h-2 rounded-full overflow-hidden bg-accent/60">
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: `${lang.proficiency}%` }}
-          transition={{ duration: 1, delay: 0.5 + index * 0.1 }}
-          className={`h-full ${
-            isDark
-              ? "bg-linear-to-r from-red-600 to-yellow-500"
-              : "bg-linear-to-r from-blue-600 to-blue-400"
-          }`}
+          transition={{
+            type: "spring",
+            damping: 24,
+            stiffness: 200,
+            delay: 0.2 + index * 0.08,
+          }}
+          className="h-full bg-primary rounded-full"
         />
       </div>
     </div>

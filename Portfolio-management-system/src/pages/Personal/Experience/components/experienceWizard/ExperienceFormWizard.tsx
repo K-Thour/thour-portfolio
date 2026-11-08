@@ -2,7 +2,6 @@ import React, { useCallback, useEffect } from "react";
 import { motion } from "motion/react";
 import { useForm } from "@tanstack/react-form";
 import { Briefcase, FileText, Code, Link2 } from "lucide-react";
-import utils from "../../../../../utils";
 import type { ExperienceFormData } from "../../../../../interfaces/experience/experienceForm.interface";
 import {
   experienceBasicInfoSchema,
@@ -18,8 +17,6 @@ import { WizardHeader } from "../../../../../components/common/wizard/WizardHead
 import { WizardStepper } from "../../../../../components/common/wizard/WizardStepper";
 import { WizardFooter } from "../../../../../components/common/wizard/WizardFooter";
 import { WizardContent } from "./components/WizardContent";
-
-const { cn } = utils.tailwindUtils;
 
 const steps = [
   {
@@ -203,27 +200,19 @@ export const ExperienceFormWizard: React.FC<ExperienceFormWizardProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className={cn(
-          "absolute inset-0 backdrop-blur-sm",
-          isDark ? "bg-black/60" : "bg-black/40",
-        )}
+        className="absolute inset-0 bg-black/40 backdrop-blur-md"
       />
       <motion.div
-        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+        initial={{ opacity: 0, scale: 0.95, y: 16 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.95, y: 20 }}
-        transition={{ duration: 0.2 }}
-        className={cn(
-          "relative z-10 w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden",
-          isDark
-            ? "bg-slate-800 border border-slate-700"
-            : "bg-white border border-slate-200",
-        )}
+        exit={{ opacity: 0, scale: 0.95, y: 16 }}
+        transition={{ type: "spring", damping: 26, stiffness: 320 }}
+        className="relative z-10 w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden bg-card/95 backdrop-blur-2xl border border-border/50 text-foreground"
       >
         <WizardHeader
           title={isEditing ? "Edit Experience" : "Add Experience"}

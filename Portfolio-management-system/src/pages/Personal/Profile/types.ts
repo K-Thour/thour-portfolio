@@ -49,7 +49,8 @@ export interface ConnectorLineProps {
 export interface StepCircleProps {
   stepId: number;
   currentStep: number;
-  isDark: boolean;
+  isDark?: boolean;
+  onClick?: () => void;
 }
 
 export interface StepLabelProps {

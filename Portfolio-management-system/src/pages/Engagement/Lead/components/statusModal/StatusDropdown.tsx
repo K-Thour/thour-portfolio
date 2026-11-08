@@ -1,7 +1,6 @@
 import { motion, AnimatePresence } from "motion/react";
 import { Check, ChevronDown } from "lucide-react";
 import type { LeadStatus } from "../../types";
-import { getStatusColor } from "../../utils/leadsUtils";
 
 const statusOptions: LeadStatus[] = [
   "New",
@@ -12,10 +11,19 @@ const statusOptions: LeadStatus[] = [
   "Lost",
 ];
 
+const statusDotColors: Record<LeadStatus, string> = {
+  New: "bg-blue-500",
+  Contacted: "bg-amber-500",
+  Qualified: "bg-emerald-500",
+  "Proposal Sent": "bg-cyan-500",
+  Won: "bg-emerald-500",
+  Lost: "bg-destructive",
+};
+
 interface StatusDropdownProps {
   selectedStatus: LeadStatus;
   isDropdownOpen: boolean;
-  isDark: boolean;
+  isDark?: boolean;
   onToggle: () => void;
   onSelect: (status: LeadStatus) => void;
 }
@@ -23,77 +31,88 @@ interface StatusDropdownProps {
 export function StatusDropdown({
   selectedStatus,
   isDropdownOpen,
-  isDark,
   onToggle,
   onSelect,
 }: StatusDropdownProps) {
   return (
     <div className="space-y-2">
-      <label
-        className={`block text-sm font-medium ${isDark ? "text-gray-300" : "text-gray-700"}`}
-      >
+      <label className="block text-xs font-semibold text-foreground">
         Lead Status
       </label>
-      <div className="relative">
-        <button
-          onClick={onToggle}
-          className={`w-full flex items-center justify-between px-4 py-3 rounded-xl border transition-all ${
-            isDark
-              ? "bg-slate-800/80 border-slate-600 hover:border-slate-500 text-white"
-              : "bg-white border-gray-300 hover:border-gray-400 text-gray-900"
-          }`}
-        >
-          <div className="flex items-center gap-3">
-            <span
-              className={`w-3 h-3 rounded-full ${getStatusColor(selectedStatus, isDark)}`}
-            />
-            <span className="font-medium">{selectedStatus}</span>
-          </div>
-          <ChevronDown
-            className={`w-5 h-5 transition-transform ${isDropdownOpen ? "rotate-180" : ""} ${isDark ? "text-gray-400" : "text-gray-500"}`}
-          />
-        </button>
 
-        <AnimatePresence>
-          {isDropdownOpen && (
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.15 }}
-              className={`absolute top-full left-0 right-0 mt-2 rounded-xl border overflow-hidden z-50 ${
-                isDark
-                  ? "bg-slate-800/95 border-slate-600 backdrop-blur-sm"
-                  : "bg-white border-gray-200 shadow-lg"
-              }`}
-            >
-              {statusOptions.map((status) => (
-                <button
-                  key={status}
-                  onClick={() => onSelect(status)}
-                  className={`w-full flex items-center justify-between px-4 py-3 transition-colors ${
-                    isDark
-                      ? "hover:bg-slate-700/50 text-white"
-                      : "hover:bg-gray-50 text-gray-900"
-                  } ${selectedStatus === status ? (isDark ? "bg-slate-700/30" : "bg-blue-50/50") : ""}`}
-                >
-                  <div className="flex items-center gap-3">
-                    <span
-                      className={`w-3 h-3 rounded-full ${getStatusColor(status, isDark)}`}
-                    />
-                    <span>{status}</span>
-                  </div>
-                  {selectedStatus === status && (
-                    <Check
-                      className={`w-5 h-5 ${isDark ? "text-blue-400" : "text-blue-500"}`}
-                    />
-                  )}
-                </button>
-              ))}
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+      {/* Trigger Button */}
+      <motion.button
+        type="button"
+        whileTap={{ scale: 0.99 }}
+        onClick={onToggle}
+        className="w-full flex items-center justify-between px-4 py-3 rounded-2xl border border-border/50 bg-accent/30 hover:bg-accent/50 text-foreground transition-all duration-200 cursor-pointer shadow-2xs focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary/25"
+        aria-expanded={isDropdownOpen}
+      >
+        <div className="flex items-center gap-2.5">
+          <span
+            className={`w-2.5 h-2.5 rounded-full ${statusDotColors[selectedStatus] || "bg-muted-foreground"} ring-2 ring-background`}
+          />
+          <span className="font-semibold text-sm">{selectedStatus}</span>
+        </div>
+        <motion.div
+          animate={{ rotate: isDropdownOpen ? 180 : 0 }}
+          transition={{ type: "spring", damping: 20, stiffness: 300 }}
+        >
+          <ChevronDown className="w-4 h-4 text-muted-foreground" />
+        </motion.div>
+      </motion.button>
+
+      {/* Inline Apple-grade Expandable Options List */}
+      <AnimatePresence>
+        {isDropdownOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ type: "spring", damping: 26, stiffness: 320 }}
+            className="overflow-hidden"
+          >
+            <div className="mt-2.5 p-1.5 rounded-2xl border border-border/50 bg-accent/20 backdrop-blur-xl space-y-1">
+              {statusOptions.map((status) => {
+                const isSelected = selectedStatus === status;
+                return (
+                  <motion.button
+                    key={status}
+                    type="button"
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => onSelect(status)}
+                    className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm transition-all cursor-pointer ${
+                      isSelected
+                        ? "bg-card font-semibold text-foreground border border-border/60 shadow-xs"
+                        : "text-muted-foreground hover:text-foreground hover:bg-accent/50 border border-transparent"
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <span
+                        className={`w-2.5 h-2.5 rounded-full ${statusDotColors[status]} ring-2 ring-background`}
+                      />
+                      <span>{status}</span>
+                    </div>
+                    {isSelected && (
+                      <motion.div
+                        initial={{ scale: 0.5, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{
+                          type: "spring",
+                          damping: 20,
+                          stiffness: 350,
+                        }}
+                      >
+                        <Check className="w-4 h-4 text-primary" />
+                      </motion.div>
+                    )}
+                  </motion.button>
+                );
+              })}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

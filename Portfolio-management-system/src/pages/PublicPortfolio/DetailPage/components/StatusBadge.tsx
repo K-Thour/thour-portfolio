@@ -1,29 +1,20 @@
 interface StatusBadgeProps {
   status: string;
-  isDark: boolean;
+  isDark?: boolean;
 }
 
-export function StatusBadge({ status, isDark }: StatusBadgeProps) {
-  const isCompleted = status === "Completed successfully";
+export function StatusBadge({ status }: StatusBadgeProps) {
+  const isCompleted = status === "Completed successfully" || status === "Completed";
   return (
     <span
-      className={`px-4 py-1 rounded-full text-sm font-medium border ${
+      className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${
         isCompleted
-          ? isDark
-            ? "bg-green-500/20 text-green-400 border-green-500/50"
-            : "bg-green-100 text-green-700 border-green-300"
-          : isDark
-            ? "bg-yellow-500/20 text-yellow-400 border-yellow-500/50"
-            : "bg-yellow-100 text-yellow-700 border-yellow-300"
+          ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/30"
+          : "bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/30"
       }`}
     >
-      {isCompleted
-        ? isDark
-          ? "Completed"
-          : "Victory Achieved"
-        : isDark
-          ? "In Progress"
-          : "Battle Ongoing"}
+      {isCompleted ? "Completed" : "In Progress"}
     </span>
   );
 }
+

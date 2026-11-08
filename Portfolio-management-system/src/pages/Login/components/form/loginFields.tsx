@@ -5,7 +5,7 @@ import type { LoginData } from "../../../../interfaces/login/login";
 import { loginEmailSchema, loginPasswordSchema } from "../../../../validations";
 
 export const getLoginFields = (
-  isDark: boolean,
+  _isDark: boolean,
   showPassword: boolean,
   setShowPassword: React.Dispatch<React.SetStateAction<boolean>>,
   onForgotPassword?: () => void,
@@ -29,7 +29,7 @@ export const getLoginFields = (
         type="button"
         onClick={() => setShowPassword(!showPassword)}
         aria-label={showPassword ? "Hide password" : "Show password"}
-        className={`flex items-center justify-center transition-colors cursor-pointer ${isDark ? "text-slate-500 hover:text-slate-300" : "text-slate-400 hover:text-slate-600"}`}
+        className="flex items-center justify-center transition-colors cursor-pointer text-muted-foreground hover:text-foreground border-none bg-transparent"
       >
         {showPassword ? (
           <EyeOff className="w-5 h-5" />

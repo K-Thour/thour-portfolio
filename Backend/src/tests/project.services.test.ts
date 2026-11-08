@@ -25,7 +25,8 @@ describe('projectServices.getService and getOneService', () => {
       }),
     );
 
-    expect(res.data[0]).toHaveProperty('subtitle', '');
+    const projects = res.data as Array<Record<string, unknown>>;
+    expect(projects[0]).toHaveProperty('subtitle', '');
   });
 
   it('returns custom subtitle when project has subtitle in DB', async () => {
@@ -39,6 +40,7 @@ describe('projectServices.getService and getOneService', () => {
     (models.project.repo.get as jest.Mock).mockResolvedValue([mockProject]);
 
     const res = await projectServices.getService({});
-    expect(res.data[0].subtitle).toBe('React News Application');
+    const projects = res.data as Array<Record<string, unknown>>;
+    expect(projects[0].subtitle).toBe('React News Application');
   });
 });

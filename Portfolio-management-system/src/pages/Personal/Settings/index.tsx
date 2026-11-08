@@ -10,7 +10,7 @@ import { AppBackground } from "../../../components/common/background/AppBackgrou
 
 export function Settings() {
   const navigate = useNavigate();
-  const { settings, hasChanges, handlers } = useSettings();
+  const { settings, hasChanges, isSaving, handlers } = useSettings();
 
   const handleBack = () => {
     navigate(-1);
@@ -26,6 +26,7 @@ export function Settings() {
         onBack={handleBack}
         hasChanges={hasChanges}
         autoSave={settings.general.autoSave}
+        isSaving={isSaving}
       />
 
       <motion.div

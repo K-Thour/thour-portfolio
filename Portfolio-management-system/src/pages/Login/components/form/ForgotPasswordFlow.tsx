@@ -93,62 +93,40 @@ export const ForgotPasswordFlow: React.FC<ForgotPasswordFlowProps> = ({
     }
   };
 
-  const buttonClassName = `
-    w-full h-12 mt-2 rounded-xl text-white font-bold text-base transition-all duration-200 shadow-lg
-    disabled:opacity-50 disabled:cursor-not-allowed
-    ${
-      isDark
-        ? "bg-gradient-to-r from-[#ff2a00] to-[#ff9500] hover:from-[#ff3c00] hover:to-[#ffa600] shadow-red-500/25 hover:shadow-red-500/40"
-        : "bg-blue-500 hover:bg-blue-600 shadow-blue-500/25 hover:shadow-blue-500/40"
-    }
-  `;
+  const buttonClassName =
+    "w-full h-11 mt-4 rounded-xl font-medium text-sm text-primary-foreground bg-primary hover:bg-primary/90 active:scale-[0.98] transition-all duration-150 shadow-sm cursor-pointer";
 
   return (
     <motion.div
       key="forgot-password-flow"
-      initial={{ opacity: 0, y: 24 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -24 }}
-      transition={{ duration: 0.7, ease: "easeOut" }}
+      initial={{ opacity: 0, scale: 0.96, y: 16 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.96, y: -16 }}
+      transition={{ type: "spring", damping: 26, stiffness: 300 }}
       className="w-full max-w-md z-10 relative"
     >
-      {isDark && (
-        <div className="absolute -inset-1 bg-gradient-to-r from-red-600/50 to-yellow-500/50 rounded-2xl blur-lg opacity-30 pointer-events-none" />
-      )}
+      <div className="relative rounded-3xl overflow-hidden bg-card/85 backdrop-blur-2xl border border-border/60 shadow-2xl p-8 transition-colors duration-300">
+        <LoginCardHeader theme={theme} />
 
-      <div
-        className={`relative rounded-2xl overflow-hidden ${
-          isDark
-            ? "bg-slate-900/90 border border-slate-700/60 backdrop-blur-xl shadow-2xl shadow-black/60"
-            : "bg-white/95 border border-slate-200 backdrop-blur-sm shadow-xl shadow-slate-200/80"
-        }`}
-      >
-        <div
-          className={`h-1 w-full ${isDark ? "bg-gradient-to-r from-red-600 to-yellow-500" : "bg-gradient-to-r from-blue-500 to-blue-400"}`}
+        <ForgotPasswordSteps
+          step={step}
+          isDark={isDark}
+          email={email}
+          showPassword={showPassword}
+          setShowPassword={setShowPassword}
+          showConfirmPassword={showConfirmPassword}
+          setShowConfirmPassword={setShowConfirmPassword}
+          handleEmailSubmit={handleEmailSubmit}
+          handleOtpSubmit={handleOtpSubmit}
+          handlePasswordSubmit={handlePasswordSubmit}
+          buttonClassName={buttonClassName}
         />
 
-        <div className="px-8 pt-8 pb-4">
-          <LoginCardHeader theme={theme} />
-
-          <ForgotPasswordSteps
-            step={step}
-            isDark={isDark}
-            email={email}
-            showPassword={showPassword}
-            setShowPassword={setShowPassword}
-            showConfirmPassword={showConfirmPassword}
-            setShowConfirmPassword={setShowConfirmPassword}
-            handleEmailSubmit={handleEmailSubmit}
-            handleOtpSubmit={handleOtpSubmit}
-            handlePasswordSubmit={handlePasswordSubmit}
-            buttonClassName={buttonClassName}
-          />
-        </div>
-
-        <div className="flex justify-center px-8 py-4 border-t border-slate-700/30">
+        <div className="flex justify-center pt-6 mt-6 border-t border-border/40">
           <button
             onClick={onBackToLogin}
-            className={`flex items-center gap-2 text-sm font-semibold transition-colors bg-transparent border-none cursor-pointer ${isDark ? "text-slate-400 hover:text-white" : "text-slate-500 hover:text-slate-900"}`}
+            type="button"
+            className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors bg-transparent border-none cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 rounded-lg px-2 py-1"
           >
             <ArrowLeft className="w-4 h-4" />
             Back to Login

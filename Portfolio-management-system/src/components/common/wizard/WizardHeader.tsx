@@ -1,8 +1,5 @@
 import React from "react";
 import { X } from "lucide-react";
-import utils from "../../../utils/index";
-
-const { cn } = utils.tailwindUtils;
 
 interface WizardHeaderProps {
   title: string;
@@ -12,37 +9,20 @@ interface WizardHeaderProps {
 
 export const WizardHeader: React.FC<WizardHeaderProps> = ({
   title,
-  isDark,
   onCancel,
 }) => {
   return (
-    <div
-      className={cn(
-        "flex items-center justify-between px-6 py-4 border-b shrink-0",
-        isDark
-          ? "border-slate-700 bg-slate-800"
-          : "border-slate-200 bg-slate-50",
-      )}
-    >
+    <div className="flex items-center justify-between px-6 py-4 border-b border-border/40 shrink-0 bg-card/50">
       <div>
-        <h2
-          className={cn(
-            "text-lg font-bold",
-            isDark ? "text-white" : "text-slate-900",
-          )}
-        >
+        <h2 className="text-lg font-bold tracking-tight text-foreground">
           {title}
         </h2>
       </div>
       <button
         type="button"
         onClick={onCancel}
-        className={cn(
-          "p-1.5 rounded-lg transition-colors",
-          isDark
-            ? "hover:bg-slate-700 text-slate-400 hover:text-white"
-            : "hover:bg-slate-100 text-slate-500 hover:text-slate-700",
-        )}
+        aria-label="Close dialog"
+        className="p-1.5 rounded-xl transition-colors hover:bg-accent/60 text-muted-foreground hover:text-foreground active:scale-95 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
       >
         <X className="w-5 h-5" />
       </button>

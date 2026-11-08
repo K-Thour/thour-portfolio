@@ -4,9 +4,10 @@ import {
   Save,
   RotateCcw,
   AlertCircle,
-  ArrowBigLeft,
+  ArrowLeft,
+  CheckCircle2,
+  Loader2,
 } from "lucide-react";
-import { useAppSelector } from "../../../../hooks/useRedux";
 import type { SettingsHeaderProps } from "../types";
 
 export function SettingsHeader({
@@ -15,114 +16,85 @@ export function SettingsHeader({
   onBack,
   hasChanges,
   autoSave,
+  isSaving = false,
 }: SettingsHeaderProps) {
-  const { theme } = useAppSelector((state) => state.theme);
-  const isDark = theme === "dark";
-
   return (
     <motion.div
-      initial={{ opacity: 0, y: -20 }}
+      initial={{ opacity: 0, y: -16 }}
       animate={{ opacity: 1, y: 0 }}
-      className={`p-6 rounded-2xl border ${
-        isDark
-          ? "bg-slate-800/50 border-red-500/20"
-          : "bg-white/80 backdrop-blur-md border-blue-300/40 shadow-lg"
-      }`}
+      transition={{ type: "spring", damping: 26, stiffness: 280 }}
+      className="p-6 rounded-3xl border border-border/40 bg-card/75 backdrop-blur-xl shadow-xs"
     >
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <button
             type="button"
             onClick={onBack}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-all hover:scale-105 ${
-              isDark
-                ? "bg-linear-to-r from-red-600 to-yellow-500 text-white hover:shadow-lg hover:shadow-red-500/50"
-                : "bg-linear-to-r from-blue-600 to-blue-500 text-white hover:shadow-lg hover:shadow-blue-500/50"
-            }`}
+            aria-label="Go back"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium text-sm transition-all bg-accent/40 hover:bg-accent border border-border/50 text-foreground active:scale-[0.98] shadow-2xs cursor-pointer"
           >
-            <ArrowBigLeft className="w-5 h-5" />
-            Back
+            <ArrowLeft className="w-4 h-4" />
+            <span>Back</span>
           </button>
-          <div
-            className={`w-14 h-14 rounded-xl flex items-center justify-center ${
-              isDark
-                ? "bg-linear-to-br from-red-600 to-yellow-500"
-                : "bg-linear-to-br from-blue-600 to-blue-400"
-            }`}
-          >
-            <Settings className="w-7 h-7 text-white" />
+          <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-primary/10 text-primary border border-primary/20 shadow-xs shrink-0">
+            <Settings className="w-6 h-6" />
           </div>
           <div>
-            <h1
-              className={`text-2xl font-bold ${
-                isDark ? "text-white" : "text-gray-900"
-              }`}
-            >
+            <h1 className="text-2xl font-bold tracking-tight text-foreground">
               Settings
             </h1>
-            <p
-              className={`text-sm ${isDark ? "text-gray-400" : "text-gray-600"}`}
-            >
-              Manage your preferences and AI limits
+            <p className="text-xs sm:text-sm text-muted-foreground">
+              Manage your preferences, security credentials, and AI quotas
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 self-end sm:self-auto">
           {hasChanges && !autoSave && (
             <motion.div
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm ${
-                isDark
-                  ? "bg-yellow-500/20 text-yellow-400"
-                  : "bg-yellow-100 text-yellow-700"
-              }`}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30"
             >
-              <AlertCircle className="w-4 h-4" />
-              Unsaved changes
+              <AlertCircle className="w-3.5 h-3.5" />
+              <span>Unsaved changes</span>
             </motion.div>
           )}
+
           {!autoSave && (
             <>
               <button
                 type="button"
                 onClick={onReset}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-all ${
-                  isDark
-                    ? "bg-slate-700 hover:bg-slate-600 text-gray-300"
-                    : "bg-gray-100 hover:bg-gray-200 text-gray-700"
-                }`}
+                className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium border border-border/50 bg-accent/40 hover:bg-accent text-foreground transition-all active:scale-[0.98] cursor-pointer"
               >
                 <RotateCcw className="w-4 h-4" />
-                Reset
+                <span>Reset</span>
               </button>
               <button
                 type="button"
                 onClick={onSave}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-all ${
-                  isDark
-                    ? "bg-red-600 hover:bg-red-700 text-white"
-                    : "bg-blue-600 hover:bg-blue-700 text-white"
-                }`}
+                disabled={isSaving}
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold bg-primary hover:bg-primary/90 text-primary-foreground shadow-xs transition-all active:scale-[0.98] cursor-pointer disabled:opacity-60"
               >
-                <Save className="w-4 h-4" />
-                Save
+                {isSaving ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Save className="w-4 h-4" />
+                )}
+                <span>{isSaving ? "Saving..." : "Save"}</span>
               </button>
             </>
           )}
+
           {autoSave && (
             <motion.div
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm ${
-                isDark
-                  ? "bg-green-500/20 text-green-400"
-                  : "bg-green-100 text-green-700"
-              }`}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30"
             >
-              <Save className="w-4 h-4" />
-              Auto-save enabled
+              <CheckCircle2 className="w-3.5 h-3.5" />
+              <span>Auto-save enabled</span>
             </motion.div>
           )}
         </div>

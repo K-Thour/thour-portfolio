@@ -17,9 +17,10 @@ export function PortfolioList({
 }: PortfolioListProps) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      className={`p-6 rounded-2xl border ${isDark ? "bg-slate-800/50 border-red-500/20" : "bg-linear-to-br from-white to-blue-50 border-blue-300/40 shadow-md"}`}
+      transition={{ type: "spring", damping: 26, stiffness: 280 }}
+      className="p-6 rounded-3xl border border-border/40 bg-card/75 backdrop-blur-xl shadow-xs"
     >
       <ListHeader isDark={isDark} count={portfolios.length} />
       {isLoading ? (
@@ -47,3 +48,4 @@ export function PortfolioList({
     </motion.div>
   );
 }
+

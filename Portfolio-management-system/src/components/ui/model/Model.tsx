@@ -1,6 +1,5 @@
 import { motion, AnimatePresence } from "motion/react";
 import { X } from "lucide-react";
-import { useAppSelector } from "../../../hooks/useRedux";
 import { useEffect, useRef } from "react";
 import { sizeClasses } from "./constraints/constraints";
 import type { ModalProps } from "./types";
@@ -15,8 +14,6 @@ export function Modal({
   size = "md",
   className,
 }: ModalProps) {
-  const { theme } = useAppSelector((state) => state.theme);
-  const isDark = theme === "dark";
   const scrollYRef = useRef(0);
 
   useEffect(() => {
@@ -55,50 +52,54 @@ export function Modal({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className={`${className} fixed inset-0 bg-black/60 backdrop-blur-sm z-50 min-h-screen flex items-center justify-center `}
+            className="fixed inset-0 bg-black/40 backdrop-blur-md z-50 min-h-screen flex items-center justify-center"
           />
 
           {/* Modal */}
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
+          <div 
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="modal-title"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto"
+          >
             <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              initial={{ opacity: 0, scale: 0.95, y: 16 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              transition={{ duration: 0.2 }}
-              className={`w-full ${sizeClasses[size]} my-8`}
+              exit={{ opacity: 0, scale: 0.95, y: 16 }}
+              transition={{ type: "spring", damping: 26, stiffness: 320 }}
+              className={`w-full ${sizeClasses[size]} ${className || ""} my-8`}
             >
-              <div
-                className={`rounded-2xl border flex flex-col max-h-[calc(100vh-2rem)] md:max-h-[calc(100vh-4rem)] overflow-hidden ${
-                  isDark
-                    ? "bg-slate-800 border-red-500/20"
-                    : "bg-white border-blue-300/40 shadow-2xl shadow-blue-500/20"
-                }`}
-              >
+              <div className={`rounded-3xl border border-border/50 flex flex-col max-h-[calc(100vh-2rem)] md:max-h-[calc(100vh-4rem)] ${
+                size === "sm" ? "overflow-visible" : "overflow-hidden"
+              } bg-card/95 backdrop-blur-2xl shadow-2xl text-foreground`}>
                 {/* Header */}
-                <div
-                  className={`flex items-center justify-between p-6 border-b shrink-0 ${
-                    isDark ? "border-red-500/20" : "border-blue-300/30"
-                  }`}
-                >
-                  <h2
-                    className={`text-2xl font-bold ${isDark ? "text-white" : "text-gray-900"}`}
+                <div className="flex items-center justify-between p-6 border-b border-border/40 shrink-0 bg-card/40">
+                  <h2 
+                    id="modal-title"
+                    className="text-xl sm:text-2xl font-bold tracking-tight text-foreground"
                   >
                     {title}
                   </h2>
                   <button
                     onClick={onClose}
-                    className={`p-2 rounded-lg transition-all ${
-                      isDark
-                        ? "hover:bg-slate-700/50 text-gray-400 hover:text-white"
-                        : "hover:bg-blue-100 text-gray-600 hover:text-gray-900"
-                    }`}
+                    type="button"
+                    aria-label="Close modal"
+                    className="p-1.5 rounded-xl transition-all hover:bg-accent/60 text-muted-foreground hover:text-foreground active:scale-95 cursor-pointer"
                   >
-                    <X className="w-6 h-6" />
+                    <X className="w-5 h-5" />
                   </button>
                 </div>
 
                 {/* Content */}
-                <div className="p-6 overflow-y-auto flex-1">{children}</div>
+                <div
+                  className={`p-6 flex-1 ${
+                    size === "sm"
+                      ? "overflow-visible"
+                      : "overflow-y-auto [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-border/60 [&::-webkit-scrollbar-track]:bg-transparent"
+                  }`}
+                >
+                  {children}
+                </div>
               </div>
             </motion.div>
           </div>

@@ -26,85 +26,51 @@ export const LoginForm: React.FC<theme & { onForgotPassword?: () => void }> = ({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.7, ease: "easeOut" }}
+      initial={{ opacity: 0, scale: 0.96, y: 16 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.96, y: -16 }}
+      transition={{ type: "spring", damping: 26, stiffness: 300 }}
       className="w-full max-w-md z-10 relative"
     >
-      {/* Dark glow ring */}
-      {isDark && (
-        <div className="absolute -inset-1 bg-gradient-to-r from-red-600/50 to-yellow-500/50 rounded-2xl blur-lg opacity-30 pointer-events-none" />
-      )}
+      <div className="relative rounded-3xl overflow-hidden bg-card/85 backdrop-blur-2xl border border-border/60 shadow-2xl p-8 transition-colors duration-300">
+        <LoginCardHeader theme={theme} />
 
-      <div
-        className={`
-        relative rounded-2xl overflow-hidden
-        ${
-          isDark
-            ? "bg-slate-900/90 border border-slate-700/60 backdrop-blur-xl shadow-2xl shadow-black/60"
-            : "bg-white/95 border border-slate-200 backdrop-blur-sm shadow-xl shadow-slate-200/80"
-        }
-      `}
-      >
-        {/* Top accent bar */}
-        <div
-          className={`h-1 w-full ${isDark ? "bg-gradient-to-r from-red-600 to-yellow-500" : "bg-gradient-to-r from-blue-500 to-blue-400"}`}
-        />
-
-        <div className="px-8 pt-8 pb-4">
-          <LoginCardHeader theme={theme} />
-
-          <CommonForm<LoginData>
-            defaultValues={{ email: "", password: "", rememberMe: false }}
-            schema={loginSchema}
-            fields={formFields}
-            onSubmit={async ({ value }) => {
-              try {
-                const response = await loginUser(value);
-                if (response && response.success && response.data?.token) {
-                  localStorage.setItem("token", response.data.token);
-                  window.location.href = "/";
-                } else {
-                  toast({
-                    title: "Login Failed",
-                    description: response?.message || "Login failed",
-                    variant: "destructive",
-                  });
-                }
-              } catch (error: any) {
-                console.error("Login error:", error);
+        <CommonForm<LoginData>
+          defaultValues={{ email: "", password: "", rememberMe: false }}
+          schema={loginSchema}
+          fields={formFields}
+          onSubmit={async ({ value }) => {
+            try {
+              const response = await loginUser(value);
+              if (response && response.success && response.data?.token) {
+                localStorage.setItem("token", response.data.token);
+                window.location.href = "/";
+              } else {
                 toast({
-                  title: "Login Error",
-                  description: error.response?.data?.message || "Login failed",
+                  title: "Login Failed",
+                  description: response?.message || "Login failed",
                   variant: "destructive",
                 });
               }
-            }}
-            isDark={isDark}
-            showSubmitButton={true}
-            submitText={
-              isDark ? "Enter Mission Control" : "Enter Command Center"
+            } catch (error: any) {
+              console.error("Login error:", error);
+              toast({
+                title: "Login Error",
+                description: error.response?.data?.message || "Login failed",
+                variant: "destructive",
+              });
             }
-            buttonClassName={`
-              w-full h-12 mt-2 rounded-xl text-white font-bold text-base transition-all duration-200 shadow-lg
-              disabled:opacity-50 disabled:cursor-not-allowed
-              ${
-                isDark
-                  ? "bg-gradient-to-r from-[#ff2a00] to-[#ff9500] hover:from-[#ff3c00] hover:to-[#ffa600] shadow-red-500/25 hover:shadow-red-500/40"
-                  : "bg-blue-500 hover:bg-blue-600 shadow-blue-500/25 hover:shadow-blue-500/40"
-              }
-            `}
-          />
-        </div>
+          }}
+          isDark={isDark}
+          showSubmitButton={true}
+          submitText="Sign In"
+          buttonClassName="w-full h-11 mt-4 rounded-xl font-medium text-sm text-primary-foreground bg-primary hover:bg-primary/90 active:scale-[0.98] transition-all duration-150 shadow-sm cursor-pointer"
+        />
 
-        {/* Footer */}
-        <div className="flex justify-center px-8 py-4">
-          <p
-            className={`text-xs ${isDark ? "text-slate-600" : "text-slate-400"}`}
-          >
-            {isDark
-              ? "🛡 Secure access for authorized personnel only"
-              : "Protected by the ancient runes"}
+        {/* Footer info */}
+        <div className="flex justify-center pt-6 mt-6 border-t border-border/40">
+          <p className="text-xs text-muted-foreground flex items-center gap-1.5">
+            <span>🛡</span> End-to-end encrypted session
           </p>
         </div>
       </div>

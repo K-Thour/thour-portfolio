@@ -1,12 +1,8 @@
 import { motion } from "motion/react";
 import { Brain, AlertTriangle, CheckCircle2, XCircle } from "lucide-react";
-import { useAppSelector } from "../../../../hooks/useRedux";
 import type { AISettingsCardProps } from "../types";
 
 export function AISettingsCard({ settings, onUpdate }: AISettingsCardProps) {
-  const { theme } = useAppSelector((state) => state.theme);
-  const isDark = theme === "dark";
-
   const remaining = Math.max(0, settings.dailyLimit - settings.currentUsage);
   const percentage = Math.min(
     100,
@@ -17,149 +13,131 @@ export function AISettingsCard({ settings, onUpdate }: AISettingsCardProps) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      className={`p-6 rounded-2xl border ${
-        isDark
-          ? "bg-slate-800/50 border-red-500/20"
-          : "bg-white/80 backdrop-blur-md border-blue-300/40 shadow-lg"
-      }`}
+      transition={{ type: "spring", damping: 26, stiffness: 280 }}
+      className="p-6 rounded-3xl border border-border/40 bg-card/75 backdrop-blur-xl shadow-xs"
     >
       <div className="flex items-center gap-3 mb-6">
-        <div
-          className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-            isDark
-              ? "bg-purple-500/20 text-purple-400"
-              : "bg-purple-100 text-purple-600"
-          }`}
-        >
+        <div className="w-11 h-11 rounded-2xl flex items-center justify-center bg-primary/10 text-primary border border-primary/20 shadow-xs">
           <Brain className="w-5 h-5" />
         </div>
-        <h2
-          className={`text-xl font-bold ${
-            isDark ? "text-white" : "text-gray-900"
-          }`}
-        >
-          AI Settings
-        </h2>
+        <div>
+          <h2 className="text-xl font-bold tracking-tight text-foreground">
+            AI Engine Quota
+          </h2>
+          <p className="text-xs text-muted-foreground">
+            Daily model requests and automated generation thresholds
+          </p>
+        </div>
       </div>
 
       <div className="space-y-6">
+        {/* Usage Box */}
         <div
-          className={`p-4 rounded-xl border ${
+          className={`p-4 rounded-2xl border transition-all ${
             isAtLimit
-              ? isDark
-                ? "bg-red-500/10 border-red-500/30"
-                : "bg-red-50 border-red-200"
+              ? "bg-destructive/10 border-destructive/30"
               : isNearLimit
-                ? isDark
-                  ? "bg-yellow-500/10 border-yellow-500/30"
-                  : "bg-yellow-50 border-yellow-200"
-                : isDark
-                  ? "bg-green-500/10 border-green-500/30"
-                  : "bg-green-50 border-green-200"
+                ? "bg-amber-500/10 border-amber-500/30"
+                : "bg-emerald-500/10 border-emerald-500/30"
           }`}
         >
-          <div className="flex items-center gap-3 mb-3">
-            {isAtLimit ? (
-              <XCircle className="w-5 h-5 text-red-500" />
-            ) : isNearLimit ? (
-              <AlertTriangle className="w-5 h-5 text-yellow-500" />
-            ) : (
-              <CheckCircle2 className="w-5 h-5 text-green-500" />
-            )}
+          <div className="flex items-center justify-between gap-2.5 mb-3">
+            <div className="flex items-center gap-2.5">
+              {isAtLimit ? (
+                <XCircle className="w-5 h-5 text-destructive shrink-0" />
+              ) : isNearLimit ? (
+                <AlertTriangle className="w-5 h-5 text-amber-500 shrink-0" />
+              ) : (
+                <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />
+              )}
+              <span className="font-semibold text-sm text-foreground">
+                Daily Request Utilization
+              </span>
+            </div>
             <span
-              className={`font-medium ${
-                isDark ? "text-white" : "text-gray-900"
+              className={`px-2.5 py-0.5 rounded-full text-xs font-semibold border ${
+                isAtLimit
+                  ? "bg-destructive/15 text-destructive border-destructive/30"
+                  : isNearLimit
+                    ? "bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/30"
+                    : "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/30"
               }`}
             >
-              Daily Usage Limit
+              {isAtLimit ? "At Limit" : isNearLimit ? "Near Limit" : "Normal"}
             </span>
           </div>
 
           <div className="mb-3">
-            <div className="flex justify-between text-sm mb-2">
-              <span className={isDark ? "text-gray-400" : "text-gray-600"}>
+            <div className="flex justify-between text-xs font-medium mb-2">
+              <span className="text-muted-foreground">
                 {settings.currentUsage} / {settings.dailyLimit} requests
               </span>
               <span
-                className={`font-medium ${
+                className={`font-semibold ${
                   isAtLimit
-                    ? "text-red-500"
+                    ? "text-destructive"
                     : isNearLimit
-                      ? "text-yellow-500"
-                      : isDark
-                        ? "text-green-400"
-                        : "text-green-600"
+                      ? "text-amber-500"
+                      : "text-emerald-600 dark:text-emerald-400"
                 }`}
               >
                 {remaining} remaining
               </span>
             </div>
-            <div
-              className={`h-2 rounded-full ${
-                isDark ? "bg-slate-700" : "bg-gray-200"
-              }`}
-            >
-              <div
-                className={`h-full rounded-full transition-all duration-500 ${
+
+            <div className="h-2 rounded-full overflow-hidden bg-accent/60">
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: `${percentage}%` }}
+                transition={{ type: "spring", damping: 26, stiffness: 280 }}
+                className={`h-full rounded-full transition-colors ${
                   isAtLimit
-                    ? "bg-red-500"
+                    ? "bg-destructive"
                     : isNearLimit
-                      ? "bg-yellow-500"
-                      : "bg-green-500"
+                      ? "bg-amber-500"
+                      : "bg-emerald-500"
                 }`}
-                style={{ width: `${percentage}%` }}
               />
             </div>
           </div>
 
-          <p
-            className={`text-sm ${isDark ? "text-gray-400" : "text-gray-600"}`}
-          >
+          <p className="text-xs text-muted-foreground">
             {isAtLimit
-              ? "You've reached your daily limit. Limits reset at midnight UTC."
+              ? "You have reached your daily quota. Quotas reset at 00:00 UTC."
               : isNearLimit
-                ? "You're approaching your daily limit. Consider upgrading your plan."
-                : "You're within your daily usage limit."}
+                ? "You are nearing your daily quota limit. Consider spacing out requests."
+                : "You are comfortably within your daily compute allocation."}
           </p>
         </div>
 
-        <div className="flex items-center justify-between">
+        {/* Feature Toggle */}
+        <div className="flex items-center justify-between p-4 rounded-2xl bg-accent/25 border border-border/40">
           <div>
-            <p
-              className={`font-medium ${
-                isDark ? "text-white" : "text-gray-900"
-              }`}
-            >
-              Enable AI Features
+            <p className="text-sm font-semibold text-foreground">
+              Enable AI Services
             </p>
-            <p
-              className={`text-sm ${
-                isDark ? "text-gray-400" : "text-gray-600"
-              }`}
-            >
-              Toggle all AI-powered features
+            <p className="text-xs text-muted-foreground">
+              Toggle automated resume writing and content generation
             </p>
           </div>
+
           <button
             type="button"
+            role="switch"
+            aria-checked={settings.isEnabled}
+            aria-label="Toggle AI features"
             onClick={() =>
               onUpdate({ ...settings, isEnabled: !settings.isEnabled })
             }
-            className={`relative w-14 h-7 rounded-full transition-colors ${
-              settings.isEnabled
-                ? isDark
-                  ? "bg-green-500"
-                  : "bg-blue-600"
-                : isDark
-                  ? "bg-slate-600"
-                  : "bg-gray-300"
+            className={`relative inline-flex h-7 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary/40 ${
+              settings.isEnabled ? "bg-primary" : "bg-accent/90 border-border/60"
             }`}
           >
             <span
-              className={`absolute top-1 w-5 h-5 bg-white rounded-full transition-transform ${
-                settings.isEnabled ? "left-8" : "left-1"
+              className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
+                settings.isEnabled ? "translate-x-5" : "translate-x-0.5"
               }`}
             />
           </button>

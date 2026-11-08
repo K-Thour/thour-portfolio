@@ -1,9 +1,6 @@
 import React from "react";
 import Button from "../../ui/button/Button";
-import utils from "../../../utils/index";
 import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
-
-const { cn } = utils.tailwindUtils;
 
 interface WizardFooterProps {
   currentStep: number;
@@ -20,7 +17,6 @@ interface WizardFooterProps {
 export const WizardFooter: React.FC<WizardFooterProps> = ({
   currentStep,
   totalSteps,
-  isDark,
   submitText,
   isLoading = false,
   loadingText = "Saving...",
@@ -29,22 +25,14 @@ export const WizardFooter: React.FC<WizardFooterProps> = ({
   onSubmit,
 }) => {
   return (
-    <div
-      className={cn(
-        "flex items-center justify-between px-6 py-4 border-t shrink-0 bg-slate-50 dark:bg-slate-800/50",
-        isDark ? "border-slate-700" : "border-slate-200",
-      )}
-    >
+    <div className="flex items-center justify-between px-6 py-4 border-t border-border/40 shrink-0 bg-card/50">
       <Button
         onClick={onBack}
         disabled={currentStep === 1 || isLoading}
         variant="outline"
-        className={cn(
-          isDark &&
-            "border-slate-600 text-slate-300 hover:bg-slate-700 hover:text-white",
-        )}
+        className="rounded-xl border-border/60 hover:bg-accent/60 text-foreground active:scale-[0.97] transition-all cursor-pointer"
       >
-        <ChevronLeft className="w-4 h-4 mr-2" />
+        <ChevronLeft className="w-4 h-4 mr-1.5" />
         Back
       </Button>
 
@@ -52,26 +40,16 @@ export const WizardFooter: React.FC<WizardFooterProps> = ({
         <Button
           onClick={onNext}
           disabled={isLoading}
-          className={cn(
-            "bg-linear-to-r shadow-lg shadow-orange-500/25",
-            isDark
-              ? "from-orange-500 to-red-500 text-white hover:from-orange-600 hover:to-red-600"
-              : "bg-blue-500 text-white shadow-lg shadow-blue-500/30 hover:bg-blue-600",
-          )}
+          className="rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm active:scale-[0.97] transition-all cursor-pointer"
         >
           Next
-          <ChevronRight className="w-4 h-4 ml-2" />
+          <ChevronRight className="w-4 h-4 ml-1.5" />
         </Button>
       ) : (
         <Button
           onClick={onSubmit}
           disabled={isLoading}
-          className={cn(
-            "bg-linear-to-r shadow-lg shadow-orange-500/25 flex items-center justify-center gap-2 min-w-[120px]",
-            isDark
-              ? "from-orange-500 to-red-500 text-white hover:from-orange-600 hover:to-red-600"
-              : "bg-blue-500 text-white shadow-lg shadow-blue-500/30 hover:bg-blue-600",
-          )}
+          className="rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm active:scale-[0.97] transition-all flex items-center justify-center gap-2 min-w-[120px] cursor-pointer"
         >
           {isLoading ? (
             <>

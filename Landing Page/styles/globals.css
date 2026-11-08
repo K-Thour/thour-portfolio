@@ -1,0 +1,40 @@
+@import "tailwindcss";
+
+@import "./theme.css";
+@import "./colors.css";
+@import "./glass.css";
+@import "./animations.css";
+
+/* Base Resets & Optical Typography */
+html {
+  font-size: var(--font-size);
+  scroll-behavior: smooth;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  min-height: 100vh;
+  overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Headings with optical letter tracking from UI/UX Pro Max */
+h1, h2, h3, h4, h5, h6 {
+  letter-spacing: -0.02em;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+/* Ensure hit targets conform to minimum 44x44px recommendation */
+button,
+a,
+input,
+select,
+textarea {
+  touch-action: manipulation;
+}
+

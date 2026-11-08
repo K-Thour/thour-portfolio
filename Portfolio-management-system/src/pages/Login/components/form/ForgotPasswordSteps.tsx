@@ -45,24 +45,18 @@ export const ForgotPasswordSteps: React.FC<ForgotPasswordStepsProps> = ({
     <>
       <div className="mb-6 text-center">
         {step === 1 && (
-          <p
-            className={`text-sm ${isDark ? "text-slate-400" : "text-slate-500"}`}
-          >
+          <p className="text-sm text-muted-foreground">
             Enter your email address to receive an OTP.
           </p>
         )}
         {step === 2 && (
-          <p
-            className={`text-sm ${isDark ? "text-slate-400" : "text-slate-500"}`}
-          >
+          <p className="text-sm text-muted-foreground">
             Enter the 6-digit OTP sent to{" "}
-            <span className="font-semibold text-white">{email}</span>.
+            <span className="font-semibold text-foreground">{email}</span>.
           </p>
         )}
         {step === 3 && (
-          <p
-            className={`text-sm ${isDark ? "text-slate-400" : "text-slate-500"}`}
-          >
+          <p className="text-sm text-muted-foreground">
             Enter your new password below.
           </p>
         )}
@@ -70,9 +64,10 @@ export const ForgotPasswordSteps: React.FC<ForgotPasswordStepsProps> = ({
 
       <motion.div
         key={`step-${step}`}
-        initial={{ opacity: 0, x: 20 }}
+        initial={{ opacity: 0, x: 16 }}
         animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.4 }}
+        exit={{ opacity: 0, x: -16 }}
+        transition={{ type: "spring", damping: 25, stiffness: 280 }}
       >
         {step === 1 && (
           <CommonForm<{ email: string }>

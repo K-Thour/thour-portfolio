@@ -1,47 +1,31 @@
-export const navBtn = (isDark: boolean, type: "secondary" | "primary") => {
-  const base = "px-6 py-3 rounded-xl font-medium transition-all";
+export const navBtn = (_isDark: boolean, type: "secondary" | "primary") => {
   if (type === "secondary") {
-    return `${base} ${isDark ? "bg-slate-700/50 text-white hover:bg-slate-700" : "bg-gray-100 text-gray-900 hover:bg-gray-200"}`;
+    return "px-5 py-2.5 rounded-xl font-medium text-sm transition-all border border-border/60 hover:bg-accent/60 text-foreground active:scale-[0.97] cursor-pointer";
   }
-  return `${base} hover:scale-105 ${
-    isDark
-      ? "bg-linear-to-r from-red-600 to-yellow-500 text-white hover:shadow-lg hover:shadow-red-500/50"
-      : "bg-linear-to-r from-blue-600 to-blue-500 text-white hover:shadow-lg hover:shadow-blue-500/50"
-  }`;
+  return "px-5 py-2.5 rounded-xl font-medium text-sm transition-all bg-primary hover:bg-primary/90 text-primary-foreground active:scale-[0.97] shadow-sm cursor-pointer";
 };
 
-export const cardBase = (isDark: boolean) =>
-  `rounded-2xl border p-6 ${
-    isDark
-      ? "bg-slate-800/50 border-red-500/20"
-      : "bg-white border-blue-300/40 shadow-lg shadow-blue-500/10"
-  }`;
+export const cardBase = (_isDark: boolean) =>
+  "rounded-2xl border border-border/40 p-6 bg-card/75 backdrop-blur-xl shadow-xs";
 
-export const infoItem = (isDark: boolean) =>
-  `flex items-center gap-3 p-4 rounded-xl ${
-    isDark ? "bg-slate-900/50" : "bg-blue-50/50"
-  }`;
+export const infoItem = (_isDark: boolean) =>
+  "flex items-center gap-3 p-4 rounded-xl bg-accent/40 border border-border/30";
 
-export const getStatusColor = (status: string, isDark: boolean) => {
+export const getStatusColor = (status: string, _isDark: boolean) => {
   const colors: Record<string, string> = {
-    New: isDark ? "bg-blue-500/20 text-blue-400" : "bg-blue-100 text-blue-700",
-    Contacted: isDark
-      ? "bg-yellow-500/20 text-yellow-400"
-      : "bg-yellow-100 text-yellow-700",
-    Qualified: isDark
-      ? "bg-green-500/20 text-green-400"
-      : "bg-green-100 text-green-700",
-    "Proposal Sent": isDark
-      ? "bg-cyan-500/20 text-cyan-400"
-      : "bg-cyan-100 text-cyan-700",
-    Lost: isDark ? "bg-red-500/20 text-red-400" : "bg-red-100 text-red-700",
-    Won: isDark
-      ? "bg-emerald-500/20 text-emerald-400"
-      : "bg-emerald-100 text-emerald-700",
+    New: "bg-blue-500/15 text-blue-600 dark:text-blue-400 border border-blue-500/25",
+    Contacted:
+      "bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/25",
+    Qualified:
+      "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25",
+    "Proposal Sent":
+      "bg-cyan-500/15 text-cyan-600 dark:text-cyan-400 border border-cyan-500/25",
+    Lost: "bg-destructive/15 text-destructive border border-destructive/25",
+    Won: "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25",
   };
   return (
     colors[status] ||
-    (isDark ? "bg-gray-500/20 text-gray-400" : "bg-gray-100 text-gray-700")
+    "bg-accent/60 text-muted-foreground border border-border/40"
   );
 };
 
@@ -71,23 +55,11 @@ export const getPageNumbers = (totalPages: number, currentPage: number) => {
   return pages;
 };
 
-export const btnBase = (isDark: boolean) =>
-  `p-2 rounded-lg transition-all ${
-    isDark
-      ? "bg-slate-700/50 text-gray-300 hover:bg-slate-600 hover:text-white disabled:opacity-30"
-      : "bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-900 disabled:opacity-40"
-  }`;
+export const btnBase = (_isDark: boolean) =>
+  "p-2 rounded-xl transition-all border border-border/40 hover:bg-accent/60 text-muted-foreground hover:text-foreground active:scale-95 disabled:opacity-40";
 
-export const activeBtn = (isDark: boolean) =>
-  `px-4 py-2 rounded-lg font-medium transition-all ${
-    isDark
-      ? "bg-linear-to-r from-red-600 to-yellow-500 text-white"
-      : "bg-linear-to-r from-blue-600 to-blue-400 text-white"
-  }`;
+export const activeBtn = (_isDark: boolean) =>
+  "px-3.5 py-1.5 rounded-xl font-semibold text-xs transition-all bg-primary text-primary-foreground shadow-xs active:scale-95";
 
-export const inactiveBtn = (isDark: boolean) =>
-  `px-4 py-2 rounded-lg font-medium transition-all ${
-    isDark
-      ? "bg-slate-700/50 text-gray-300 hover:bg-slate-600"
-      : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-  }`;
+export const inactiveBtn = (_isDark: boolean) =>
+  "px-3.5 py-1.5 rounded-xl font-medium text-xs transition-all border border-border/40 hover:bg-accent/60 text-muted-foreground hover:text-foreground active:scale-95";

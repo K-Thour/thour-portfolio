@@ -7,6 +7,7 @@ export interface AISettings {
 export interface ResumeSettings {
   isGenerationEnabled: boolean;
   maxResumes: number;
+  atsOptimized?: boolean;
 }
 
 export interface GeneralSettings {
@@ -27,6 +28,7 @@ export interface SettingsHeaderProps {
   onBack: () => void;
   hasChanges: boolean;
   autoSave: boolean;
+  isSaving?: boolean;
 }
 
 export interface AISettingsCardProps {

@@ -1,6 +1,5 @@
 import { motion, AnimatePresence } from "motion/react";
 import { Download, FileText, X, FileCode, FileType2 } from "lucide-react";
-import { useAppSelector } from "../../../hooks/useRedux";
 import { useEffect, useState } from "react";
 
 export type DownloadFormat = "pdf" | "docx" | "json";
@@ -32,256 +31,156 @@ function ConfirmDownloadModal({
   fileSize = "~150 KB",
   previewData,
 }: ConfirmDownloadModalProps) {
-  const { theme } = useAppSelector((state) => state.theme);
-  const isDark = theme === "dark";
   const [selectedFormat, setSelectedFormat] = useState<DownloadFormat>("pdf");
 
   useEffect(() => {
     if (!isOpen) return;
 
-    const scrollY = window.scrollY;
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
 
-    // Lock scroll
-    document.body.style.position = "fixed";
-    document.body.style.top = `-${scrollY}px`;
-    document.body.style.left = "0";
-    document.body.style.right = "0";
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onCancel();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      document.body.style.position = "";
-      document.body.style.top = "";
-      document.body.style.left = "";
-      document.body.style.right = "";
-
-      window.scrollTo(0, scrollY);
+      document.body.style.overflow = originalOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [isOpen]);
+  }, [isOpen, onCancel]);
 
   const formatOptions: {
     value: DownloadFormat;
     label: string;
     icon: typeof FileText;
-    color: string;
   }[] = [
-    { value: "pdf", label: "PDF", icon: FileText, color: "text-red-500" },
-    { value: "docx", label: "Word", icon: FileType2, color: "text-blue-500" },
-    { value: "json", label: "JSON", icon: FileCode, color: "text-green-500" },
+    { value: "pdf", label: "PDF Document", icon: FileText },
+    { value: "docx", label: "Word (DOCX)", icon: FileType2 },
+    { value: "json", label: "JSON Raw Data", icon: FileCode },
   ];
 
   return (
     <AnimatePresence>
       {isOpen && (
-        <>
+        <div 
+          role="dialog"
+          aria-modal="true"
+          className="fixed inset-0 z-60 flex items-center justify-center p-4"
+        >
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onCancel}
-            className="fixed inset-0 bg-black/70 backdrop-blur-sm z-60 w-full h-full"
+            className="fixed inset-0 bg-black/50 backdrop-blur-md z-60"
           />
 
-          {/* Dialog */}
-          <div className="fixed inset-0 z-60 flex items-center justify-center p-4">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              transition={{ duration: 0.2 }}
-              className="w-full max-w-2xl"
-            >
-              <div
-                className={`rounded-2xl border overflow-hidden flex flex-col max-h-[calc(100vh-2rem)] md:max-h-[calc(100vh-4rem)] ${
-                  isDark
-                    ? "bg-slate-800 border-blue-500/30 shadow-2xl shadow-blue-500/20"
-                    : "bg-white border-blue-300/50 shadow-2xl shadow-blue-500/30"
-                }`}
-              >
-                {/* Header */}
-                <div
-                  className={`flex items-center justify-between p-4 border-b shrink-0 ${
-                    isDark ? "border-slate-700" : "border-gray-200"
-                  }`}
+          {/* Dialog Container */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: 16 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 16 }}
+            transition={{ type: "spring", damping: 26, stiffness: 320 }}
+            className="relative z-70 w-full max-w-2xl"
+          >
+            <div className="rounded-3xl border border-border/50 bg-card/95 backdrop-blur-2xl shadow-2xl overflow-hidden flex flex-col max-h-[calc(100vh-2rem)] md:max-h-[calc(100vh-4rem)] text-foreground">
+              {/* Header */}
+              <div className="flex items-center justify-between p-5 border-b border-border/40 shrink-0 bg-card/50">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-primary/10 text-primary border border-primary/20 shadow-xs">
+                    <Download className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-base font-bold tracking-tight text-foreground">
+                      {title}
+                    </h3>
+                    <p className="text-xs text-muted-foreground truncate max-w-xs sm:max-w-md">
+                      {fileName}
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={onCancel}
+                  aria-label="Close download dialog"
+                  className="p-1.5 rounded-xl hover:bg-accent/60 text-muted-foreground hover:text-foreground active:scale-95 transition-all cursor-pointer"
                 >
-                  <div className="flex items-center gap-3">
-                    <motion.div
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      transition={{ delay: 0.1, type: "spring" }}
-                      className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                        isDark ? "bg-blue-500/20" : "bg-blue-100"
-                      }`}
-                    >
-                      <Download
-                        className={`w-5 h-5 ${
-                          isDark ? "text-blue-400" : "text-blue-600"
-                        }`}
-                      />
-                    </motion.div>
-                    <div>
-                      <h3
-                        className={`text-lg font-bold ${
-                          isDark ? "text-white" : "text-gray-900"
-                        }`}
-                      >
-                        {title}
-                      </h3>
-                      <p
-                        className={`text-sm ${
-                          isDark ? "text-gray-400" : "text-gray-600"
-                        }`}
-                      >
-                        {fileName}
-                      </p>
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="flex flex-col md:flex-row overflow-y-auto flex-1">
+                {/* Preview Section */}
+                <div className="flex-1 p-6 bg-accent/20">
+                  <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
+                    Document Preview
+                  </p>
+
+                  <div className="rounded-2xl border border-border/50 bg-card/80 p-5 shadow-xs">
+                    {/* Header */}
+                    <div className="border-b border-border/40 pb-3 mb-3">
+                      <h4 className="font-bold text-base text-foreground">
+                        {previewData?.name || "Candidate Name"}
+                      </h4>
+                      <div className="text-xs text-muted-foreground mt-1 space-y-0.5">
+                        {previewData?.email && <p>{previewData.email}</p>}
+                        {previewData?.phone && <p>{previewData.phone}</p>}
+                      </div>
+                    </div>
+
+                    {/* Summary */}
+                    {previewData?.summary && (
+                      <div className="mb-3">
+                        <p className="text-[11px] font-semibold text-primary uppercase tracking-wider mb-1">
+                          Professional Summary
+                        </p>
+                        <p className="text-xs text-muted-foreground line-clamp-3">
+                          {previewData.summary}
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Stats Grid */}
+                    <div className="grid grid-cols-3 gap-2 mt-4 pt-3 border-t border-border/40">
+                      <div className="text-center p-2 rounded-xl bg-accent/30">
+                        <p className="text-base font-bold text-foreground">
+                          {previewData?.experienceCount || 0}
+                        </p>
+                        <p className="text-[10px] text-muted-foreground">
+                          Roles
+                        </p>
+                      </div>
+                      <div className="text-center p-2 rounded-xl bg-accent/30">
+                        <p className="text-base font-bold text-foreground">
+                          {previewData?.educationCount || 0}
+                        </p>
+                        <p className="text-[10px] text-muted-foreground">
+                          Degrees
+                        </p>
+                      </div>
+                      <div className="text-center p-2 rounded-xl bg-accent/30">
+                        <p className="text-base font-bold text-foreground">
+                          {previewData?.skillsCount || 0}
+                        </p>
+                        <p className="text-[10px] text-muted-foreground">
+                          Skills
+                        </p>
+                      </div>
                     </div>
                   </div>
-                  <button
-                    onClick={onCancel}
-                    className={`p-2 rounded-lg transition-all ${
-                      isDark
-                        ? "hover:bg-slate-700 text-gray-400"
-                        : "hover:bg-gray-100 text-gray-600"
-                    }`}
-                  >
-                    <X className="w-5 h-5" />
-                  </button>
+
+                  <p className="text-[11px] text-muted-foreground mt-3">
+                    Estimated size: {fileSize}
+                  </p>
                 </div>
 
-                <div className="flex flex-col md:flex-row overflow-y-auto flex-1">
-                  {/* Preview Section */}
-                  <div
-                    className={`flex-1 p-6 ${
-                      isDark ? "bg-slate-900/50" : "bg-gray-50"
-                    }`}
-                  >
-                    <p
-                      className={`text-sm font-medium mb-4 ${
-                        isDark ? "text-gray-400" : "text-gray-600"
-                      }`}
-                    >
-                      Preview
-                    </p>
-
-                    {/* Resume Preview Card */}
-                    <div
-                      className={`rounded-xl border p-4 ${
-                        isDark
-                          ? "bg-slate-800 border-slate-700"
-                          : "bg-white border-gray-200"
-                      }`}
-                    >
-                      {/* Resume Header Preview */}
-                      <div className="border-b pb-3 mb-3">
-                        <h4
-                          className={`font-bold text-lg ${
-                            isDark ? "text-white" : "text-gray-900"
-                          }`}
-                        >
-                          {previewData?.name || "Resume Preview"}
-                        </h4>
-                        <div
-                          className={`text-sm mt-1 ${
-                            isDark ? "text-gray-400" : "text-gray-600"
-                          }`}
-                        >
-                          {previewData?.email && <p>{previewData.email}</p>}
-                          {previewData?.phone && <p>{previewData.phone}</p>}
-                        </div>
-                      </div>
-
-                      {/* Summary Preview */}
-                      {previewData?.summary && (
-                        <div className="mb-3">
-                          <p
-                            className={`text-xs font-semibold uppercase tracking-wider mb-1 ${
-                              isDark ? "text-blue-400" : "text-blue-600"
-                            }`}
-                          >
-                            Summary
-                          </p>
-                          <p
-                            className={`text-sm line-clamp-3 ${
-                              isDark ? "text-gray-300" : "text-gray-700"
-                            }`}
-                          >
-                            {previewData.summary}
-                          </p>
-                        </div>
-                      )}
-
-                      {/* Stats Preview */}
-                      <div className="grid grid-cols-3 gap-2 mt-4 pt-3 border-t">
-                        <div className="text-center">
-                          <p
-                            className={`text-lg font-bold ${
-                              isDark ? "text-blue-400" : "text-blue-600"
-                            }`}
-                          >
-                            {previewData?.experienceCount || 0}
-                          </p>
-                          <p
-                            className={`text-xs ${
-                              isDark ? "text-gray-500" : "text-gray-600"
-                            }`}
-                          >
-                            Experience
-                          </p>
-                        </div>
-                        <div className="text-center">
-                          <p
-                            className={`text-lg font-bold ${
-                              isDark ? "text-green-400" : "text-green-600"
-                            }`}
-                          >
-                            {previewData?.educationCount || 0}
-                          </p>
-                          <p
-                            className={`text-xs ${
-                              isDark ? "text-gray-500" : "text-gray-600"
-                            }`}
-                          >
-                            Education
-                          </p>
-                        </div>
-                        <div className="text-center">
-                          <p
-                            className={`text-lg font-bold ${
-                              isDark ? "text-purple-400" : "text-purple-600"
-                            }`}
-                          >
-                            {previewData?.skillsCount || 0}
-                          </p>
-                          <p
-                            className={`text-xs ${
-                              isDark ? "text-gray-500" : "text-gray-600"
-                            }`}
-                          >
-                            Skills
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <p
-                      className={`text-xs mt-3 ${
-                        isDark ? "text-gray-500" : "text-gray-500"
-                      }`}
-                    >
-                      Estimated file size: {fileSize}
-                    </p>
-                  </div>
-
-                  {/* Options Section */}
-                  <div
-                    className={`w-full md:w-64 p-6 border-t md:border-t-0 md:border-l ${
-                      isDark ? "border-slate-700" : "border-gray-200"
-                    }`}
-                  >
-                    <p
-                      className={`text-sm font-medium mb-4 ${
-                        isDark ? "text-gray-400" : "text-gray-600"
-                      }`}
-                    >
+                {/* Options Section */}
+                <div className="w-full md:w-64 p-6 border-t md:border-t-0 md:border-l border-border/40 bg-card/40 flex flex-col justify-between">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
                       Select Format
                     </p>
 
@@ -293,73 +192,49 @@ function ConfirmDownloadModal({
                         return (
                           <button
                             key={format.value}
+                            type="button"
                             onClick={() => setSelectedFormat(format.value)}
-                            className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all ${
+                            className={`w-full flex items-center gap-3 p-3 rounded-2xl text-xs font-medium transition-all active:scale-[0.98] cursor-pointer ${
                               isSelected
-                                ? isDark
-                                  ? "bg-blue-500/20 border border-blue-500/50"
-                                  : "bg-blue-50 border border-blue-300"
-                                : isDark
-                                  ? "bg-slate-700/50 hover:bg-slate-700"
-                                  : "bg-gray-100 hover:bg-gray-200"
+                                ? "bg-primary text-primary-foreground shadow-xs font-semibold"
+                                : "bg-accent/40 hover:bg-accent/70 border border-border/40 text-foreground"
                             }`}
                           >
-                            <Icon className={`w-5 h-5 ${format.color}`} />
-                            <span
-                              className={`font-medium ${
-                                isSelected
-                                  ? isDark
-                                    ? "text-blue-300"
-                                    : "text-blue-700"
-                                  : isDark
-                                    ? "text-gray-300"
-                                    : "text-gray-700"
-                              }`}
-                            >
-                              {format.label}
-                            </span>
+                            <Icon className="w-4 h-4 shrink-0" />
+                            <span>{format.label}</span>
                             {isSelected && (
-                              <motion.div
-                                layoutId="check"
-                                className={`ml-auto w-2 h-2 rounded-full ${
-                                  isDark ? "bg-blue-400" : "bg-blue-500"
-                                }`}
-                              />
+                              <div className="ml-auto w-2 h-2 rounded-full bg-white" />
                             )}
                           </button>
                         );
                       })}
                     </div>
+                  </div>
 
-                    {/* Download Button */}
+                  {/* Actions */}
+                  <div className="pt-6 space-y-2">
                     <button
+                      type="button"
                       onClick={() => onConfirm(selectedFormat)}
-                      className={`w-full mt-6 flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-medium transition-all hover:scale-105 ${
-                        isDark
-                          ? "bg-linear-to-r from-blue-600 to-blue-500 text-white hover:shadow-lg hover:shadow-blue-500/50"
-                          : "bg-linear-to-r from-blue-600 to-blue-500 text-white hover:shadow-lg hover:shadow-blue-500/50"
-                      }`}
+                      className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-xs bg-primary hover:bg-primary/90 text-primary-foreground shadow-xs active:scale-[0.98] transition-all cursor-pointer"
                     >
-                      <Download className="w-5 h-5" />
-                      Download {selectedFormat.toUpperCase()}
+                      <Download className="w-4 h-4" />
+                      <span>Download {selectedFormat.toUpperCase()}</span>
                     </button>
 
                     <button
+                      type="button"
                       onClick={onCancel}
-                      className={`w-full mt-2 px-4 py-2 rounded-xl font-medium transition-all ${
-                        isDark
-                          ? "text-gray-400 hover:text-gray-300"
-                          : "text-gray-600 hover:text-gray-800"
-                      }`}
+                      className="w-full px-4 py-2 rounded-xl font-medium text-xs text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-all cursor-pointer"
                     >
                       Cancel
                     </button>
                   </div>
                 </div>
               </div>
-            </motion.div>
-          </div>
-        </>
+            </div>
+          </motion.div>
+        </div>
       )}
     </AnimatePresence>
   );

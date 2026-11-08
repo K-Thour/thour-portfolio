@@ -1,12 +1,8 @@
 import { motion } from "motion/react";
 import { Check } from "lucide-react";
-import { useAppSelector } from "../../../../hooks/useRedux";
 import type { FormStepperProps } from "../types";
 
 export function FormStepper({ steps, currentStep }: FormStepperProps) {
-  const { theme } = useAppSelector((state) => state.theme);
-  const isDark = theme === "dark";
-
   return (
     <div className="mb-8">
       <div className="flex items-center justify-between">
@@ -17,55 +13,33 @@ export function FormStepper({ steps, currentStep }: FormStepperProps) {
               <motion.div
                 initial={{ scale: 0.8 }}
                 animate={{ scale: 1 }}
-                className={`relative w-12 h-12 rounded-full flex items-center justify-center font-bold transition-all ${
+                className={`relative w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-all shadow-xs ${
                   currentStep > step.id
-                    ? isDark
-                      ? "bg-linear-to-br from-green-600 to-green-500"
-                      : "bg-linear-to-br from-green-600 to-green-500"
+                    ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30"
                     : currentStep === step.id
-                      ? isDark
-                        ? "bg-linear-to-br from-red-600 to-yellow-500"
-                        : "bg-linear-to-br from-blue-600 to-blue-500"
-                      : isDark
-                        ? "bg-slate-700 border-2 border-slate-600"
-                        : "bg-gray-200 border-2 border-gray-300"
+                      ? "bg-primary text-primary-foreground shadow-md shadow-primary/25 scale-105"
+                      : "bg-accent/60 text-muted-foreground border border-border/40"
                 }`}
               >
                 {currentStep > step.id ? (
-                  <Check className="w-6 h-6 text-white" />
+                  <Check className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                 ) : (
-                  <span
-                    className={
-                      currentStep >= step.id
-                        ? "text-white"
-                        : isDark
-                          ? "text-gray-400"
-                          : "text-gray-600"
-                    }
-                  >
-                    {step.id}
-                  </span>
+                  <span>{step.id}</span>
                 )}
               </motion.div>
 
               {/* Step Label */}
               <div className="mt-2 text-center">
                 <p
-                  className={`text-sm font-medium ${
+                  className={`text-xs font-semibold ${
                     currentStep >= step.id
-                      ? isDark
-                        ? "text-white"
-                        : "text-gray-900"
-                      : isDark
-                        ? "text-gray-500"
-                        : "text-gray-500"
+                      ? "text-foreground font-bold"
+                      : "text-muted-foreground"
                   }`}
                 >
                   {step.title}
                 </p>
-                <p
-                  className={`text-xs ${isDark ? "text-gray-600" : "text-gray-400"}`}
-                >
+                <p className="text-[11px] text-muted-foreground/80 hidden sm:block">
                   {step.description}
                 </p>
               </div>
@@ -74,14 +48,8 @@ export function FormStepper({ steps, currentStep }: FormStepperProps) {
             {/* Connector Line */}
             {index < steps.length - 1 && (
               <div
-                className={`h-0.5 flex-1 mx-2 mb-12 ${
-                  currentStep > step.id
-                    ? isDark
-                      ? "bg-green-600"
-                      : "bg-green-600"
-                    : isDark
-                      ? "bg-slate-700"
-                      : "bg-gray-300"
+                className={`h-0.5 flex-1 mx-2 mb-8 transition-colors ${
+                  currentStep > step.id ? "bg-emerald-500/40" : "bg-border/60"
                 }`}
               />
             )}

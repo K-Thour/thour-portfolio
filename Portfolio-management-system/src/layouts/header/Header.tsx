@@ -95,7 +95,7 @@ function Header({ className }: { className?: string }) {
     <>
       <header
         className={cn(
-          "h-16 border-b border-border/40 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 flex items-center justify-between px-6 sticky top-0 z-30",
+          "h-16 border-b border-border/40 bg-background/80 backdrop-blur-xl flex items-center justify-between px-6 sticky top-0 z-30 transition-colors select-none",
           className,
         )}
       >
@@ -114,14 +114,14 @@ function Header({ className }: { className?: string }) {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.3 }}
-              className="text-base sm:text-lg md:text-xl font-bold tracking-tight bg-linear-to-r from-primary via-primary/90 to-primary/60 bg-clip-text text-transparent truncate max-w-[200px] sm:max-w-[380px] md:max-w-none"
+              className="text-base sm:text-lg md:text-xl font-bold tracking-tight bg-linear-to-r from-primary via-primary/90 to-primary/70 bg-clip-text text-transparent truncate max-w-[200px] sm:max-w-[380px] md:max-w-none"
             >
               {user.name ? `${user.name} CMS` : "Karanveer Thour CMS"}
             </motion.h1>
           )}
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           {/* Theme toggle */}
           <ThemeToggle />
 
@@ -129,44 +129,61 @@ function Header({ className }: { className?: string }) {
           <DropdownMenu>
             <DropdownMenuTrigger
               render={
-                <button className="flex items-center gap-2 hover:bg-accent rounded-full p-1 pl-2 pr-3 transition-colors border border-transparent hover:border-border/50" />
+                <button
+                  type="button"
+                  className="flex items-center gap-2.5 rounded-full p-1 pl-1.5 pr-3 transition-all duration-150 cursor-pointer bg-accent/40 hover:bg-accent/70 active:scale-95 border border-border/30 select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                />
               }
             >
-              <div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center text-primary overflow-hidden">
+              <div className="size-8 rounded-full bg-primary/10 flex items-center justify-center text-primary overflow-hidden ring-1 ring-border/50">
                 {user?.avatarUrl ? (
                   <img
                     src={user.avatarUrl}
                     alt={user.name}
-                    className="h-full w-full object-cover"
+                    className="size-full object-cover"
                   />
                 ) : (
-                  <User size={18} />
+                  <User size={16} />
                 )}
               </div>
-              <div className="flex flex-col items-start sm:flex">
-                <span className="text-sm font-medium leading-none">
+              <div className="hidden sm:flex flex-col items-start text-left">
+                <span className="text-sm font-medium leading-none tracking-tight">
                   {user.name}
                 </span>
-                <span className="text-xs text-muted-foreground mt-0.5">
+                <span className="text-[11px] text-muted-foreground mt-0.5 font-normal">
                   {user.role.name}
                 </span>
               </div>
-              <ChevronDown size={14} className="text-muted-foreground" />
+              <ChevronDown size={14} className="text-muted-foreground shrink-0" />
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuItem onClick={() => navigate("/profile")}>
-                <User size={16} className="mr-2" />
+            <DropdownMenuContent
+              align="end"
+              sideOffset={8}
+              className="w-56 p-1.5 rounded-xl bg-popover/90 backdrop-blur-xl border border-border/40 shadow-xl"
+            >
+              <div className="sm:hidden px-2.5 py-1.5 border-b border-border/30 mb-1">
+                <p className="text-sm font-medium leading-none">{user.name}</p>
+                <p className="text-xs text-muted-foreground mt-0.5">{user.role.name}</p>
+              </div>
+              <DropdownMenuItem
+                onClick={() => navigate("/profile")}
+                className="rounded-lg px-2.5 py-2 cursor-pointer font-medium text-sm flex items-center gap-2"
+              >
+                <User size={16} className="text-muted-foreground" />
                 Profile
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate("/settings")}>
-                <Settings size={16} className="mr-2" />
+              <DropdownMenuItem
+                onClick={() => navigate("/settings")}
+                className="rounded-lg px-2.5 py-2 cursor-pointer font-medium text-sm flex items-center gap-2"
+              >
+                <Settings size={16} className="text-muted-foreground" />
                 Settings
               </DropdownMenuItem>
               <DropdownMenuItem
-                className="text-destructive focus:text-destructive cursor-pointer"
+                className="rounded-lg px-2.5 py-2 text-destructive focus:text-destructive cursor-pointer font-medium text-sm flex items-center gap-2 hover:bg-destructive/10"
                 onClick={handleLogoutClick}
               >
-                <LogOut size={16} className="mr-2" />
+                <LogOut size={16} />
                 Logout
               </DropdownMenuItem>
             </DropdownMenuContent>

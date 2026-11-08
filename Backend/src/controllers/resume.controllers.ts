@@ -8,6 +8,11 @@ import { generateResumePdfStream, ResumePdfData } from '../utils/pdf.utils';
 import { generateResumeWordDocument } from '../utils/word.utils';
 import { generateResumeJson } from '../utils/jsonResume.utils';
 import envConstant from '../constants/env.constant';
+import ITechnologyModel from '../interface/models/technology/technology.interface';
+import IEducationModel from '../interface/models/education/education.interface';
+import IExperienceModel from '../interface/models/experience/experience.interface';
+import IProjectModel from '../interface/models/project/project.interface';
+import { ILanguage } from '../interface/common/common.interface';
 
 const create = async (req: Request, res: Response) => {
   const userId = new Types.ObjectId(req.userId);
@@ -109,12 +114,16 @@ const prepareResumeData = async (resumeIdOrFilename: string): Promise<ResumePdfD
   const technologies = await models.technology.repo.get({ filter: [{ isDeleted: false }] });
 
   const techMap = new Map<string, string>();
-  technologies.forEach((t: any) => {
+  technologies.forEach((t: ITechnologyModel) => {
     techMap.set(t._id.toString(), t.name);
   });
 
-  const formatExpDuration = (joining: any, leaving: any, stillWorking: boolean) => {
-    const formatDate = (d: any) => {
+  const formatExpDuration = (
+    joining: Date | string | undefined,
+    leaving: Date | string | undefined,
+    stillWorking: boolean,
+  ) => {
+    const formatDate = (d: Date | string | undefined) => {
       if (!d) return '';
       const dt = new Date(d);
       if (isNaN(dt.getTime())) return String(d).split('T')[0];
@@ -125,7 +134,7 @@ const prepareResumeData = async (resumeIdOrFilename: string): Promise<ResumePdfD
     return `${start} — ${end}`;
   };
 
-  const formatEduDegree = (ed: any) => {
+  const formatEduDegree = (ed: IEducationModel) => {
     const degreeName = ed.degree || ed.field_of_study || '';
     if (ed.level?.toLowerCase() === 'graduation' || degreeName.toLowerCase().includes('bachelor')) {
       return degreeName || 'Bachelor of Computer Applications (BCA)';
@@ -140,7 +149,7 @@ const prepareResumeData = async (resumeIdOrFilename: string): Promise<ResumePdfD
   };
 
   // Higher Education Filter: Filter out 10th and 12th school education when higher degrees exist
-  const higherEducation = education.filter((ed: any) => {
+  const higherEducation = education.filter((ed: IEducationModel) => {
     const lvl = (ed.level || '').toLowerCase();
     const deg = (ed.degree || '').toLowerCase();
     return (
@@ -155,7 +164,7 @@ const prepareResumeData = async (resumeIdOrFilename: string): Promise<ResumePdfD
   const filteredEducation = higherEducation.length > 0 ? higherEducation : education;
 
   // Sort education in reverse chronological order (Graduation / BCA first)
-  const sortedEducation = [...filteredEducation].sort((a: any, b: any) => {
+  const sortedEducation = [...filteredEducation].sort((a: IEducationModel, b: IEducationModel) => {
     const isGradA =
       a.level?.toLowerCase() === 'graduation' ||
       (a.degree && a.degree.toLowerCase().includes('bachelor'));
@@ -175,12 +184,14 @@ const prepareResumeData = async (resumeIdOrFilename: string): Promise<ResumePdfD
     .filter((w) => w.length > 2);
 
   // 1. Role-Tailored Technologies Filter (prioritizing AI & Database selected technologies)
-  const selectedTechIds = (resume?.technologiesUsed || []).map((id: any) => id.toString());
+  const selectedTechIds = (resume?.technologiesUsed || []).map((id: Types.ObjectId) =>
+    id.toString(),
+  );
   const roleText = `${resume?.targetRole || resume?.name || ''}`.toLowerCase();
   const fullContextText =
     `${resume?.name || ''} ${resume?.description || ''} ${resume?.jobUrl || ''}`.toLowerCase();
 
-  const scoredTechnologies = technologies.map((t: any) => {
+  const scoredTechnologies = technologies.map((t: ITechnologyModel) => {
     let score = 0;
     const tId = t._id.toString();
     const tNameLower = t.name.toLowerCase();
@@ -282,8 +293,10 @@ const prepareResumeData = async (resumeIdOrFilename: string): Promise<ResumePdfD
   ).map((st) => st.tech.name);
 
   // 2. Role-Tailored Projects Filter (>3 projects support)
-  const selectedProjIds = (resume?.projectsUsed || []).map((id: any) => id.toString());
-  const scoredProjects = projects.map((p: any) => {
+  const selectedProjIds = (resume?.projectsUsed || []).map((id: Types.ObjectId) =>
+    id.toString(),
+  );
+  const scoredProjects = projects.map((p: IProjectModel) => {
     let score = 0;
     const pId = p._id.toString();
     if (selectedProjIds.includes(pId)) score += 10;
@@ -295,14 +308,17 @@ const prepareResumeData = async (resumeIdOrFilename: string): Promise<ResumePdfD
     });
 
     const stackNames = (p.techStack || [])
-      .map((item: any) => {
-        const id = item?._id?.toString() || item?.toString() || '';
+      .map((item: Types.ObjectId | { _id?: Types.ObjectId; name?: string } | string) => {
+        const id =
+          typeof item === 'object' && item !== null && '_id' in item && item._id
+            ? item._id.toString()
+            : item?.toString() || '';
         return (
           techMap.get(id) ||
           (typeof item === 'string' && !/^[0-9a-fA-F]{24}$/.test(item) ? item : null)
         );
       })
-      .filter(Boolean);
+      .filter((s): s is string => Boolean(s));
 
     stackNames.forEach((st: string) => {
       if (jobText.includes(st.toLowerCase())) score += 3;
@@ -332,10 +348,12 @@ const prepareResumeData = async (resumeIdOrFilename: string): Promise<ResumePdfD
         );
 
   // 3. Role-Tailored Experience (Auto 2 Latest / User Selected, 5 Points Each)
-  const selectedExpIds = (resume?.experiencesUsed || []).map((id: any) => id.toString());
+  const selectedExpIds = (resume?.experiencesUsed || []).map((id: Types.ObjectId) =>
+    id.toString(),
+  );
 
   // Sort experience: stillWorking first, then dateOfJoining desc
-  const sortedExp = [...experience].sort((a: any, b: any) => {
+  const sortedExp = [...experience].sort((a: IExperienceModel, b: IExperienceModel) => {
     if (a.stillWorking && !b.stillWorking) return -1;
     if (!a.stillWorking && b.stillWorking) return 1;
     const dateA = new Date(a.dateOfJoining).getTime() || 0;
@@ -343,14 +361,14 @@ const prepareResumeData = async (resumeIdOrFilename: string): Promise<ResumePdfD
     return dateB - dateA;
   });
 
-  const chosenExp =
+  const chosenExp: IExperienceModel[] =
     selectedExpIds.length > 0
-      ? selectedExpIds
-          .map((id: string) => experience.find((e: any) => e._id.toString() === id))
-          .filter(Boolean)
+      ? (selectedExpIds
+          .map((id: string) => experience.find((e: IExperienceModel) => e._id.toString() === id))
+          .filter((e): e is IExperienceModel => Boolean(e)))
       : sortedExp.slice(0, 2);
 
-  const relevantExperience = chosenExp.map((e: any) => {
+  const relevantExperience = chosenExp.map((e: IExperienceModel) => {
     const expBullets: string[] = [];
     if (e.description) {
       const parts = e.description
@@ -390,7 +408,10 @@ const prepareResumeData = async (resumeIdOrFilename: string): Promise<ResumePdfD
 
   const userLanguages =
     user?.languages && user.languages.length > 0
-      ? user.languages.map((l: any) => ({ name: l.name, proficiency: l.level || 'Fluent' }))
+      ? user.languages.map((l: ILanguage) => ({
+          name: l.name,
+          proficiency: (l as { level?: string }).level || 'Fluent',
+        }))
       : defaultLanguages;
 
   const formatDisplayUrl = (url?: string): string => {
@@ -422,7 +443,7 @@ const prepareResumeData = async (resumeIdOrFilename: string): Promise<ResumePdfD
 
   return {
     name: resume?.name || 'React.js Developer Resume',
-    description: (resume as any)?.summary || '',
+    description: resume?.summary || '',
     developerName: user?.name || 'Karanveer Thour',
     developerEmail: contact?.email || user?.email || 'karanveerthour76@gmail.com',
     developerPhone: contact?.phone || user?.phoneNumber || '+91 8847009521',
@@ -483,7 +504,7 @@ const prepareResumeData = async (resumeIdOrFilename: string): Promise<ResumePdfD
       };
     }),
     experience: relevantExperience,
-    education: sortedEducation.map((ed: any) => {
+    education: sortedEducation.map((ed: IEducationModel) => {
       let details = '';
       if (
         ed.level?.toLowerCase() === 'graduation' ||
@@ -492,10 +513,17 @@ const prepareResumeData = async (resumeIdOrFilename: string): Promise<ResumePdfD
         details =
           'Core Coursework: Data Structures, Algorithms, Web Engineering, Database Management Systems';
       }
+      const rawYear = ed.endYear || ed.startYear;
+      const yearStr =
+        rawYear instanceof Date
+          ? String(rawYear.getFullYear())
+          : rawYear
+          ? String(rawYear)
+          : '';
       return {
         degree: formatEduDegree(ed),
         institution: ed.institution,
-        year: ed.endYear || ed.startYear || '',
+        year: yearStr,
         details,
       };
     }),
@@ -508,9 +536,10 @@ const downloadPdf = async (req: Request, res: Response) => {
     const id = req.params.id as string;
     const data = await prepareResumeData(id);
     generateResumePdfStream(data, res);
-  } catch (err: any) {
-    console.error('Error generating PDF stream:', err);
-    res.status(500).send(err?.message || 'Error generating PDF');
+  } catch (err: unknown) {
+    const error = err as Error;
+    console.error('Error generating PDF stream:', error);
+    res.status(500).send(error?.message || 'Error generating PDF');
   }
 };
 
@@ -519,9 +548,10 @@ const downloadWord = async (req: Request, res: Response) => {
     const id = req.params.id as string;
     const data = await prepareResumeData(id);
     generateResumeWordDocument(data, res);
-  } catch (err: any) {
-    console.error('Error generating Word document:', err);
-    res.status(500).send(err?.message || 'Error generating Word document');
+  } catch (err: unknown) {
+    const error = err as Error;
+    console.error('Error generating Word document:', error);
+    res.status(500).send(error?.message || 'Error generating Word document');
   }
 };
 
@@ -530,9 +560,10 @@ const downloadJson = async (req: Request, res: Response) => {
     const id = req.params.id as string;
     const data = await prepareResumeData(id);
     generateResumeJson(data, res);
-  } catch (err: any) {
-    console.error('Error generating JSON document:', err);
-    res.status(500).send(err?.message || 'Error generating JSON document');
+  } catch (err: unknown) {
+    const error = err as Error;
+    console.error('Error generating JSON document:', error);
+    res.status(500).send(error?.message || 'Error generating JSON document');
   }
 };
 
@@ -571,8 +602,9 @@ const downloadTex = async (req: Request, res: Response) => {
     res.setHeader('Content-Type', 'text/plain; charset=utf-8');
     res.setHeader('Content-Disposition', `attachment; filename="${safeName}.tex"`);
     res.send(latex);
-  } catch (err: any) {
-    res.status(500).send(err?.message || 'Error downloading LaTeX');
+  } catch (err: unknown) {
+    const error = err as Error;
+    res.status(500).send(error?.message || 'Error downloading LaTeX');
   }
 };
 

@@ -4,9 +4,40 @@ import { KpiCards } from "./components/KpiCards";
 import { RecentActivity } from "./components/RecentActivity";
 import { PortfolioAnalytics } from "./components/PortfolioAnalytics";
 import { fetchDashboard } from "../../services/api";
-import utils from "../../utils";
 
-const { cn } = utils.tailwindUtils;
+function DashboardSkeleton() {
+  return (
+    <div className="flex-1 flex flex-col animate-pulse select-none">
+      <div className="mb-8">
+        <div className="h-8 w-64 bg-muted/70 rounded-lg mb-2" />
+        <div className="h-4 w-48 bg-muted/50 rounded-md" />
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6">
+        {[1, 2, 3, 4].map((i) => (
+          <div
+            key={i}
+            className="h-36 rounded-2xl bg-card/60 border border-border/30 p-5 flex flex-col justify-between"
+          >
+            <div className="flex justify-between items-start">
+              <div className="size-11 rounded-xl bg-muted/60" />
+              <div className="size-5 rounded bg-muted/40" />
+            </div>
+            <div>
+              <div className="h-4 w-24 bg-muted/50 rounded mb-2" />
+              <div className="h-7 w-16 bg-muted/70 rounded" />
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="h-80 rounded-2xl bg-card/60 border border-border/30 p-6" />
+        <div className="h-80 rounded-2xl bg-card/60 border border-border/30 p-6" />
+      </div>
+    </div>
+  );
+}
 
 export const Dashboard: React.FC = () => {
   const theme = useAppSelector((state) => state.theme.theme);
@@ -38,43 +69,17 @@ export const Dashboard: React.FC = () => {
   }, []);
 
   if (loading) {
-    return (
-      <div className="flex-1 flex items-center justify-center min-h-[400px]">
-        <div
-          className={cn(
-            "animate-spin rounded-full h-12 w-12 border-t-2 border-b-2",
-            isDark ? "border-red-500" : "border-blue-500",
-          )}
-        ></div>
-      </div>
-    );
+    return <DashboardSkeleton />;
   }
 
   return (
-    <div
-      className={cn(
-        "flex-1 flex flex-col transition-colors duration-500",
-        // MainLayout provides base padding, we structure our dashboard cleanly
-      )}
-    >
+    <div className="flex-1 flex flex-col transition-colors duration-200 select-none">
       <div className="mb-8">
-        <h1
-          className={cn(
-            "text-3xl font-bold tracking-tight mb-2",
-            isDark ? "text-white" : "text-slate-900",
-          )}
-        >
-          {isDark ? "Mission Dashboard" : "Command Overview"}
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground mb-1.5">
+          Command Overview
         </h1>
-        <p
-          className={cn(
-            "text-sm",
-            isDark ? "text-slate-400" : "text-slate-500",
-          )}
-        >
-          {isDark
-            ? "Your portfolio performance at a glance"
-            : "Survey your digital realm"}
+        <p className="text-sm text-muted-foreground">
+          Real-time analytics and management pulse for your digital portfolio.
         </p>
       </div>
 

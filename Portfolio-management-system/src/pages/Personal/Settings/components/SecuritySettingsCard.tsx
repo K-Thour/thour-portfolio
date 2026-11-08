@@ -1,14 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { motion } from "motion/react";
-import { Lock, Eye, EyeOff, CheckCircle2 } from "lucide-react";
-import { useAppSelector } from "../../../../hooks/useRedux";
+import { Lock, Eye, EyeOff, ShieldCheck, Loader2 } from "lucide-react";
 import { changePassword } from "../../../../services/api";
 import { toast } from "../../../../components/ui/toast/toast";
 
 export function SecuritySettingsCard() {
-  const { theme } = useAppSelector((state) => state.theme);
-  const isDark = theme === "dark";
-
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -19,8 +15,9 @@ export function SecuritySettingsCard() {
   const [showConfirm, setShowConfirm] = useState(false);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const hasAttemptedSubmit = useRef(false);
 
-  const validate = () => {
+  const validate = useCallback(() => {
     const newErrors: Record<string, string> = {};
     if (!currentPassword) {
       newErrors.currentPassword = "Current password is required";
@@ -39,30 +36,39 @@ export function SecuritySettingsCard() {
         "Password must contain at least one special character";
     }
 
-    if (newPassword !== confirmPassword) {
+    if (confirmPassword && newPassword !== confirmPassword) {
       newErrors.confirmPassword = "Passwords do not match";
+    } else if (hasAttemptedSubmit.current && !confirmPassword) {
+      newErrors.confirmPassword = "Confirm password is required";
     }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
-  };
+  }, [currentPassword, newPassword, confirmPassword]);
+
+  useEffect(() => {
+    if (hasAttemptedSubmit.current || currentPassword || newPassword || confirmPassword) {
+      validate();
+    }
+  }, [validate, currentPassword, newPassword, confirmPassword]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    hasAttemptedSubmit.current = true;
     if (!validate()) return;
 
-    setLoading(false);
     try {
       setLoading(true);
       await changePassword({ currentPassword, newPassword });
       toast({
         title: "Password Updated",
-        description: "Your password has been successfully updated.",
+        description: "Your account credentials have been successfully updated.",
         variant: "success",
       });
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
+      setErrors({});
     } catch (err: any) {
       const errMsg =
         err.response?.data?.message ||
@@ -79,38 +85,29 @@ export function SecuritySettingsCard() {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.3 }}
-      className={`p-6 rounded-2xl border ${
-        isDark
-          ? "bg-slate-800/50 border-red-500/20"
-          : "bg-white/80 backdrop-blur-md border-blue-300/40 shadow-lg"
-      }`}
+      transition={{ type: "spring", damping: 26, stiffness: 280, delay: 0.2 }}
+      className="p-6 rounded-3xl border border-border/40 bg-card/75 backdrop-blur-xl shadow-xs"
     >
       <div className="flex items-center gap-3 mb-6">
-        <div
-          className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-            isDark ? "bg-red-500/20 text-red-400" : "bg-red-100 text-red-600"
-          }`}
-        >
+        <div className="w-11 h-11 rounded-2xl flex items-center justify-center bg-primary/10 text-primary border border-primary/20 shadow-xs">
           <Lock className="w-5 h-5" />
         </div>
-        <h2
-          className={`text-xl font-bold ${
-            isDark ? "text-white" : "text-gray-900"
-          }`}
-        >
-          Security Settings
-        </h2>
+        <div>
+          <h2 className="text-xl font-bold tracking-tight text-foreground">
+            Security & Credentials
+          </h2>
+          <p className="text-xs text-muted-foreground">
+            Update account password and session authentication
+          </p>
+        </div>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Current Password */}
         <div>
-          <label
-            className={`block text-sm font-medium mb-1.5 ${isDark ? "text-gray-300" : "text-gray-700"}`}
-          >
+          <label className="block text-xs font-semibold text-foreground mb-1.5">
             Current Password
           </label>
           <div className="relative">
@@ -118,26 +115,28 @@ export function SecuritySettingsCard() {
               type={showCurrent ? "text" : "password"}
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
-              className={`w-full px-4 py-2.5 pr-10 rounded-xl border bg-transparent focus:outline-none focus:ring-2 transition-all ${
-                isDark
-                  ? "bg-slate-900/50 border-red-500/20 text-white focus:ring-red-500 focus:border-red-500"
-                  : "bg-white border-blue-300/50 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
-              } ${errors.currentPassword ? "border-red-500 focus:ring-red-500" : ""}`}
+              placeholder="Enter current password"
+              className={`w-full px-4 py-2.5 pr-10 rounded-xl border bg-accent/30 text-foreground placeholder:text-muted-foreground text-sm focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all ${
+                errors.currentPassword
+                  ? "border-destructive focus:ring-destructive/20 focus:border-destructive"
+                  : "border-border/50"
+              }`}
             />
             <button
               type="button"
               onClick={() => setShowCurrent(!showCurrent)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-white"
+              aria-label={showCurrent ? "Hide current password" : "Show current password"}
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-muted-foreground hover:text-foreground active:scale-95 transition-all cursor-pointer"
             >
               {showCurrent ? (
-                <EyeOff className="w-5 h-5" />
+                <EyeOff className="w-4 h-4" />
               ) : (
-                <Eye className="w-5 h-5" />
+                <Eye className="w-4 h-4" />
               )}
             </button>
           </div>
           {errors.currentPassword && (
-            <p className="mt-1 text-xs text-red-500">
+            <p className="mt-1.5 text-xs text-destructive font-medium">
               {errors.currentPassword}
             </p>
           )}
@@ -145,9 +144,7 @@ export function SecuritySettingsCard() {
 
         {/* New Password */}
         <div>
-          <label
-            className={`block text-sm font-medium mb-1.5 ${isDark ? "text-gray-300" : "text-gray-700"}`}
-          >
+          <label className="block text-xs font-semibold text-foreground mb-1.5">
             New Password
           </label>
           <div className="relative">
@@ -155,34 +152,36 @@ export function SecuritySettingsCard() {
               type={showNew ? "text" : "password"}
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              className={`w-full px-4 py-2.5 pr-10 rounded-xl border bg-transparent focus:outline-none focus:ring-2 transition-all ${
-                isDark
-                  ? "bg-slate-900/50 border-red-500/20 text-white focus:ring-red-500 focus:border-red-500"
-                  : "bg-white border-blue-300/50 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
-              } ${errors.newPassword ? "border-red-500 focus:ring-red-500" : ""}`}
+              placeholder="At least 8 characters with symbol & number"
+              className={`w-full px-4 py-2.5 pr-10 rounded-xl border bg-accent/30 text-foreground placeholder:text-muted-foreground text-sm focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all ${
+                errors.newPassword
+                  ? "border-destructive focus:ring-destructive/20 focus:border-destructive"
+                  : "border-border/50"
+              }`}
             />
             <button
               type="button"
               onClick={() => setShowNew(!showNew)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-white"
+              aria-label={showNew ? "Hide new password" : "Show new password"}
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-muted-foreground hover:text-foreground active:scale-95 transition-all cursor-pointer"
             >
               {showNew ? (
-                <EyeOff className="w-5 h-5" />
+                <EyeOff className="w-4 h-4" />
               ) : (
-                <Eye className="w-5 h-5" />
+                <Eye className="w-4 h-4" />
               )}
             </button>
           </div>
           {errors.newPassword && (
-            <p className="mt-1 text-xs text-red-500">{errors.newPassword}</p>
+            <p className="mt-1.5 text-xs text-destructive font-medium">
+              {errors.newPassword}
+            </p>
           )}
         </div>
 
         {/* Confirm New Password */}
         <div>
-          <label
-            className={`block text-sm font-medium mb-1.5 ${isDark ? "text-gray-300" : "text-gray-700"}`}
-          >
+          <label className="block text-xs font-semibold text-foreground mb-1.5">
             Confirm New Password
           </label>
           <div className="relative">
@@ -190,48 +189,59 @@ export function SecuritySettingsCard() {
               type={showConfirm ? "text" : "password"}
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className={`w-full px-4 py-2.5 pr-10 rounded-xl border bg-transparent focus:outline-none focus:ring-2 transition-all ${
-                isDark
-                  ? "bg-slate-900/50 border-red-500/20 text-white focus:ring-red-500 focus:border-red-500"
-                  : "bg-white border-blue-300/50 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
-              } ${errors.confirmPassword ? "border-red-500 focus:ring-red-500" : ""}`}
+              placeholder="Re-enter new password"
+              className={`w-full px-4 py-2.5 pr-10 rounded-xl border bg-accent/30 text-foreground placeholder:text-muted-foreground text-sm focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all ${
+                errors.confirmPassword
+                  ? "border-destructive focus:ring-destructive/20 focus:border-destructive"
+                  : "border-border/50"
+              }`}
             />
             <button
               type="button"
               onClick={() => setShowConfirm(!showConfirm)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-white"
+              aria-label={showConfirm ? "Hide confirmation password" : "Show confirmation password"}
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-muted-foreground hover:text-foreground active:scale-95 transition-all cursor-pointer"
             >
               {showConfirm ? (
-                <EyeOff className="w-5 h-5" />
+                <EyeOff className="w-4 h-4" />
               ) : (
-                <Eye className="w-5 h-5" />
+                <Eye className="w-4 h-4" />
               )}
             </button>
           </div>
           {errors.confirmPassword && (
-            <p className="mt-1 text-xs text-red-500">
+            <p className="mt-1.5 text-xs text-destructive font-medium">
               {errors.confirmPassword}
             </p>
           )}
         </div>
 
-        {/* Submit */}
+        {/* Password Strength Guidelines */}
+        <div className="p-3 rounded-2xl bg-accent/20 border border-border/30 text-xs text-muted-foreground space-y-1">
+          <p className="font-semibold text-foreground">Password requirements:</p>
+          <ul className="list-disc list-inside space-y-0.5 pl-1">
+            <li>Minimum 8 characters</li>
+            <li>At least one uppercase letter (A-Z)</li>
+            <li>At least one number (0-9) and one special symbol</li>
+          </ul>
+        </div>
+
+        {/* Submit Button */}
         <div className="pt-2">
           <button
             type="submit"
             disabled={loading}
-            className={`w-full px-4 py-2.5 rounded-xl font-semibold transition-all flex items-center justify-center gap-2 text-white shadow-md disabled:opacity-50 disabled:cursor-not-allowed ${
-              isDark
-                ? "bg-linear-to-br from-red-600 to-yellow-500 hover:shadow-lg hover:shadow-red-500/30"
-                : "bg-linear-to-br from-blue-600 to-blue-500 hover:shadow-lg hover:shadow-blue-500/30"
-            }`}
+            className="w-full px-4 py-2.5 rounded-xl font-semibold text-sm bg-primary hover:bg-primary/90 text-primary-foreground shadow-xs flex items-center justify-center gap-2 active:scale-[0.98] transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? (
-              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                <span>Updating credentials...</span>
+              </>
             ) : (
               <>
-                <CheckCircle2 className="w-4 h-4" />
-                Update Password
+                <ShieldCheck className="w-4 h-4" />
+                <span>Update Password</span>
               </>
             )}
           </button>

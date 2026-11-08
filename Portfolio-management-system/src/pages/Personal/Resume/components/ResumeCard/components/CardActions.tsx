@@ -12,49 +12,44 @@ interface Props {
 
 export function CardActions({
   resume,
-  isDark,
   onDownload,
   onDelete,
   onRegenerate,
   isRegenerating = false,
 }: Props) {
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-1.5">
       {onRegenerate && (
         <button
           type="button"
           onClick={() => onRegenerate(resume)}
           disabled={isRegenerating}
           title="Regenerate resume with fresh AI tailoring"
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
-            isRegenerating
-              ? "opacity-60 cursor-not-allowed"
-              : isDark
-                ? "bg-blue-600/20 text-blue-400 hover:bg-blue-600/30"
-                : "bg-blue-100 text-blue-700 hover:bg-blue-200"
-          }`}
+          className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-medium border border-border/60 hover:bg-accent/60 text-foreground active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
         >
           <RotateCw
-            className={`w-4 h-4 ${isRegenerating ? "animate-spin" : ""}`}
+            className={`w-3.5 h-3.5 ${isRegenerating ? "animate-spin" : ""}`}
           />
-          {isRegenerating ? "Regenerating..." : "Regenerate"}
+          <span>{isRegenerating ? "Regenerating..." : "Regenerate"}</span>
         </button>
       )}
       {resume.status === "completed" && resume.generatedFileUrl && (
         <button
           type="button"
           onClick={() => onDownload(resume)}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${isDark ? "bg-green-600/20 text-green-400 hover:bg-green-600/30" : "bg-green-100 text-green-700 hover:bg-green-200"}`}
+          className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-semibold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25 active:scale-95 hover:bg-emerald-500/25 transition-all cursor-pointer"
         >
-          <Download className="w-4 h-4" /> Download
+          <Download className="w-3.5 h-3.5" />
+          <span>Download</span>
         </button>
       )}
       <button
         type="button"
         onClick={() => onDelete(resume.id)}
-        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${isDark ? "bg-red-600/20 text-red-400 hover:bg-red-600/30" : "bg-red-100 text-red-700 hover:bg-red-200"}`}
+        className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-medium border border-destructive/30 hover:bg-destructive/10 text-destructive active:scale-95 transition-all cursor-pointer"
       >
-        <Trash2 className="w-4 h-4" /> Delete
+        <Trash2 className="w-3.5 h-3.5" />
+        <span>Delete</span>
       </button>
     </div>
   );

@@ -1,4 +1,4 @@
-import { Zap, Shield, Swords } from "lucide-react";
+import { Sparkles, Cpu } from "lucide-react";
 import { useAppSelector } from "../../../../hooks/useRedux";
 import type { RootState } from "../../../../store/store";
 import type { ProjectFeaturesProps } from "../types";
@@ -11,80 +11,46 @@ export function ProjectFeatures({ project, isInView }: ProjectFeaturesProps) {
 
   return (
     <>
-      <div className="mb-12">
-        <h2
-          className={`text-2xl font-bold mb-6 flex items-center gap-2 ${isDark ? "text-white" : "text-gray-900"}`}
-        >
-          {isDark ? (
-            <Shield className="w-6 h-6 text-red-500" />
-          ) : (
-            <Swords className="w-6 h-6 text-blue-600" />
-          )}
-          {isDark ? "Key Features" : "Legendary Features"}
-        </h2>
-        <div className="grid md:grid-cols-2 gap-4">
-          {project.features.map((feature, index) => (
-            <FeatureItem
-              key={feature}
-              feature={feature}
-              index={index}
-              isInView={isInView}
-              isDark={isDark}
-            />
-          ))}
+      {project.features && project.features.length > 0 && (
+        <div className="mb-12">
+          <h2 className="text-2xl font-bold tracking-tight text-foreground mb-6 flex items-center gap-2.5">
+            <Sparkles className="w-5 h-5 text-primary" />
+            <span>Key Features</span>
+          </h2>
+          <div className="grid md:grid-cols-2 gap-4">
+            {project.features.map((feature, index) => (
+              <FeatureItem
+                key={feature}
+                feature={feature}
+                index={index}
+                isInView={isInView}
+                isDark={isDark}
+              />
+            ))}
+          </div>
         </div>
-      </div>
-      <div className="mb-12">
-        <h2
-          className={`text-2xl font-bold mb-6 flex items-center gap-2 ${isDark ? "text-white" : "text-gray-900"}`}
-        >
-          <Zap
-            className={
-              isDark ? "w-6 h-6 text-yellow-500" : "w-6 h-6 text-blue-500"
-            }
-          />
-          {isDark ? "Technologies Used" : "Weapons Wielded"}
-        </h2>
-        <div className="flex flex-wrap gap-3">
-          {project.technologies.map((tech, index) => (
-            <TechItem
-              key={tech.name}
-              tech={tech}
-              index={index}
-              isInView={isInView}
-              isDark={isDark}
-            />
-          ))}
+      )}
+
+      {project.technologies && project.technologies.length > 0 && (
+        <div className="mb-12">
+          <h2 className="text-2xl font-bold tracking-tight text-foreground mb-6 flex items-center gap-2.5">
+            <Cpu className="w-5 h-5 text-primary" />
+            <span>Technologies & Stack</span>
+          </h2>
+          <div className="flex flex-wrap gap-2.5">
+            {project.technologies.map((tech, index) => (
+              <TechItem
+                key={tech.name}
+                tech={tech}
+                index={index}
+                isInView={isInView}
+                isDark={isDark}
+              />
+            ))}
+          </div>
         </div>
-      </div>
-      {/* <div className="mb-12">
-        <h2
-          className={`text-2xl font-bold mb-6 ${isDark ? "text-white" : "text-gray-900"}`}
-        >
-          {isDark ? "Technical Challenges" : "Trials Overcome"}
-        </h2>
-        <div className="space-y-4">
-          {project.challenges.map((challenge, index) => (
-            <div
-              key={challenge?.title || index}
-              className={`p-6 rounded-2xl border ${
-                isDark
-                  ? "bg-slate-800/50 border-red-500/20"
-                  : "bg-linear-to-br from-white to-blue-50 border-blue-300/30 shadow-md"
-              }`}
-            >
-              <h3
-                className={`text-lg font-bold mb-2 ${isDark ? "text-white" : "text-gray-900"}`}
-              >
-                {challenge?.title}
-              </h3>
-              <p className={isDark ? "text-gray-400" : "text-gray-700"}>
-                {challenge?.description}
-              </p>
-            </div>
-          ))}
-        </div>
-      </div> */}
+      )}
     </>
   );
 }
+

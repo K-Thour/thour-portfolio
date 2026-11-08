@@ -46,7 +46,7 @@ function Mainlayout({ children }: MainlayoutProps) {
         {!shouldHideSidebar && (
           <Header
             className={cn(
-              "fixed top-0 right-0 py-2 transition-all duration-300 z-40 pl-5 w-[calc(100%-80px)]",
+              "fixed top-0 right-0 py-2 transition-all duration-300 z-40 pl-5 w-full",
               isOpen ? "md:w-[calc(100%-256px)]" : "md:w-[calc(100%-80px)]",
             )}
           />
@@ -58,9 +58,8 @@ function Mainlayout({ children }: MainlayoutProps) {
           {!shouldHideSidebar && (
             <Footer
               className={cn(
-                "fixed bottom-0 right-0 py-2 transition-all duration-300 z-40 pl-5",
+                "fixed bottom-0 right-0 py-2 transition-all duration-300 z-40 pl-5 left-0",
                 isOpen ? "md:left-64" : "md:left-20",
-                "left-0",
               )}
             />
           )}

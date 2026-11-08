@@ -1,39 +1,32 @@
+import { useState } from "react";
 import { Folder } from "lucide-react";
 
 interface CategoryBadgeProps {
   category: string;
   categoryIconUrl?: string;
-  isDark: boolean;
+  isDark?: boolean;
 }
 
 export function CategoryBadge({
   category,
   categoryIconUrl,
-  isDark,
 }: CategoryBadgeProps) {
+  const [imgError, setImgError] = useState(false);
+
   return (
-    <span
-      className={`px-4 py-1 rounded-full text-sm font-medium border flex items-center gap-2 ${
-        isDark
-          ? "bg-slate-800/80 border-red-500/30 text-gray-300"
-          : "bg-blue-100 border-blue-300 text-blue-800"
-      }`}
-    >
-      {categoryIconUrl ? (
+    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border border-border/40 bg-accent/60 text-foreground shadow-xs">
+      {categoryIconUrl && !imgError ? (
         <img
           src={categoryIconUrl}
           alt=""
-          className="w-4 h-4 rounded-full object-cover"
-          onError={(e) => {
-            e.currentTarget.style.display = "none";
-          }}
+          className="w-3.5 h-3.5 rounded-full object-cover"
+          onError={() => setImgError(true)}
         />
       ) : (
-        <Folder
-          className={`w-4 h-4 ${isDark ? "text-red-500" : "text-blue-600"}`}
-        />
+        <Folder className="w-3.5 h-3.5 text-primary" />
       )}
-      {category}
+      <span>{category}</span>
     </span>
   );
 }
+

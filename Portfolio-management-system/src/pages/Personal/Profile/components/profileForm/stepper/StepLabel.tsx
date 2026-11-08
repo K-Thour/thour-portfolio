@@ -4,26 +4,21 @@ export function StepLabel({
   title,
   description,
   isActive,
-  isDark,
 }: StepLabelProps) {
   return (
     <div className="mt-2 text-center">
       <p
-        className={`text-sm font-medium ${
-          isActive
-            ? isDark
-              ? "text-white"
-              : "text-gray-900"
-            : isDark
-              ? "text-gray-500"
-              : "text-gray-500"
+        className={`text-xs font-semibold ${
+          isActive ? "text-foreground font-bold" : "text-muted-foreground"
         }`}
       >
         {title}
       </p>
-      <p className={`text-xs ${isDark ? "text-gray-600" : "text-gray-400"}`}>
-        {description}
-      </p>
+      {description && (
+        <p className="text-[11px] text-muted-foreground/80 hidden sm:block">
+          {description}
+        </p>
+      )}
     </div>
   );
 }

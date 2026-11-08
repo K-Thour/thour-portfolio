@@ -1,8 +1,8 @@
+import { motion } from "motion/react";
 import { Loader2 } from "lucide-react";
-import { navBtn } from "../../utils/leadsUtils";
 
 interface ActionButtonsProps {
-  isDark: boolean;
+  isDark?: boolean;
   canConfirm: boolean;
   isLoading?: boolean;
   onCancel: () => void;
@@ -10,25 +10,28 @@ interface ActionButtonsProps {
 }
 
 export function ActionButtons({
-  isDark,
   canConfirm,
   isLoading = false,
   onCancel,
   onConfirm,
 }: ActionButtonsProps) {
   return (
-    <div className="flex justify-between items-center rounded-xl">
-      <button
+    <div className="flex items-center justify-end gap-3 pt-2">
+      <motion.button
+        type="button"
+        whileTap={{ scale: 0.98 }}
         onClick={onCancel}
         disabled={isLoading}
-        className={`${navBtn(isDark, "secondary")} disabled:opacity-50`}
+        className="px-4 py-2.5 rounded-xl text-sm font-medium border border-border/50 bg-accent/40 hover:bg-accent text-foreground transition-all duration-150 cursor-pointer disabled:opacity-50"
       >
         Cancel
-      </button>
-      <button
+      </motion.button>
+      <motion.button
+        type="button"
+        whileTap={{ scale: 0.98 }}
         onClick={onConfirm}
         disabled={!canConfirm || isLoading}
-        className={`${navBtn(isDark, "primary")} flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed`}
+        className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold bg-primary hover:bg-primary/90 text-primary-foreground shadow-xs transition-all duration-150 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {isLoading ? (
           <>
@@ -38,7 +41,7 @@ export function ActionButtons({
         ) : (
           "Update Status"
         )}
-      </button>
+      </motion.button>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { motion } from "motion/react";
-import { Image as ImageIcon, Upload, Link2, Loader2 } from "lucide-react";
+import { Image as ImageIcon, Upload, Link2, Loader2, AlertCircle } from "lucide-react";
 import utils from "../../../../../../utils";
 import type { ProfileFormData } from "../types";
 import { ImageCropperModal } from "../../../../../../components/common/imageCropper/ImageCropperModal";
@@ -10,10 +10,10 @@ const { cn } = utils.tailwindUtils;
 
 interface PhotoStepProps {
   form: any;
-  isDark: boolean;
+  isDark?: boolean;
 }
 
-export const PhotoStep: React.FC<PhotoStepProps> = ({ form, isDark }) => {
+export const PhotoStep: React.FC<PhotoStepProps> = ({ form, isDark = false }) => {
   const [cropperOpen, setCropperOpen] = useState(false);
   const [srcImage, setSrcImage] = useState("");
   const [uploading, setUploading] = useState(false);
@@ -71,20 +71,10 @@ export const PhotoStep: React.FC<PhotoStepProps> = ({ form, isDark }) => {
         return (
           <div className="space-y-4 relative">
             {uploading && (
-              <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center z-20 rounded-xl">
+              <div className="absolute inset-0 bg-background/70 backdrop-blur-xs flex items-center justify-center z-20 rounded-2xl">
                 <div className="flex flex-col items-center gap-2">
-                  <Loader2
-                    className={cn(
-                      "w-10 h-10 animate-spin",
-                      isDark ? "text-red-500" : "text-blue-500",
-                    )}
-                  />
-                  <p
-                    className={cn(
-                      "text-xs font-semibold",
-                      isDark ? "text-white" : "text-gray-900",
-                    )}
-                  >
+                  <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                  <p className="text-xs font-semibold text-foreground">
                     Uploading image...
                   </p>
                 </div>
@@ -92,148 +82,95 @@ export const PhotoStep: React.FC<PhotoStepProps> = ({ form, isDark }) => {
             )}
 
             <div className="flex items-center gap-3 mb-4">
-              <div
-                className={cn(
-                  "w-10 h-10 rounded-xl flex items-center justify-center",
-                  isDark
-                    ? "bg-linear-to-br from-red-600 to-yellow-500"
-                    : "bg-linear-to-br from-blue-600 to-blue-400",
-                )}
-              >
-                <ImageIcon className="w-5 h-5 text-white" />
+              <div className="w-11 h-11 rounded-2xl flex items-center justify-center bg-primary/10 text-primary border border-primary/20 shadow-xs">
+                <ImageIcon className="w-5 h-5" />
               </div>
               <div>
-                <h3
-                  className={cn(
-                    "font-bold",
-                    isDark ? "text-white" : "text-gray-900",
-                  )}
-                >
+                <h3 className="text-base font-bold tracking-tight text-foreground">
                   Profile Photo
                 </h3>
-                <p
-                  className={cn(
-                    "text-sm",
-                    isDark ? "text-gray-400" : "text-gray-600",
-                  )}
-                >
-                  Upload your profile image
+                <p className="text-xs text-muted-foreground">
+                  Choose a direct web link or upload & crop a local portrait
                 </p>
               </div>
             </div>
 
-            <div className="flex gap-3 mb-4">
+            {/* Segmented Mode Selector */}
+            <div className="p-1 rounded-2xl bg-accent/40 border border-border/40 grid grid-cols-2 gap-1 mb-4">
               <button
                 type="button"
                 onClick={() => field.handleChange({ ...imageVal, type: "url" })}
                 className={cn(
-                  "flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl border-2 font-medium transition-all",
+                  "flex items-center justify-center gap-2 py-2 px-3 rounded-xl font-medium text-xs transition-all cursor-pointer active:scale-[0.98]",
                   imageType === "url"
-                    ? isDark
-                      ? "border-red-500 bg-red-500/20 text-white"
-                      : "border-blue-500 bg-blue-100 text-gray-900"
-                    : isDark
-                      ? "border-slate-700 text-gray-400 hover:border-red-500/50"
-                      : "border-gray-300 text-gray-600 hover:border-blue-400",
+                    ? "bg-primary text-primary-foreground shadow-xs font-semibold"
+                    : "text-muted-foreground hover:text-foreground hover:bg-accent/60",
                 )}
               >
-                <Link2 className="w-5 h-5" />
-                Image URL
+                <Link2 className="w-4 h-4" />
+                <span>Image URL</span>
               </button>
               <button
                 type="button"
-                onClick={() =>
-                  field.handleChange({ ...imageVal, type: "file" })
-                }
+                onClick={() => field.handleChange({ ...imageVal, type: "file" })}
                 className={cn(
-                  "flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl border-2 font-medium transition-all",
+                  "flex items-center justify-center gap-2 py-2 px-3 rounded-xl font-medium text-xs transition-all cursor-pointer active:scale-[0.98]",
                   imageType === "file"
-                    ? isDark
-                      ? "border-red-500 bg-red-500/20 text-white"
-                      : "border-blue-500 bg-blue-100 text-gray-900"
-                    : isDark
-                      ? "border-slate-700 text-gray-400 hover:border-red-500/50"
-                      : "border-gray-300 text-gray-600 hover:border-blue-400",
+                    ? "bg-primary text-primary-foreground shadow-xs font-semibold"
+                    : "text-muted-foreground hover:text-foreground hover:bg-accent/60",
                 )}
               >
-                <Upload className="w-5 h-5" />
-                Upload Image
+                <Upload className="w-4 h-4" />
+                <span>Upload & Crop</span>
               </button>
             </div>
 
             {imageType === "url" ? (
-              <div>
-                <input
-                  type="url"
-                  value={imageVal?.url || ""}
-                  onChange={(e) =>
-                    field.handleChange({ ...imageVal, url: e.target.value })
-                  }
-                  className={cn(
-                    "w-full px-4 py-3 rounded-xl border bg-transparent focus:outline-none focus:ring-2 focus:ring-red-500 transition-all",
-                    isDark
-                      ? "bg-slate-900/50 border-red-500/20 text-white focus:ring-red-500"
-                      : "bg-white border-blue-300/50 text-gray-900 focus:ring-blue-500 focus:ring-blue-500",
-                    hasError ? "border-red-500" : "",
-                  )}
-                  placeholder="https://example.com/your-photo.jpg"
-                />
-                {imageVal?.url && (
-                  <div
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-xs font-semibold text-foreground mb-1.5">
+                    Image Direct URL
+                  </label>
+                  <input
+                    type="url"
+                    value={imageVal?.url || ""}
+                    onChange={(e) =>
+                      field.handleChange({ ...imageVal, url: e.target.value })
+                    }
                     className={cn(
-                      "mt-3 p-4 rounded-xl border",
-                      isDark
-                        ? "bg-slate-900/50 border-red-500/20"
-                        : "bg-gray-50 border-gray-300",
+                      "w-full px-4 py-2.5 rounded-xl border bg-accent/30 text-foreground placeholder:text-muted-foreground text-sm focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all",
+                      hasError
+                        ? "border-destructive focus:ring-destructive/20 focus:border-destructive"
+                        : "border-border/50",
                     )}
-                  >
-                    <p
-                      className={cn(
-                        "text-xs mb-2",
-                        isDark ? "text-gray-400" : "text-gray-600",
-                      )}
-                    >
+                    placeholder="https://example.com/avatar.jpg"
+                  />
+                </div>
+
+                {imageVal?.url && (
+                  <div className="p-4 rounded-2xl border border-border/40 bg-accent/20 flex flex-col items-center">
+                    <p className="text-xs font-semibold text-muted-foreground mb-2 self-start">
                       Preview:
                     </p>
-                    <img
-                      src={imageVal.url}
-                      alt="Profile preview"
-                      className="w-32 h-32 object-cover rounded-full mx-auto"
-                    />
+                    <div className="w-28 h-28 rounded-full overflow-hidden border border-border/50 ring-4 ring-primary/10 shadow-md">
+                      <img
+                        src={imageVal.url}
+                        alt="Profile preview"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
                   </div>
                 )}
               </div>
             ) : (
-              <div>
-                <label
-                  className={cn(
-                    "block w-full cursor-pointer border-2 border-dashed rounded-xl p-8 text-center transition-all",
-                    isDark
-                      ? "border-red-500/20 hover:border-red-500/50 bg-slate-900/50"
-                      : "border-blue-300/50 hover:border-blue-500/70 bg-gray-50",
-                  )}
-                >
-                  <Upload
-                    className={cn(
-                      "w-12 h-12 mx-auto mb-3",
-                      isDark ? "text-gray-400" : "text-gray-500",
-                    )}
-                  />
-                  <p
-                    className={cn(
-                      "text-sm mb-1",
-                      isDark ? "text-gray-300" : "text-gray-700",
-                    )}
-                  >
-                    Click to upload profile photo
+              <div className="space-y-3">
+                <label className="block w-full cursor-pointer border-2 border-dashed border-border/60 hover:border-primary/50 bg-accent/20 hover:bg-accent/30 rounded-2xl p-6 text-center transition-all">
+                  <Upload className="w-8 h-8 mx-auto mb-2 text-primary" />
+                  <p className="text-xs font-semibold text-foreground mb-0.5">
+                    Click to browse and crop photo
                   </p>
-                  <p
-                    className={cn(
-                      "text-xs",
-                      isDark ? "text-gray-500" : "text-gray-500",
-                    )}
-                  >
-                    PNG, JPG, WEBP (max 5MB)
+                  <p className="text-[11px] text-muted-foreground">
+                    PNG, JPG, WEBP (under 5MB)
                   </p>
                   <input
                     type="file"
@@ -242,40 +179,32 @@ export const PhotoStep: React.FC<PhotoStepProps> = ({ form, isDark }) => {
                     className="hidden"
                   />
                 </label>
+
                 {imageVal?.file && (
-                  <div
-                    className={cn(
-                      "mt-3 p-4 rounded-xl border",
-                      isDark
-                        ? "bg-slate-900/50 border-red-500/20"
-                        : "bg-gray-50 border-gray-300",
-                    )}
-                  >
-                    <p
-                      className={cn(
-                        "text-xs mb-2",
-                        isDark ? "text-gray-400" : "text-gray-600",
-                      )}
-                    >
-                      Preview:
+                  <div className="p-4 rounded-2xl border border-border/40 bg-accent/20 flex flex-col items-center">
+                    <p className="text-xs font-semibold text-muted-foreground mb-2 self-start">
+                      Cropped Output:
                     </p>
-                    <img
-                      src={imageVal.file}
-                      alt="Profile preview"
-                      className="w-32 h-32 object-cover rounded-full mx-auto"
-                    />
+                    <div className="w-28 h-28 rounded-full overflow-hidden border border-border/50 ring-4 ring-primary/10 shadow-md">
+                      <img
+                        src={imageVal.file}
+                        alt="Profile preview"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
                   </div>
                 )}
               </div>
             )}
+
             {hasError && (
               <motion.p
                 initial={{ opacity: 0, y: -4 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mt-1.5 text-xs text-red-500 font-medium flex items-center gap-1"
+                className="mt-1.5 text-xs text-destructive font-medium flex items-center gap-1"
               >
-                <span className="inline-block w-1 h-1 rounded-full bg-red-500" />
-                {field.state.meta.errors.join(", ")}
+                <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                <span>{field.state.meta.errors.join(", ")}</span>
               </motion.p>
             )}
 

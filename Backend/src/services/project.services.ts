@@ -213,11 +213,14 @@ const getService = (params: IProjectRepoParams) => {
     };
     const result = await models.project.repo.get(paramsWithPopulate);
     // Ensure subtitle and features are always normalized
-    const normalizedResult = result.map((project: any) => {
-      const doc = project.toObject ? project.toObject() : project;
+    const normalizedResult = result.map((project: IProjectModel) => {
+      const doc =
+        'toObject' in project && typeof (project as { toObject?: () => unknown }).toObject === 'function'
+          ? (project as { toObject: () => Record<string, unknown> }).toObject()
+          : (project as unknown as Record<string, unknown>);
       return {
         ...doc,
-        subtitle: doc.subtitle || '',
+        subtitle: (doc.subtitle as string) || '',
         features: Array.isArray(doc.features) ? doc.features : [],
       };
     });
@@ -250,10 +253,14 @@ const getOneService = (params?: IProjectRepoParams) => {
         0,
       );
     }
-    const doc = (result as any).toObject ? (result as any).toObject() : result;
+    const projectDoc = result as unknown as { toObject?: () => Record<string, unknown> };
+    const doc =
+      typeof projectDoc.toObject === 'function'
+        ? projectDoc.toObject()
+        : (result as unknown as Record<string, unknown>);
     const normalized = {
       ...doc,
-      subtitle: doc.subtitle || '',
+      subtitle: (doc.subtitle as string) || '',
       features: Array.isArray(doc.features) ? doc.features : [],
     };
     return commonResponse.success(

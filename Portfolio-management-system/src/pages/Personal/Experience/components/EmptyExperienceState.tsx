@@ -1,9 +1,6 @@
 import React from "react";
-import { Plus } from "lucide-react";
+import { Plus, Briefcase } from "lucide-react";
 import Button from "../../../../components/ui/button/Button";
-import utils from "../../../../utils";
-
-const { cn } = utils.tailwindUtils;
 
 interface EmptyExperienceStateProps {
   isDark: boolean;
@@ -11,30 +8,24 @@ interface EmptyExperienceStateProps {
 }
 
 export const EmptyExperienceState: React.FC<EmptyExperienceStateProps> = ({
-  isDark,
   onAddExperience,
 }) => {
   return (
-    <div
-      className={cn(
-        "flex flex-col items-center justify-center py-16 rounded-2xl border-2 border-dashed",
-        isDark
-          ? "border-slate-700 text-slate-500"
-          : "border-slate-300 text-slate-400",
-      )}
-    >
-      <p className="text-lg font-medium mb-2">No experience yet</p>
-      <p className="text-sm mb-6">Start by adding your first work experience</p>
+    <div className="flex flex-col items-center justify-center py-16 px-4 rounded-3xl border border-dashed border-border/60 bg-card/40 backdrop-blur-md text-center">
+      <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-4 bg-primary/10 text-primary border border-primary/20 shadow-xs">
+        <Briefcase className="w-6 h-6" />
+      </div>
+      <h3 className="text-lg font-semibold tracking-tight text-foreground mb-1">
+        No work experience yet
+      </h3>
+      <p className="text-sm text-muted-foreground mb-6 max-w-sm">
+        Start building your career trajectory by adding your first professional role and achievements.
+      </p>
       <Button
         onClick={onAddExperience}
-        className={cn(
-          "bg-linear-to-r from-orange-500 to-red-500",
-          "hover:from-orange-600 hover:to-red-600",
-          "text-white border-0",
-          "shadow-lg shadow-orange-500/25",
-        )}
+        className="px-6 py-2.5 h-11 rounded-xl font-medium text-sm transition-all bg-primary hover:bg-primary/90 text-primary-foreground active:scale-[0.97] shadow-sm flex items-center gap-2 cursor-pointer"
       >
-        <Plus className="w-4 h-4 mr-2" />
+        <Plus className="w-4 h-4" />
         Add Experience
       </Button>
     </div>

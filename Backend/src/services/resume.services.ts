@@ -190,7 +190,10 @@ const generateService = (
     };
 
     await models.resume.repo.deactivateOthers(newResumeId.toString());
-    const result = await models.resume.repo.create(resumeData as any, createdBy);
+    const result = await models.resume.repo.create(
+      resumeData as unknown as createResumeInput,
+      createdBy,
+    );
     return commonResponse.success(
       result,
       MESSAGES_COMMON_UTIL.createdSuccessfully('Resume'),

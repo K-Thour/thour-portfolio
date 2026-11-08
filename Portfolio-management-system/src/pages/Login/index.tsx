@@ -1,64 +1,30 @@
-import React from "react";
-import { Moon, Sun } from "lucide-react";
-import Button from "../../components/ui/button/Button";
-import { AvengerBackground } from "../../components/common/background/AvengerBackground";
-import { LightBackground } from "../../components/common/background/LightBackground";
+import React, { useState } from "react";
+import { AnimatePresence } from "motion/react";
 import { LoginForm } from "./components/form/LoginForm";
 import { ForgotPasswordFlow } from "./components/form/ForgotPasswordFlow";
-import { AnimatePresence } from "motion/react";
-import { useState } from "react";
-
-// Redux
-import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
-import { toggleTheme } from "../../store/slices/theme.slice";
-
-// Toast
-import { useToast } from "../../hooks/useToast";
+import { ThemeToggle } from "../../components/ui/themeToggle/ThemeToggle";
+import { useTheme } from "../../context/ThemeContext";
+import { AppBackground } from "../../components/common/background/AppBackground";
 
 // Styles
 import "../../assets/styles/login.css";
 
 export const Login: React.FC = () => {
-  const dispatch = useAppDispatch();
-  const theme = useAppSelector((state) => state.theme.theme);
-  const { toast } = useToast();
-
+  const { theme } = useTheme();
   const [currentView, setCurrentView] = useState<"login" | "forgot-password">(
     "login",
   );
 
-  const isDark = theme === "dark";
-
-  const handleToggleTheme = () => {
-    dispatch(toggleTheme());
-    toast({
-      title: "Theme Switched",
-      description: `Switched to ${isDark ? "Ragnarok" : "Avenger"} theme`,
-      variant: "warning",
-      duration: 5000,
-    });
-  };
-
   return (
-    <div
-      className={`min-h-screen flex flex-col items-center justify-center p-4 relative overflow-hidden transition-colors duration-500 ${isDark ? "bg-slate-950" : "bg-slate-50"}`}
-    >
-      {/* Dynamic Background Effects */}
-      {isDark ? <AvengerBackground /> : <LightBackground />}
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 relative overflow-hidden transition-colors duration-500">
+      <AppBackground />
 
-      {/* Theme Toggle Button */}
+      {/* Theme Toggle — institutional circular radial transition with axe & shield */}
       <div className="absolute top-4 right-4 z-50">
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={handleToggleTheme}
-          className={`rounded-full shadow-lg transition-colors ${isDark ? "bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700 hover:text-white" : "bg-white text-slate-600 border-slate-200 hover:bg-slate-100 hover:text-slate-900"}`}
-        >
-          {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-        </Button>
+        <ThemeToggle />
       </div>
 
-      {/* Shared Unified Form Component or Forgot Password Flow */}
+      {/* Auth card — spring cross-fade between login & forgot-password */}
       <AnimatePresence mode="wait">
         {currentView === "login" ? (
           <LoginForm

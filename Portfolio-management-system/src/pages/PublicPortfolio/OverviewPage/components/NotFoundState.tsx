@@ -1,45 +1,21 @@
+import { FolderX } from "lucide-react";
 import type { NotFoundStateProps } from "../types";
 
-export function NotFoundState({ isDark }: NotFoundStateProps) {
+export function NotFoundState(_props: NotFoundStateProps) {
   return (
-    <div
-      className={`min-h-screen flex items-center justify-center ${
-        isDark
-          ? "bg-linear-to-br from-slate-950 to-slate-900"
-          : "bg-linear-to-br from-slate-50 to-blue-50"
-      }`}
-    >
-      <div className="text-center">
-        <div
-          className={`text-6xl font-bold mb-4 ${
-            isDark ? "text-red-500" : "text-blue-600"
-          }`}
-        >
-          404
+    <div className="min-h-[70vh] flex items-center justify-center p-6">
+      <div className="max-w-md w-full p-8 rounded-3xl border border-border/40 bg-card/75 backdrop-blur-xl shadow-xs text-center">
+        <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-muted/60 border border-border/40 flex items-center justify-center text-muted-foreground">
+          <FolderX className="w-8 h-8" />
         </div>
-        <div
-          className={`text-xl font-bold mb-4 ${
-            isDark ? "text-white" : "text-gray-900"
-          }`}
-        >
+        <div className="text-3xl font-bold tracking-tight text-foreground mb-2">
           Portfolio Not Found
         </div>
-        <p className={`mb-6 ${isDark ? "text-gray-400" : "text-gray-600"}`}>
-          This portfolio link may be invalid or has been removed.Please check
-          the URL or contact the portfolio owner for assistance.
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          This portfolio link may have expired or been removed by its owner. Please verify the URL or contact the sender.
         </p>
-        {/* <Link
-          to="/"
-          className={`inline-flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-all hover:scale-105 ${
-            isDark
-              ? "bg-linear-to-r from-red-600 to-yellow-500 text-white hover:shadow-lg"
-              : "bg-linear-to-r from-blue-600 to-blue-500 text-white hover:shadow-lg"
-          }`}
-        >
-          <ArrowLeft className="w-5 h-5" />
-          Go to Home
-        </Link> */}
       </div>
     </div>
   );
 }
+

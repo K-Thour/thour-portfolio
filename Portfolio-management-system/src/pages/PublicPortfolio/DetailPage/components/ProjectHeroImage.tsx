@@ -4,32 +4,28 @@ import type { ProjectData } from "../types";
 interface ProjectHeroImageProps {
   project: ProjectData;
   isInView: boolean;
-  isDark: boolean;
+  isDark?: boolean;
 }
 
 export function ProjectHeroImage({
   project,
   isInView,
-  isDark,
 }: ProjectHeroImageProps) {
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
+      initial={{ opacity: 0, scale: 0.98 }}
       animate={
-        isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.95 }
+        isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.98 }
       }
-      transition={{ duration: 0.8, delay: 0.3 }}
-      className={`rounded-2xl overflow-hidden mb-12 border ${
-        isDark
-          ? "border-red-500/20"
-          : "border-blue-300/30 shadow-xl shadow-blue-500/10"
-      }`}
+      transition={{ type: "spring", damping: 26, stiffness: 280, delay: 0.2 }}
+      className="rounded-3xl overflow-hidden mb-12 border border-border/40 bg-card/75 backdrop-blur-xl shadow-xs"
     >
       <img
         src={project?.image}
         alt={project?.title}
-        className="w-full h-96 object-cover"
+        className="w-full h-80 sm:h-96 md:h-[450px] object-cover"
       />
     </motion.div>
   );
 }
+

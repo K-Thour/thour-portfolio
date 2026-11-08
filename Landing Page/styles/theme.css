@@ -1,0 +1,135 @@
+/* ==============================================================================
+   Theme Definitions: Avengers Dark Mode vs. God of War / Norse Light Mode
+   Faithfully synchronized with portfolio/src/styles/theme.css
+   ============================================================================== */
+
+@custom-variant dark (&:is(.dark *));
+
+:root,
+[data-theme='norse'],
+[data-theme='godofwar'] {
+  --font-size: 16px;
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
+  --primary: #0284c7;
+  --primary-foreground: #ffffff;
+  --secondary: #e2e8f0;
+  --secondary-foreground: #0f172a;
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+  --accent: #e0f2fe;
+  --accent-foreground: #0369a1;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: rgba(15, 23, 42, 0.08);
+  --input: #f8fafc;
+  --input-background: #f1f5f9;
+  --switch-background: #cbced4;
+  --ring: #0284c7;
+  --radius: 0.75rem;
+
+  /* Accent & Glow */
+  --glow-accent: rgba(2, 132, 199, 0.2);
+  --glass-bg: rgba(255, 255, 255, 0.75);
+  --glass-border: rgba(0, 0, 0, 0.08);
+  --glass-highlight: rgba(255, 255, 255, 0.9);
+
+  /* Scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: #0284c7 rgba(241, 245, 249, 0.85);
+}
+
+.dark,
+[data-theme='avengers'] {
+  --background: #020617;
+  --foreground: #f8fafc;
+  --card: #0b1120;
+  --card-foreground: #f8fafc;
+  --popover: #0b1120;
+  --popover-foreground: #f8fafc;
+  --primary: #00d4ff;
+  --primary-foreground: #020617;
+  --secondary: #1e293b;
+  --secondary-foreground: #f8fafc;
+  --muted: #0f172a;
+  --muted-foreground: #94a3b8;
+  --accent: #082f49;
+  --accent-foreground: #38bdf8;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --border: rgba(255, 255, 255, 0.1);
+  --input: #0b1120;
+  --input-background: #0f172a;
+  --switch-background: #1e293b;
+  --ring: #00d4ff;
+  --radius: 0.75rem;
+
+  /* Accent & Glow */
+  --glow-accent: rgba(0, 212, 255, 0.25);
+  --glass-bg: rgba(11, 17, 32, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-highlight: rgba(255, 255, 255, 0.15);
+
+  /* Scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: #ef4444 #020617;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-input-background: var(--input-background);
+  --color-switch-background: var(--switch-background);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+/* ==============================================================================
+   Theme-Adaptive Webkit Scrollbar
+   ============================================================================== */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--primary), var(--muted-foreground));
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}

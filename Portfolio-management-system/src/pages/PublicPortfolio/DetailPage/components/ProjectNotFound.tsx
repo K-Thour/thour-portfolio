@@ -1,41 +1,28 @@
-import { FileQuestion, Swords } from "lucide-react";
+import { FolderX } from "lucide-react";
 import { BackButton } from "./BackButton";
 
 interface ProjectNotFoundProps {
   isDark?: boolean;
 }
 
-export function ProjectNotFound({ isDark = true }: ProjectNotFoundProps) {
+export function ProjectNotFound(_props: ProjectNotFoundProps = {}) {
   return (
-    <div
-      className={`min-h-screen flex items-center-safe justify-center -mt-12`}
-    >
-      <div className="text-center px-6">
-        <div
-          className={`w-24 h-24 mx-auto mb-6 rounded-2xl flex items-center justify-center ${isDark ? "bg-linear-to-br from-red-600 to-yellow-500" : "bg-linear-to-br from-blue-600 to-blue-400"}`}
-        >
-          {isDark ? (
-            <FileQuestion className="w-12 h-12 text-white" />
-          ) : (
-            <Swords className="w-12 h-12 text-white" />
-          )}
+    <div className="min-h-[70vh] flex items-center justify-center p-6">
+      <div className="max-w-md w-full p-8 rounded-3xl border border-border/40 bg-card/75 backdrop-blur-xl shadow-xs text-center">
+        <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-muted/60 border border-border/40 flex items-center justify-center text-muted-foreground">
+          <FolderX className="w-8 h-8" />
         </div>
-        <h1
-          className={`text-4xl font-bold mb-4 ${isDark ? "text-white" : "text-gray-900"}`}
-        >
-          {isDark ? "Project Not Found" : "Quest Unavailable"}
+        <h1 className="text-2xl font-bold tracking-tight text-foreground mb-2">
+          Project Not Found
         </h1>
-        <p
-          className={`text-lg max-w-md mx-auto ${isDark ? "text-gray-400" : "text-gray-600"}`}
-        >
-          {isDark
-            ? "The project you're looking for doesn't exist or has been moved."
-            : "This legend has yet to be written, or the scroll has been misplaced."}
+        <p className="text-sm text-muted-foreground leading-relaxed mb-6">
+          The project you're looking for doesn't exist or may have been unlinked from this collection.
         </p>
         <div className="flex items-center justify-center">
-          <BackButton isDark={isDark} />
+          <BackButton />
         </div>
       </div>
     </div>
   );
 }
+

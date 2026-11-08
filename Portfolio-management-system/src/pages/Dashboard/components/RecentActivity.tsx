@@ -20,82 +20,47 @@ const formatRelativeTime = (timeStr: string) => {
   return dt.toRelative() || timeStr;
 };
 
-export const RecentActivity = ({ isDark, activities }: RecentActivityProps) => {
+export const RecentActivity = ({ activities }: RecentActivityProps) => {
   const activityList = activities || [];
 
   return (
     <Card
       className={cn(
-        "p-6 flex flex-col h-full transition-all duration-300",
-        isDark
-          ? "bg-[#151726]/90 border-slate-800/60 shadow-black/40"
-          : "bg-white border-blue-50/80 shadow-blue-100/50",
+        "p-6 flex flex-col h-full rounded-2xl select-none",
+        "bg-card/75 backdrop-blur-xl border border-border/40 shadow-sm",
+        "transition-colors duration-200",
       )}
     >
-      <h2
-        className={cn(
-          "text-lg font-semibold mb-6",
-          isDark ? "text-slate-100" : "text-slate-800",
-        )}
-      >
-        Recent Activity
-      </h2>
+      <div className="flex items-center justify-between mb-5">
+        <h2 className="text-base font-semibold tracking-tight text-foreground">
+          Recent Activity
+        </h2>
+        <span className="text-xs text-muted-foreground font-medium">Live Feed</span>
+      </div>
 
-      <div className="flex flex-col flex-1">
+      <div className="flex flex-col flex-1 divide-y divide-border/30">
         {activityList.length === 0 ? (
-          <div
-            className={cn(
-              "flex-1 flex items-center justify-center text-sm",
-              isDark ? "text-slate-500" : "text-slate-400",
-            )}
-          >
-            No recent activity
+          <div className="flex-1 flex items-center justify-center text-sm text-muted-foreground min-h-[160px]">
+            No recent activity recorded yet.
           </div>
         ) : (
-          activityList.map((activity, index) => (
+          activityList.map((activity) => (
             <div
               key={activity.id}
-              className={cn(
-                "flex items-start gap-4 pb-4 mb-4",
-                index !== activityList.length - 1
-                  ? isDark
-                    ? "border-b border-slate-800/60"
-                    : "border-b border-blue-50/80"
-                  : "pb-0 mb-0",
-              )}
+              className="flex items-start gap-3.5 py-3.5 first:pt-0 last:pb-0 group"
             >
-              <div className="mt-1.5 flex-shrink-0">
-                <div
-                  className={cn(
-                    "w-2 h-2 rounded-full",
-                    isDark ? "bg-red-500" : "bg-blue-500",
-                  )}
-                />
-              </div>
-              <div className="flex flex-col">
-                <p
-                  className={cn(
-                    "text-sm font-medium mb-1",
-                    isDark ? "text-slate-200" : "text-slate-800",
-                  )}
-                >
-                  {activity.title}
-                </p>
-                <p
-                  className={cn(
-                    "text-xs mb-1",
-                    isDark ? "text-slate-400" : "text-slate-500",
-                  )}
-                >
+              <div className="mt-1 size-2 rounded-full bg-primary/70 shrink-0 ring-4 ring-primary/10" />
+              <div className="flex flex-col flex-1 min-w-0">
+                <div className="flex items-center justify-between gap-2">
+                  <p className="text-sm font-medium text-foreground tracking-tight truncate">
+                    {activity.title}
+                  </p>
+                  <span className="text-[11px] text-muted-foreground shrink-0 font-mono">
+                    {formatRelativeTime(activity.time)}
+                  </span>
+                </div>
+                <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">
                   {activity.description}
-                </p>
-                <p
-                  className={cn(
-                    "text-xs",
-                    isDark ? "text-slate-500" : "text-slate-400",
-                  )}
-                >
-                  {formatRelativeTime(activity.time)}
                 </p>
               </div>
             </div>

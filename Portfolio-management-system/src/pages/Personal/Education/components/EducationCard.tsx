@@ -15,70 +15,67 @@ export function EducationCard({
 
   return (
     <motion.div
-      initial={{ opacity: 0, x: -20 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{
+        type: "spring",
+        damping: 26,
+        stiffness: 280,
+        delay: index * 0.05,
+      }}
       className={baseCard(isDark)}
     >
-      <div
-        className={`absolute left-0 top-8 w-4 h-4 rounded-full border-4 ${
-          isDark ? "bg-red-500 border-slate-800" : "bg-blue-600 border-white"
-        }`}
-      />
-      <div className="flex items-start justify-between">
-        <div className="flex-1 ml-6">
-          <div className="flex items-center gap-3 mb-3">
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex-1">
+          <div className="flex items-start gap-4 mb-3">
             <div className={iconBox(isDark)}>
-              <GraduationCap className="w-6 h-6 text-white" />
+              <GraduationCap className="w-5 h-5" />
             </div>
             <div>
-              <h3
-                className={`text-xl font-bold ${isDark ? "text-white" : "text-gray-900"}`}
-              >
+              <h3 className="text-lg sm:text-xl font-bold tracking-tight text-foreground">
                 {edu.degree}
               </h3>
-              <p
-                className={`font-medium ${isDark ? "text-gray-400" : "text-gray-700"}`}
-              >
+              <p className="text-sm font-medium text-muted-foreground mt-0.5">
                 {edu.institution}
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-2 mb-3">
-            <Calendar
-              className={`w-4 h-4 ${isDark ? "text-gray-500" : "text-gray-400"}`}
-            />
-            <span
-              className={`text-sm ${isDark ? "text-gray-400" : "text-gray-600"}`}
-            >
-              {edu.period}
-            </span>
-            <span
-              className={`ml-4 px-3 py-1 rounded-full text-xs font-medium ${
-                isDark
-                  ? "bg-green-500/20 text-green-400"
-                  : "bg-green-100 text-green-700"
-              }`}
-            >
-              {edu.grade}
-            </span>
+
+          <div className="flex items-center gap-2 mb-3 flex-wrap">
+            <div className="flex items-center gap-1.5 text-xs sm:text-sm text-muted-foreground">
+              <Calendar className="w-3.5 h-3.5 text-primary" />
+              <span>{edu.period}</span>
+            </div>
+            {edu.grade && (
+              <span className="ml-2 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25">
+                {edu.grade}
+              </span>
+            )}
           </div>
-          <p className={isDark ? "text-gray-400" : "text-gray-700"}>
-            {edu.description}
-          </p>
+
+          {edu.description && (
+            <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+              {edu.description}
+            </p>
+          )}
         </div>
-        <div className="flex gap-2">
+
+        <div className="flex items-center gap-1 shrink-0">
           <button
             onClick={() => onEdit(edu)}
+            type="button"
             className={actionBtn(isDark, "edit")}
+            aria-label="Edit education"
           >
-            <Edit2 className="w-5 h-5" />
+            <Edit2 className="w-4 h-4" />
           </button>
           <button
             onClick={() => onDelete(edu.id)}
+            type="button"
             className={actionBtn(isDark, "delete")}
+            aria-label="Delete education"
           >
-            <Trash2 className="w-5 h-5" />
+            <Trash2 className="w-4 h-4" />
           </button>
         </div>
       </div>

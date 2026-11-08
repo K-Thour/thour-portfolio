@@ -7,6 +7,7 @@ import AppRoutes from "./layouts/routes/AppRoutes";
 import { PersistGate } from "redux-persist/integration/react";
 import { persistor } from "./store/store";
 import { fetchPublicUser } from "./services/api";
+import { ThemeProvider } from "./context/ThemeContext";
 import {
   updateFavicon,
   getLoadingFaviconSvg,
@@ -85,9 +86,12 @@ function ThemeSync() {
 
   useEffect(() => {
     const root = document.documentElement;
+    root.setAttribute("data-theme", theme);
     if (theme === "dark") {
       root.classList.add("dark");
+      root.classList.remove("light");
     } else {
+      root.classList.add("light");
       root.classList.remove("dark");
     }
   }, [theme]);
@@ -99,12 +103,14 @@ function App() {
   return (
     <Provider store={store}>
       <PersistGate persistor={persistor}>
-        <BrowserRouter>
-          <ThemeSync />
-          <TitleSync />
-          <AppRoutes />
-          <AppToaster />
-        </BrowserRouter>
+        <ThemeProvider>
+          <BrowserRouter>
+            <ThemeSync />
+            <TitleSync />
+            <AppRoutes />
+            <AppToaster />
+          </BrowserRouter>
+        </ThemeProvider>
       </PersistGate>
     </Provider>
   );

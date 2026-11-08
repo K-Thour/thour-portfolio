@@ -1,7 +1,5 @@
 import { motion, AnimatePresence } from "motion/react";
 import { X, ExternalLink, Github, Tag, Cpu, ChevronRight } from "lucide-react";
-import { useAppSelector } from "../../../../hooks/useRedux";
-import type { RootState } from "../../../../store/store";
 import type { Project } from "./types";
 
 interface ProjectDetailModalProps {
@@ -15,19 +13,9 @@ export function ProjectDetailModal({
   isOpen,
   onClose,
 }: ProjectDetailModalProps) {
-  const { theme } = useAppSelector((state: RootState) => state.theme);
-  const isDark = theme === "dark";
-
   if (!project) return null;
 
-  const statusColor =
-    project.status === "Completed"
-      ? isDark
-        ? "bg-green-500/20 text-green-400 border-green-500/40"
-        : "bg-green-100 text-green-700 border-green-300"
-      : isDark
-        ? "bg-yellow-500/20 text-yellow-400 border-yellow-500/40"
-        : "bg-yellow-100 text-yellow-700 border-yellow-300";
+  const isCompleted = project.status === "Completed";
 
   return (
     <AnimatePresence>
@@ -39,44 +27,32 @@ export function ProjectDetailModal({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className={`absolute inset-0 backdrop-blur-sm ${isDark ? "bg-black/70" : "bg-black/40"}`}
+            className="absolute inset-0 bg-black/40 backdrop-blur-md"
           />
 
           {/* Modal */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            initial={{ opacity: 0, scale: 0.95, y: 16 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            transition={{ duration: 0.2, ease: "easeOut" }}
-            className={`relative z-10 w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl shadow-2xl border ${
-              isDark
-                ? "bg-slate-900 border-red-500/20"
-                : "bg-white border-blue-200"
-            }`}
+            exit={{ opacity: 0, scale: 0.95, y: 16 }}
+            transition={{ type: "spring", damping: 26, stiffness: 320 }}
+            className="relative z-10 w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl shadow-2xl border border-border/50 bg-card/95 backdrop-blur-2xl text-foreground"
           >
             {/* Hero Image */}
-            <div className="relative h-52 overflow-hidden rounded-t-2xl">
+            <div className="relative h-56 overflow-hidden rounded-t-3xl">
               <img
                 src={project.image || "https://placehold.co/800x300"}
                 alt={project.title}
                 className="w-full h-full object-cover"
               />
-              {/* Gradient overlay */}
-              <div
-                className={`absolute inset-0 ${
-                  isDark
-                    ? "bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent"
-                    : "bg-gradient-to-t from-white/90 via-white/20 to-transparent"
-                }`}
-              />
+              <div className="absolute inset-0 bg-gradient-to-t from-card via-card/30 to-transparent" />
+
               {/* Close button */}
               <button
                 onClick={onClose}
-                className={`absolute top-4 right-4 p-2 rounded-xl backdrop-blur-sm transition-all hover:scale-110 ${
-                  isDark
-                    ? "bg-slate-800/80 text-gray-300 hover:text-white border border-slate-700"
-                    : "bg-white/80 text-gray-600 hover:text-gray-900 border border-gray-200"
-                }`}
+                type="button"
+                aria-label="Close modal"
+                className="absolute top-4 right-4 p-2 rounded-xl backdrop-blur-md bg-background/80 hover:bg-background text-foreground border border-border/50 transition-all active:scale-95 cursor-pointer shadow-sm"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -84,7 +60,11 @@ export function ProjectDetailModal({
               {/* Status badge over image */}
               <div className="absolute bottom-4 left-6">
                 <span
-                  className={`px-3 py-1 rounded-full text-xs font-semibold border ${statusColor}`}
+                  className={`px-3 py-1 rounded-full text-xs font-semibold border ${
+                    isCompleted
+                      ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/25"
+                      : "bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/25"
+                  }`}
                 >
                   {project.status}
                 </span>
@@ -93,18 +73,14 @@ export function ProjectDetailModal({
 
             {/* Content */}
             <div className="p-6 space-y-6">
-              {/* Title & ID */}
+              {/* Title & Category */}
               <div>
-                <h2
-                  className={`text-2xl font-bold mb-1 ${isDark ? "text-white" : "text-gray-900"}`}
-                >
+                <h2 className="text-2xl font-bold tracking-tight text-foreground mb-1">
                   {project.title}
                 </h2>
-                {project.id && (
-                  <p
-                    className={`text-xs font-mono ${isDark ? "text-gray-500" : "text-gray-400"}`}
-                  >
-                    {String(project.id)}
+                {project.subtitle && (
+                  <p className="text-sm font-medium text-muted-foreground">
+                    {project.subtitle}
                   </p>
                 )}
               </div>
@@ -112,26 +88,14 @@ export function ProjectDetailModal({
               {/* Meta chips */}
               <div className="flex flex-wrap gap-2">
                 {project.category && (
-                  <div
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm border ${
-                      isDark
-                        ? "bg-slate-800 border-slate-700 text-gray-300"
-                        : "bg-blue-50 border-blue-200 text-blue-800"
-                    }`}
-                  >
-                    <Tag className="w-3.5 h-3.5" />
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border border-border/40 bg-accent/50 text-foreground">
+                    <Tag className="w-3.5 h-3.5 text-primary" />
                     <span>{project.category}</span>
                   </div>
                 )}
                 {project.subtitle && (
-                  <div
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm border ${
-                      isDark
-                        ? "bg-slate-800 border-slate-700 text-gray-300"
-                        : "bg-slate-50 border-slate-200 text-slate-700"
-                    }`}
-                  >
-                    <Cpu className="w-3.5 h-3.5" />
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border border-border/40 bg-accent/50 text-foreground">
+                    <Cpu className="w-3.5 h-3.5 text-primary" />
                     <span>{project.subtitle}</span>
                   </div>
                 )}
@@ -140,18 +104,10 @@ export function ProjectDetailModal({
               {/* Description */}
               {project.description && (
                 <div>
-                  <h3
-                    className={`text-sm font-semibold uppercase tracking-wider mb-2 ${
-                      isDark ? "text-gray-400" : "text-gray-500"
-                    }`}
-                  >
-                    Description
+                  <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+                    Overview
                   </h3>
-                  <p
-                    className={`text-sm leading-relaxed ${
-                      isDark ? "text-gray-300" : "text-gray-700"
-                    }`}
-                  >
+                  <p className="text-sm leading-relaxed text-foreground">
                     {project.description}
                   </p>
                 </div>
@@ -160,25 +116,11 @@ export function ProjectDetailModal({
               {/* Long Description */}
               {project.longDescription &&
                 project.longDescription !== project.description && (
-                  <div
-                    className={`p-4 rounded-xl border-l-4 ${
-                      isDark
-                        ? "bg-slate-800/60 border-red-500"
-                        : "bg-blue-50/60 border-blue-500"
-                    }`}
-                  >
-                    <h3
-                      className={`text-sm font-semibold uppercase tracking-wider mb-2 ${
-                        isDark ? "text-gray-400" : "text-gray-500"
-                      }`}
-                    >
-                      Full Description
+                  <div className="p-4 rounded-2xl border border-border/40 bg-accent/30">
+                    <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+                      Full Details
                     </h3>
-                    <p
-                      className={`text-sm leading-relaxed whitespace-pre-line ${
-                        isDark ? "text-gray-300" : "text-gray-700"
-                      }`}
-                    >
+                    <p className="text-sm leading-relaxed text-foreground whitespace-pre-line">
                       {project.longDescription}
                     </p>
                   </div>
@@ -187,22 +129,14 @@ export function ProjectDetailModal({
               {/* Technologies */}
               {project.technologies && project.technologies.length > 0 && (
                 <div>
-                  <h3
-                    className={`text-sm font-semibold uppercase tracking-wider mb-2 ${
-                      isDark ? "text-gray-400" : "text-gray-500"
-                    }`}
-                  >
+                  <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
                     Tech Stack
                   </h3>
                   <div className="flex flex-wrap gap-2">
                     {project.technologies.map((tech, i) => (
                       <span
                         key={i}
-                        className={`px-3 py-1 rounded-lg text-xs font-medium border ${
-                          isDark
-                            ? "bg-slate-800 border-red-500/20 text-gray-300"
-                            : "bg-blue-50 border-blue-200 text-blue-800"
-                        }`}
+                        className="px-3 py-1 rounded-xl text-xs font-medium border border-border/40 bg-accent/50 text-foreground"
                       >
                         {tech}
                       </span>
@@ -214,40 +148,25 @@ export function ProjectDetailModal({
               {/* Key Features */}
               {project.features && project.features.length > 0 && (
                 <div>
-                  <h3
-                    className={`text-sm font-semibold uppercase tracking-wider mb-2 ${
-                      isDark ? "text-gray-400" : "text-gray-500"
-                    }`}
-                  >
+                  <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
                     Key Features
                   </h3>
                   <ul className="space-y-1.5">
                     {project.features.map((feature, i) => (
                       <li
                         key={i}
-                        className={`flex items-start gap-2 text-sm ${
-                          isDark ? "text-gray-300" : "text-gray-700"
-                        }`}
+                        className="flex items-start gap-2 text-sm text-muted-foreground"
                       >
-                        <ChevronRight
-                          className={`w-4 h-4 mt-0.5 flex-shrink-0 ${
-                            isDark ? "text-red-500" : "text-blue-500"
-                          }`}
-                        />
-                        {feature}
+                        <ChevronRight className="w-4 h-4 mt-0.5 shrink-0 text-primary" />
+                        <span>{feature}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
               )}
 
-              {/* Divider */}
-              <div
-                className={`border-t ${isDark ? "border-slate-700" : "border-gray-200"}`}
-              />
-
               {/* Action Buttons */}
-              <div className="flex gap-3 flex-wrap">
+              <div className="flex gap-3 flex-wrap pt-4 border-t border-border/40">
                 {project.liveUrl &&
                   project.liveUrl !== "#" &&
                   project.liveUrl !== "https://example.com" && (
@@ -255,11 +174,7 @@ export function ProjectDetailModal({
                       href={project.liveUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className={`flex-1 min-w-[140px] flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-medium text-sm transition-all hover:scale-[1.02] hover:shadow-lg ${
-                        isDark
-                          ? "bg-gradient-to-r from-red-600 to-yellow-500 text-white hover:shadow-red-500/30"
-                          : "bg-gradient-to-r from-blue-600 to-blue-500 text-white hover:shadow-blue-500/30"
-                      }`}
+                      className="flex-1 min-w-[140px] flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-medium text-sm transition-all bg-primary hover:bg-primary/90 text-primary-foreground active:scale-[0.98] shadow-sm"
                     >
                       <ExternalLink className="w-4 h-4" />
                       View Live
@@ -272,11 +187,7 @@ export function ProjectDetailModal({
                       href={project.github}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className={`flex-1 min-w-[140px] flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-medium text-sm border transition-all hover:scale-[1.02] ${
-                        isDark
-                          ? "border-slate-600 text-gray-300 hover:bg-slate-800 hover:border-slate-500"
-                          : "border-blue-300 text-blue-700 hover:bg-blue-50"
-                      }`}
+                      className="flex-1 min-w-[140px] flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-medium text-sm border border-border/60 hover:bg-accent/60 text-foreground transition-all active:scale-[0.98]"
                     >
                       <Github className="w-4 h-4" />
                       Source Code
@@ -284,11 +195,8 @@ export function ProjectDetailModal({
                   )}
                 <button
                   onClick={onClose}
-                  className={`px-5 py-2.5 rounded-xl font-medium text-sm border transition-all hover:scale-[1.02] ${
-                    isDark
-                      ? "border-slate-700 text-gray-400 hover:bg-slate-800 hover:text-gray-200"
-                      : "border-gray-200 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
-                  }`}
+                  type="button"
+                  className="px-5 py-2.5 rounded-xl font-medium text-sm border border-border/60 hover:bg-accent/60 text-foreground transition-all active:scale-[0.98] cursor-pointer"
                 >
                   Close
                 </button>

@@ -1,10 +1,6 @@
 import { EducationCard } from "./EducationCard";
 import type { EducationTimelineProps } from "../types";
-import { useAppSelector } from "../../../../hooks/useRedux";
-import utils from "../../../../utils";
 import PageLoadingSkeleton from "../../../../components/common/loading/PageLoadingSkeleton";
-
-const { cn } = utils.tailwindUtils;
 
 export function EducationTimeline({
   educationList,
@@ -12,26 +8,18 @@ export function EducationTimeline({
   onEdit,
   onDelete,
 }: EducationTimelineProps) {
-  const theme = useAppSelector((state) => state.theme.theme);
-  const isDark = theme === "dark";
-
   if (isLoading) {
     return <PageLoadingSkeleton count={3} type="card" />;
   }
 
   if (educationList.length === 0) {
     return (
-      <div
-        className={cn(
-          "flex flex-col items-center justify-center py-16 rounded-2xl border-2 border-dashed",
-          isDark
-            ? "border-slate-700 text-slate-500 bg-slate-800/10"
-            : "border-slate-300 text-slate-400 bg-white shadow-lg shadow-blue-500/5",
-        )}
-      >
-        <p className="text-lg font-medium mb-2">No education records yet</p>
-        <p className="text-sm">
-          Start by adding your first education history item
+      <div className="flex flex-col items-center justify-center py-16 px-4 rounded-3xl border border-dashed border-border/60 bg-card/40 backdrop-blur-md text-center">
+        <p className="text-lg font-semibold tracking-tight text-foreground mb-1">
+          No education records yet
+        </p>
+        <p className="text-sm text-muted-foreground">
+          Start by adding your first academic degree or certification.
         </p>
       </div>
     );

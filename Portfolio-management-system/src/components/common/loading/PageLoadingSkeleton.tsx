@@ -1,5 +1,4 @@
 import React from "react";
-import { useAppSelector } from "../../../hooks/useRedux";
 import utils from "../../../utils";
 
 const { cn } = utils.tailwindUtils;
@@ -15,10 +14,7 @@ export const PageLoadingSkeleton: React.FC<PageLoadingSkeletonProps> = ({
   type = "card",
   className,
 }) => {
-  const { theme } = useAppSelector((state) => state.theme);
-  const isDark = theme === "dark";
-
-  const placeholderBg = isDark ? "bg-slate-700/60" : "bg-slate-200/80";
+  const placeholderBg = "bg-accent/60 animate-pulse";
 
   if (type === "grid") {
     return (
@@ -31,16 +27,11 @@ export const PageLoadingSkeleton: React.FC<PageLoadingSkeletonProps> = ({
         {Array.from({ length: count }).map((_, i) => (
           <div
             key={i}
-            className={cn(
-              "p-6 rounded-2xl border animate-pulse flex flex-col items-center justify-center min-h-[180px]",
-              isDark
-                ? "bg-slate-800/40 border-slate-700/50"
-                : "bg-white border-slate-200 shadow-sm",
-            )}
+            className="p-6 rounded-3xl border border-border/40 bg-card/75 backdrop-blur-xl flex flex-col items-center justify-center min-h-[180px] shadow-xs"
           >
-            <div className={cn("w-16 h-16 rounded-2xl mb-4", placeholderBg)} />
-            <div className={cn("h-4 w-24 rounded mb-2", placeholderBg)} />
-            <div className={cn("h-3 w-16 rounded", placeholderBg)} />
+            <div className={cn("w-14 h-14 rounded-2xl mb-4", placeholderBg)} />
+            <div className={cn("h-4 w-24 rounded-lg mb-2", placeholderBg)} />
+            <div className={cn("h-3 w-16 rounded-md", placeholderBg)} />
           </div>
         ))}
       </div>
@@ -51,37 +42,24 @@ export const PageLoadingSkeleton: React.FC<PageLoadingSkeletonProps> = ({
     return (
       <div
         className={cn(
-          "rounded-2xl border overflow-hidden animate-pulse",
-          isDark
-            ? "bg-slate-800/40 border-slate-700/50"
-            : "bg-white border-slate-200 shadow-sm",
+          "rounded-3xl border border-border/40 bg-card/75 backdrop-blur-xl overflow-hidden shadow-xs",
           className,
         )}
       >
-        <div
-          className={cn(
-            "h-12 border-b",
-            isDark
-              ? "border-slate-700 bg-slate-800/80"
-              : "border-slate-200 bg-slate-50",
-          )}
-        />
+        <div className="h-12 border-b border-border/40 bg-accent/20" />
         {Array.from({ length: count }).map((_, i) => (
           <div
             key={i}
-            className={cn(
-              "flex items-center justify-between p-4 border-b last:border-b-0",
-              isDark ? "border-slate-700/40" : "border-slate-100",
-            )}
+            className="flex items-center justify-between p-4 border-b border-border/30 last:border-b-0"
           >
             <div className="flex items-center gap-4 flex-1">
               <div className={cn("w-10 h-10 rounded-full", placeholderBg)} />
               <div className="space-y-2 flex-1 max-w-sm">
-                <div className={cn("h-4 w-3/4 rounded", placeholderBg)} />
-                <div className={cn("h-3 w-1/2 rounded", placeholderBg)} />
+                <div className={cn("h-4 w-3/4 rounded-lg", placeholderBg)} />
+                <div className={cn("h-3 w-1/2 rounded-md", placeholderBg)} />
               </div>
             </div>
-            <div className={cn("h-8 w-24 rounded-lg", placeholderBg)} />
+            <div className={cn("h-8 w-24 rounded-xl", placeholderBg)} />
           </div>
         ))}
       </div>
@@ -93,26 +71,20 @@ export const PageLoadingSkeleton: React.FC<PageLoadingSkeletonProps> = ({
       {Array.from({ length: count }).map((_, i) => (
         <div
           key={i}
-          className={cn(
-            "p-6 rounded-2xl border animate-pulse flex items-center gap-6",
-            isDark
-              ? "bg-slate-800/40 border-slate-700/50"
-              : "bg-white border-slate-200 shadow-sm",
-          )}
+          className="p-6 rounded-3xl border border-border/40 bg-card/75 backdrop-blur-xl flex items-center gap-6 shadow-xs"
         >
-          <div className={cn("w-24 h-24 rounded-xl shrink-0", placeholderBg)} />
+          <div className={cn("w-24 h-24 rounded-2xl shrink-0", placeholderBg)} />
           <div className="flex-1 space-y-3">
-            <div className={cn("h-6 w-1/3 rounded", placeholderBg)} />
-            <div className={cn("h-4 w-1/4 rounded", placeholderBg)} />
+            <div className={cn("h-5 w-1/3 rounded-lg", placeholderBg)} />
+            <div className={cn("h-4 w-1/4 rounded-md", placeholderBg)} />
             <div className="flex gap-2 pt-2">
               <div className={cn("h-6 w-16 rounded-full", placeholderBg)} />
               <div className={cn("h-6 w-20 rounded-full", placeholderBg)} />
             </div>
           </div>
           <div className="flex gap-2">
-            <div className={cn("w-9 h-9 rounded-lg", placeholderBg)} />
-            <div className={cn("w-9 h-9 rounded-lg", placeholderBg)} />
-            <div className={cn("w-9 h-9 rounded-lg", placeholderBg)} />
+            <div className={cn("w-9 h-9 rounded-xl", placeholderBg)} />
+            <div className={cn("w-9 h-9 rounded-xl", placeholderBg)} />
           </div>
         </div>
       ))}

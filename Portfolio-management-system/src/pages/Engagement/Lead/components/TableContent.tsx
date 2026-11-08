@@ -21,15 +21,13 @@ export function TableContent({
   return (
     <div className="overflow-x-auto">
       <table className="w-full">
-        <thead className={isDark ? "bg-slate-900/50" : "bg-blue-50"}>
+        <thead className="bg-accent/40 border-b border-border/40">
           <tr>
             {["Name", "Email", "Phone", "Date", "Status", "Actions"].map(
               (header) => (
                 <th
                   key={header}
-                  className={`px-6 py-4 text-left text-sm font-medium ${
-                    isDark ? "text-gray-400" : "text-gray-700"
-                  }`}
+                  className="px-6 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground"
                 >
                   {header}
                 </th>

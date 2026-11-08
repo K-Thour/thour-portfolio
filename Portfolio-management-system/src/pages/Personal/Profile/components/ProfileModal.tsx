@@ -1,7 +1,6 @@
 import type { ProfileModalProps } from "../types";
 import { ProfileFormWizard } from "./ProfileFormWizard";
-import { useAppSelector } from "../../../../hooks/useRedux";
-import type { RootState } from "../../../../store/store";
+import { useTheme } from "../../../../context/ThemeContext";
 
 export function ProfileModal({
   isOpen,
@@ -10,7 +9,7 @@ export function ProfileModal({
   onSubmit,
   initialData,
 }: ProfileModalProps) {
-  const { theme } = useAppSelector((state: RootState) => state.theme);
+  const { theme } = useTheme();
   const isDark = theme === "dark";
 
   if (!isOpen) return null;
@@ -23,6 +22,7 @@ export function ProfileModal({
       onSubmit={onSubmit}
       initialData={initialData}
       isDark={isDark}
+      isEditing={Boolean(initialData?.name)}
     />
   );
 }

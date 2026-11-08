@@ -44,25 +44,13 @@ function ProjectDetailPage() {
                   shouldAnimate ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }
                 }
                 transition={{ duration: 0.6, delay: 0.3 }}
-                className={`mb-12 rounded-2xl p-8 border ${
-                  isDark
-                    ? "bg-slate-900/60 border-red-500/20"
-                    : "bg-white/70 border-blue-200 shadow-lg shadow-blue-500/5"
-                }`}
+                className="mb-12 rounded-3xl p-8 border border-border/40 bg-card/75 backdrop-blur-xl shadow-xs"
               >
-                <h2
-                  className={`text-2xl font-bold mb-4 ${isDark ? "text-white" : "text-gray-900"}`}
-                >
-                  {isDark ? "Mission Overview" : "The Legend Unfolds"}
+                <h2 className="text-2xl font-bold tracking-tight text-foreground mb-4">
+                  Project Overview
                 </h2>
-                <div
-                  className={`border-l-4 pl-5 ${isDark ? "border-red-500" : "border-blue-500"}`}
-                >
-                  <p
-                    className={`text-base leading-relaxed whitespace-pre-line ${
-                      isDark ? "text-gray-300" : "text-gray-700"
-                    }`}
-                  >
+                <div className="border-l-3 border-primary/60 pl-5">
+                  <p className="text-base leading-relaxed whitespace-pre-line text-muted-foreground">
                     {project.fullDescription}
                   </p>
                 </div>

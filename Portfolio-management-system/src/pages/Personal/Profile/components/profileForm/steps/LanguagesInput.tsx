@@ -1,13 +1,10 @@
 import React from "react";
 import { Plus, X } from "lucide-react";
 import { useStore } from "@tanstack/react-form";
-import utils from "../../../../../../utils";
-
-const { cn } = utils.tailwindUtils;
 
 interface LanguagesInputProps {
   form: any;
-  isDark: boolean;
+  isDark?: boolean;
 }
 
 interface Language {
@@ -18,53 +15,26 @@ interface Language {
 function LanguageItem({
   lang,
   index,
-  isDark,
   onRemove,
 }: {
   lang: Language;
   index: number;
-  isDark: boolean;
   onRemove: (index: number) => void;
 }) {
   return (
-    <div
-      className={cn(
-        "p-3 rounded-lg flex items-center justify-between",
-        isDark ? "bg-slate-700/50" : "bg-blue-50",
-      )}
-    >
+    <div className="p-3.5 rounded-2xl bg-accent/30 border border-border/40 flex items-center justify-between gap-3">
       <div className="flex-1">
-        <div className="flex items-center justify-between mb-1">
-          <span
-            className={cn(
-              "font-medium",
-              isDark ? "text-white" : "text-gray-900",
-            )}
-          >
+        <div className="flex items-center justify-between mb-1.5">
+          <span className="font-semibold text-xs text-foreground">
             {lang.name}
           </span>
-          <span
-            className={cn(
-              "text-sm",
-              isDark ? "text-gray-400" : "text-gray-600",
-            )}
-          >
+          <span className="text-xs font-medium text-muted-foreground">
             {lang.proficiency}%
           </span>
         </div>
-        <div
-          className={cn(
-            "h-2 rounded-full overflow-hidden",
-            isDark ? "bg-slate-900/50" : "bg-gray-200",
-          )}
-        >
+        <div className="h-1.5 rounded-full overflow-hidden bg-accent/80">
           <div
-            className={cn(
-              "h-full transition-all",
-              isDark
-                ? "bg-linear-to-r from-red-600 to-yellow-500"
-                : "bg-linear-to-r from-blue-600 to-blue-400",
-            )}
+            className="h-full bg-primary rounded-full transition-all duration-300"
             style={{ width: `${lang.proficiency}%` }}
           />
         </div>
@@ -72,29 +42,32 @@ function LanguageItem({
       <button
         type="button"
         onClick={() => onRemove(index)}
-        className="ml-3 hover:text-red-500"
+        aria-label={`Remove ${lang.name}`}
+        className="p-1 text-muted-foreground hover:text-destructive active:scale-95 transition-colors cursor-pointer"
       >
-        <X className="w-5 h-5" />
+        <X className="w-4 h-4" />
       </button>
     </div>
   );
 }
 
-export const LanguagesInput: React.FC<LanguagesInputProps> = ({
-  form,
-  isDark,
-}) => {
+export const LanguagesInput: React.FC<LanguagesInputProps> = ({ form }) => {
+  const [langName, setLangName] = React.useState("");
+  const [proficiency, setProficiency] = React.useState(50);
+
   const languages = useStore(
     form.store,
     (state: any) => state.values.languages || [],
   );
 
-  const handleAddLanguage = (name: string, proficiency: number) => {
-    if (name.trim()) {
+  const handleAddLanguage = () => {
+    if (langName.trim()) {
       form.setFieldValue("languages", [
         ...languages,
-        { name: name.trim(), proficiency },
+        { name: langName.trim(), proficiency },
       ]);
+      setLangName("");
+      setProficiency(50);
     }
   };
 
@@ -106,77 +79,55 @@ export const LanguagesInput: React.FC<LanguagesInputProps> = ({
   };
 
   return (
-    <div>
-      <label
-        className={cn(
-          "block text-sm font-medium mb-2",
-          isDark ? "text-gray-300" : "text-gray-800",
-        )}
-      >
-        Languages
+    <div className="space-y-2">
+      <label className="block text-xs font-semibold text-foreground mb-1.5">
+        Languages & Spoken Proficiency
       </label>
-      <div className="space-y-2">
+      <div className="space-y-3">
         <div className="flex gap-2">
           <input
             type="text"
-            id="language-name"
-            className={cn(
-              "flex-1 px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 bg-transparent transition-all",
-              isDark
-                ? "bg-slate-900/50 border-red-500/20 text-white placeholder:text-gray-500 focus:ring-red-500 focus:border-red-500"
-                : "bg-white border-blue-300/50 text-gray-900 placeholder:text-gray-400 focus:ring-blue-500 focus:border-blue-500",
-            )}
-            placeholder="Language name (e.g., English)"
-          />
-          <input
-            type="number"
-            id="language-level"
-            min="0"
-            max="100"
-            defaultValue="50"
-            className={cn(
-              "w-24 px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 bg-transparent transition-all",
-              isDark
-                ? "bg-slate-900/50 border-red-500/20 text-white placeholder:text-gray-500 focus:ring-red-500 focus:border-red-500"
-                : "bg-white border-blue-300/50 text-gray-900 placeholder:text-gray-400 focus:ring-blue-500 focus:border-blue-500",
-            )}
-            placeholder="%"
-          />
-          <button
-            type="button"
-            onClick={() => {
-              const nameInput = document.getElementById(
-                "language-name",
-              ) as HTMLInputElement;
-              const levelInput = document.getElementById(
-                "language-level",
-              ) as HTMLInputElement;
-              if (nameInput && levelInput) {
-                handleAddLanguage(
-                  nameInput.value,
-                  parseInt(levelInput.value) || 50,
-                );
-                nameInput.value = "";
-                levelInput.value = "50";
+            value={langName}
+            onChange={(e) => setLangName(e.target.value)}
+            className="flex-1 px-4 py-2.5 rounded-xl border border-border/50 bg-accent/30 text-foreground placeholder:text-muted-foreground text-sm focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+            placeholder="e.g. English, Spanish, Japanese"
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                handleAddLanguage();
               }
             }}
-            className={cn(
-              "px-4 py-3 rounded-xl font-medium transition-all hover:shadow-lg",
-              isDark
-                ? "bg-linear-to-r from-red-600 to-yellow-500 text-white"
-                : "bg-linear-to-r from-blue-600 to-blue-500 text-white",
-            )}
+          />
+          <div className="relative w-20">
+            <input
+              type="number"
+              min="0"
+              max="100"
+              value={proficiency}
+              onChange={(e) => setProficiency(Math.min(100, Math.max(0, parseInt(e.target.value, 10) || 0)))}
+              className="w-full px-3 py-2.5 rounded-xl border border-border/50 bg-accent/30 text-foreground placeholder:text-muted-foreground text-sm focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all pr-6 text-center"
+              placeholder="%"
+            />
+            <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-muted-foreground pointer-events-none">
+              %
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={handleAddLanguage}
+            aria-label="Add language"
+            className="px-4 py-2.5 rounded-xl font-medium text-sm bg-primary hover:bg-primary/90 text-primary-foreground shadow-xs active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center shrink-0"
           >
-            <Plus className="w-5 h-5" />
+            <Plus className="w-4 h-4" />
           </button>
         </div>
-        <div className="space-y-2 mt-3">
+
+        <div className="space-y-2 pt-1">
           {languages.map((lang: Language, index: number) => (
             <LanguageItem
               key={index}
               lang={lang}
               index={index}
-              isDark={isDark}
               onRemove={handleRemoveLanguage}
             />
           ))}

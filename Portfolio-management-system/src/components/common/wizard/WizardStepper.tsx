@@ -21,16 +21,10 @@ interface WizardStepperProps {
 export const WizardStepper: React.FC<WizardStepperProps> = ({
   steps,
   currentStep,
-  isDark,
   onStepClick,
 }) => {
   return (
-    <div
-      className={cn(
-        "px-6 py-6 border-b shrink-0",
-        isDark ? "border-slate-700" : "border-slate-200",
-      )}
-    >
+    <div className="px-6 py-5 border-b border-border/40 shrink-0 bg-card/30">
       <div className="flex items-center justify-between">
         {steps.map((step, index) => {
           const Icon = step.icon;
@@ -43,21 +37,17 @@ export const WizardStepper: React.FC<WizardStepperProps> = ({
               <button
                 type="button"
                 onClick={() => onStepClick(step.id)}
-                className="flex flex-col items-center gap-2 group cursor-pointer focus:outline-none"
+                className="flex flex-col items-center gap-1.5 group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 rounded-xl p-1"
                 disabled={step.id > currentStep}
               >
                 <div
                   className={cn(
                     "w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200",
                     isActive
-                      ? `bg-linear-to-r ${isDark ? "from-orange-500 to-red-500 text-white shadow-lg shadow-orange-500/25" : "bg-blue-500 text-white shadow-lg shadow-blue-500/30"} `
+                      ? "bg-primary text-primary-foreground shadow-md shadow-primary/25 scale-105"
                       : isCompleted
-                        ? isDark
-                          ? "bg-green-500/20 text-green-400 border border-green-500/30"
-                          : "bg-green-100 text-green-600 border border-green-200"
-                        : isDark
-                          ? "bg-slate-700 text-slate-400 border border-slate-600"
-                          : "bg-slate-100 text-slate-400 border border-slate-200",
+                        ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30"
+                        : "bg-accent/60 text-muted-foreground border border-border/40",
                   )}
                 >
                   {isCompleted ? (
@@ -81,24 +71,15 @@ export const WizardStepper: React.FC<WizardStepperProps> = ({
                 <div className="text-center">
                   <p
                     className={cn(
-                      "text-sm font-medium",
+                      "text-xs font-semibold",
                       isActive
-                        ? isDark
-                          ? "text-white"
-                          : "text-slate-900"
-                        : isDark
-                          ? "text-slate-400"
-                          : "text-slate-500",
+                        ? "text-foreground font-bold"
+                        : "text-muted-foreground",
                     )}
                   >
                     {step.title}
                   </p>
-                  <p
-                    className={cn(
-                      "text-xs",
-                      isDark ? "text-slate-500" : "text-slate-400",
-                    )}
-                  >
+                  <p className="text-[11px] text-muted-foreground/80 hidden sm:block">
                     {step.subtitle}
                   </p>
                 </div>
@@ -107,14 +88,8 @@ export const WizardStepper: React.FC<WizardStepperProps> = ({
               {!isLast && (
                 <div
                   className={cn(
-                    "flex-1 h-0.5 mx-4 transition-colors",
-                    step.id < currentStep
-                      ? isDark
-                        ? "bg-green-500/30"
-                        : "bg-green-200"
-                      : isDark
-                        ? "bg-slate-700"
-                        : "bg-slate-200",
+                    "flex-1 h-0.5 mx-3 transition-colors",
+                    step.id < currentStep ? "bg-emerald-500/40" : "bg-border/60",
                   )}
                 />
               )}

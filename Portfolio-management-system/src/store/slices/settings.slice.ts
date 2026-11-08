@@ -9,6 +9,7 @@ export interface AISettings {
 export interface ResumeSettings {
   isGenerationEnabled: boolean;
   maxResumes: number;
+  atsOptimized?: boolean;
 }
 
 export interface GeneralSettings {
@@ -32,6 +33,7 @@ const initialState: SettingsState = {
   resume: {
     isGenerationEnabled: true,
     maxResumes: 10,
+    atsOptimized: true,
   },
   general: {
     notificationsEnabled: true,
