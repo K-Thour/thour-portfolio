@@ -28,14 +28,16 @@ The home page's `Stats.tsx` and `TechStack.tsx` currently lack Apple-grade bento
    - Count-up animation with `easeOutExpo` that immediately resolves without animation when `prefers-reduced-motion` is active.
    - Tactile hover/tap interactions (`whileHover={{ y: -3, scale: 1.02 }}`, `whileTap={{ scale: 0.98 }}`).
    - Safe top-level `useContext(ThemeContext)` and `useContext(UserContext)`.
-2. Upgrade `TechStack.tsx` into an interactive Apple Bento Grid & Stream:
+2. Upgrade `TechStack.tsx` into an exclusive Cinematic Marquee Stream:
    - Dynamic category extraction ("All", "Frontend", "Backend", "Database", "DevOps/Tools", "Mobile", etc.).
    - Apple segmented pill filter bar with critically damped layout spring active indicator (`layoutId="activeTechCategory"`, `bounce: 0, duration: 0.35s`).
    - WAI-ARIA tablist accessibility with roving `tabIndex` and `ArrowRight` / `ArrowLeft` / `Home` / `End` keyboard navigation.
-   - Dual presentation modes: "Bento Grid" (responsive 2-to-4 column bento layout with category badges, icons, and spring hover animations) and "Marquee Stream" (infinite marquee row for cinematic glanceability).
+   - Dedicated Cinematic Marquee: continuous dual-row streams moving at slow cinematic speed (65s duration) with horizontal gradient edge fade masks (`mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent)`), omitting static grid toggle buttons.
+   - Hover and focus-within pause (`hover:[animation-play-state:paused] focus-within:[animation-play-state:paused]`).
    - Tactile press feedback (`scale: 0.97`, >= 44x44px touch targets).
    - Accessible error state with tactile Retry button.
-   - Upgrade `TechStackSkeleton.tsx` with bento grid shimmer skeleton.
+   - Reduced-motion mode rendering accessible horizontally scrollable cards (`data-testid="tech-marquee-reduced"`).
+   - Marquee skeleton (`TechStackSkeleton mode="marquee"`).
 3. Author comprehensive unit test suites:
    - `src/app/components/Stats.test.tsx` verifying count-up, UserContext values, reduced motion instant render, and theme styling.
    - `src/app/components/TechStack.test.tsx` verifying category filtering, layout spring indicator, grid vs marquee toggle, error retry, keyboard navigation, and reduced motion.

@@ -32,3 +32,4 @@ Story 6.2 provides portfolio visitors with an always-accessible, conversational 
   - Input field Enter key and send button dispatches message and renders markdown response.
   - One-click copy action with clipboard write and checkmark feedback.
   - Resilient backend error handling with fallback guidance to `/contact`.
+

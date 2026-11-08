@@ -39,12 +39,34 @@ select {
   }
 }
 
-.animate-scroll {
-  animation: scroll 30s linear infinite;
+@keyframes scroll-reverse {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0);
+  }
 }
 
-.animate-scroll:hover {
-  animation-play-state: paused;
+.animate-scroll {
+  animation: scroll 55s linear infinite;
+}
+
+.animate-scroll-slow {
+  animation: scroll 65s linear infinite;
+}
+
+.animate-scroll-reverse-slow {
+  animation: scroll-reverse 65s linear infinite;
+}
+
+.animate-scroll:hover,
+.animate-scroll:focus-within,
+.animate-scroll-slow:hover,
+.animate-scroll-slow:focus-within,
+.animate-scroll-reverse-slow:hover,
+.animate-scroll-reverse-slow:focus-within {
+  animation-play-state: paused !important;
 }
 
 @keyframes coderain-fall {

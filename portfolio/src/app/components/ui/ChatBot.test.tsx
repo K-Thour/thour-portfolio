@@ -194,3 +194,4 @@ describe('ChatBot Component (Story 6.2)', () => {
     });
   });
 });
+

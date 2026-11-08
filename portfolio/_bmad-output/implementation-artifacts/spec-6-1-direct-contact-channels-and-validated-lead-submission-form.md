@@ -29,3 +29,4 @@ Epic 6 delivers the primary client engagement funnel for Karanveer Thour's engin
   - Tests client-side inline validation for empty submissions, malformed email strings, and brief messages.
   - Tests end-to-end form submission with API dispatch and form reset.
   - Tests network failure handling with accessible error alert state.
+

@@ -124,10 +124,10 @@ describe('TechStack Component & TechStackSkeleton', () => {
 
       renderTechStack();
 
-      expect(screen.getByTestId('tech-stack-skeleton-grid')).toBeDefined();
+      expect(screen.getByTestId('tech-stack-skeleton-marquee')).toBeDefined();
     });
 
-    it('fetches and renders technology cards in Bento Grid mode', async () => {
+    it('fetches and renders technology cards in cinematic marquee mode', async () => {
       vi.spyOn(api, 'fetchTechnologies').mockResolvedValue(mockTechnologies);
 
       renderTechStack();
@@ -318,34 +318,19 @@ describe('TechStack Component & TechStackSkeleton', () => {
     });
   });
 
-  describe('View Mode Toggling', () => {
-    it('defaults to Bento Grid mode and toggles to Marquee Stream mode', async () => {
+  describe('Cinematic Marquee Mode', () => {
+    it('renders exclusively as a cinematic marquee stream without grid view toggles', async () => {
       vi.spyOn(api, 'fetchTechnologies').mockResolvedValue(mockTechnologies);
 
-      renderTechStack('always');
+      renderTechStack('never');
 
       await waitFor(() => {
-        expect(screen.getByText('React')).toBeDefined();
+        expect(screen.getAllByText('React')[0]).toBeDefined();
       });
 
-      const gridBtn = screen.getByRole('button', { name: /bento grid view/i });
-      const marqueeBtn = screen.getByRole('button', {
-        name: /marquee stream view/i,
-      });
-
-      expect(gridBtn.getAttribute('aria-pressed')).toBe('true');
-      expect(marqueeBtn.getAttribute('aria-pressed')).toBe('false');
-
-      // Toggle to marquee view
-      fireEvent.click(marqueeBtn);
-
-      expect(gridBtn.getAttribute('aria-pressed')).toBe('false');
-      expect(marqueeBtn.getAttribute('aria-pressed')).toBe('true');
-
-      // Toggle back to grid view
-      fireEvent.click(gridBtn);
-      expect(gridBtn.getAttribute('aria-pressed')).toBe('true');
-      expect(marqueeBtn.getAttribute('aria-pressed')).toBe('false');
+      expect(screen.getByTestId('tech-marquee-animated')).toBeDefined();
+      expect(screen.queryByRole('button', { name: /bento grid view/i })).toBeNull();
+      expect(screen.queryByRole('button', { name: /marquee stream view/i })).toBeNull();
     });
   });
 
@@ -404,14 +389,8 @@ describe('TechStack Component & TechStackSkeleton', () => {
       renderTechStack('always');
 
       await waitFor(() => {
-        expect(screen.getByText('React')).toBeDefined();
+        expect(screen.getAllByText('React')[0]).toBeDefined();
       });
-
-      // Switch to marquee mode
-      const marqueeBtn = screen.getByRole('button', {
-        name: /marquee stream view/i,
-      });
-      fireEvent.click(marqueeBtn);
 
       expect(screen.getByTestId('tech-marquee-reduced')).toBeDefined();
       expect(screen.queryByTestId('tech-marquee-animated')).toBeNull();
@@ -423,14 +402,8 @@ describe('TechStack Component & TechStackSkeleton', () => {
       renderTechStack('never');
 
       await waitFor(() => {
-        expect(screen.getByText('React')).toBeDefined();
+        expect(screen.getAllByText('React')[0]).toBeDefined();
       });
-
-      // Switch to marquee mode
-      const marqueeBtn = screen.getByRole('button', {
-        name: /marquee stream view/i,
-      });
-      fireEvent.click(marqueeBtn);
 
       expect(screen.getByTestId('tech-marquee-animated')).toBeDefined();
       expect(screen.queryByTestId('tech-marquee-reduced')).toBeNull();
