@@ -1,8 +1,9 @@
 import { motion } from 'motion/react';
+import { useReducedMotion } from 'motion/react';
 import { Link } from 'react-router';
-import { ArrowRight, Code2, type LucideIcon } from 'lucide-react';
-import { useState } from 'react';
-import { useTheme } from '../../context/ThemeContext';
+import { ArrowRight, Check, Code2, type LucideIcon } from 'lucide-react';
+import { useContext, useState } from 'react';
+import { ThemeContext } from '../../context/ThemeContext';
 
 export interface ServiceItem {
   icon: LucideIcon | string;
@@ -21,9 +22,7 @@ interface ServiceCardProps {
 
 /** Transform a Cloudinary URL to force a square smart crop at 80×80 */
 function toSquareCloudinaryUrl(url: string): string {
-  // Only transform if it's a Cloudinary URL
   if (!url.includes('res.cloudinary.com')) return url;
-  // Insert transformation before the version segment (v followed by digits)
   return url.replace(
     /\/upload\//,
     '/upload/c_fill,g_auto,w_80,h_80,f_auto,q_auto/',
@@ -51,7 +50,6 @@ function IconBox({
     </div>
   );
 
-  // Image URL (e.g. Cloudinary)
   if (
     typeof icon === 'string' &&
     (icon.startsWith('http') || icon.startsWith('/')) &&
@@ -74,40 +72,51 @@ function IconBox({
     );
   }
 
-  // Lucide component icon
   if (typeof icon === 'function') {
     const LucideIcon = icon as LucideIcon;
     return gradientBox(<LucideIcon className="w-5 h-5 text-white" />);
   }
 
-  // Fallback — Code2 icon on gradient
   return gradientBox(<Code2 className="w-5 h-5 text-white" />);
 }
 
 export function ServiceCard({ service, index, isInView }: ServiceCardProps) {
-  const { theme } = useTheme();
-  const isDark = theme === 'avengers';
+  const themeCtx = useContext(ThemeContext);
+  const isDark = themeCtx ? themeCtx.theme === 'avengers' : true;
+  const shouldReduceMotion = useReducedMotion() ?? false;
 
   const visibleFeatures = service.features.slice(0, 5);
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-      transition={{ duration: 0.5, delay: index * 0.08 }}
+      initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
+      transition={
+        shouldReduceMotion
+          ? { duration: 0 }
+          : { duration: 0.5, delay: index * 0.08, ease: [0.22, 1, 0.36, 1] }
+      }
+      whileHover={shouldReduceMotion ? undefined : { y: -3, scale: 1.02 }}
       className="h-full"
     >
       <Link
         to={service.link}
-        className={`group flex flex-col gap-3 p-4 rounded-xl border transition-all duration-300 hover:-translate-y-1 cursor-pointer h-full ${
+        aria-label={`Learn more about ${service.title}`}
+        className={`group flex flex-col gap-4 p-5 rounded-2xl border backdrop-blur-xl backdrop-saturate-[180%] transition-colors duration-300 cursor-pointer h-full relative overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
           isDark
-            ? 'bg-slate-800/50 border-red-500/20 hover:border-red-500/40 hover:bg-slate-800/80'
-            : 'bg-white border-blue-200/60 hover:border-blue-400/60 shadow-sm hover:shadow-md hover:shadow-blue-500/10'
+            ? 'bg-slate-800/60 border-white/[0.08] hover:border-red-500/30 focus-visible:ring-red-500'
+            : 'bg-white/90 border-black/[0.06] shadow-sm hover:border-blue-400/40 hover:shadow-md hover:shadow-blue-500/10 focus-visible:ring-blue-500'
         }`}
       >
+        {/* Top hairline highlight */}
+        <div
+          aria-hidden="true"
+          className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent"
+        />
+
         {/* Icon + Title row */}
         <div className="flex items-center gap-3">
-          <div className="transition-transform duration-300 group-hover:scale-105">
+          <div className="transition-transform duration-300 group-hover:scale-105 flex-shrink-0">
             <IconBox
               icon={service.icon}
               title={service.title}
@@ -116,7 +125,7 @@ export function ServiceCard({ service, index, isInView }: ServiceCardProps) {
             />
           </div>
           <h3
-            className={`text-base font-bold leading-tight ${
+            className={`text-base font-bold leading-tight tracking-tight ${
               isDark ? 'text-white' : 'text-gray-900'
             }`}
           >
@@ -127,7 +136,7 @@ export function ServiceCard({ service, index, isInView }: ServiceCardProps) {
         {/* Truncated description */}
         {service.description && (
           <p
-            className={`text-xs leading-relaxed line-clamp-5 ${
+            className={`text-xs leading-relaxed line-clamp-3 ${
               isDark ? 'text-gray-400' : 'text-gray-600'
             }`}
           >
@@ -137,17 +146,17 @@ export function ServiceCard({ service, index, isInView }: ServiceCardProps) {
 
         {/* Feature bullets */}
         {visibleFeatures.length > 0 && (
-          <ul className="space-y-1">
+          <ul className="space-y-1.5">
             {visibleFeatures.map((feature) => (
               <li
                 key={feature}
-                className={`text-xs flex items-start gap-1.5 ${
-                  isDark ? 'text-gray-500' : 'text-gray-500'
+                className={`text-xs flex items-start gap-2 ${
+                  isDark ? 'text-gray-400' : 'text-gray-600'
                 }`}
               >
-                <ArrowRight
-                  className={`w-3 h-3 mt-0.5 flex-shrink-0 ${
-                    isDark ? 'text-red-500' : 'text-blue-500'
+                <Check
+                  className={`w-3.5 h-3.5 mt-0.5 flex-shrink-0 ${
+                    isDark ? 'text-red-400' : 'text-blue-500'
                   }`}
                 />
                 <span className="line-clamp-1">{feature}</span>
@@ -156,15 +165,16 @@ export function ServiceCard({ service, index, isInView }: ServiceCardProps) {
           </ul>
         )}
 
-        {/* Learn More */}
+        {/* Learn More footer */}
         <div
-          className={`mt-auto pt-2 border-t text-xs font-medium ${
+          className={`mt-auto pt-3 border-t flex items-center gap-1 text-xs font-semibold ${
             isDark
-              ? 'border-red-500/10 text-red-500'
-              : 'border-blue-200/50 text-blue-600'
+              ? 'border-white/[0.06] text-red-400'
+              : 'border-black/[0.06] text-blue-600'
           }`}
         >
-          Learn More →
+          Learn More
+          <ArrowRight className="w-3 h-3 transition-transform duration-200 group-hover:translate-x-0.5" />
         </div>
       </Link>
     </motion.div>
